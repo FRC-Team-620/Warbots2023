@@ -28,6 +28,8 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    //Setting up default command which is a command that runs every time no other command that uses that subsystem is running
+    drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
   }
 
   /**
