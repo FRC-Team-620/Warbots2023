@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -31,6 +32,7 @@ public class Drivetrain extends SubsystemBase {
     setupMotors();
     setupFollowerMotors();
     //Setup differential drive with left front and right front motors as the parameters for the new DifferentialDrive
+    differentialDrive = new DifferentialDrive(rightFrontMotor, leftFrontMotor);
   }
   private void setupMotors() {
     leftFrontMotor = setupMotor(leftFrontMotor);
@@ -40,15 +42,24 @@ public class Drivetrain extends SubsystemBase {
   }
   private CANSparkMax setupMotor(CANSparkMax motor) {
     // You need to make the motor have the following settings that you can set through the various motor methods: 
-    // Open loop ramp rate (time it takes to reach max acceleration in seconds) = 0.2 
+    // Open loop ramp rate (time it takes to reach max acceleration in seconds) = 0.2
+    motor.setOpenLoopRampRate(0.2);
     // Smart current limit (limits on the current motors can draw even under full load) = 60
+    motor.setSmartCurrentLimit(60);
     // Idle mode (the mode that the motors are in when they are not being told to move) = IdleMode.kBrake
+    motor.setIdleMode(IdleMode.kBrake);
     return motor;
   }
 
   private void setupFollowerMotors() {
     // You need to make the rear motors on both sides of the drivetrain follow their respective front motors
     // This is where we will invert motors as needed when we get to testing the drivetrain
+    rightRearMotor.follow(rightFrontMotor);
+    leftRearMotor.follow(leftFrontMotor);
+
+    
+    rightFrontMotor.setInverted(false);
+    leftFrontMotor.setInverted(true);
   }
 
   @Override
@@ -58,6 +69,6 @@ public class Drivetrain extends SubsystemBase {
 
   //Sets the differential drive using the method curvatureDrive
   public void setCurvatureDrive(double speed, double rotationInput, boolean quickTurn) {
-    
+    differentialDrive.curvatureDrive(speed, rotationInput, quickTurn);
   }
 }

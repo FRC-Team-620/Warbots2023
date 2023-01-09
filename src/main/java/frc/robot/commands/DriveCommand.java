@@ -36,22 +36,31 @@ public class DriveCommand extends CommandBase {
   public void execute() {
     // Create 3 doubles for left trigger input, right trigger input, and the left stick of the XboxController's x axis
     // We squared all the inputs last season for finer control at lower speeds and the drivers seemed to like it so we probably should keep it as it's what everyone is used to
-    double leftTriggerInput = 0;
-    double rightTriggerInput = 0;
-    double rotationInput = 0;
+    //Squared input: allows you to have more control when moving slowly but be able to move fast quickly
+    //This was the input scheme we went with last season in 2022
+    double leftTriggerInput = Math.pow(controller.getLeftTriggerAxis(), 2);//used for backward movement
+    double rightTriggerInput = Math.pow(controller.getRightTriggerAxis(), 2);//used for forward movement
+    double rotationInput = Math.pow(controller.getLeftX(), 2);
+    rotationInput *= Math.signum(controller.getLeftX());//This is either -1 if the input is a negative or 1 if the input is a positive 
+
 
     // After that you should multiply the rotation input number by -1 if the input was negative and by nothing if positive, you could use signum for this if you want to make it short.
     // You have to do this to make sure the rotation is in the proper range as squaring the input gets rid of the negative on the number and makes it a positive
 
     // Create a boolean called quickTurn that equals true (quickTurn is used to give the drivers the option to use CurvertureDrive or not)
-    boolean quickTurn = true;
     // Make an if statement that checks if the controller has the A button held and sets quickTurn to false
-
-    // Create one double called speed that equals zero 
+    boolean quickTurn = true;//Used for tank steering if true
+    if (controller.a().getAsBoolean()) {//if the A button is held then tank steering is enabled
+      quickTurn = false;
+    }
     double speed = 0;
     // Make an if statement that triggers if the left trigger is pressed down more then the right trigger and sets the speed to be equal to -left trigger and else the speed is set to right trigger
-    // The if statement allows for the left and right inputs to be pressed down at the same time but the one pressed down more
-    // controls the bot
+    
+
+    //The if statement allows for the left and right inputs to be pressed down at the same time but the one pressed down more
+    //controls the bot
+    speed = rightTriggerInput > leftTriggerInput ? rightTriggerInput : -leftTriggerInput;
+    
 
     // Pass the speed, rotation input, and the quickTurn in that order into setCurvatureDrive
     // This will allow for Drivetrain's DifferentalDrive to assign the motors to the correct values to make that movement
