@@ -9,24 +9,27 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.CANIdsMainBot;
 import frc.robot.Constants.CANIdsTestBot;
+//import edu.wpi.first.wpilibj.*;
 
 public class Drivetrain extends SubsystemBase {
-
+  
   // I'm giving you a basic structure and you guys job is to fill it out
   // Hopefully you will learn something from this process and that it will help you with being able to do it on your own
   // Just giving you a helping hand for your first time round
 
   // Device id's are CAN pin numbers and you will be seeing a lot more of them in the future so I suggest you get used to it 
   // Second argument is a Enum and the long and short of it is it's words that represent a number in a way that makes it more readable, but in this case it's just idenifing that the motor we have plugged into that CAN slot is a brushless motor
-  private CANSparkMax leftFrontMotor = new CANSparkMax(CANIdsTestBot.leftFrontMotorCANId, MotorType.kBrushless);
-  private CANSparkMax rightFrontMotor = new CANSparkMax(CANIdsTestBot.rightFrontMotorCANId, MotorType.kBrushless);
-  private CANSparkMax leftRearMotor = new CANSparkMax(CANIdsTestBot.leftRearMotorCANId, MotorType.kBrushless);
-  private CANSparkMax rightRearMotor = new CANSparkMax(CANIdsTestBot.rightRearMotorCANId, MotorType.kBrushless);
+  private CANSparkMax leftFrontMotor = new CANSparkMax(CANIdsMainBot.leftFrontMotorCANId, MotorType.kBrushless);
+  private CANSparkMax rightFrontMotor = new CANSparkMax(CANIdsMainBot.rightFrontMotorCANId, MotorType.kBrushless);
+  private CANSparkMax leftRearMotor = new CANSparkMax(CANIdsMainBot.leftRearMotorCANId, MotorType.kBrushless);
+  private CANSparkMax rightRearMotor = new CANSparkMax(CANIdsMainBot.rightRearMotorCANId, MotorType.kBrushless);
 
-  DifferentialDrive differentialDrive;
+  private DifferentialDrive differentialDrive;
   /** Creates a new Drivetrain. */
   public Drivetrain() {
     setupMotors();
@@ -55,10 +58,10 @@ public class Drivetrain extends SubsystemBase {
     // You need to make the rear motors on both sides of the drivetrain follow their respective front motors
     // This is where we will invert motors as needed when we get to testing the drivetrain
     rightRearMotor.follow(rightFrontMotor);
-    leftRearMotor.follow(leftFrontMotor);
+    leftRearMotor.follow(leftFrontMotor);         
 
     
-    rightFrontMotor.setInverted(false);
+    rightFrontMotor.setInverted(true);
     leftFrontMotor.setInverted(true);
   }
 
@@ -69,6 +72,6 @@ public class Drivetrain extends SubsystemBase {
 
   //Sets the differential drive using the method curvatureDrive
   public void setCurvatureDrive(double speed, double rotationInput, boolean quickTurn) {
-    differentialDrive.curvatureDrive(speed, rotationInput, quickTurn);
+    differentialDrive.curvatureDrive(speed*0.25, rotationInput*0.25, quickTurn);
   }
 }
