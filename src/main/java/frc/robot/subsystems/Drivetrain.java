@@ -72,6 +72,6 @@ public class Drivetrain extends SubsystemBase {
 
   //Sets the differential drive using the method curvatureDrive
   public void setCurvatureDrive(double speed, double rotationInput, boolean quickTurn) {
-    differentialDrive.curvatureDrive(speed*0.25, rotationInput*0.25, quickTurn);
+    differentialDrive.curvatureDrive(speed, rotationInput, quickTurn);
   }
 }
