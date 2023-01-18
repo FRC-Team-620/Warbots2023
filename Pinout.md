@@ -1,7 +1,7 @@
 // CANIdTestBot
 leftFrontCANId = 4
 rightFrontCANId = 2
-lefttRearCANId = 3
+leftRearCANId = 3
 rightRearCANId = 1
 
 // CANIdMainBot
