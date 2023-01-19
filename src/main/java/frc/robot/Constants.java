@@ -39,4 +39,23 @@ public final class Constants {
     
 
   }
+  //All measurements in inches
+  public static class ArenaConstants {
+    public static final double midCubeHeight = 18.25;
+    public static final double highCubeHeight = 35.5;
+    public static final double midCubeFromFront = 14.25;
+    public static final double highCubeFromFront = 31.625;
+
+    public static final double midConeHeight = 34;
+    public static final double highConeHeight = 46;
+    public static final double midConeFromFront = 22.75;
+    public static final double highConeFromFront = 37.75;
+
+    public static final double midTapeFromTop = 0.1875;
+    public static final double highTapeFromTop = 8;
+    public static final double tapeLength = 4;
+
+
+    public static final double substationShelfHeight = 37.75;
+  }
 }
