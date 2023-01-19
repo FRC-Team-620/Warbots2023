@@ -4,12 +4,15 @@
 
 package frc.robot.subsystems;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -37,9 +40,14 @@ public class Drivetrain extends SubsystemBase {
 
   PIDController headingPID;
 
+  AHRS navx;
+
   private double speedSetpoint = 0.0;
   private double curvatureSetpoint = 0.0;
   private boolean shouldQuickturn = false;
+
+  private double setAngle;
+  private boolean isTurning = false;
 
   DifferentialDrive differentialDrive;
   /** Creates a new Drivetrain. */
@@ -58,6 +66,10 @@ public class Drivetrain extends SubsystemBase {
       Constants.DriveConstants.kIKeepHeading,
       Constants.DriveConstants.kDKeepHeading
     );
+
+    navx = new AHRS(Port.kMXP);
+    setAngle = navx.getYaw();
+    headingPID.setSetpoint(setAngle);
 
     //Setup differential drive with left front and right front motors as the parameters for the new DifferentialDrive
     differentialDrive = new DifferentialDrive(rightFrontMotor, leftFrontMotor);
@@ -89,15 +101,39 @@ public class Drivetrain extends SubsystemBase {
     leftRearMotor.follow(leftFrontMotor);
 
     
-    rightFrontMotor.setInverted(false);
+    rightFrontMotor.setInverted(true);
     leftFrontMotor.setInverted(true);
+  }
+
+  public boolean approximatelyZero(double value) {
+    return value > -0.01 && value < 0.01;
   }
 
   @Override
   public void periodic() {
+
+    boolean noCurvatureInput = approximatelyZero(curvatureSetpoint);
+
+    if(this.isTurning && noCurvatureInput) {
+      this.setAngle = this.navx.getYaw();
+      this.headingPID.setSetpoint(this.setAngle);
+      this.isTurning = false;
+      System.out.println("ANGLE: " + this.navx.getYaw());
+    }
+
+    if(!noCurvatureInput) {
+      this.isTurning = true;
+    }
+
+    double rotationInput = this.curvatureSetpoint;
+
+    if(!this.isTurning) {
+      rotationInput = this.headingPID.calculate(this.navx.getYaw());
+    }
+
     setCurvatureDrive(
       this.speedSetpoint, 
-      this.curvatureSetpoint, 
+      rotationInput, 
       this.shouldQuickturn
     );
   }

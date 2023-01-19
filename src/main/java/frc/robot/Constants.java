@@ -15,11 +15,11 @@ package frc.robot;
 public final class Constants {
 
   public static class DriveConstants {
-    public static final double kPDriveDistance = 0.001;
-    public static final double kIDriveDistance = 0.0;
+    public static final double kPDriveDistance = 0.01;
+    public static final double kIDriveDistance = 0.01;
     public static final double kDDriveDistance = 0.0;
 
-    public static final double kPKeepHeading = 0.001;
+    public static final double kPKeepHeading = 0.005;
     public static final double kIKeepHeading = 0.0;
     public static final double kDKeepHeading = 0.0;
   }
