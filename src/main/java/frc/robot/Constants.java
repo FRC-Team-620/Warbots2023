@@ -29,6 +29,10 @@ public final class Constants {
     public static final int operatorControllerPort = 1;
   }
 
+  public static class RobotMathConstants {
+    public static final double comparisonThreshhold = 0.005;
+  }
+
   public static class CANIdsTestBot {
     public static final int leftFrontMotorCANId = 4;
     public static final int rightFrontMotorCANId = 2;
