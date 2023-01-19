@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.CANIdsMainBot;
 import frc.robot.Constants.CANIdsTestBot;
+import frc.robot.RobotMath;
 
 public class Drivetrain extends SubsystemBase {
 
@@ -38,7 +39,7 @@ public class Drivetrain extends SubsystemBase {
   private RelativeEncoder leftRearEncoder;
   private RelativeEncoder rightRearEncoder;
 
-  PIDController headingPID;
+  PIDController headingPID; // SETPOINT IS ALWAYS 0 (we give relative angle)
 
   AHRS navx;
 
@@ -66,10 +67,10 @@ public class Drivetrain extends SubsystemBase {
       Constants.DriveConstants.kIKeepHeading,
       Constants.DriveConstants.kDKeepHeading
     );
+    headingPID.setSetpoint(0.0); // IMPORTANT
 
     navx = new AHRS(Port.kMXP);
-    setAngle = navx.getYaw();
-    headingPID.setSetpoint(setAngle);
+    setAngle = this.getYaw();
 
     //Setup differential drive with left front and right front motors as the parameters for the new DifferentialDrive
     differentialDrive = new DifferentialDrive(rightFrontMotor, leftFrontMotor);
@@ -99,26 +100,20 @@ public class Drivetrain extends SubsystemBase {
     // This is where we will invert motors as needed when we get to testing the drivetrain
     rightRearMotor.follow(rightFrontMotor);
     leftRearMotor.follow(leftFrontMotor);
-
     
     rightFrontMotor.setInverted(true);
     leftFrontMotor.setInverted(true);
   }
 
-  public boolean approximatelyZero(double value) {
-    return value > -0.01 && value < 0.01;
-  }
-
   @Override
   public void periodic() {
 
-    boolean noCurvatureInput = approximatelyZero(curvatureSetpoint);
+    boolean noCurvatureInput = RobotMath.approximatelyZero(curvatureSetpoint);
 
     if(this.isTurning && noCurvatureInput) {
-      this.setAngle = this.navx.getYaw();
-      this.headingPID.setSetpoint(this.setAngle);
+      this.setAngle = this.getYaw();
       this.isTurning = false;
-      System.out.println("ANGLE: " + this.navx.getYaw());
+      System.out.println("SET PIVOT ANGLE:\t" + this.getYaw());
     }
 
     if(!noCurvatureInput) {
@@ -128,24 +123,20 @@ public class Drivetrain extends SubsystemBase {
     double rotationInput = this.curvatureSetpoint;
 
     if(!this.isTurning) {
-      rotationInput = this.headingPID.calculate(this.navx.getYaw());
+      double relativeAngle = RobotMath.relativeAngle(this.setAngle, this.getYaw());
+      rotationInput = this.headingPID.calculate(relativeAngle);
     }
     
-
     setCurvatureDrive(
       this.speedSetpoint, 
       rotationInput, 
       this.shouldQuickturn
     );
   }
-  /*
-  public double findClosestSolution(double targetRotation, double currentRotation){
-    double solution2 = targetRotation - Math.signum(targetRotation) * 360;
-    double distance1 = Math.abs(desiredRotation - this.navx.getYaw());
-    double distance2 = Math.abs(solution2 - this.getRotationDegrees());
-    return distance2 < distance1 && solution2 > lowLimitDegrees && solution2 < highLimitDegrees
-    ? solution2 : targetRotation; // Find which of the two solutions is closest
-  }*/
+
+  public double getYaw() {
+    return this.navx.getYaw();
+  }
 
   public void stop() {
     this.speedSetpoint = 0.0;
