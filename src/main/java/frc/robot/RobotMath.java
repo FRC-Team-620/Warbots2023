@@ -1,5 +1,6 @@
 package frc.robot;
 
+import java.lang.Math;
 import frc.robot.Constants.RobotMathConstants;
 
 public class RobotMath {
