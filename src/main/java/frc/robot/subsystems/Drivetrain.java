@@ -130,6 +130,7 @@ public class Drivetrain extends SubsystemBase {
     if(!this.isTurning) {
       rotationInput = this.headingPID.calculate(this.navx.getYaw());
     }
+    
 
     setCurvatureDrive(
       this.speedSetpoint, 
@@ -137,6 +138,14 @@ public class Drivetrain extends SubsystemBase {
       this.shouldQuickturn
     );
   }
+  /*
+  public double findClosestSolution(double targetRotation, double currentRotation){
+    double solution2 = targetRotation - Math.signum(targetRotation) * 360;
+    double distance1 = Math.abs(desiredRotation - this.navx.getYaw());
+    double distance2 = Math.abs(solution2 - this.getRotationDegrees());
+    return distance2 < distance1 && solution2 > lowLimitDegrees && solution2 < highLimitDegrees
+    ? solution2 : targetRotation; // Find which of the two solutions is closest
+  }*/
 
   public void stop() {
     this.speedSetpoint = 0.0;
