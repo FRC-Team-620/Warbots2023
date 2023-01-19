@@ -39,9 +39,9 @@ public class Drivetrain extends SubsystemBase {
   private RelativeEncoder leftRearEncoder;
   private RelativeEncoder rightRearEncoder;
 
-  PIDController headingPID; // SETPOINT IS ALWAYS 0 (we give relative angle)
+  private PIDController headingPID; // SETPOINT IS ALWAYS 0 (we give relative angle)
 
-  AHRS navx;
+  private AHRS navx;
 
   private double speedSetpoint = 0.0;
   private double curvatureSetpoint = 0.0;
@@ -50,7 +50,8 @@ public class Drivetrain extends SubsystemBase {
   private double setAngle;
   private boolean isTurning = false;
 
-  DifferentialDrive differentialDrive;
+  private DifferentialDrive differentialDrive;
+
   /** Creates a new Drivetrain. */
   public Drivetrain() {
     setupMotors();
