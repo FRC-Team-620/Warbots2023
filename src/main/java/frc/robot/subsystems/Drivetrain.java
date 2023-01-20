@@ -43,6 +43,16 @@ public class Drivetrain extends SubsystemBase {
     leftRearMotor = setupMotor(leftRearMotor);
     rightRearMotor = setupMotor(rightRearMotor);
   }
+  public void setBrake(boolean brake){
+    IdleMode mode = IdleMode.kCoast;
+    if (brake){
+      mode = IdleMode.kBrake;
+    }
+    leftFrontMotor.setIdleMode(mode);
+    rightFrontMotor.setIdleMode(mode);
+    leftRearMotor.setIdleMode(mode);
+    rightRearMotor.setIdleMode(mode);
+  }
   private CANSparkMax setupMotor(CANSparkMax motor) {
     // You need to make the motor have the following settings that you can set through the various motor methods: 
     // Open loop ramp rate (time it takes to reach max acceleration in seconds) = 0.2
