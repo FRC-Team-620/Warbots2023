@@ -14,11 +14,13 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.CANIdsMainBot;
 import frc.robot.Constants.CANIdsTestBot;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.RobotMath;
 
 public class Drivetrain extends SubsystemBase {
@@ -49,6 +51,7 @@ public class Drivetrain extends SubsystemBase {
 
   private double setAngle;
   private boolean isTurning = false;
+  private int tickAccumulation = 0;
 
   private DifferentialDrive differentialDrive;
 
@@ -72,6 +75,7 @@ public class Drivetrain extends SubsystemBase {
 
     navx = new AHRS(Port.kMXP);
     setAngle = this.getYaw();
+    SmartDashboard.putNumber("heading_angle", 0.0);
 
     //Setup differential drive with left front and right front motors as the parameters for the new DifferentialDrive
     differentialDrive = new DifferentialDrive(rightFrontMotor, leftFrontMotor);
@@ -111,21 +115,29 @@ public class Drivetrain extends SubsystemBase {
 
     boolean noCurvatureInput = RobotMath.approximatelyZero(curvatureSetpoint);
 
-    if(this.isTurning && noCurvatureInput) {
+    if(this.isTurning && noCurvatureInput && 
+      this.tickAccumulation > DriveConstants.angleSetBufferTicks) {
+
       this.setAngle = this.getYaw();
       this.isTurning = false;
-      System.out.println("SET PIVOT ANGLE:\t" + this.getYaw());
+      this.tickAccumulation = 0;
+      System.out.println("SET PIVOT ANGLE:  " + this.getYaw());
     }
 
-    if(!noCurvatureInput) {
+    if(!noCurvatureInput) { // YES curvature input
       this.isTurning = true;
+    } else if(this.isTurning) { // no curvature input, isTurning is true
+      this.tickAccumulation++;
     }
 
     double rotationInput = this.curvatureSetpoint;
 
-    if(!this.isTurning) {
+    if(!this.isTurning) { // NOT TURNING
       double relativeAngle = RobotMath.relativeAngle(this.setAngle, this.getYaw());
       rotationInput = this.headingPID.calculate(relativeAngle);
+      SmartDashboard.putNumber("set_angle", setAngle);
+      SmartDashboard.putNumber("heading_angle", this.getYaw());
+      SmartDashboard.putNumber("relative_angle", relativeAngle);
     }
     
     setCurvatureDrive(
@@ -143,6 +155,10 @@ public class Drivetrain extends SubsystemBase {
     this.speedSetpoint = 0.0;
     this.curvatureSetpoint = 0.0;
     this.shouldQuickturn = false;
+  }
+
+  public void setCurrentAngle(double angle) {
+    this.setAngle = angle;
   }
 
   public void setSpeed(double speed) {

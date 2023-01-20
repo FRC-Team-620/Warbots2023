@@ -54,4 +54,8 @@ public class RobotContainer {
     // An example command will be run in autonomous
     return Autos.taxi(drivetrain);
   }
+
+  public Drivetrain getDrivetrain() {
+    return this.drivetrain;
+  }
 }

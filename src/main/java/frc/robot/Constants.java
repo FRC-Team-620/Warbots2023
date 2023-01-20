@@ -14,14 +14,22 @@ package frc.robot;
  */
 public final class Constants {
 
+  public static class RobotConstants {
+    public static final double secondsPerTick = 0.02;
+  }
+
   public static class DriveConstants {
     public static final double kPDriveDistance = 0.01;
     public static final double kIDriveDistance = 0.01;
     public static final double kDDriveDistance = 0.0;
 
-    public static final double kPKeepHeading = 0.005;
-    public static final double kIKeepHeading = 0.0;
+    public static final double kPKeepHeading = 0.01;
+    public static final double kIKeepHeading = 0.00001;
     public static final double kDKeepHeading = 0.0;
+
+    public static final double angleSetBufferSeconds = 0.25;
+    public static final double angleSetBufferTicks = 
+      angleSetBufferSeconds / RobotConstants.secondsPerTick;
   }
 
   public static class OperatorConstants {
