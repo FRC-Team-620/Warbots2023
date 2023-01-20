@@ -46,7 +46,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Triggers are a thing that we might need to use so keep that in mind
-    driver.a().onTrue(new ArmCommand(armSubsystem));
+    driver.b().onTrue(new ArmCommand(armSubsystem));
   }
 
   /**

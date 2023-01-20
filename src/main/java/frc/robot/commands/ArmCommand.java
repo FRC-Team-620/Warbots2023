@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmSubsystem;
 
 public class ArmCommand extends CommandBase{
-    ArmSubsystem armSubsystem = new ArmSubsystem();
+    ArmSubsystem armSubsystem;
     //Constructor 
     public ArmCommand(ArmSubsystem armSubsystem){
         this.armSubsystem = armSubsystem;
@@ -13,11 +13,7 @@ public class ArmCommand extends CommandBase{
     // execute
   @Override
   public void execute() {
-    if(this.armSubsystem.getSolenoid()){
-        armSubsystem.setSolenoid(false);
-    } else {
-        armSubsystem.setSolenoid(true);
-    }
+    armSubsystem.setSolenoid(!this.armSubsystem.getSolenoid());
   }
 
   // isFinished
