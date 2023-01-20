@@ -14,7 +14,7 @@ public class RobotMath {
      * @param pivotAngle The angle that the target angle is relative to
      * @param targetAngle The angle whose relative angle to the pivot angle will be returned
      * @return  The relative angle to the target angle (i.e. if the pivot angle were at 0)
-    */
+     */
     public static double relativeAngle(double pivotAngle, double targetAngle) {
         double diff = targetAngle - pivotAngle;
         if(Math.abs(diff) <= 180.0) 
@@ -28,7 +28,7 @@ public class RobotMath {
      * 
      * @param value The value to be checked
      * @return  True if the value approximates zero, false otherwise
-    */
+     */
     public static boolean approximatelyZero(double value) {
         return approximatelyZero(value, RobotMathConstants.comparisonThreshhold);
     }
@@ -40,7 +40,7 @@ public class RobotMath {
      * @param value The value to be checked
      * @param threshhold Determines how close the value needs to be to zero to pass
      * @return  True if the value approximates zero, false otherwise
-    */
+     */
     public static boolean approximatelyZero(double value, double threshhold) {
         return value > -threshhold && value < threshhold;
     }
