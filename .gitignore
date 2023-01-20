@@ -160,3 +160,9 @@ bin/
 
 # Simulation GUI and other tools window save file
 *-window.json
+*.wpilog
+log/*
+simgui-ds.json
+simgui.json
+src/main/java/frc/robot/BuildConstants.java
+.vscode/launch.json

@@ -10,17 +10,30 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.wpilibj.I2C.Port;
+import edu.wpi.first.math.numbers.N2;
+import edu.wpi.first.math.system.LinearSystem;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.CANIdsMainBot;
 import frc.robot.Constants.CANIdsTestBot;
 //import edu.wpi.first.wpilibj.*;
 import frc.robot.Constants.WheelConstants;
+import frc.robot.util.sim.NavxWrapper;
+import frc.robot.util.sim.RevEncoderSimWrapper;
 
 public class Drivetrain extends SubsystemBase {
   
@@ -77,6 +90,7 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
       odometry.update(navx.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
       SmartDashboard.putNumber("Heading", navx.getYaw());
+      
   }
   private CANSparkMax setupMotor(CANSparkMax motor) {
     // You need to make the motor have the following settings that you can set through the various motor methods: 
@@ -108,5 +122,55 @@ public class Drivetrain extends SubsystemBase {
   public void setCurvatureDrive(double speed, double rotationInput, boolean quickTurn) {
     differentialDrive.curvatureDrive(speed, rotationInput, quickTurn);
   }
-}
 
+  public Pose2d getPose(){
+    return odometry.getPoseMeters();
+  }
+
+
+
+   /**
+     * Simulation Code
+     */
+    private NavxWrapper simGryo;
+    private DifferentialDrivetrainSim m_drivetrainSimulator;
+    private RevEncoderSimWrapper leftencsim;
+    private RevEncoderSimWrapper rightencsim;
+    private boolean simInit = false;
+
+    private void initSim() {
+        LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(
+                Constants.kSimDrivekVLinear,
+                Constants.ksimDrivekALinear, Constants.ksimDrivekVAngular,
+                Constants.kSimDrivekAAngular);
+        m_drivetrainSimulator = new DifferentialDrivetrainSim(
+                m_drivetrainSystem, DCMotor.getNEO(2), Constants.WheelConstants.gearRatio, Constants.kSimTrackwidthMeters,
+                Units.inchesToMeters(Constants.WheelConstants.wheelDiameterInInches / 2), null);
+
+        // Setup Leader Motors
+        this.leftencsim = RevEncoderSimWrapper.create(this.leftFrontMotor);
+        this.rightencsim = RevEncoderSimWrapper.create(this.rightFrontMotor);
+
+        // Sim Motors
+        simGryo = new NavxWrapper();
+    }
+
+    @Override
+    public void simulationPeriodic() {
+        if (!simInit) {
+            initSim();
+            simInit = true;
+        }
+        m_drivetrainSimulator.setInputs(
+                this.leftFrontMotor.get() * RobotController.getInputVoltage(),
+                this.rightFrontMotor.get() * RobotController.getInputVoltage());
+        m_drivetrainSimulator.update(Constants.kSimUpdateTime);
+        this.leftencsim.setDistance(m_drivetrainSimulator.getLeftPositionMeters());
+        this.leftencsim.setVelocity(m_drivetrainSimulator.getLeftVelocityMetersPerSecond());
+
+        this.rightencsim.setDistance(m_drivetrainSimulator.getRightPositionMeters());
+        this.rightencsim.setVelocity(m_drivetrainSimulator.getRightVelocityMetersPerSecond());
+
+        simGryo.getYawGyro().setAngle(-m_drivetrainSimulator.getHeading().getDegrees()); // TODO add Gyo Vel support
+    }
+}
