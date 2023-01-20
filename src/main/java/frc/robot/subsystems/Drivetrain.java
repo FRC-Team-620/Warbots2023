@@ -18,9 +18,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.DiminishingAverageHandler;
 import frc.robot.Constants.CANIdsMainBot;
 import frc.robot.Constants.CANIdsTestBot;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.RobotConstants;
 import frc.robot.RobotMath;
 
 public class Drivetrain extends SubsystemBase {
@@ -49,9 +51,14 @@ public class Drivetrain extends SubsystemBase {
   private double curvatureSetpoint = 0.0;
   private boolean shouldQuickturn = false;
 
+  private double angularVelocity = 0.0;
+
   private double setAngle;
   private boolean isTurning = false;
-  private int tickAccumulation = 0;
+  // private int tickAccumulation = 0;
+  private double prevousAngle;
+
+  private DiminishingAverageHandler angularVelocityHandler;
 
   private DifferentialDrive differentialDrive;
 
@@ -76,6 +83,8 @@ public class Drivetrain extends SubsystemBase {
     navx = new AHRS(Port.kMXP);
     setAngle = this.getYaw();
     SmartDashboard.putNumber("heading_angle", 0.0);
+
+    this.angularVelocityHandler = new DiminishingAverageHandler(0.5);
 
     //Setup differential drive with left front and right front motors as the parameters for the new DifferentialDrive
     differentialDrive = new DifferentialDrive(rightFrontMotor, leftFrontMotor);
@@ -113,30 +122,39 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
 
+    double yaw = this.getYaw();
+
+    this.angularVelocity = this.angularVelocityHandler.feed(
+      (yaw - this.prevousAngle) / RobotConstants.secondsPerTick
+    );
+    this.prevousAngle = yaw;
+
+    SmartDashboard.putNumber("angular_velocity", this.angularVelocity);
+
     boolean noCurvatureInput = RobotMath.approximatelyZero(curvatureSetpoint);
 
     if(this.isTurning && noCurvatureInput && 
-      this.tickAccumulation > DriveConstants.angleSetBufferTicks) {
+      RobotMath.approximatelyZero(this.angularVelocity, 0.8)) {
 
-      this.setAngle = this.getYaw();
+      this.setAngle = yaw;
       this.isTurning = false;
-      this.tickAccumulation = 0;
-      System.out.println("SET PIVOT ANGLE:  " + this.getYaw());
+      // this.tickAccumulation = 0;
+      System.out.println("SET PIVOT ANGLE:  " + yaw);
     }
 
     if(!noCurvatureInput) { // YES curvature input
       this.isTurning = true;
     } else if(this.isTurning) { // no curvature input, isTurning is true
-      this.tickAccumulation++;
+      // this.tickAccumulation++;
     }
 
     double rotationInput = this.curvatureSetpoint;
 
     if(!this.isTurning) { // NOT TURNING
-      double relativeAngle = RobotMath.relativeAngle(this.setAngle, this.getYaw());
+      double relativeAngle = RobotMath.relativeAngle(this.setAngle, yaw);
       rotationInput = this.headingPID.calculate(relativeAngle);
       SmartDashboard.putNumber("set_angle", setAngle);
-      SmartDashboard.putNumber("heading_angle", this.getYaw());
+      SmartDashboard.putNumber("heading_angle", yaw);
       SmartDashboard.putNumber("relative_angle", relativeAngle);
     }
     
@@ -145,6 +163,19 @@ public class Drivetrain extends SubsystemBase {
       rotationInput, 
       this.shouldQuickturn
     );
+  }
+
+  /**
+   * Getter for the angular velocity of the robot in degrees per second
+   * 
+   * @return Angular velocity for the yaw in degrees per second
+   */
+  public double getAngularVelocity() {
+    return this.angularVelocity;
+  }
+
+  public void resetAngularVelocity() {
+    this.angularVelocityHandler.reset();
   }
 
   public double getYaw() {
