@@ -1,11 +1,15 @@
 // CANIdTestBot
-leftFrontCANId = 4
-rightFrontCANId = 2
-leftRearCANId = 3
-rightRearCANId = 1
+powerDistributionCanId: 41
+PneumaticsCanId: 42
+leftFrontCANId: 4
+rightFrontCANId: 2
+leftRearCANId:  3
+rightRearCANId:  1
 
 // CANIdMainBot
-leftFrontCANId = 1
-rightFrontCANId = 2
-leftRearCANId = 3
-rightRearCANId = 4
+powerDistributionCanId: 41
+PneumaticsCanId: 42
+leftFrontCANId:  1
+rightFrontCANId:  2
+leftRearCANId:  3
+rightRearCANId:  4
