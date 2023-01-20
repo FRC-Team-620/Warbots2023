@@ -58,7 +58,7 @@ public class Drivetrain extends SubsystemBase {
   private boolean isTurning = false;
   private boolean isStopping = false;
   // private int tickAccumulation = 0;
-  private double prevousAngle;
+  private double previousAngle;
 
   private DiminishingAverageHandler angularVelocityHandler;
   private DifferentialDrive differentialDrive;
@@ -84,7 +84,7 @@ public class Drivetrain extends SubsystemBase {
     setAngle = this.getYaw();
     SmartDashboard.putNumber("heading_angle", 0.0);
 
-    this.angularVelocityHandler = new DiminishingAverageHandler(0.5);
+    this.angularVelocityHandler = new DiminishingAverageHandler(2);
 
     //Setup differential drive with left front and right front motors as the parameters for the new DifferentialDrive
     differentialDrive = new DifferentialDrive(rightFrontMotor, leftFrontMotor);
@@ -133,18 +133,19 @@ public class Drivetrain extends SubsystemBase {
 
     double yaw = this.getYaw();
 
+    double relativeChange = RobotMath.relativeAngle(this.previousAngle, yaw);
+
     this.angularVelocity = this.angularVelocityHandler.feed(
-      (yaw - this.prevousAngle) / RobotConstants.secondsPerTick
+      relativeChange / RobotConstants.secondsPerTick
     );
-    this.prevousAngle = yaw;
+    this.previousAngle = yaw;
 
     SmartDashboard.putNumber("angular_velocity", this.angularVelocity);
 
     boolean noCurvatureInput = RobotMath.approximatelyZero(curvatureSetpoint);
 
-
     if(this.isStopping && noCurvatureInput && 
-      RobotMath.approximatelyZero(this.angularVelocity, 0.8)) {
+      RobotMath.approximatelyZero(this.angularVelocity, 0.2)) {
 
       this.setAngle = yaw;
       this.isStopping = false;
