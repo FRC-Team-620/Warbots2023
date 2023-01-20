@@ -24,9 +24,10 @@ import frc.robot.Constants.CANIdsTestBot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.RobotMath;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
 public class Drivetrain extends SubsystemBase {
-
+  
   // I'm giving you a basic structure and you guys job is to fill it out
   // Hopefully you will learn something from this process and that it will help you with being able to do it on your own
   // Just giving you a helping hand for your first time round
@@ -95,7 +96,16 @@ public class Drivetrain extends SubsystemBase {
     leftRearMotor = setupMotor(leftRearMotor);
     rightRearMotor = setupMotor(rightRearMotor);
   }
-
+  public void setBrake(boolean brake){
+    IdleMode mode = IdleMode.kCoast;
+    if (brake){
+      mode = IdleMode.kBrake;
+    }
+    leftFrontMotor.setIdleMode(mode);
+    rightFrontMotor.setIdleMode(mode);
+    leftRearMotor.setIdleMode(mode);
+    rightRearMotor.setIdleMode(mode);
+  }
   private CANSparkMax setupMotor(CANSparkMax motor) {
     // You need to make the motor have the following settings that you can set through the various motor methods: 
     // Open loop ramp rate (time it takes to reach max acceleration in seconds) = 0.2
@@ -112,8 +122,8 @@ public class Drivetrain extends SubsystemBase {
     // You need to make the rear motors on both sides of the drivetrain follow their respective front motors
     // This is where we will invert motors as needed when we get to testing the drivetrain
     rightRearMotor.follow(rightFrontMotor);
-    leftRearMotor.follow(leftFrontMotor);
-    
+    leftRearMotor.follow(leftFrontMotor);         
+
     rightFrontMotor.setInverted(true);
     leftFrontMotor.setInverted(true);
   }
