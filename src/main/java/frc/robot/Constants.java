@@ -29,7 +29,7 @@ public final class Constants {
 
     public static final double angleSetBufferSeconds = 0.25;
     public static final double angleSetBufferTicks = 
-      angleSetBufferSeconds / RobotConstants.secondsPerTick;
+      DriveConstants.angleSetBufferSeconds / RobotConstants.secondsPerTick;
   }
 
   public static class OperatorConstants {

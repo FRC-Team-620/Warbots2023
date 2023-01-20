@@ -22,6 +22,13 @@ public class RobotMath {
         return diff - Math.signum(diff) * 360.0;
     }
 
+    /** 
+     * Checking whether a number appoximates zero based on the
+     * threshholds set in Constants.RobotMathConstants
+     * 
+     * @param value The value to be checked
+     * @return  True if the value approximates zero, false otherwise
+    */
     public static boolean approximatelyZero(double value) {
         return value > -RobotMathConstants.comparisonThreshhold && 
             value < RobotMathConstants.comparisonThreshhold;
