@@ -39,17 +39,17 @@ public final class Constants {
     
 
   }
-  //All measurements in inches
+  //All measurements in meters
   public static class ArenaConstants {
-    public static final double midCubeHeight = 18.25;
-    public static final double highCubeHeight = 35.5;
-    public static final double midCubeFromFront = 14.25;
-    public static final double highCubeFromFront = 31.625;
+    public static final double kmidCubeHeight = Units.inchesToMeters(18.25);
+    public static final double khighCubeHeight = Units.inchesToMeters(35.5);
+    public static final double kmidCubeFromFront = Units.inchesToMeters(14.25);
+    public static final double khighCubeFromFront = Units.inchesToMeters(31.625);
 
     public static final double kmidConeHeightMeters = Units.inchesToMeters(34);
     public static final double khighConeHeightMeters = Units.inchesToMeters(46);
     public static final double kmidConeFromFrontMeters = Units.inchesToMeters(22.75);  //how far the arm will have to reach to get to mid peg
-    public static final double highConeFromFront = 37.75;
+    public static final double khighConeFromFront = Units.inchesToMeters(37.75);
 
     public static final double kmidTapeFromTopMeters = Units.inchesToMeters(8);
     public static final double khighTapeFromTopMeters = Units.inchesToMeters(3/16);
