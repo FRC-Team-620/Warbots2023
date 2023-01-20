@@ -82,6 +82,8 @@ public class Robot extends TimedRobot {
       this.m_robotContainer.getDrivetrain().getYaw()
     ); 
 
+    this.m_robotContainer.getDrivetrain().resetAngularVelocity();
+
   }
 
   /** This function is called periodically during operator control. */
