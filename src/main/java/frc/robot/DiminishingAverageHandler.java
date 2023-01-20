@@ -3,7 +3,7 @@ package frc.robot;
 public class DiminishingAverageHandler {
     
     private java.lang.Double average = null; // for nullability
-    private double previousWeight;
+    private final double previousWeight;
 
     /**
      * Handles running averages where past data should be expelled over time.

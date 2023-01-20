@@ -43,7 +43,7 @@ public class Drivetrain extends SubsystemBase {
   private RelativeEncoder leftRearEncoder;
   private RelativeEncoder rightRearEncoder;
 
-  private PIDController headingPID; // SETPOINT IS ALWAYS 0 (we give relative angle)
+  private PIDController headingPID; // SETPOINT IS ALWAYS 0 (we give it a relative angle)
 
   private AHRS navx;
 
@@ -59,7 +59,6 @@ public class Drivetrain extends SubsystemBase {
   private double prevousAngle;
 
   private DiminishingAverageHandler angularVelocityHandler;
-
   private DifferentialDrive differentialDrive;
 
   /** Creates a new Drivetrain. */
@@ -72,7 +71,6 @@ public class Drivetrain extends SubsystemBase {
     leftRearEncoder = leftRearMotor.getEncoder();
     rightRearEncoder = rightRearMotor.getEncoder();
 
-    //TODO: Use this to maintain gyro heading when going straight or stopped
     headingPID = new PIDController(
       Constants.DriveConstants.kPKeepHeading,
       Constants.DriveConstants.kIKeepHeading,
