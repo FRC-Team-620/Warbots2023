@@ -5,8 +5,10 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ArmCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.DriveCommand;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -23,6 +25,7 @@ public class RobotContainer {
   private final CommandXboxController driver =
       new CommandXboxController(OperatorConstants.driverControllerPort);
   public final Drivetrain drivetrain = new Drivetrain();
+  private final ArmSubsystem armSubsystem = new ArmSubsystem();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -43,6 +46,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Triggers are a thing that we might need to use so keep that in mind
+    driver.b().onTrue(new ArmCommand(armSubsystem));
   }
 
   /**
