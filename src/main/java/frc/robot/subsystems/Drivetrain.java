@@ -55,6 +55,7 @@ public class Drivetrain extends SubsystemBase {
 
   private double setAngle;
   private boolean isTurning = false;
+  private boolean isStopping = false;
   // private int tickAccumulation = 0;
   private double prevousAngle;
 
@@ -131,18 +132,23 @@ public class Drivetrain extends SubsystemBase {
 
     boolean noCurvatureInput = RobotMath.approximatelyZero(curvatureSetpoint);
 
-    if(this.isTurning && noCurvatureInput && 
+
+    if(this.isStopping && noCurvatureInput && 
       RobotMath.approximatelyZero(this.angularVelocity, 0.8)) {
 
       this.setAngle = yaw;
-      this.isTurning = false;
+      this.isStopping = false;
       // this.tickAccumulation = 0;
-      System.out.println("SET PIVOT ANGLE:  " + yaw);
+      System.out.println("SET STOPPED PIVOT ANGLE:  " + yaw);
     }
 
     if(!noCurvatureInput) { // YES curvature input
       this.isTurning = true;
     } else if(this.isTurning) { // no curvature input, isTurning is true
+      isStopping = true;
+      this.isTurning = false;
+      this.setAngle = yaw;
+      System.out.println("SET SLOWDOWN PIVOT ANGLE:  " + yaw);
       // this.tickAccumulation++;
     }
 
