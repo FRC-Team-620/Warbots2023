@@ -53,6 +53,21 @@ public class Drivetrain extends SubsystemBase {
     //Setup differential drive with left front and right front motors as the parameters for the new DifferentialDrive
     differentialDrive = new DifferentialDrive(rightFrontMotor, leftFrontMotor);
   }
+  public void setBrake(boolean brake){
+    IdleMode mode;
+    if (brake){
+      mode = IdleMode.kBrake;
+    }
+    else{
+      mode = IdleMode.kCoast;
+    }
+    
+    leftFrontMotor.setIdleMode(mode);
+    rightFrontMotor.setIdleMode(mode);
+    leftRearMotor.setIdleMode(mode);
+    rightRearMotor.setIdleMode(mode);
+  }
+
   private void setupMotors() {
     leftFrontMotor = setupMotor(leftFrontMotor);
     rightFrontMotor = setupMotor(rightFrontMotor);
