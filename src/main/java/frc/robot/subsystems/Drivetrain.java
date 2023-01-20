@@ -14,6 +14,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -72,6 +73,7 @@ public class Drivetrain extends SubsystemBase {
 
     navx = new AHRS(Port.kMXP);
     setAngle = this.getYaw();
+    SmartDashboard.putNumber("heading_angle", 0.0);
 
     //Setup differential drive with left front and right front motors as the parameters for the new DifferentialDrive
     differentialDrive = new DifferentialDrive(rightFrontMotor, leftFrontMotor);
@@ -126,6 +128,9 @@ public class Drivetrain extends SubsystemBase {
     if(!this.isTurning) {
       double relativeAngle = RobotMath.relativeAngle(this.setAngle, this.getYaw());
       rotationInput = this.headingPID.calculate(relativeAngle);
+      SmartDashboard.putNumber("set_angle", setAngle);
+      SmartDashboard.putNumber("heading_angle", this.getYaw());
+      SmartDashboard.putNumber("relative_angle", relativeAngle);
     }
     
     setCurvatureDrive(
@@ -143,6 +148,10 @@ public class Drivetrain extends SubsystemBase {
     this.speedSetpoint = 0.0;
     this.curvatureSetpoint = 0.0;
     this.shouldQuickturn = false;
+  }
+
+  public void setCurrentAngle(double angle) {
+    this.setAngle = angle;
   }
 
   public void setSpeed(double speed) {
