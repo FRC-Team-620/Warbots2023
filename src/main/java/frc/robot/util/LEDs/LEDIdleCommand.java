@@ -1,15 +1,13 @@
-package frc.robot.Util.LEDs;
+package frc.robot.util.LEDs;
 
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Loader.Intake;
-import frc.robot.Shooter.FiringPins;
-import frc.robot.Util.LEDs.LEDSubsystem.LEDAnimation;
-import frc.robot.Util.LEDs.LEDSubsystem.LEDManager;
+import frc.robot.util.LEDs.LEDSubsystem.LEDAnimation;
+import frc.robot.util.LEDs.LEDSubsystem.LEDManager;
 
 public class LEDIdleCommand extends CommandBase {
-    protected Intake intake;
-    protected FiringPins firingPins;
+    //protected Intake intake;
+    //protected FiringPins firingPins;
 
     protected LEDAnimation noBallsAnim = LEDManager.STRIP0.fadeAnimation(1,
         30, 
@@ -42,14 +40,13 @@ public class LEDIdleCommand extends CommandBase {
     //     noBallsAnim
     // );
 
-    public LEDIdleCommand(LEDSubsystem ledSubsystem, Intake intake, FiringPins firingPins) {
-        this.intake = intake;
-        this.firingPins = firingPins;
+    public LEDIdleCommand(LEDSubsystem ledSubsystem) {
         addRequirements(ledSubsystem);
     }
 
     @Override
     public void execute() {
+        /*
         if(this.firingPins.hasColor()) { 
             if(this.intake.getIntakeSwitch()) { // TWO balls
                 this.twoBallsAnim.step();
@@ -59,5 +56,6 @@ public class LEDIdleCommand extends CommandBase {
         } else { // NO balls
             this.noBallsAnim.step();
         }
+        */
     }
 }
