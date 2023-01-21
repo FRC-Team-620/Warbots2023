@@ -90,7 +90,7 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
       odometry.update(navx.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
       SmartDashboard.putNumber("Heading", navx.getYaw());
-      
+      System.out.println(leftFrontEncoder.getPosition());
   }
   private CANSparkMax setupMotor(CANSparkMax motor) {
     // You need to make the motor have the following settings that you can set through the various motor methods: 
@@ -112,7 +112,7 @@ public class Drivetrain extends SubsystemBase {
     leftRearMotor.follow(leftFrontMotor);         
 
     
-    rightFrontMotor.setInverted(true);
+    rightFrontMotor.setInverted(false);
     leftFrontMotor.setInverted(true);
   }
 
@@ -121,6 +121,13 @@ public class Drivetrain extends SubsystemBase {
   //Sets the differential drive using the method curvatureDrive
   public void setCurvatureDrive(double speed, double rotationInput, boolean quickTurn) {
     differentialDrive.curvatureDrive(speed, rotationInput, quickTurn);
+  }
+
+  public void setRightMotors(double speed) {
+    rightFrontMotor.set(speed);
+  }
+  public void setLeftMotors(double speed) {
+    leftFrontMotor.set(speed);
   }
 
   public Pose2d getPose(){
