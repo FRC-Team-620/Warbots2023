@@ -30,7 +30,7 @@ public class RobotMath {
      * @return  True if the value approximates zero, false otherwise
      */
     public static boolean approximatelyZero(double value) {
-        return approximatelyZero(value, RobotMathConstants.comparisonThreshhold);
+        return RobotMath.approximatelyZero(value, RobotMathConstants.comparisonThreshhold);
     }
 
     /** 
