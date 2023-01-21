@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.DiminishingAverageHandler;
 import frc.robot.Constants.CANIdsMainBot;
 import frc.robot.Constants.CANIdsTestBot;
 import frc.robot.Constants.DriveConstants;
@@ -58,7 +57,7 @@ public class Drivetrain extends SubsystemBase {
   // private int tickAccumulation = 0;
   private double previousAngle;
 
-  private DiminishingAverageHandler angularVelocityHandler;
+  private RobotMath.DiminishingAverageHandler angularVelocityHandler;
   private DifferentialDrive differentialDrive;
 
   /** Creates a new Drivetrain. */
@@ -77,12 +76,13 @@ public class Drivetrain extends SubsystemBase {
       Constants.DriveConstants.kDKeepHeading
     );
     headingPID.setSetpoint(0.0); // IMPORTANT
+    headingPID.setTolerance(2,1);
 
     navx = new AHRS(Port.kMXP);
     setAngle = this.getYaw();
     SmartDashboard.putNumber("heading_angle", 0.0);
 
-    this.angularVelocityHandler = new DiminishingAverageHandler(2);
+    this.angularVelocityHandler = new RobotMath.DiminishingAverageHandler(2);
 
     //Setup differential drive with left front and right front motors as the parameters for the new DifferentialDrive
     differentialDrive = new DifferentialDrive(rightFrontMotor, leftFrontMotor);
@@ -136,6 +136,7 @@ public class Drivetrain extends SubsystemBase {
 
       this.setAngle = yaw;
       this.isTurning = false;
+      this.headingPID.reset();
       // this.tickAccumulation = 0;
       System.out.println("SET PIVOT ANGLE:  " + yaw);
     }
@@ -174,6 +175,10 @@ public class Drivetrain extends SubsystemBase {
     return this.angularVelocity;
   }
 
+  public boolean hasAngularVelocity() {
+    return RobotMath.approximatelyZero(this.getAngularVelocity(), 0.5);
+  }
+
   public void resetAngularVelocity() {
     this.angularVelocityHandler.reset();
   }
@@ -194,6 +199,14 @@ public class Drivetrain extends SubsystemBase {
 
   public void turnRelativeAngle(double deltaAngle) {
     this.setCurrentAngle(RobotMath.shiftAngle(this.setAngle, deltaAngle));
+  }
+
+  public boolean atAngleSetpoint() {
+    return this.headingPID.atSetpoint();
+  }
+
+  public void resetAnglePID() {
+    this.headingPID.reset();
   }
 
   public void setSpeed(double speed) {

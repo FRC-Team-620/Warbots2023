@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.TurnDeltaAngle;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -30,6 +31,8 @@ public class RobotContainer {
     configureBindings();
     //Setting up default command which is a command that runs every time no other command that uses that subsystem is running
     drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
+
+    driver.y().onTrue(new TurnDeltaAngle(drivetrain, 10));
   }
 
   /**
