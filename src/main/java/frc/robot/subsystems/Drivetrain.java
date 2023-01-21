@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.CANIdsMainBot;
 import frc.robot.Constants.CANIdsTestBot;
+import frc.robot.Constants.InversionsTestBot;
 //import edu.wpi.first.wpilibj.*;
 import frc.robot.Constants.WheelConstants;
 import frc.robot.util.sim.NavxWrapper;
@@ -127,8 +128,8 @@ public class Drivetrain extends SubsystemBase {
     leftRearMotor.follow(leftFrontMotor);         
 
     
-    rightFrontMotor.setInverted(false);
-    leftFrontMotor.setInverted(true);
+    rightFrontMotor.setInverted(InversionsTestBot.rightFrontMotorInversion);
+    leftFrontMotor.setInverted(InversionsTestBot.leftFrontMotorInversion);
   }
 
   

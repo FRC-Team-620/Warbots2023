@@ -24,12 +24,21 @@ public final class Constants {
     public static final int leftRearMotorCANId = 3;
     public static final int rightRearMotorCANId = 4;
   }
+  public static class InversionsTestBot {
+    public static final boolean rightFrontMotorInversion = true;
+    public static final boolean leftFrontMotorInversion = true;
+  }
   public static class CANIdsMainBot {
     public static final int leftFrontMotorCANId = 4;
     public static final int rightFrontMotorCANId = 3;
     public static final int leftRearMotorCANId = 2;
     public static final int rightRearMotorCANId = 1;
   }
+  public static class InversionsMainBot {
+    public static final boolean rightFrontMotorInversion = false;
+    public static final boolean leftFrontMotorInversion = true;
+  }
+
   public static class WheelConstants {
     public static final double conversionFactor = WheelConstants.gearRatio
             * Units.inchesToMeters(WheelConstants.wheelDiameterInInches)
@@ -60,8 +69,8 @@ public final class Constants {
   }
 
   public class AutoConstants{
-    public static final double autoDistanceKP = 100;
-    public static final double autoDistanceKI = 0.0;
+    public static final double autoDistanceKP = 50;
+    public static final double autoDistanceKI = 0.5;
     public static final double autoDistanceKD = 0.0;
 
     public static final double maxVelocity = 10;

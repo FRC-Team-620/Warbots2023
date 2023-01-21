@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.Drivetrain;
 
-public class AutoDriveDistance extends CommandBase {
+public class AutoDriveDistance extends CommandBase {//Not WORKING DO NOT USE PLEASE
   Drivetrain drivetrain;
   private double distance;
   private double autoSpeed = 0.5;
@@ -54,18 +54,15 @@ public class AutoDriveDistance extends CommandBase {
   public void execute() {
     
     double setpoint = this.profile.calculate(timer.get()).position;
-    System.out.println(timer.get());
+    // System.out.println(timer.get());
     double moved = this.initPose.getTranslation().getDistance(this.drivetrain.getPose().getTranslation());
     double value = this.distancePID.calculate(moved, setpoint);
-    System.out.println(value + " " + moved + " " + setpoint);
+    // System.out.println(value + " " + moved + " " + setpoint);
     this.drivetrain.setCurvatureDrive(value, 0, false);
   }
 
   public boolean withinBounds() {
-    if (this.getDisplacement() > distance) {
-      return true;
-    }
-    return false;
+    return this.getDisplacement() > distance;
   }
 
   private double getDisplacement() {
@@ -86,11 +83,13 @@ public class AutoDriveDistance extends CommandBase {
   // // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return withinBounds();
+    System.out.println("Displacement: " + this.getDisplacement());
+    return this.withinBounds();
   }
 
   @Override
   public void end(boolean interrupt) {
     drivetrain.setCurvatureDrive(0, 0, false);
+    drivetrain.setBrake(true);
   }
 }

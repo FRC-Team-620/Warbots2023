@@ -38,7 +38,7 @@ public class RobotContainer {
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
+   * {@link Trigger#Trigger(java.util.function.BooleanSupp1lier)} constructor with an arbitrary
    * predicate, or via the named factories in {@link
    * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
    * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
@@ -59,7 +59,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     // return Autos.taxi(drivetrain);
-    return new AutoDriveDistance(drivetrain, 1000);
+    return new AutoDriveDistance(drivetrain, 0.05);
   }
 
   public Drivetrain getDrivetrain(){
