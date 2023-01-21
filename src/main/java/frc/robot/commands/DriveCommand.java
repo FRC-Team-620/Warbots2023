@@ -59,6 +59,7 @@ public class DriveCommand extends CommandBase {
 
     //The if statement allows for the left and right inputs to be pressed down at the same time but the one pressed down more
     //controls the bot
+    //rightfront, rightback
     speed = rightTriggerInput > leftTriggerInput ? rightTriggerInput : -leftTriggerInput;
     
 
@@ -66,6 +67,8 @@ public class DriveCommand extends CommandBase {
     // This will allow for Drivetrain's DifferentalDrive to assign the motors to the correct values to make that movement
 
     drivetrain.setCurvatureDrive(speed, rotationInput, quickTurn);
+    //drivetrain.setRightMotors(1);
+    //drivetrain.setLeftMotors(1);
 
   }
 
