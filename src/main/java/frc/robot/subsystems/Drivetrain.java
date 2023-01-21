@@ -113,7 +113,7 @@ public class Drivetrain extends SubsystemBase {
 
     
     rightFrontMotor.setInverted(true);
-    leftFrontMotor.setInverted(true);
+    leftFrontMotor.setInverted(false);
   }
 
   

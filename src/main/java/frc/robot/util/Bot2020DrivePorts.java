@@ -1,6 +1,6 @@
 package frc.robot.util;
 
-public class SusianDrivePorts implements IDrivePorts {
+public class Bot2020DrivePorts implements IDrivePorts {
 
     public static final int leftFrontMotorCANId = 1;
     public static final int rightFrontMotorCANId = 2;
