@@ -32,7 +32,7 @@ public class RobotContainer {
     //Setting up default command which is a command that runs every time no other command that uses that subsystem is running
     drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
 
-    driver.y().onTrue(new TurnDeltaAngle(drivetrain, 10));
+    driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
   }
 
   /**

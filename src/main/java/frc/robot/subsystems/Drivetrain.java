@@ -131,8 +131,7 @@ public class Drivetrain extends SubsystemBase {
 
     boolean noCurvatureInput = RobotMath.approximatelyZero(curvatureSetpoint);
 
-    if(this.isTurning && noCurvatureInput && 
-      RobotMath.approximatelyZero(this.angularVelocity, 0.5)) {
+    if(this.isTurning && noCurvatureInput && !this.hasAngularVelocity()) {
 
       this.setAngle = yaw;
       this.isTurning = false;
@@ -176,7 +175,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public boolean hasAngularVelocity() {
-    return RobotMath.approximatelyZero(this.getAngularVelocity(), 0.5);
+    return !RobotMath.approximatelyZero(this.getAngularVelocity(), 0.5);
   }
 
   public void resetAngularVelocity() {
