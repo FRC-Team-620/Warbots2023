@@ -190,6 +190,10 @@ public class Drivetrain extends SubsystemBase {
     this.setAngle = angle;
   }
 
+  public void turnRelativeAngle(double deltaAngle) {
+    this.setCurrentAngle(RobotMath.shiftAngle(this.setAngle, deltaAngle));
+  }
+
   public void setSpeed(double speed) {
     this.speedSetpoint = speed;
   }
