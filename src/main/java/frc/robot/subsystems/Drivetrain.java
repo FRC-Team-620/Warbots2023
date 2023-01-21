@@ -56,7 +56,7 @@ public class Drivetrain extends SubsystemBase {
   private double setAngle;
   private boolean isTurning = false;
   // private int tickAccumulation = 0;
-  private double prevousAngle;
+  private double previousAngle;
 
   private DiminishingAverageHandler angularVelocityHandler;
   private DifferentialDrive differentialDrive;
@@ -82,7 +82,7 @@ public class Drivetrain extends SubsystemBase {
     setAngle = this.getYaw();
     SmartDashboard.putNumber("heading_angle", 0.0);
 
-    this.angularVelocityHandler = new DiminishingAverageHandler(0.5);
+    this.angularVelocityHandler = new DiminishingAverageHandler(2);
 
     //Setup differential drive with left front and right front motors as the parameters for the new DifferentialDrive
     differentialDrive = new DifferentialDrive(rightFrontMotor, leftFrontMotor);
@@ -122,17 +122,17 @@ public class Drivetrain extends SubsystemBase {
 
     double yaw = this.getYaw();
 
-    this.angularVelocity = this.angularVelocityHandler.feed(
-      (yaw - this.prevousAngle) / RobotConstants.secondsPerTick
-    );
-    this.prevousAngle = yaw;
+    double relativeChange = RobotMath.relativeAngle(this.previousAngle, yaw);
 
-    SmartDashboard.putNumber("angular_velocity", this.angularVelocity);
+    this.angularVelocity = this.angularVelocityHandler.feed(
+      relativeChange / RobotConstants.secondsPerTick
+    );
+    this.previousAngle = yaw;
 
     boolean noCurvatureInput = RobotMath.approximatelyZero(curvatureSetpoint);
 
     if(this.isTurning && noCurvatureInput && 
-      RobotMath.approximatelyZero(this.angularVelocity, 0.8)) {
+      RobotMath.approximatelyZero(this.angularVelocity, 0.5)) {
 
       this.setAngle = yaw;
       this.isTurning = false;
@@ -151,8 +151,6 @@ public class Drivetrain extends SubsystemBase {
     if(!this.isTurning) { // NOT TURNING
       double relativeAngle = RobotMath.relativeAngle(this.setAngle, yaw);
       rotationInput = this.headingPID.calculate(relativeAngle);
-      SmartDashboard.putNumber("set_angle", setAngle);
-      SmartDashboard.putNumber("heading_angle", yaw);
       SmartDashboard.putNumber("relative_angle", relativeAngle);
     }
     
@@ -161,6 +159,10 @@ public class Drivetrain extends SubsystemBase {
       rotationInput, 
       this.shouldQuickturn
     );
+
+    SmartDashboard.putNumber("angular_velocity", this.angularVelocity);
+    SmartDashboard.putNumber("set_angle", setAngle);
+    SmartDashboard.putNumber("heading_angle", yaw);
   }
 
   /**
