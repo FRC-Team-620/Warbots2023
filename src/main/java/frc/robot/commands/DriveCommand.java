@@ -43,11 +43,6 @@ public class DriveCommand extends CommandBase {
     double rotationInput = Math.pow(controller.getLeftX(), 2);
     rotationInput *= Math.signum(controller.getLeftX());//This is either -1 if the input is a negative or 1 if the input is a positive 
 
-
-    // After that you should multiply the rotation input number by -1 if the input was negative and by nothing if positive, you could use signum for this if you want to make it short.
-    // You have to do this to make sure the rotation is in the proper range as squaring the input gets rid of the negative on the number and makes it a positive
-
-    // Create a boolean called quickTurn that equals true (quickTurn is used to give the drivers the option to use CurvertureDrive or not)
     // Make an if statement that checks if the controller has the A button held and sets quickTurn to false
     boolean quickTurn = true;//Used for tank steering if true
     if (controller.a().getAsBoolean()) {//if the A button is held then tank steering is enabled
