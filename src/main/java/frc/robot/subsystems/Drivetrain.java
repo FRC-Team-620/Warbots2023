@@ -6,9 +6,9 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -17,20 +17,13 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants;
-// import frc.robot.Constants.CANIdsTestBot;
-//import edu.wpi.first.wpilibj.*;
 import frc.robot.Constants.WheelConstants;
 import frc.robot.util.sim.NavxWrapper;
 import frc.robot.util.sim.RevEncoderSimWrapper;
@@ -47,6 +40,7 @@ public class Drivetrain extends SubsystemBase {
   private CANSparkMax rightFrontMotor = new CANSparkMax(Constants.driveports.rightFrontMotorCANId, MotorType.kBrushless);
   private CANSparkMax leftRearMotor = new CANSparkMax(Constants.driveports.leftRearMotorCANId, MotorType.kBrushless);
   private CANSparkMax rightRearMotor = new CANSparkMax(Constants.driveports.rightRearMotorCANId, MotorType.kBrushless);
+
 
   private RelativeEncoder leftFrontEncoder;
   private RelativeEncoder rightFrontEncoder;
@@ -66,6 +60,21 @@ public class Drivetrain extends SubsystemBase {
     //Setup differential drive with left front and right front motors as the parameters for the new DifferentialDrive
     differentialDrive = new DifferentialDrive(rightFrontMotor, leftFrontMotor);
   }
+  public void setBrake(boolean brake){
+    IdleMode mode;
+    if (brake){
+      mode = IdleMode.kBrake;
+    }
+    else{
+      mode = IdleMode.kCoast;
+    }
+    
+    leftFrontMotor.setIdleMode(mode);
+    rightFrontMotor.setIdleMode(mode);
+    leftRearMotor.setIdleMode(mode);
+    rightRearMotor.setIdleMode(mode);
+  }
+
   private void setupMotors() {
     leftFrontMotor = setupMotor(leftFrontMotor);
     rightFrontMotor = setupMotor(rightFrontMotor);
@@ -90,7 +99,7 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
       odometry.update(navx.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
       SmartDashboard.putNumber("Heading", navx.getYaw());
-      
+      // System.out.println(leftFrontEncoder.getPosition());
   }
   private CANSparkMax setupMotor(CANSparkMax motor) {
     // You need to make the motor have the following settings that you can set through the various motor methods: 
@@ -112,15 +121,24 @@ public class Drivetrain extends SubsystemBase {
     leftRearMotor.follow(leftFrontMotor);         
 
     
-    rightFrontMotor.setInverted(true);
-    leftFrontMotor.setInverted(false);
+    rightFrontMotor.setInverted(Constants.driveports.rightFrontMotorInversion);
+    leftFrontMotor.setInverted(Constants.driveports.leftFrontMotorInversion);
+
   }
 
   
 
   //Sets the differential drive using the method curvatureDrive
   public void setCurvatureDrive(double speed, double rotationInput, boolean quickTurn) {
+    System.out.println("" + speed+' '+ rotationInput+' '+ quickTurn);
     differentialDrive.curvatureDrive(speed, rotationInput, quickTurn);
+  }
+
+  public void setRightMotors(double speed) {
+    rightFrontMotor.set(speed);
+  }
+  public void setLeftMotors(double speed) {
+    leftFrontMotor.set(speed);
   }
 
   public Pose2d getPose(){

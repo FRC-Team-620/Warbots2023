@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArmCommand;
+import frc.robot.commands.AutoDriveDistance;
 import frc.robot.commands.Autos;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.ArmSubsystem;
@@ -37,7 +38,7 @@ public class RobotContainer {
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
+   * {@link Trigger#Trigger(java.util.function.BooleanSupp1lier)} constructor with an arbitrary
    * predicate, or via the named factories in {@link
    * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
    * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
@@ -47,6 +48,7 @@ public class RobotContainer {
   private void configureBindings() {
     // Triggers are a thing that we might need to use so keep that in mind
     driver.b().onTrue(new ArmCommand(armSubsystem));
+    // driver.x().onTrue(new AutoDriveDistance(drivetrain, 100));
   }
 
   /**
@@ -56,6 +58,11 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.taxi(drivetrain);
+    // return Autos.taxi(drivetrain);
+    return new AutoDriveDistance(drivetrain, 0.05);
+  }
+
+  public Drivetrain getDrivetrain(){
+    return this.drivetrain;
   }
 }
