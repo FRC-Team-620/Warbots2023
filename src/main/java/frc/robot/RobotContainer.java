@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArmCommand;
+import frc.robot.commands.AutoDriveDistance;
 import frc.robot.commands.Autos;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.ArmSubsystem;
@@ -47,6 +48,7 @@ public class RobotContainer {
   private void configureBindings() {
     // Triggers are a thing that we might need to use so keep that in mind
     driver.b().onTrue(new ArmCommand(armSubsystem));
+    // driver.x().onTrue(new AutoDriveDistance(drivetrain, 100));
   }
 
   /**
@@ -56,7 +58,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.taxi(drivetrain);
+    // return Autos.taxi(drivetrain);
+    return new AutoDriveDistance(drivetrain, 1000);
   }
 
   public Drivetrain getDrivetrain(){

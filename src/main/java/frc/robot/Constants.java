@@ -19,10 +19,10 @@ public final class Constants {
     public static final int driverControllerPort = 0;
   }
   public static class CANIdsTestBot {
-    public static final int leftFrontMotorCANId = 4;
+    public static final int leftFrontMotorCANId = 1;
     public static final int rightFrontMotorCANId = 2;
     public static final int leftRearMotorCANId = 3;
-    public static final int rightRearMotorCANId = 1;
+    public static final int rightRearMotorCANId = 4;
   }
   public static class CANIdsMainBot {
     public static final int leftFrontMotorCANId = 4;
@@ -58,6 +58,16 @@ public final class Constants {
 
     public static final double ksubstationShelfHeightMeters = Units.inchesToMeters(37.75);
   }
+
+  public class AutoConstants{
+    public static final double autoDistanceKP = 100;
+    public static final double autoDistanceKI = 0.0;
+    public static final double autoDistanceKD = 0.0;
+
+    public static final double maxVelocity = 10;
+    public static final double maxAcceleration = 10;
+  }
+
   public static double kSimUpdateTime = 0.02;
   public static double kSimDrivekVLinear = 1.98;
   public static final double ksimDrivekALinear = 0.2;

@@ -43,10 +43,10 @@ public class Drivetrain extends SubsystemBase {
 
   // Device id's are CAN pin numbers and you will be seeing a lot more of them in the future so I suggest you get used to it 
   // Second argument is a Enum and the long and short of it is it's words that represent a number in a way that makes it more readable, but in this case it's just idenifing that the motor we have plugged into that CAN slot is a brushless motor
-  private CANSparkMax leftFrontMotor = new CANSparkMax(CANIdsMainBot.leftFrontMotorCANId, MotorType.kBrushless);
-  private CANSparkMax rightFrontMotor = new CANSparkMax(CANIdsMainBot.rightFrontMotorCANId, MotorType.kBrushless);
-  private CANSparkMax leftRearMotor = new CANSparkMax(CANIdsMainBot.leftRearMotorCANId, MotorType.kBrushless);
-  private CANSparkMax rightRearMotor = new CANSparkMax(CANIdsMainBot.rightRearMotorCANId, MotorType.kBrushless);
+  private CANSparkMax leftFrontMotor = new CANSparkMax(CANIdsTestBot.leftFrontMotorCANId, MotorType.kBrushless);
+  private CANSparkMax rightFrontMotor = new CANSparkMax(CANIdsTestBot.rightFrontMotorCANId, MotorType.kBrushless);
+  private CANSparkMax leftRearMotor = new CANSparkMax(CANIdsTestBot.leftRearMotorCANId, MotorType.kBrushless);
+  private CANSparkMax rightRearMotor = new CANSparkMax(CANIdsTestBot.rightRearMotorCANId, MotorType.kBrushless);
 
   private RelativeEncoder leftFrontEncoder;
   private RelativeEncoder rightFrontEncoder;
@@ -105,7 +105,7 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
       odometry.update(navx.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
       SmartDashboard.putNumber("Heading", navx.getYaw());
-      System.out.println(leftFrontEncoder.getPosition());
+      // System.out.println(leftFrontEncoder.getPosition());
   }
   private CANSparkMax setupMotor(CANSparkMax motor) {
     // You need to make the motor have the following settings that you can set through the various motor methods: 
@@ -135,6 +135,7 @@ public class Drivetrain extends SubsystemBase {
 
   //Sets the differential drive using the method curvatureDrive
   public void setCurvatureDrive(double speed, double rotationInput, boolean quickTurn) {
+    System.out.println("" + speed+' '+ rotationInput+' '+ quickTurn);
     differentialDrive.curvatureDrive(speed, rotationInput, quickTurn);
   }
 
