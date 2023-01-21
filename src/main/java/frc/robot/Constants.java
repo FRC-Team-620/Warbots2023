@@ -5,10 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.math.util.Units;
-import frc.robot.util.IDrivePorts;
-import frc.robot.util.SusianDrivePorts;
-import frc.robot.util.BabybotDrivePorts;
 import frc.robot.util.DetectRobot;
+import frc.robot.util.IDrivePorts;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -23,9 +21,9 @@ public final class Constants {
     public static final int driverControllerPort = 0;
   }
   public enum RobotType {
-    BABY_BOT, SUSAN, 2020_BOT, UNKNOWN
-
+    BABY_BOT, SUSAN, BOT_2020, UNKNOWN
 }
+  public static RobotType kRobotType = DetectRobot.identifyRobot(); //TODO: Better naming Scheme?
   // public static class CANIdsTestBot {
   //   public static final int leftFrontMotorCANId = 4;
   //   public static final int rightFrontMotorCANId = 2;
@@ -38,7 +36,7 @@ public final class Constants {
   //   public static final int leftRearMotorCANId = 2;
   //   public static final int rightRearMotorCANId = 1;
   // }
-  public static final IDrivePorts driveports = DetectRobot.identifyRobot().equals(Constants.RobotType.SUSAN) ? new SusianDrivePorts() :  new BabybotDrivePorts();
+  public static final IDrivePorts driveports = IDrivePorts.getDrivePorts(kRobotType);
   public static class WheelConstants {
     public static final double conversionFactor = WheelConstants.gearRatio
             * Units.inchesToMeters(WheelConstants.wheelDiameterInInches)
