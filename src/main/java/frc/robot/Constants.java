@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.math.util.Units;
+import frc.robot.util.IDrivePorts;
+import frc.robot.util.SusianDrivePorts;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -18,18 +20,22 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int driverControllerPort = 0;
   }
-  public static class CANIdsTestBot {
-    public static final int leftFrontMotorCANId = 4;
-    public static final int rightFrontMotorCANId = 2;
-    public static final int leftRearMotorCANId = 3;
-    public static final int rightRearMotorCANId = 1;
-  }
-  public static class CANIdsMainBot {
-    public static final int leftFrontMotorCANId = 4;
-    public static final int rightFrontMotorCANId = 3;
-    public static final int leftRearMotorCANId = 2;
-    public static final int rightRearMotorCANId = 1;
-  }
+  public enum RobotType {
+    BABY_BOT, BABY_BOT_DRIVE, UNKNOWN
+}
+  // public static class CANIdsTestBot {
+  //   public static final int leftFrontMotorCANId = 4;
+  //   public static final int rightFrontMotorCANId = 2;
+  //   public static final int leftRearMotorCANId = 3;
+  //   public static final int rightRearMotorCANId = 1;
+  // }
+  // public static class CANIdsMainBot {
+  //   public static final int leftFrontMotorCANId = 4;
+  //   public static final int rightFrontMotorCANId = 3;
+  //   public static final int leftRearMotorCANId = 2;
+  //   public static final int rightRearMotorCANId = 1;
+  // }
+  public static final IDrivePorts driveports = new SusianDrivePorts();
   public static class WheelConstants {
     public static final double conversionFactor = WheelConstants.gearRatio
             * Units.inchesToMeters(WheelConstants.wheelDiameterInInches)

@@ -28,8 +28,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.CANIdsMainBot;
-import frc.robot.Constants.CANIdsTestBot;
+import frc.robot.Constants;
+// import frc.robot.Constants.CANIdsTestBot;
 //import edu.wpi.first.wpilibj.*;
 import frc.robot.Constants.WheelConstants;
 import frc.robot.util.sim.NavxWrapper;
@@ -43,10 +43,10 @@ public class Drivetrain extends SubsystemBase {
 
   // Device id's are CAN pin numbers and you will be seeing a lot more of them in the future so I suggest you get used to it 
   // Second argument is a Enum and the long and short of it is it's words that represent a number in a way that makes it more readable, but in this case it's just idenifing that the motor we have plugged into that CAN slot is a brushless motor
-  private CANSparkMax leftFrontMotor = new CANSparkMax(CANIdsMainBot.leftFrontMotorCANId, MotorType.kBrushless);
-  private CANSparkMax rightFrontMotor = new CANSparkMax(CANIdsMainBot.rightFrontMotorCANId, MotorType.kBrushless);
-  private CANSparkMax leftRearMotor = new CANSparkMax(CANIdsMainBot.leftRearMotorCANId, MotorType.kBrushless);
-  private CANSparkMax rightRearMotor = new CANSparkMax(CANIdsMainBot.rightRearMotorCANId, MotorType.kBrushless);
+  private CANSparkMax leftFrontMotor = new CANSparkMax(Constants.driveports.leftFrontMotorCANId, MotorType.kBrushless);
+  private CANSparkMax rightFrontMotor = new CANSparkMax(Constants.driveports.rightFrontMotorCANId, MotorType.kBrushless);
+  private CANSparkMax leftRearMotor = new CANSparkMax(Constants.driveports.leftRearMotorCANId, MotorType.kBrushless);
+  private CANSparkMax rightRearMotor = new CANSparkMax(Constants.driveports.rightRearMotorCANId, MotorType.kBrushless);
 
   private RelativeEncoder leftFrontEncoder;
   private RelativeEncoder rightFrontEncoder;
