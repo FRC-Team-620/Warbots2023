@@ -25,10 +25,10 @@ public final class Constants {
     public static final int rightRearMotorCANId = 1;
   }
   public static class CANIdsMainBot {
-    public static final int leftFrontMotorCANId = 1;
-    public static final int rightFrontMotorCANId = 2;
-    public static final int leftRearMotorCANId = 3;
-    public static final int rightRearMotorCANId = 4;
+    public static final int leftFrontMotorCANId = 4;
+    public static final int rightFrontMotorCANId = 3;
+    public static final int leftRearMotorCANId = 2;
+    public static final int rightRearMotorCANId = 1;
   }
   public static class WheelConstants {
     public static final double conversionFactor = WheelConstants.gearRatio
@@ -39,7 +39,7 @@ public final class Constants {
     
 
   }
-  //All measurements in meters
+   //All measurements in meters
   public static class ArenaConstants {
     public static final double kmidCubeHeight = Units.inchesToMeters(18.25);
     public static final double khighCubeHeight = Units.inchesToMeters(35.5);
@@ -58,4 +58,10 @@ public final class Constants {
 
     public static final double substationShelfHeight = 37.75;
   }
+  public static double kSimUpdateTime = 0.02;
+  public static double kSimDrivekVLinear = 1.98;
+  public static final double ksimDrivekALinear = 0.2;
+  public static final double ksimDrivekVAngular = 1.5;
+  public static final double kSimDrivekAAngular = 0.3;
+  public static final double kSimTrackwidthMeters = 0.64;// 0.5207
 }
