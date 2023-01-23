@@ -7,7 +7,9 @@ package frc.robot.commands;
 import java.sql.Time;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
@@ -23,8 +25,7 @@ public class AutoDriveDistance extends CommandBase {//Not WORKING DO NOT USE PLE
 
   private Pose2d initPose;
   
-  private PIDController distancePID;
-  private TrapezoidProfile profile;
+  private ProfiledPIDController distancePID;
   private Timer timer;
   // protected final PIDController leftPID;
   // protected final PIDController rightPID;
@@ -33,8 +34,8 @@ public class AutoDriveDistance extends CommandBase {//Not WORKING DO NOT USE PLE
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
     this.distance = distance;
-    this.distancePID = new PIDController(AutoConstants.autoDistanceKP, AutoConstants.autoDistanceKI, AutoConstants.autoDistanceKD);
-    this.profile = new TrapezoidProfile(new Constraints(AutoConstants.maxVelocity, AutoConstants.maxAcceleration), new State(distance, 0));
+    this.distancePID = new ProfiledPIDController(AutoConstants.autoDistanceKP, AutoConstants.autoDistanceKI, AutoConstants.autoDistanceKD, new Constraints(AutoConstants.maxVelocity, AutoConstants.maxAcceleration));
+    distancePID.setGoal(distance);
     this.timer = new Timer();
     addRequirements(drivetrain);
   }
@@ -52,17 +53,18 @@ public class AutoDriveDistance extends CommandBase {//Not WORKING DO NOT USE PLE
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
-    double setpoint = this.profile.calculate(timer.get()).position;
     // System.out.println(timer.get());
-    double moved = this.initPose.getTranslation().getDistance(this.drivetrain.getPose().getTranslation());
-    double value = this.distancePID.calculate(moved, setpoint);
+    
+    double value = this.distancePID.calculate(getRelativeDistance());
     // System.out.println(value + " " + moved + " " + setpoint);
     this.drivetrain.setCurvatureDrive(value, 0, false);
   }
 
+  private double getRelativeDistance(){
+    return new Transform2d(initPose,this.drivetrain.getPose()).getTranslation().getX();
+  }
   public boolean withinBounds() {
-    return this.getDisplacement() > distance;
+    return this.distancePID.atGoal();
   }
 
   private double getDisplacement() {
