@@ -4,7 +4,8 @@
 
 package frc.robot.subsystems;
 
-import com.kauailabs.navx.frc.AHRS;
+import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix.sensors.Pigeon2Configuration;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -21,6 +22,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.CANIdsMainBot;
 import frc.robot.Constants.CANIdsTestBot;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.PigeonConfigValues;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.RobotMath;
 
@@ -44,7 +46,7 @@ public class Drivetrain extends SubsystemBase {
 
   private PIDController headingPID; // SETPOINT IS ALWAYS 0 (we give it a relative angle)
 
-  private AHRS navx;
+  private Pigeon2 pigeon;
 
   private double speedSetpoint = 0.0;
   private double curvatureSetpoint = 0.0;
@@ -77,8 +79,12 @@ public class Drivetrain extends SubsystemBase {
     );
     headingPID.setSetpoint(0.0); // IMPORTANT
     headingPID.setTolerance(2,1);
-
-    navx = new AHRS(Port.kMXP);
+    this.pigeon = new Pigeon2(PigeonConfigValues.pigeonCanID);
+    Pigeon2Configuration pigeonConfig = new Pigeon2Configuration();
+    pigeonConfig.MountPosePitch = PigeonConfigValues.MountPosePitch;
+    pigeonConfig.MountPoseRoll = PigeonConfigValues.MountPoseRoll;
+    pigeonConfig.MountPoseYaw = PigeonConfigValues.MountPoseYaw;
+    pigeon.configAllSettings(pigeonConfig);
     setAngle = this.getYaw();
     SmartDashboard.putNumber("heading_angle", 0.0);
 
@@ -183,7 +189,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double getYaw() {
-    return this.navx.getYaw();
+    return this.pigeon.getYaw();
   }
 
   public void stop() {

@@ -55,4 +55,12 @@ public final class Constants {
     public static final int rightRearMotorCANId = 4;
   }
 
+  public static class PigeonConfigValues {
+    public static final int pigeonCanID = 12;
+    public static final double MountPoseYaw = 0;
+    public static final double MountPosePitch = 0;
+    public static final double MountPoseRoll = 0;
+
+  }
+
 }
