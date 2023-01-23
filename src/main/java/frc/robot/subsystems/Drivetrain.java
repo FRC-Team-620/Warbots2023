@@ -148,6 +148,7 @@ public class Drivetrain extends SubsystemBase {
       RobotMath.approximatelyZero(this.angularVelocity, 0.2)) {
 
       this.setAngle = yaw;
+      this.headingPID.reset();
       this.isStopping = false;
       // this.tickAccumulation = 0;
       System.out.println("SET STOPPED PIVOT ANGLE:  " + yaw);
@@ -159,6 +160,7 @@ public class Drivetrain extends SubsystemBase {
       isStopping = true;
       this.isTurning = false;
       this.setAngle = yaw;
+      this.headingPID.reset();
       System.out.println("SET SLOWDOWN PIVOT ANGLE:  " + yaw);
       // this.tickAccumulation++;
     }
