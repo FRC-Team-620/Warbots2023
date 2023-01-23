@@ -154,7 +154,7 @@ public class Drivetrain extends SubsystemBase {
       SmartDashboard.putNumber("relative_angle", relativeAngle);
     }
     
-    setCurvatureDrive(
+    this.setCurvatureDrive(
       this.speedSetpoint, 
       rotationInput, 
       this.shouldQuickturn

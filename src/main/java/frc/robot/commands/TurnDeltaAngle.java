@@ -30,6 +30,7 @@ public class TurnDeltaAngle extends CommandBase {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
+      if(interrupted) System.out.println("INTERRUPTED");
       this.drivetrain.resetAnglePID();
       System.out.println("TURN COMMAND ENDED");
     }
@@ -37,6 +38,7 @@ public class TurnDeltaAngle extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
+      // System.out.println(this.drivetrain.getAngularVelocity());
       return this.drivetrain.atAngleSetpoint() && !this.drivetrain.hasAngularVelocity();
     }
 }
