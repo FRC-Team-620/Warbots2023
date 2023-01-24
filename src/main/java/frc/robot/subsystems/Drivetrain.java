@@ -44,13 +44,15 @@ public class Drivetrain extends SubsystemBase {
 
   // Device id's are CAN pin numbers and you will be seeing a lot more of them in the future so I suggest you get used to it 
   // Second argument is a Enum and the long and short of it is it's words that represent a number in a way that makes it more readable, but in this case it's just idenifing that the motor we have plugged into that CAN slot is a brushless motor
-  private CANSparkMax leftFrontMotor = new CANSparkMax(CANIdsTestBot.leftFrontMotorCANId, MotorType.kBrushless);
-  private CANSparkMax rightFrontMotor = new CANSparkMax(CANIdsTestBot.rightFrontMotorCANId, MotorType.kBrushless);
-  private CANSparkMax leftRearMotor = new CANSparkMax(CANIdsTestBot.leftRearMotorCANId, MotorType.kBrushless);
-  private CANSparkMax rightRearMotor = new CANSparkMax(CANIdsTestBot.rightRearMotorCANId, MotorType.kBrushless);
+  private CANSparkMax leftFrontMotor = new CANSparkMax(CANIdsMainBot.leftFrontMotorCANId, MotorType.kBrushless);
+  private CANSparkMax rightFrontMotor = new CANSparkMax(CANIdsMainBot.rightFrontMotorCANId, MotorType.kBrushless);
+  private CANSparkMax leftRearMotor = new CANSparkMax(CANIdsMainBot.leftRearMotorCANId, MotorType.kBrushless);
+  private CANSparkMax rightRearMotor = new CANSparkMax(CANIdsMainBot.rightRearMotorCANId, MotorType.kBrushless);
 
   private RelativeEncoder leftFrontEncoder;
+  private RelativeEncoder leftRearEncoder;
   private RelativeEncoder rightFrontEncoder;
+  private RelativeEncoder rightRearEncoder;
   private AHRS navx;
   private DifferentialDriveOdometry odometry;
   
@@ -93,6 +95,8 @@ public class Drivetrain extends SubsystemBase {
     navx = new AHRS(Port.kMXP);
     leftFrontEncoder = leftFrontMotor.getEncoder();
     rightFrontEncoder = rightFrontMotor.getEncoder();
+    leftRearEncoder = leftRearMotor.getEncoder();
+    rightRearEncoder = rightRearMotor.getEncoder();
     leftFrontEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
     leftFrontEncoder.setVelocityConversionFactor(WheelConstants.conversionFactor);
 
@@ -128,11 +132,17 @@ public class Drivetrain extends SubsystemBase {
     leftRearMotor.follow(leftFrontMotor);         
 
     
-    rightFrontMotor.setInverted(InversionsTestBot.rightFrontMotorInversion);
-    leftFrontMotor.setInverted(InversionsTestBot.leftFrontMotorInversion);
+    rightFrontMotor.setInverted(Constants.InversionsMainBot.rightFrontMotorInversion);
+    leftFrontMotor.setInverted(Constants.InversionsMainBot.leftFrontMotorInversion);
   }
 
-  
+  public double getRightEncoderCount() {
+    return (rightFrontEncoder.getPosition() + rightRearEncoder.getPosition()) / 2.0;
+  }
+
+  public double getLeftEncoderCount() {
+    return (leftFrontEncoder.getPosition() + leftRearEncoder.getPosition()) / 2.0;
+  } 
 
   //Sets the differential drive using the method curvatureDrive
   public void setCurvatureDrive(double speed, double rotationInput, boolean quickTurn) {
