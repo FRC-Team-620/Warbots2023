@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.util.DetectRobot;
 import frc.robot.util.sim.BuildDataLogger;
 
 /**
@@ -51,6 +52,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData(field);
     BuildDataLogger.LogToNetworkTables();
     BuildDataLogger.LogToWpiLib(DataLogManager.getLog());
+    DetectRobot.identifyRobot();
   }
 
   /**

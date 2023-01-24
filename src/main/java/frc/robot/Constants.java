@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.math.util.Units;
+import frc.robot.util.DetectRobot;
+import frc.robot.util.IDrivePorts;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -18,26 +20,12 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int driverControllerPort = 0;
   }
-  public static class CANIdsTestBot {
-    public static final int leftFrontMotorCANId = 1;
-    public static final int rightFrontMotorCANId = 2;
-    public static final int leftRearMotorCANId = 3;
-    public static final int rightRearMotorCANId = 4;
-  }
-  public static class InversionsTestBot {
-    public static final boolean rightFrontMotorInversion = true;
-    public static final boolean leftFrontMotorInversion = true;
-  }
-  public static class CANIdsMainBot {
-    public static final int leftFrontMotorCANId = 4;
-    public static final int rightFrontMotorCANId = 3;
-    public static final int leftRearMotorCANId = 2;
-    public static final int rightRearMotorCANId = 1;
-  }
-  public static class InversionsMainBot {
-    public static final boolean rightFrontMotorInversion = false;
-    public static final boolean leftFrontMotorInversion = true;
-  }
+  public enum RobotType {
+    BABY_BOT, SUSAN, BOT_2020, UNKNOWN
+}
+  public static RobotType kRobotType = DetectRobot.identifyRobot(); //TODO: Better naming Scheme?
+
+  public static final IDrivePorts driveports = IDrivePorts.getDrivePorts(kRobotType);
 
   public static class WheelConstants {
     public static final double conversionFactor = WheelConstants.gearRatio
