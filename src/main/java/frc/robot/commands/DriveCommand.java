@@ -57,6 +57,7 @@ public class DriveCommand extends CommandBase {
     //controls the bot
     //rightfront, rightback
     speed = rightTriggerInput > leftTriggerInput ? rightTriggerInput : -leftTriggerInput;
+    
     // Pass the speed, rotation input, and the quickTurn in that order into setCurvatureDrive
     // This will allow for Drivetrain's DifferentalDrive to assign the motors to the correct values to make that movement
 
@@ -66,9 +67,10 @@ public class DriveCommand extends CommandBase {
 
     SmartDashboard.putNumber("left encoder", drivetrain.getLeftEncoderCount());
     SmartDashboard.putNumber("right encoder", drivetrain.getRightEncoderCount());
-    double factor = 0.361;
-    SmartDashboard.putNumber("left inches", drivetrain.getLeftEncoderCount() / factor);
-    SmartDashboard.putNumber("right inches", drivetrain.getRightEncoderCount() / factor);.
+    double factor = 2.77;
+    SmartDashboard.putNumber("left inches", drivetrain.getLeftEncoderCount() * factor);
+    SmartDashboard.putNumber("right inches", drivetrain.getRightEncoderCount() * factor);
+
   }
 
   // Called once the command ends or is interrupted.
