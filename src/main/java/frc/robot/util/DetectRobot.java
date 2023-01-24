@@ -22,16 +22,15 @@ import frc.robot.Constants.RobotType;
 public class DetectRobot {
     private static final String networkInterface = "eth0";
     // Java bytes are signed so standard hex notation won't work
-    private static final Map<MACAddress, RobotType> robotMACs = Map.of(new MACAddress(new byte[] {0, -128, 47, 39, 32, -120}), RobotType.SUSAN, new MACAddress(new byte[] {0, -128, 47, 40, -36, -62}), RobotType.BABY_BOT,
-    new MACAddress(new byte[] {0, -128, 47, 25, 122, 6}), RobotType.BOT_2020);
-            // new MACAddress(new byte[] { 0, -128, 47, 37, 122, -105 }), RobotType.ROBOT_2020,
-            // new MACAddress(new byte[] { 0, -128, 47, 23, -47, 95 }), RobotType.ORIGINAL_ROBOT_2018,
-            // new MACAddress(new byte[] { 0, -128, 47, 36, 78, 94 }), RobotType.NOTBOT,
-            // new MACAddress(new byte[] { 0, -128, 47, 35, -30, 92 }), RobotType.ROBOT_2020_DRIVE);
+    private static final Map<MACAddress, RobotType> robotMACs = Map.of(
+            new MACAddress(new byte[] { 0, -128, 47, 39, 32, -120 }), RobotType.SUSAN,
+            new MACAddress(new byte[] { 0, -128, 47, 40, -36, -62 }), RobotType.BABY_BOT,
+            new MACAddress(new byte[] { 0, -128, 47, 25, 122, 6 }), RobotType.BOT_2020);
+
     public static RobotType identifyRobot() {
         try {
             MACAddress macAddress = new MACAddress(NetworkInterface.getByName(networkInterface).getHardwareAddress());
-            DataLogManager.log("Mac Address is: "  + macAddress);
+            DataLogManager.log("Mac Address is: " + macAddress);
             RobotType robot = robotMACs.get(macAddress);
             if (robot == null) {
                 DataLogManager.log("Could not identify MAC '" + Arrays.toString(macAddress.getAddress()));
@@ -43,8 +42,9 @@ public class DetectRobot {
         } catch (SocketException | NullPointerException err) {
             // err.printStackTrace();
             DataLogManager.log("Failed to read MAC, using default robot instead.");
-            // new Alert("Failed to read MAC, using default robot instead.", AlertType.WARNING).set(true);
-            return null;
+            // new Alert("Failed to read MAC, using default robot instead.",
+            // AlertType.WARNING).set(true);
+            return RobotType.UNKNOWN;
         }
     }
 
@@ -79,5 +79,5 @@ public class DetectRobot {
         public int hashCode() {
             return Arrays.hashCode(address);
         }
-    }    
+    }
 }
