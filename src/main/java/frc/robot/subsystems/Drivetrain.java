@@ -6,9 +6,9 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -17,21 +17,13 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.CANIdsMainBot;
-import frc.robot.Constants.CANIdsTestBot;
-import frc.robot.Constants.InversionsTestBot;
-//import edu.wpi.first.wpilibj.*;
 import frc.robot.Constants.WheelConstants;
 import frc.robot.util.sim.NavxWrapper;
 import frc.robot.util.sim.RevEncoderSimWrapper;
@@ -44,10 +36,10 @@ public class Drivetrain extends SubsystemBase {
 
   // Device id's are CAN pin numbers and you will be seeing a lot more of them in the future so I suggest you get used to it 
   // Second argument is a Enum and the long and short of it is it's words that represent a number in a way that makes it more readable, but in this case it's just idenifing that the motor we have plugged into that CAN slot is a brushless motor
-  private CANSparkMax leftFrontMotor = new CANSparkMax(CANIdsMainBot.leftFrontMotorCANId, MotorType.kBrushless);
-  private CANSparkMax rightFrontMotor = new CANSparkMax(CANIdsMainBot.rightFrontMotorCANId, MotorType.kBrushless);
-  private CANSparkMax leftRearMotor = new CANSparkMax(CANIdsMainBot.leftRearMotorCANId, MotorType.kBrushless);
-  private CANSparkMax rightRearMotor = new CANSparkMax(CANIdsMainBot.rightRearMotorCANId, MotorType.kBrushless);
+  private CANSparkMax leftFrontMotor = new CANSparkMax(Constants.driveports.getLeftFrontMotorCANId(), MotorType.kBrushless);
+  private CANSparkMax rightFrontMotor = new CANSparkMax(Constants.driveports.getRightFrontMotorCANId(), MotorType.kBrushless);
+  private CANSparkMax leftRearMotor = new CANSparkMax(Constants.driveports.getLeftRearMotorCANId(), MotorType.kBrushless);
+  private CANSparkMax rightRearMotor = new CANSparkMax(Constants.driveports.getRightRearMotorCANId(), MotorType.kBrushless);
 
   private RelativeEncoder leftFrontEncoder;
   private RelativeEncoder leftRearEncoder;
@@ -63,6 +55,10 @@ public class Drivetrain extends SubsystemBase {
   private DifferentialDrive differentialDrive;
   /** Creates a new Drivetrain. */
   public Drivetrain() {
+    SmartDashboard.putNumber("Drivetrain/leftFrontCANID", leftFrontMotor.getDeviceId());
+    SmartDashboard.putNumber("Drivetrain/rightFrontCANID", rightFrontMotor.getDeviceId());
+    SmartDashboard.putNumber("Drivetrain/leftRearCANID", leftRearMotor.getDeviceId());
+    SmartDashboard.putNumber("Drivetrain/rightRearCANID", rightRearMotor.getDeviceId());
     setupMotors();
     setupFollowerMotors();
     initSensors();
@@ -132,8 +128,9 @@ public class Drivetrain extends SubsystemBase {
     leftRearMotor.follow(leftFrontMotor);         
 
     
-    rightFrontMotor.setInverted(Constants.InversionsMainBot.rightFrontMotorInversion);
-    leftFrontMotor.setInverted(Constants.InversionsMainBot.leftFrontMotorInversion);
+    rightFrontMotor.setInverted(Constants.driveports.getRightFrontMotorInversion());
+    leftFrontMotor.setInverted(Constants.driveports.getLeftFrontMotorInversion());
+
   }
 
   public double getRightEncoderCount() {
@@ -146,7 +143,9 @@ public class Drivetrain extends SubsystemBase {
 
   //Sets the differential drive using the method curvatureDrive
   public void setCurvatureDrive(double speed, double rotationInput, boolean quickTurn) {
-    System.out.println("" + speed+' '+ rotationInput+' '+ quickTurn);
+    // System.out.println("" + speed+' '+ rotationInput+' '+ quickTurn);
+    SmartDashboard.putNumber("Drivetrain/speed", speed);
+    SmartDashboard.putNumber("Drivetrain/rotationInput", rotationInput);
     differentialDrive.curvatureDrive(speed, rotationInput, quickTurn);
   }
 

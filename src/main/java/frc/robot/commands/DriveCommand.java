@@ -57,7 +57,6 @@ public class DriveCommand extends CommandBase {
     //controls the bot
     //rightfront, rightback
     speed = rightTriggerInput > leftTriggerInput ? rightTriggerInput : -leftTriggerInput;
-    
     // Pass the speed, rotation input, and the quickTurn in that order into setCurvatureDrive
     // This will allow for Drivetrain's DifferentalDrive to assign the motors to the correct values to make that movement
 
