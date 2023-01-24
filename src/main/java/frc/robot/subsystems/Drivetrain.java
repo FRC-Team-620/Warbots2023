@@ -42,7 +42,9 @@ public class Drivetrain extends SubsystemBase {
   private CANSparkMax rightRearMotor = new CANSparkMax(Constants.driveports.getRightRearMotorCANId(), MotorType.kBrushless);
 
   private RelativeEncoder leftFrontEncoder;
+  private RelativeEncoder leftRearEncoder;
   private RelativeEncoder rightFrontEncoder;
+  private RelativeEncoder rightRearEncoder;
   private AHRS navx;
   private DifferentialDriveOdometry odometry;
   
@@ -89,6 +91,8 @@ public class Drivetrain extends SubsystemBase {
     navx = new AHRS(Port.kMXP);
     leftFrontEncoder = leftFrontMotor.getEncoder();
     rightFrontEncoder = rightFrontMotor.getEncoder();
+    leftRearEncoder = leftRearMotor.getEncoder();
+    rightRearEncoder = rightRearMotor.getEncoder();
     leftFrontEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
     leftFrontEncoder.setVelocityConversionFactor(WheelConstants.conversionFactor);
 
@@ -129,7 +133,13 @@ public class Drivetrain extends SubsystemBase {
 
   }
 
-  
+  public double getRightEncoderCount() {
+    return (rightFrontEncoder.getPosition() + rightRearEncoder.getPosition()) / 2.0;
+  }
+
+  public double getLeftEncoderCount() {
+    return (leftFrontEncoder.getPosition() + leftRearEncoder.getPosition()) / 2.0;
+  } 
 
   //Sets the differential drive using the method curvatureDrive
   public void setCurvatureDrive(double speed, double rotationInput, boolean quickTurn) {
