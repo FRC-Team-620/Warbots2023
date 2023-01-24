@@ -132,15 +132,8 @@ public class Drivetrain extends SubsystemBase {
     rightRearMotor.follow(rightFrontMotor);
     leftRearMotor.follow(leftFrontMotor);         
 
-    
-<<<<<<<<< Temporary merge branch 1
-    rightFrontMotor.setInverted(Constants.InversionsMainBot.rightFrontMotorInversion);
-    leftFrontMotor.setInverted(Constants.InversionsMainBot.leftFrontMotorInversion);
-=========
     rightFrontMotor.setInverted(Constants.driveports.getRightFrontMotorInversion());
     leftFrontMotor.setInverted(Constants.driveports.getLeftFrontMotorInversion());
-
->>>>>>>>> Temporary merge branch 2
   }
 
   public double getRightEncoderCount() {

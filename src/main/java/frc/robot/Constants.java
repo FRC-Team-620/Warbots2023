@@ -27,10 +27,10 @@ public final class Constants {
 
   public static final IDrivePorts driveports = IDrivePorts.getDrivePorts(kRobotType);
 
-  public static class WheelConstants {
-    public static final double conversionFactor = WheelConstants.gearRatio
-            * Units.inchesToMeters(WheelConstants.wheelDiameterInInches)
-            * Math.PI;
+  public static class WheelConstants {     
+    public static final double conversionFactor = Units.inchesToMeters(WheelConstants.gearRatio
+    * Units.inchesToMeters(WheelConstants.wheelDiameterInInches)
+            * Math.PI * 2.77);
     public static final double wheelDiameterInInches = 4; 
     public static final double gearRatio = 0.12;
     

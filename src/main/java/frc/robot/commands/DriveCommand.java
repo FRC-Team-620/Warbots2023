@@ -67,9 +67,9 @@ public class DriveCommand extends CommandBase {
 
     SmartDashboard.putNumber("left encoder", drivetrain.getLeftEncoderCount());
     SmartDashboard.putNumber("right encoder", drivetrain.getRightEncoderCount());
-    double factor = 2.77;
-    SmartDashboard.putNumber("left inches", drivetrain.getLeftEncoderCount() * factor);
-    SmartDashboard.putNumber("right inches", drivetrain.getRightEncoderCount() * factor);
+    // double factor = 2.77;
+    // SmartDashboard.putNumber("left inches", drivetrain.getLeftEncoderCount() * factor);
+    // SmartDashboard.putNumber("right inches", drivetrain.getRightEncoderCount() * factor);
 
   }
 
