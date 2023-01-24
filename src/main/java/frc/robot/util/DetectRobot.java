@@ -22,7 +22,8 @@ import frc.robot.Constants.RobotType;
 public class DetectRobot {
     private static final String networkInterface = "eth0";
     // Java bytes are signed so standard hex notation won't work
-    private static final Map<MACAddress, RobotType> robotMACs = Map.of(new MACAddress(new byte[] {0, -128, 47, 39, 32, -120}), RobotType.SUSAN);
+    private static final Map<MACAddress, RobotType> robotMACs = Map.of(new MACAddress(new byte[] {0, -128, 47, 39, 32, -120}), RobotType.SUSAN, new MACAddress(new byte[] {0, -128, 47, 40, -36, -62}), RobotType.BABY_BOT,
+    new MACAddress(new byte[] {0, -128, 47, 25, 122, 6}), RobotType.BOT_2020);
             // new MACAddress(new byte[] { 0, -128, 47, 37, 122, -105 }), RobotType.ROBOT_2020,
             // new MACAddress(new byte[] { 0, -128, 47, 23, -47, 95 }), RobotType.ORIGINAL_ROBOT_2018,
             // new MACAddress(new byte[] { 0, -128, 47, 36, 78, 94 }), RobotType.NOTBOT,

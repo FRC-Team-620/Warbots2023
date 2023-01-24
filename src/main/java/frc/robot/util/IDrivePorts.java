@@ -3,13 +3,13 @@ package frc.robot.util;
 import frc.robot.Constants;
 
 public interface IDrivePorts {
-  public static final int leftFrontMotorCANId = 4;
-  public static final int rightFrontMotorCANId = 2;
-  public static final int leftRearMotorCANId = 3;
-  public static final int rightRearMotorCANId = 1;
+  public int getLeftFrontMotorCANId();
+  public int getRightFrontMotorCANId();
+  public int getLeftRearMotorCANId();
+  public int getRightRearMotorCANId();
 
-  public static final boolean rightFrontMotorInversion = true;
-  public static final boolean leftFrontMotorInversion = true;
+  public boolean getRightFrontMotorInversion();
+  public boolean getLeftFrontMotorInversion();
 
   public static IDrivePorts getDrivePorts(Constants.RobotType type) {
     switch (type) {
