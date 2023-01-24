@@ -51,6 +51,9 @@ public class Drivetrain extends SubsystemBase {
   public double getHeading() { // TODO: Remove Use Odom class
     return navx.getAngle();
   }
+  public double getPitch(){
+    return navx.getPitch();
+  }
 
   private DifferentialDrive differentialDrive;
   /** Creates a new Drivetrain. */

@@ -52,7 +52,6 @@ public class AutoDriveDistance extends CommandBase {//Not WORKING DO NOT USE PLE
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
     double setpoint = this.profile.calculate(timer.get()).position;
     // System.out.println(timer.get());
     double moved = this.initPose.getTranslation().getDistance(this.drivetrain.getPose().getTranslation());
