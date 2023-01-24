@@ -6,9 +6,9 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -28,10 +28,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.CANIdsMainBot;
-import frc.robot.Constants.CANIdsTestBot;
-import frc.robot.Constants.InversionsTestBot
-//import edu.wpi.first.wpilibj.*;
 import frc.robot.Constants.WheelConstants;
 import frc.robot.util.sim.NavxWrapper;
 import frc.robot.util.sim.RevEncoderSimWrapper;
@@ -63,7 +59,7 @@ public class Drivetrain extends SubsystemBase {
   private DifferentialDrive differentialDrive;
   /** Creates a new Drivetrain. */
   public Drivetrain() {
-	SmartDashboard.putNumber("Drivetrain/leftFrontCANID", leftFrontMotor.getDeviceId());
+    SmartDashboard.putNumber("Drivetrain/leftFrontCANID", leftFrontMotor.getDeviceId());
     SmartDashboard.putNumber("Drivetrain/rightFrontCANID", rightFrontMotor.getDeviceId());
     SmartDashboard.putNumber("Drivetrain/leftRearCANID", leftRearMotor.getDeviceId());
     SmartDashboard.putNumber("Drivetrain/rightRearCANID", rightRearMotor.getDeviceId());
@@ -99,8 +95,9 @@ public class Drivetrain extends SubsystemBase {
     navx = new AHRS(Port.kMXP);
     leftFrontEncoder = leftFrontMotor.getEncoder();
     rightFrontEncoder = rightFrontMotor.getEncoder();
-	leftRearEncoder = leftRearMotor.getEncoder();
+    leftRearEncoder = leftRearMotor.getEncoder();
     rightRearEncoder = rightRearMotor.getEncoder();
+    
     leftFrontEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
     leftFrontEncoder.setVelocityConversionFactor(WheelConstants.conversionFactor);
 
@@ -136,8 +133,14 @@ public class Drivetrain extends SubsystemBase {
     leftRearMotor.follow(leftFrontMotor);         
 
     
+<<<<<<<<< Temporary merge branch 1
+    rightFrontMotor.setInverted(Constants.InversionsMainBot.rightFrontMotorInversion);
+    leftFrontMotor.setInverted(Constants.InversionsMainBot.leftFrontMotorInversion);
+=========
     rightFrontMotor.setInverted(Constants.driveports.getRightFrontMotorInversion());
     leftFrontMotor.setInverted(Constants.driveports.getLeftFrontMotorInversion());
+
+>>>>>>>>> Temporary merge branch 2
   }
 
   public double getRightEncoderCount() {
@@ -146,8 +149,8 @@ public class Drivetrain extends SubsystemBase {
 
   public double getLeftEncoderCount() {
     return (leftFrontEncoder.getPosition() + leftRearEncoder.getPosition()) / 2.0;
-  }
-  
+  } 
+
   //Sets the differential drive using the method curvatureDrive
   public void setCurvatureDrive(double speed, double rotationInput, boolean quickTurn) {
     // System.out.println("" + speed+' '+ rotationInput+' '+ quickTurn);
