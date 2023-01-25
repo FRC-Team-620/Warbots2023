@@ -23,8 +23,8 @@ public final class Constants {
     public static final double kIDriveDistance = 0.01;
     public static final double kDDriveDistance = 0.0;
 
-    public static final double kPKeepHeading = 0.01;
-    public static final double kIKeepHeading = 0.0001;
+    public static final double kPKeepHeading = 0.014;
+    public static final double kIKeepHeading = 0.01;
     public static final double kDKeepHeading = 0.001;
 
     public static final double angleSetBufferSeconds = 0.25;

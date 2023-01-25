@@ -239,6 +239,8 @@ public class Drivetrain extends SubsystemBase {
 
   //Sets the differential drive using the method curvatureDrive
   public void setCurvatureDrive(double speed, double rotationInput, boolean quickTurn) {
+    SmartDashboard.putNumber("rotation_input", rotationInput);
+    SmartDashboard.putNumber("right wheel input", this.rightFrontMotor.get());
     differentialDrive.curvatureDrive(speed, rotationInput, quickTurn);
   }
 }

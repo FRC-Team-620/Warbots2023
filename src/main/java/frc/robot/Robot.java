@@ -48,7 +48,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    this.m_robotContainer.getDrivetrain().resetAnglePID();
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -83,6 +85,8 @@ public class Robot extends TimedRobot {
     ); 
 
     this.m_robotContainer.getDrivetrain().resetAngularVelocity();
+
+    this.m_robotContainer.getDrivetrain().resetAnglePID();
 
   }
 
