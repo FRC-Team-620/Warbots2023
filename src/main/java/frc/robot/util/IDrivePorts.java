@@ -11,6 +11,8 @@ public interface IDrivePorts {
   public boolean getRightFrontMotorInversion();
   public boolean getLeftFrontMotorInversion();
 
+  public double getWheelDiameterInInches();
+
   public static IDrivePorts getDrivePorts(Constants.RobotType type) {
     switch (type) {
       case SUSAN:

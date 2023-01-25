@@ -7,8 +7,11 @@ public class BabybotDrivePorts implements IDrivePorts {
     public final int leftRearMotorCANId = 2;
     public final int rightRearMotorCANId = 1;
 
-    public final boolean rightFrontMotorInversion = true;
+    public final boolean rightFrontMotorInversion = false;
     public final boolean leftFrontMotorInversion = true;
+
+    public final double wheelDiameterInInches = 4;
+
     @Override
     public int getLeftFrontMotorCANId() {
         // TODO Auto-generated method stub
@@ -38,5 +41,10 @@ public class BabybotDrivePorts implements IDrivePorts {
     public boolean getLeftFrontMotorInversion() {
         // TODO Auto-generated method stub
         return leftFrontMotorInversion;
+    }
+    @Override
+    public double getWheelDiameterInInches() {
+        // TODO Auto-generated method stub
+        return wheelDiameterInInches;
     }
 }
