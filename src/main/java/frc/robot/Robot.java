@@ -6,6 +6,7 @@ package frc.robot;
 
 
 
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -15,6 +16,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.util.DetectRobot;
+import frc.robot.commands.vision.AlignPeg;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.sim.BuildDataLogger;
 
 /**
@@ -53,6 +56,12 @@ public class Robot extends TimedRobot {
     BuildDataLogger.LogToNetworkTables();
     BuildDataLogger.LogToWpiLib(DataLogManager.getLog());
     DetectRobot.identifyRobot();
+    PortForwarder.add(5800, "photonvision.local", 5800);
+    PortForwarder.add(1181, "photonvision.local", 1181);
+    PortForwarder.add(1182, "photonvision.local", 1182);
+    PortForwarder.add(1183, "photonvision.local", 1183);
+    SmartDashboard.putData(CommandScheduler.getInstance());
+    SmartDashboard.putData(new AlignPeg(m_robotContainer.drivetrain));
   }
 
   /**
@@ -75,7 +84,7 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    m_robotContainer.getDrivetrain().setBrake(false);
+  	m_robotContainer.getDrivetrain().setBrake(false);
   }
 
   @Override
