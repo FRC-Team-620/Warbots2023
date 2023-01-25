@@ -26,7 +26,7 @@ public class RobotContainer {
   private final CommandXboxController driver =
       new CommandXboxController(OperatorConstants.driverControllerPort);
   public final Drivetrain drivetrain = new Drivetrain();
-  private final ArmSubsystem armSubsystem = new ArmSubsystem();
+  //private final ArmSubsystem armSubsystem = new ArmSubsystem();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -47,7 +47,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Triggers are a thing that we might need to use so keep that in mind
-    driver.b().onTrue(new ArmCommand(armSubsystem));
+    //driver.b().onTrue(new ArmCommand(armSubsystem));
     // driver.x().onTrue(new AutoDriveDistance(drivetrain, 100));
   }
 

@@ -41,20 +41,27 @@ public class AlignPeg extends CommandBase {
     m_pid.reset();
     m_pid.setTolerance(kangleTolerance);
     m_pid.setSetpoint(0);
+    SmartDashboard.putData(m_pid);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+     
      PhotonPipelineResult result = PhotonManager.getInstance().mainCam.getLatestResult();
+     SmartDashboard.putBoolean("alignpeg1/hasTarget", result.hasTargets());
      if(!result.hasTargets()){ // Checks to see if there is a Vision target
       return;
      }
+     
 
      double targetYaw = result.getBestTarget().getYaw(); // Yaw in degrees from Center of camera + is Right
      SmartDashboard.putNumber("Vision/Yaw", targetYaw);
      double output = MathUtil.clamp( m_pid.calculate(targetYaw), -kmaxTurnSpeed, kmaxTurnSpeed); // Camp Turn output between kmaxTurnSpeed
     
+     SmartDashboard.putNumber("alignpeg1/output", output);
+     SmartDashboard.putNumber("alignpeg1/yaw", targetYaw);
+     
      //m_drivetrain.setCurvatureDrive(0, output, true); //Turn Robot
   }
 

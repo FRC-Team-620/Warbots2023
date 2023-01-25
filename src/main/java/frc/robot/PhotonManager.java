@@ -8,7 +8,7 @@ public class PhotonManager
     private static PhotonManager instance; 
     private PhotonManager()
     {
-        this.mainCam = new PhotonCamera("photonvision");
+        this.mainCam = new PhotonCamera("mainCam");
     }
 
     public static PhotonManager getInstance()
