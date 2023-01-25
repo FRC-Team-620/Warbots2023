@@ -28,7 +28,7 @@ public class Robot extends TimedRobot {
   private Field2d field = new Field2d();
 
   private RobotContainer m_robotContainer;
-
+  private boolean lastAutonomous = false;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -75,7 +75,11 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    m_robotContainer.getDrivetrain().setBrake(false);
+    if (lastAutonomous && Constants.kCoastOnDisable)
+      m_robotContainer.getDrivetrain().setBrake(false);
+    else{
+      m_robotContainer.getDrivetrain().setBrake(true);
+    }
   }
 
   @Override
@@ -91,6 +95,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.schedule();
     }
     m_robotContainer.getDrivetrain().setBrake(true);
+    this.lastAutonomous = true;
   }
 
   /** This function is called periodically during autonomous. */
@@ -107,6 +112,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     m_robotContainer.getDrivetrain().setBrake(true);
+    this.lastAutonomous = false;
   }
 
   /** This function is called periodically during operator control. */
@@ -118,6 +124,7 @@ public class Robot extends TimedRobot {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
     m_robotContainer.getDrivetrain().setBrake(true);
+    this.lastAutonomous = false;
   }
 
   /** This function is called periodically during test mode. */

@@ -79,4 +79,6 @@ public final class Constants {
   public static final double ksimDrivekVAngular = 1.5;
   public static final double kSimDrivekAAngular = 0.3;
   public static final double kSimTrackwidthMeters = 0.64;// 0.5207
+
+  public static final boolean kCoastOnDisable = true;
 }
