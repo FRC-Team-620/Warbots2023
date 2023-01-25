@@ -35,7 +35,7 @@ public final class Constants {
   public static class WheelConstants {     
     public static final double conversionFactor = Units.inchesToMeters(WheelConstants.gearRatio
     * Units.inchesToMeters(WheelConstants.wheelDiameterInInches)
-            * Math.PI * 2.77);
+            * Math.PI);
     public static final double wheelDiameterInInches = 4; 
     public static final double gearRatio = 0.12;
     
