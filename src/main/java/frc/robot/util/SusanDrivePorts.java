@@ -9,6 +9,9 @@ public class SusanDrivePorts implements IDrivePorts {
 
     public final boolean rightFrontMotorInversion = false;
     public final boolean leftFrontMotorInversion = true;
+
+    public final double wheelDiameterInInches = 6;
+
     @Override
     public int getLeftFrontMotorCANId() {
         // TODO Auto-generated method stub
@@ -38,5 +41,10 @@ public class SusanDrivePorts implements IDrivePorts {
     public boolean getLeftFrontMotorInversion() {
         // TODO Auto-generated method stub
         return leftFrontMotorInversion;
+    }
+    @Override
+    public double getWheelDiameterInInches() {
+        // TODO Auto-generated method stub
+        return wheelDiameterInInches;
     }
 }

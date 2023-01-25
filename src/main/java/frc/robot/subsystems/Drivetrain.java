@@ -98,11 +98,11 @@ public class Drivetrain extends SubsystemBase {
     leftRearEncoder = leftRearMotor.getEncoder();
     rightRearEncoder = rightRearMotor.getEncoder();
     
-    leftFrontEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
-    leftFrontEncoder.setVelocityConversionFactor(WheelConstants.conversionFactor);
+    //leftFrontEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
+    //leftFrontEncoder.setVelocityConversionFactor(WheelConstants.conversionFactor);
 
-    rightFrontEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
-    rightFrontEncoder.setVelocityConversionFactor(WheelConstants.conversionFactor);
+    //rightFrontEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
+    //rightFrontEncoder.setVelocityConversionFactor(WheelConstants.conversionFactor);
     
     odometry = new DifferentialDriveOdometry(navx.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
 }
