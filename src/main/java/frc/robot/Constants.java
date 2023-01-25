@@ -27,6 +27,8 @@ public final class Constants {
     public static final double kIKeepHeading = 0.01;
     public static final double kDKeepHeading = 0.001;
 
+    public static final double metersPerEncoderTick = 0.03763;
+
     public static final double angleSetBufferSeconds = 0.25;
     public static final double angleSetBufferTicks = 
       DriveConstants.angleSetBufferSeconds / RobotConstants.secondsPerTick;

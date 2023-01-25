@@ -39,8 +39,6 @@ public class Drivetrain extends SubsystemBase {
 
   private RelativeEncoder leftFrontEncoder;
   private RelativeEncoder rightFrontEncoder;
-  private RelativeEncoder leftRearEncoder;
-  private RelativeEncoder rightRearEncoder;
 
   private PIDController headingPID; // SETPOINT IS ALWAYS 0 (we give it a relative angle)
 
@@ -67,8 +65,9 @@ public class Drivetrain extends SubsystemBase {
 
     leftFrontEncoder = leftFrontMotor.getEncoder();
     rightFrontEncoder = rightFrontMotor.getEncoder();
-    leftRearEncoder = leftRearMotor.getEncoder();
-    rightRearEncoder = rightRearMotor.getEncoder();
+
+    leftFrontEncoder.setPositionConversionFactor(DriveConstants.metersPerEncoderTick);
+    rightFrontEncoder.setPositionConversionFactor(DriveConstants.metersPerEncoderTick);
 
     headingPID = new PIDController(
       Constants.DriveConstants.kPKeepHeading,
@@ -223,18 +222,14 @@ public class Drivetrain extends SubsystemBase {
   public void resetEncoders() {
     leftFrontEncoder.setPosition(0.0);
     rightFrontEncoder.setPosition(0.0);
-    leftRearEncoder.setPosition(0.0);
-    rightRearEncoder.setPosition(0.0);
   }
  
   public double getRightEncoderCount() {
-    return (rightFrontEncoder.getPosition() + 
-      rightRearEncoder.getPosition()) / 2.0;
+    return rightFrontEncoder.getPosition();
   }
 
   public double getLeftEncoderCount() {
-    return (leftFrontEncoder.getPosition() + 
-      leftRearEncoder.getPosition()) / 2.0;
+    return leftFrontEncoder.getPosition();
   }
 
   //Sets the differential drive using the method curvatureDrive
