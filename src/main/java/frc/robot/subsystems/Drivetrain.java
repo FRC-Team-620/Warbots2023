@@ -17,11 +17,15 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.WheelConstants;
@@ -96,6 +100,7 @@ public class Drivetrain extends SubsystemBase {
     rightFrontEncoder = rightFrontMotor.getEncoder();
     leftRearEncoder = leftRearMotor.getEncoder();
     rightRearEncoder = rightRearMotor.getEncoder();
+    
     leftFrontEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
     leftFrontEncoder.setVelocityConversionFactor(WheelConstants.conversionFactor);
 
@@ -130,10 +135,8 @@ public class Drivetrain extends SubsystemBase {
     rightRearMotor.follow(rightFrontMotor);
     leftRearMotor.follow(leftFrontMotor);         
 
-    
     rightFrontMotor.setInverted(Constants.driveports.getRightFrontMotorInversion());
     leftFrontMotor.setInverted(Constants.driveports.getLeftFrontMotorInversion());
-
   }
 
   public double getRightEncoderCount() {
