@@ -10,6 +10,7 @@ import org.photonvision.common.hardware.VisionLEDMode;
 import org.photonvision.targeting.PhotonPipelineResult;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** Rotates the robot to align to a identified target. */
@@ -36,7 +37,7 @@ public class AlignPeg extends CommandBase {
   @Override
   public void initialize() {
     PhotonManager.getInstance().mainCam.setLED(VisionLEDMode.kOn);
-    PhotonManager.getInstance().mainCam.setPipelineIndex(0);
+    PhotonManager.getInstance().mainCam.setPipelineIndex(1);
     m_pid.reset();
     m_pid.setTolerance(kangleTolerance);
     m_pid.setSetpoint(0);
@@ -51,10 +52,10 @@ public class AlignPeg extends CommandBase {
      }
 
      double targetYaw = result.getBestTarget().getYaw(); // Yaw in degrees from Center of camera + is Right
-     
+     SmartDashboard.putNumber("Vision/Yaw", targetYaw);
      double output = MathUtil.clamp( m_pid.calculate(targetYaw), -kmaxTurnSpeed, kmaxTurnSpeed); // Camp Turn output between kmaxTurnSpeed
     
-     m_drivetrain.setCurvatureDrive(0, output, true); //Turn Robot
+     //m_drivetrain.setCurvatureDrive(0, output, true); //Turn Robot
   }
 
   // Called once the command ends or is interrupted.

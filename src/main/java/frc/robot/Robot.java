@@ -6,6 +6,7 @@ package frc.robot;
 
 
 
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -14,6 +15,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.vision.AlignPeg;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.sim.BuildDataLogger;
 
 /**
@@ -50,6 +53,13 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData(field);
     BuildDataLogger.LogToNetworkTables();
     BuildDataLogger.LogToWpiLib(DataLogManager.getLog());
+
+    PortForwarder.add(5800, "photonvision.local", 5800);
+    PortForwarder.add(1181, "photonvision.local", 1181);
+    PortForwarder.add(1182, "photonvision.local", 1182);
+    PortForwarder.add(1183, "photonvision.local", 1183);
+    SmartDashboard.putData(CommandScheduler.getInstance());
+    SmartDashboard.putData(new AlignPeg(m_robotContainer.drivetrain));
   }
 
   /**
