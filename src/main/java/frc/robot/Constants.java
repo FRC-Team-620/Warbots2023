@@ -19,7 +19,7 @@ public final class Constants {
   }
 
   public static class DriveConstants {
-    public static final double kPDriveDistance = 0.01;
+    public static final double kPDriveDistance = 0.8;
     public static final double kIDriveDistance = 0.01;
     public static final double kDDriveDistance = 0.0;
 

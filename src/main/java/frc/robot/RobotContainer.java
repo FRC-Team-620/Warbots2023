@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.DriveStraight;
 import frc.robot.commands.TurnDeltaAngle;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,6 +36,8 @@ public class RobotContainer {
 
     // driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
     driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
+
+    driver.b().onTrue(new DriveStraight(drivetrain, 2));
 
   }
 
