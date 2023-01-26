@@ -69,8 +69,13 @@ public class DriveCommand extends CommandBase {
     //drivetrain.setRightMotors(1);
     //drivetrain.setLeftMotors(1);
 
-    SmartDashboard.putNumber("left encoder meter", Units.inchesToMeters((drivetrain.getLeftEncoderCount() * 2.77)));
-    SmartDashboard.putNumber("right encoder meter", Units.inchesToMeters((drivetrain.getLeftEncoderCount() * 2.77)));
+    // SmartDashboard.putNumber("left encoder meter", Units.inchesToMeters((drivetrain.getLeftEncoderCount() * 2.77)));
+    // SmartDashboard.putNumber("right encoder meter", Units.inchesToMeters((drivetrain.getRightEncoderCount() * 2.77)));
+    //1 meter = 2.255624702911377 //fudge
+    //1 meter = 1.225663065910339 //math
+    SmartDashboard.putNumber("left encoder meter", drivetrain.getLeftEncoderCount());
+    SmartDashboard.putNumber("right encoder meter", drivetrain.getRightEncoderCount());
+  
   }
 
   // Called once the command ends or is interrupted.

@@ -100,12 +100,12 @@ public class Drivetrain extends SubsystemBase {
     rightFrontEncoder = rightFrontMotor.getEncoder();
     leftRearEncoder = leftRearMotor.getEncoder();
     rightRearEncoder = rightRearMotor.getEncoder();
-    
-    //leftFrontEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
-    //leftFrontEncoder.setVelocityConversionFactor(WheelConstants.conversionFactor);
+    SmartDashboard.putNumber("ConversionFactor", WheelConstants.conversionFactor);
 
-    //rightFrontEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
-    //rightFrontEncoder.setVelocityConversionFactor(WheelConstants.conversionFactor);
+    leftFrontEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
+    rightFrontEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
+    leftRearEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
+    rightRearEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
     
     odometry = new DifferentialDriveOdometry(navx.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
 }
@@ -114,6 +114,7 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
       odometry.update(navx.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
       SmartDashboard.putNumber("Heading", navx.getYaw());
+      
       // System.out.println(leftFrontEncoder.getPosition());
   }
   private CANSparkMax setupMotor(CANSparkMax motor) {
