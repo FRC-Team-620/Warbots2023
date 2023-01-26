@@ -6,6 +6,18 @@ package frc.robot;
 
 
 
+import java.io.IOException;
+import java.util.ArrayList;
+
+import org.photonvision.PhotonCamera;
+import org.photonvision.SimVisionTarget;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -15,10 +27,10 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.util.DetectRobot;
 import frc.robot.commands.vision.AlignPeg;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.util.DetectRobot;
 import frc.robot.util.sim.BuildDataLogger;
+import frc.robot.util.sim.SimPipeLineVisionSystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -29,7 +41,8 @@ import frc.robot.util.sim.BuildDataLogger;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private Field2d field = new Field2d();
-
+  // SimVisionSystem ssys ,ssys2;
+  SimPipeLineVisionSystem simPhoton;
   private RobotContainer m_robotContainer;
 
   /**
@@ -38,21 +51,27 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
-    m_robotContainer.getDrivetrain().setBrake(false);
+   
     if(Robot.isSimulation()){
       DataLogManager.start(Filesystem.getOperatingDirectory().getAbsolutePath() + "\\logs");
     }else{
       DataLogManager.start();
     }
+    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
+    // autonomous chooser on the dashboard.
+    PhotonCamera.setVersionCheckEnabled(!Robot.isSimulation());
+    m_robotContainer = new RobotContainer();
+    m_robotContainer.getDrivetrain().setBrake(false);
+   
     
     // Enables network table logging for data 
     DataLogManager.logNetworkTables(true);
     // logs joystick data and driver data 
     DriverStation.startDataLog(DataLogManager.getLog());
     SmartDashboard.putData(field);
+    
+    loadAprilTags();
+
     BuildDataLogger.LogToNetworkTables();
     BuildDataLogger.LogToWpiLib(DataLogManager.getLog());
     DetectRobot.identifyRobot();
@@ -62,6 +81,33 @@ public class Robot extends TimedRobot {
     PortForwarder.add(1183, "photonvision.local", 1183);
     SmartDashboard.putData(CommandScheduler.getInstance());
     SmartDashboard.putData(new AlignPeg(m_robotContainer.drivetrain));
+  }
+  private void putPose3d(String key, Pose3d... value){
+    double[] data = new double[value.length * 7];
+    for (int i = 0; i < value.length; i++) {
+      data[i * 7] = value[i].getX();
+      data[i * 7 + 1] = value[i].getY();
+      data[i * 7 + 2] = value[i].getZ();
+      data[i * 7 + 3] = value[i].getRotation().getQuaternion().getW();
+      data[i * 7 + 4] = value[i].getRotation().getQuaternion().getX();
+      data[i * 7 + 5] = value[i].getRotation().getQuaternion().getY();
+      data[i * 7 + 6] = value[i].getRotation().getQuaternion().getZ();
+    }
+    SmartDashboard.putNumberArray(key, data);
+  }
+  private void loadAprilTags(){
+    try {
+      AprilTagFieldLayout layout = new AprilTagFieldLayout(Filesystem.getDeployDirectory().getAbsolutePath() + "/2023-chargedup.json");
+
+      SimVisionTarget target = new SimVisionTarget(new Pose3d(6,6,1.3, new Rotation3d(25,25,25)), 0.2, 0.2, 0);
+
+      simPhoton = new SimPipeLineVisionSystem("mainCam", 90, new Transform3d(new Translation3d(0,0,1), new Rotation3d()), 20, 640, 480, 10);
+      simPhoton.getPipeline(0).addVisionTargets(layout);
+      simPhoton.getPipeline(simPhoton.addPipeline()).addSimVisionTarget(target);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
   /**
@@ -78,7 +124,29 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    field.setRobotPose(m_robotContainer.drivetrain.getPose());
+    updateField();
+
+  }
+
+  private void updateField(){
+    field.setRobotPose(m_robotContainer.drivetrain.getPose()); // Updates robot's position on field2d
+
+    this.simPhoton.processFrame(m_robotContainer.drivetrain.getPose());
+
+    var result = PhotonManager.getInstance().mainCam.getLatestResult(); //TODO: handle switch between sim and real world.
+    var ids = new ArrayList<Double>();
+    var tagpos = new ArrayList<Pose2d>();
+    ArrayList<Pose3d> tag3d = new ArrayList<Pose3d>();
+    if(result.hasTargets()){
+      for(var target: result.getTargets()){
+        ids.add(target.getFiducialId() + 0.0);
+        tagpos.add(new Pose3d(m_robotContainer.drivetrain.getPose()).plus(target.getBestCameraToTarget()).toPose2d());
+        tag3d.add(new Pose3d(m_robotContainer.drivetrain.getPose().getX(), m_robotContainer.drivetrain.getPose().getY(), 1, new Pose3d( m_robotContainer.drivetrain.getPose()).getRotation()).plus(target.getBestCameraToTarget()));
+      }
+    }
+    SmartDashboard.putNumberArray("TAGIDS",  ids.toArray(new Double[ids.size()]));
+    putPose3d("3dtags",  tag3d.toArray(new Pose3d[tag3d.size()]));
+    field.getObject("Tags").setPoses(tagpos); //Display simulated tag positions
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
