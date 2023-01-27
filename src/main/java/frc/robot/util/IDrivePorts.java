@@ -13,6 +13,8 @@ public interface IDrivePorts {
 
   public double getWheelDiameterInInches();
 
+  public IIMUWrapper getIMU();
+
   public static IDrivePorts getDrivePorts(Constants.RobotType type) {
     switch (type) {
       case SUSAN:

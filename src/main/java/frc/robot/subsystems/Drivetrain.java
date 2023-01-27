@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.WheelConstants;
+import frc.robot.util.IIMUWrapper;
 import frc.robot.util.sim.NavxWrapper;
 import frc.robot.util.sim.RevEncoderSimWrapper;
 
@@ -49,14 +50,14 @@ public class Drivetrain extends SubsystemBase {
   private RelativeEncoder leftRearEncoder;
   private RelativeEncoder rightFrontEncoder;
   private RelativeEncoder rightRearEncoder;
-  private AHRS navx;
+  private IIMUWrapper imu = Constants.driveports.getIMU();
   private DifferentialDriveOdometry odometry;
   
-  public double getHeading() { // TODO: Remove Use Odom class
-    return navx.getAngle();
-  }
+  // public double getHeading() { // TODO: Remove Use Odom class
+  //   return navx.getAngle();
+  // }
   public double getPitch(){
-    return navx.getPitch();
+    return imu.getPitch();
   }
 
   private DifferentialDrive differentialDrive;
@@ -95,7 +96,6 @@ public class Drivetrain extends SubsystemBase {
   }
 
   private void initSensors() {
-    navx = new AHRS(Port.kMXP);
     leftFrontEncoder = leftFrontMotor.getEncoder();
     rightFrontEncoder = rightFrontMotor.getEncoder();
     leftRearEncoder = leftRearMotor.getEncoder();
@@ -107,13 +107,13 @@ public class Drivetrain extends SubsystemBase {
     leftRearEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
     rightRearEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
     
-    odometry = new DifferentialDriveOdometry(navx.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
+    odometry = new DifferentialDriveOdometry(imu.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
 }
   
   @Override
   public void periodic() {
-      odometry.update(navx.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
-      SmartDashboard.putNumber("Heading", navx.getYaw());
+      odometry.update(imu.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
+      SmartDashboard.putNumber("Heading", imu.getYaw());
       
       // System.out.println(leftFrontEncoder.getPosition());
   }
