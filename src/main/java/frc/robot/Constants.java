@@ -23,6 +23,15 @@ public final class Constants {
   public enum RobotType {
     BABY_BOT, SUSAN, BOT_2020, UNKNOWN
 }
+  public enum VisionPipeline{
+    APRIL_TAGS(0), REFECTIVE_TAPE(1);
+    VisionPipeline(int id){
+      this.id=id;
+    }
+    public final int id;
+
+
+  }
   public static RobotType kRobotType = DetectRobot.identifyRobot(); //TODO: Better naming Scheme?
 
   public static final IDrivePorts driveports = IDrivePorts.getDrivePorts(kRobotType);
