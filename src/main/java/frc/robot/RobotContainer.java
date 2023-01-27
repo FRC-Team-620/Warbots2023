@@ -5,9 +5,12 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ArmCommand;
+import frc.robot.commands.AutoDriveDistance;
 import frc.robot.commands.Autos;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DriveStraight;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.commands.TurnDeltaAngle;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,7 +28,8 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final CommandXboxController driver =
       new CommandXboxController(OperatorConstants.driverControllerPort);
-  private final Drivetrain drivetrain = new Drivetrain();
+  public final Drivetrain drivetrain = new Drivetrain();
+  private final ArmSubsystem armSubsystem = new ArmSubsystem(); 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -33,12 +37,6 @@ public class RobotContainer {
     configureBindings();
     //Setting up default command which is a command that runs every time no other command that uses that subsystem is running
     drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
-
-    // driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
-    driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
-
-    driver.b().onTrue(new DriveStraight(drivetrain, 2));
-
   }
 
   /**
@@ -52,6 +50,13 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Triggers are a thing that we might need to use so keep that in mind
+	driver.b().onTrue(new ArmCommand(armSubsystem));
+    // driver.x().onTrue(new AutoDriveDistance(drivetrain, 100));
+
+    // driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
+    driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
+
+    driver.x().onTrue(new DriveStraight(drivetrain, 2));
   }
 
   /**
@@ -61,7 +66,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.taxi(drivetrain);
+    //return Autos.taxi(drivetrain);
+    return new AutoDriveDistance(drivetrain, 0.05);
   }
 
   public Drivetrain getDrivetrain() {

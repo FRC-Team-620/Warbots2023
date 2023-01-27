@@ -4,9 +4,16 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.util.DetectRobot;
+import frc.robot.util.sim.BuildDataLogger;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -16,9 +23,10 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+  private Field2d field = new Field2d();
 
   private RobotContainer m_robotContainer;
-
+	private boolean lastAutonomous = false;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -28,6 +36,21 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+	m_robotContainer.getDrivetrain().setBrake(false);
+    if(Robot.isSimulation()){
+      DataLogManager.start(Filesystem.getOperatingDirectory().getAbsolutePath() + "\\logs");
+    }else{
+      DataLogManager.start();
+    }
+    
+    // Enables network table logging for data 
+    DataLogManager.logNetworkTables(true);
+    // logs joystick data and driver data 
+    DriverStation.startDataLog(DataLogManager.getLog());
+    SmartDashboard.putData(field);
+    BuildDataLogger.LogToNetworkTables();
+    BuildDataLogger.LogToWpiLib(DataLogManager.getLog());
+    DetectRobot.identifyRobot();
   }
 
   /**
@@ -44,14 +67,20 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+	field.setRobotPose(m_robotContainer.drivetrain.getPose());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
+    if (lastAutonomous && Constants.kCoastOnDisable)
+      m_robotContainer.getDrivetrain().setBrake(false);
+    else{
+      m_robotContainer.getDrivetrain().setBrake(true);
+    }
     this.m_robotContainer.getDrivetrain().resetAnglePID();
   }
-
+  
   @Override
   public void disabledPeriodic() {}
 
@@ -64,6 +93,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+	m_robotContainer.getDrivetrain().setBrake(true);
+    this.lastAutonomous = true;
   }
 
   /** This function is called periodically during autonomous. */
@@ -79,8 +110,9 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
-    this.m_robotContainer.getDrivetrain().setCurrentAngle(
+	m_robotContainer.getDrivetrain().setBrake(true);
+    this.lastAutonomous = false;
+	this.m_robotContainer.getDrivetrain().setCurrentAngle(
       this.m_robotContainer.getDrivetrain().getYaw()
     ); 
 
@@ -98,6 +130,8 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+	m_robotContainer.getDrivetrain().setBrake(true);
+    this.lastAutonomous = false;
   }
 
   /** This function is called periodically during test mode. */
