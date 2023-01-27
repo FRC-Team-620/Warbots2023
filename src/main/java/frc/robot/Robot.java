@@ -26,7 +26,7 @@ public class Robot extends TimedRobot {
   private Field2d field = new Field2d();
 
   private RobotContainer m_robotContainer;
-	private boolean lastAutonomous = false;
+  private boolean lastAutonomous = false;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -36,7 +36,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-	m_robotContainer.getDrivetrain().setBrake(false);
+	  m_robotContainer.getDrivetrain().setBrake(false);
     if(Robot.isSimulation()){
       DataLogManager.start(Filesystem.getOperatingDirectory().getAbsolutePath() + "\\logs");
     }else{
@@ -67,7 +67,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-	field.setRobotPose(m_robotContainer.drivetrain.getPose());
+	  field.setRobotPose(m_robotContainer.drivetrain.getPose());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -93,7 +93,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-	m_robotContainer.getDrivetrain().setBrake(true);
+	  m_robotContainer.getDrivetrain().setBrake(true);
     this.lastAutonomous = true;
   }
 
@@ -110,9 +110,9 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-	m_robotContainer.getDrivetrain().setBrake(true);
+	  m_robotContainer.getDrivetrain().setBrake(true);
     this.lastAutonomous = false;
-	this.m_robotContainer.getDrivetrain().setCurrentAngle(
+	  this.m_robotContainer.getDrivetrain().setCurrentAngle(
       this.m_robotContainer.getDrivetrain().getYaw()
     ); 
 
@@ -130,7 +130,7 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-	m_robotContainer.getDrivetrain().setBrake(true);
+	  m_robotContainer.getDrivetrain().setBrake(true);
     this.lastAutonomous = false;
   }
 
