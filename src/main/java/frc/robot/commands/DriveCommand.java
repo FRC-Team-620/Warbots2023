@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.Drivetrain;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
@@ -57,14 +59,23 @@ public class DriveCommand extends CommandBase {
     //rightfront, rightback
     speed = rightTriggerInput > leftTriggerInput ? rightTriggerInput : -leftTriggerInput;
     
-
     // Pass the speed, rotation input, and the quickTurn in that order into setCurvatureDrive
     // This will allow for Drivetrain's DifferentalDrive to assign the motors to the correct values to make that movement
 
+    if (controller.rightBumper().getAsBoolean()) {
+      rotationInput *= 0.5;
+    }
     drivetrain.setCurvatureDrive(speed, rotationInput, quickTurn);
     //drivetrain.setRightMotors(1);
     //drivetrain.setLeftMotors(1);
 
+    // SmartDashboard.putNumber("left encoder meter", Units.inchesToMeters((drivetrain.getLeftEncoderCount() * 2.77)));
+    // SmartDashboard.putNumber("right encoder meter", Units.inchesToMeters((drivetrain.getRightEncoderCount() * 2.77)));
+    //1 meter = 2.255624702911377 //fudge
+    //1 meter = 1.225663065910339 //math
+    SmartDashboard.putNumber("left encoder meter", drivetrain.getLeftEncoderCount());
+    SmartDashboard.putNumber("right encoder meter", drivetrain.getRightEncoderCount());
+  
   }
 
   // Called once the command ends or is interrupted.

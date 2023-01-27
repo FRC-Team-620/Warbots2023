@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.math.util.Units;
+import frc.robot.util.DetectRobot;
+import frc.robot.util.IDrivePorts;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -18,32 +20,23 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int driverControllerPort = 0;
   }
-  public static class CANIdsTestBot {
-    public static final int leftFrontMotorCANId = 1;
-    public static final int rightFrontMotorCANId = 2;
-    public static final int leftRearMotorCANId = 3;
-    public static final int rightRearMotorCANId = 4;
+
+  public static class RobotMathConstants {
+    public static final double comparisonThreshhold = 0.005;
   }
-  public static class InversionsTestBot {
-    public static final boolean rightFrontMotorInversion = true;
-    public static final boolean leftFrontMotorInversion = true;
-  }
-  public static class CANIdsMainBot {
-    public static final int leftFrontMotorCANId = 4;
-    public static final int rightFrontMotorCANId = 3;
-    public static final int leftRearMotorCANId = 2;
-    public static final int rightRearMotorCANId = 1;
-  }
-  public static class InversionsMainBot {
-    public static final boolean rightFrontMotorInversion = false;
-    public static final boolean leftFrontMotorInversion = true;
-  }
+  
+  public enum RobotType {
+    BABY_BOT, SUSAN, BOT_2020, UNKNOWN
+}
+  public static RobotType kRobotType = DetectRobot.identifyRobot(); //TODO: Better naming Scheme?
+
+  public static final IDrivePorts driveports = IDrivePorts.getDrivePorts(kRobotType);
 
   public static class WheelConstants {
-    public static final double conversionFactor = WheelConstants.gearRatio
-            * Units.inchesToMeters(WheelConstants.wheelDiameterInInches)
+    public static final double wheelDiameterInInches = 4;    
+    public static final double conversionFactor = WheelConstants.gearRatio * Units.inchesToMeters(wheelDiameterInInches)
             * Math.PI;
-    public static final double wheelDiameterInInches = 4; 
+
     public static final double gearRatio = 0.12;
     
 
@@ -66,6 +59,7 @@ public final class Constants {
 
 
     public static final double ksubstationShelfHeightMeters = Units.inchesToMeters(37.75);
+    public static final double kchargeStationLengthMeters = Units.inchesToMeters(48);
   }
 
   public class AutoConstants{
@@ -75,6 +69,8 @@ public final class Constants {
 
     public static final double maxVelocity = 10;
     public static final double maxAcceleration = 10;
+
+    public static final double balanceCreepSpeed = 0.1;
   }
 
   public static double kSimUpdateTime = 0.02;
@@ -83,4 +79,6 @@ public final class Constants {
   public static final double ksimDrivekVAngular = 1.5;
   public static final double kSimDrivekAAngular = 0.3;
   public static final double kSimTrackwidthMeters = 0.64;// 0.5207
+
+  public static final boolean kCoastOnDisable = true;
 }
