@@ -13,6 +13,15 @@ public interface IDrivePorts {
 
   public double getWheelDiameterInInches();
 
+  public double getAutoDistanceKP();
+  public double getAutoDistanceKI();
+  public double getAutoDistanceKD();
+
+  public double getMaxVelocity();
+  public double getMaxAcceleration();
+
+  public double getBalanceCreepSpeed();
+
   public static IDrivePorts getDrivePorts(Constants.RobotType type) {
     switch (type) {
       case SUSAN:

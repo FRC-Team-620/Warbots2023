@@ -89,12 +89,6 @@ public class Drivetrain extends SubsystemBase {
     setupFollowerMotors();
     initSensors();
 
-    leftFrontEncoder = leftFrontMotor.getEncoder();
-    rightFrontEncoder = rightFrontMotor.getEncoder();
-
-    leftFrontEncoder.setPositionConversionFactor(DriveConstants.metersPerEncoderTick);
-    rightFrontEncoder.setPositionConversionFactor(DriveConstants.metersPerEncoderTick);
-
     headingPID = new PIDController(
       Constants.DriveConstants.kPKeepHeading,
       Constants.DriveConstants.kIKeepHeading,
@@ -145,6 +139,12 @@ public class Drivetrain extends SubsystemBase {
     rightFrontEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
     leftRearEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
     rightRearEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
+
+    //leftFrontEncoder = leftFrontMotor.getEncoder();
+    //rightFrontEncoder = rightFrontMotor.getEncoder();
+
+    //leftFrontEncoder.setPositionConversionFactor(DriveConstants.metersPerEncoderTick);
+    //rightFrontEncoder.setPositionConversionFactor(DriveConstants.metersPerEncoderTick);
     
     odometry = new DifferentialDriveOdometry(navx.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
 }

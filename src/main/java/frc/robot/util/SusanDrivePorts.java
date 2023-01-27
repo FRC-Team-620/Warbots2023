@@ -12,6 +12,14 @@ public class SusanDrivePorts implements IDrivePorts {
 
     public final double wheelDiameterInInches = 6;
 
+    public final double autoDistanceKP = 50;
+    public final double autoDistanceKI = 0.5;
+    public final double autoDistanceKD = 0.0;
+
+    public final double maxVelocity = 10;
+    public final double maxAcceleration = 10;
+
+    public final double balanceCreepSpeed = 0.1;
     @Override
     public int getLeftFrontMotorCANId() {
         // TODO Auto-generated method stub
@@ -46,5 +54,35 @@ public class SusanDrivePorts implements IDrivePorts {
     public double getWheelDiameterInInches() {
         // TODO Auto-generated method stub
         return wheelDiameterInInches;
+    }
+    @Override
+    public double getAutoDistanceKP() {
+        // TODO Auto-generated method stub
+        return autoDistanceKP;
+    }
+    @Override
+    public double getAutoDistanceKI() {
+        // TODO Auto-generated method stub
+        return autoDistanceKI;
+    }
+    @Override
+    public double getAutoDistanceKD() {
+        // TODO Auto-generated method stub
+        return autoDistanceKD;
+    }
+    @Override
+    public double getMaxVelocity() {
+        // TODO Auto-generated method stub
+        return maxVelocity;
+    }
+    @Override
+    public double getMaxAcceleration() {
+        // TODO Auto-generated method stub
+        return maxAcceleration;
+    }
+    @Override
+    public double getBalanceCreepSpeed() {
+        // TODO Auto-generated method stub
+        return balanceCreepSpeed;
     }
 }
