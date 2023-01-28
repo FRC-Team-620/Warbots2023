@@ -17,7 +17,7 @@ public class PigeonIMU implements IIMUWrapper{
 
     @Override
     public double getYaw() {
-        double x = getYaw();
+        double x = pigeon.getYaw();
         // if (pigeon.getYaw() > 180) {
         //     x = pigeon.getYaw() % 180 == 0 ? 180 : pigeon.getYaw() % 180;
         // } else if (pigeon.getYaw() < -180) {
@@ -28,7 +28,7 @@ public class PigeonIMU implements IIMUWrapper{
 
     @Override
     public double getPitch() {
-        double x = getPitch();
+        double x = pigeon.getPitch();
         // if (pigeon.getPitch() > 180) {
         //     x = pigeon.getPitch() % 180 == 0 ? 180 : pigeon.getPitch() % 180;
         // } else if (pigeon.getPitch() < -180) {
@@ -44,6 +44,6 @@ public class PigeonIMU implements IIMUWrapper{
     @Override
     public double getAngle() {
         // TODO Auto-generated method stub
-        return pigeon.getYaw();
+        return getYaw();
     }
 }
