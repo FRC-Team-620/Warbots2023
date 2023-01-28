@@ -17,12 +17,24 @@ public class PigeonIMU implements IIMUWrapper{
 
     @Override
     public double getYaw() {
-        return pigeon.getYaw();
+        double x = getYaw();
+        // if (pigeon.getYaw() > 180) {
+        //     x = pigeon.getYaw() % 180 == 0 ? 180 : pigeon.getYaw() % 180;
+        // } else if (pigeon.getYaw() < -180) {
+        //     x = pigeon.getYaw() % 180 == 0 ? -180 : pigeon.getYaw() % 180;
+        // }
+        return x;
     }
 
     @Override
     public double getPitch() {
-        return pigeon.getPitch();
+        double x = getPitch();
+        // if (pigeon.getPitch() > 180) {
+        //     x = pigeon.getPitch() % 180 == 0 ? 180 : pigeon.getPitch() % 180;
+        // } else if (pigeon.getPitch() < -180) {
+        //     x = pigeon.getPitch() % 180 == 0 ? -180 : pigeon.getPitch() % 180;
+        // }
+        return x;
     }
     @Override
     public Rotation2d getRotation2d() {
