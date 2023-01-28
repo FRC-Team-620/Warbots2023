@@ -117,6 +117,10 @@ public class Drivetrain extends SubsystemBase {
       
       // System.out.println(leftFrontEncoder.getPosition());
   }
+
+  public void resetOdometry(Pose2d pose){
+    odometry.resetPosition(imu.getRotation2d(),leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition(), pose);
+  }
   private CANSparkMax setupMotor(CANSparkMax motor) {
     // You need to make the motor have the following settings that you can set through the various motor methods: 
     // Open loop ramp rate (time it takes to reach max acceleration in seconds) = 0.2
