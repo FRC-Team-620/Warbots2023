@@ -18,9 +18,9 @@ public class DriveStraight extends CommandBase {
         this.distance = distance;
 
         this.distancePID = new PIDController(
-            Constants.DriveConstants.kPDriveDistance,
-            Constants.DriveConstants.kIDriveDistance,
-            Constants.DriveConstants.kDDriveDistance
+            Constants.driveports.getkPDriveDistance(),
+            Constants.driveports.getkIDriveDistance(),
+            Constants.driveports.getkDDriveDistance()
         );
         this.distancePID.setTolerance(0.04, 0.1);
 

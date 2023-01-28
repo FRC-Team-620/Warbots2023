@@ -22,6 +22,14 @@ public interface IDrivePorts {
 
   public double getBalanceCreepSpeed();
 
+  public double getkPDriveDistance();
+  public double getkIDriveDistance(); 
+  public double getkDDriveDistance();
+
+  public double getkPKeepHeading();
+  public double getkIKeepHeading();
+  public double getkDKeepHeading();
+
   public static IDrivePorts getDrivePorts(Constants.RobotType type) {
     switch (type) {
       case SUSAN:

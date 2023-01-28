@@ -21,6 +21,14 @@ public class BabybotDrivePorts implements IDrivePorts {
 
     public final double balanceCreepSpeed = 0.1;
 
+    public static final double kPDriveDistance = 0.8;
+    public static final double kIDriveDistance = 0.01;
+    public static final double kDDriveDistance = 0.0;
+
+    public static final double kPKeepHeading = 0.014;
+    public static final double kIKeepHeading = 0.01;
+    public static final double kDKeepHeading = 0.001;
+
     @Override
     public int getLeftFrontMotorCANId() {
         // TODO Auto-generated method stub
@@ -85,5 +93,35 @@ public class BabybotDrivePorts implements IDrivePorts {
     public double getBalanceCreepSpeed() {
         // TODO Auto-generated method stub
         return balanceCreepSpeed;
+    }
+    @Override
+    public double getkPDriveDistance() {
+        // TODO Auto-generated method stub
+        return kPDriveDistance;
+    }
+    @Override
+    public double getkIDriveDistance() {
+        // TODO Auto-generated method stub
+        return kIDriveDistance;
+    }
+    @Override
+    public double getkDDriveDistance() {
+        // TODO Auto-generated method stub
+        return kDDriveDistance;
+    }
+    @Override
+    public double getkPKeepHeading() {
+        // TODO Auto-generated method stub
+        return kPKeepHeading;
+    }
+    @Override
+    public double getkIKeepHeading() {
+        // TODO Auto-generated method stub
+        return kIKeepHeading;
+    }
+    @Override
+    public double getkDKeepHeading() {
+        // TODO Auto-generated method stub
+        return kDKeepHeading;
     }
 }

@@ -90,9 +90,9 @@ public class Drivetrain extends SubsystemBase {
     initSensors();
 
     headingPID = new PIDController(
-      Constants.DriveConstants.kPKeepHeading,
-      Constants.DriveConstants.kIKeepHeading,
-      Constants.DriveConstants.kDKeepHeading
+      Constants.driveports.getkPKeepHeading(),
+      Constants.driveports.getkIKeepHeading(),
+      Constants.driveports.getkDKeepHeading()
     );
     headingPID.setSetpoint(0.0); // IMPORTANT
     headingPID.setTolerance(2,1);
