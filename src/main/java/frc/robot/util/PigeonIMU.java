@@ -26,7 +26,7 @@ public class PigeonIMU implements IIMUWrapper{
     }
     @Override
     public Rotation2d getRotation2d() {
-        var rot2d = new Rotation2d(getYaw()); //TODO: Validate this is works with range -180 to 180;
+        var rot2d = Rotation2d.fromDegrees(getYaw());
         return rot2d;
     }
     @Override
