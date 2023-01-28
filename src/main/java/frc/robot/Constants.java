@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.util.Units;
 import frc.robot.util.DetectRobot;
 import frc.robot.util.IDrivePorts;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -38,7 +39,7 @@ public final class Constants {
   }
   public static class OperatorConstants {
     public static final int driverControllerPort = 0;
-	public static final int operatorControllerPort = 1;
+	  public static final int operatorControllerPort = 1;
   }
 
   public static class RobotMathConstants {
@@ -80,6 +81,7 @@ public final class Constants {
     public static final double ksubstationShelfHeightMeters = Units.inchesToMeters(37.75);
     public static final double kchargeStationLengthMeters = Units.inchesToMeters(48);
   }
+  
   public class AutoConstants{
     public static final double autoDistanceKP = 50;
     public static final double autoDistanceKI = 0.5;
