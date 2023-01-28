@@ -10,9 +10,11 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
@@ -61,10 +63,12 @@ public class Drivetrain extends SubsystemBase {
   private DifferentialDriveOdometry odometry;
   
   private double speedSetpoint = 0.0;
-  private double curvatureSetpoint = 0.0;
+  private double rotationInput = 0.0;
   private boolean shouldQuickturn = false;
   
   private double angularVelocity = 0.0;
+
+  private boolean headingLock = false;
   public double getHeading() { // TODO: Remove Use Odom class
     return imu.getAngle();//Could use getYaw
   }
@@ -94,13 +98,15 @@ public class Drivetrain extends SubsystemBase {
       Constants.driveports.getkIKeepHeading(),
       Constants.driveports.getkDKeepHeading()
     );
+    SmartDashboard.putData("headingPID", headingPID);
+    headingPID.enableContinuousInput(-180, 180);
     headingPID.setSetpoint(0.0); // IMPORTANT
     headingPID.setTolerance(2,1);
 
-    setAngle = this.getYaw();
-    SmartDashboard.putNumber("heading_angle", 0.0);
+    //setAngle = this.getYaw();
+    SmartDashboard.putNumber("Drivetrain/heading_angle", imu.getYaw());
 
-    this.angularVelocityHandler = new RobotMath.DiminishingAverageHandler(2);
+    //this.angularVelocityHandler = new RobotMath.DiminishingAverageHandler(2);
     //Setup differential drive with left front and right front motors as the parameters for the new DifferentialDrive
     differentialDrive = new DifferentialDrive(rightFrontMotor, leftFrontMotor);
   }
@@ -155,43 +161,70 @@ public class Drivetrain extends SubsystemBase {
       // System.out.println(leftFrontEncoder.getPosition());
 	    double yaw = this.getYaw();
 
-      double relativeChange = RobotMath.relativeAngle(this.previousAngle, yaw);
 
-      this.angularVelocity = this.angularVelocityHandler.feed(
-        relativeChange / RobotConstants.secondsPerTick
-      );
-      this.previousAngle = yaw;
 
-      boolean noCurvatureInput = RobotMath.approximatelyZero(curvatureSetpoint);
+      // double relativeChange = RobotMath.relativeAngle(this.previousAngle, yaw);
 
-      if(this.isTurning && noCurvatureInput && !this.hasAngularVelocity()) {
+      // this.angularVelocity = this.angularVelocityHandler.feed(
+      //   relativeChange / RobotConstants.secondsPerTick
+      // );
+      // this.previousAngle = yaw;
 
-        this.setAngle = yaw;
-        this.isTurning = false;
-        this.headingPID.reset();
-        // this.tickAccumulation = 0;
-        System.out.println("SET PIVOT ANGLE:  " + yaw);
+      // boolean noCurvatureInput = RobotMath.approximatelyZero(curvatureSetpoint);
+
+      // if(this.isTurning && noCurvatureInput && !this.hasAngularVelocity()) {
+
+      //   this.setAngle = yaw;
+      //   this.isTurning = false;
+      //   this.headingPID.reset();
+      //   // this.tickAccumulation = 0;
+      //   System.out.println("SET PIVOT ANGLE:  " + yaw);
+      // }
+
+      // if(!noCurvatureInput) { // YES curvature input
+      //   this.isTurning = true;
+      // } else if(this.isTurning) { // no curvature input, isTurning is true
+      //   // this.tickAccumulation++;
+      // }
+
+      // double rotationInput = this.curvatureSetpoint;
+
+      // if(!this.isTurning) { // NOT TURNING
+      //   double relativeAngle = RobotMath.relativeAngle(this.setAngle, yaw);
+      //   rotationInput = this.headingPID.calculate(relativeAngle);
+      //   SmartDashboard.putNumber("relative_angle", relativeAngle);
+      // }
+      double rotationOutput = this.rotationInput;
+      SmartDashboard.putNumber("RotationInputPeriodic", this.rotationInput);
+      SmartDashboard.putNumber("RotationOutputPeriodic", rotationOutput);
+      //If the robot is not turning and if we are not already in a heading lock then turn on heading lock and set the target
+      //angle to the current heading
+      SmartDashboard.putBoolean("HeadingLock", headingLock);
+      if (rotationOutput == 0 && headingLock == false) {
+        headingLock = true;
+        headingPID.reset();//Prevent integral weirdness
+        headingPID.setSetpoint(imu.getYaw());
       }
 
-      if(!noCurvatureInput) { // YES curvature input
-        this.isTurning = true;
-      } else if(this.isTurning) { // no curvature input, isTurning is true
-        // this.tickAccumulation++;
+      //Disengage heading lock if bot is turning
+      if (rotationOutput != 0) {
+        headingLock = false;
       }
 
-      double rotationInput = this.curvatureSetpoint;
+      if (headingLock) {
+        //Locks the value in the proper range for curvature drive
+        double calculate = headingPID.calculate(imu.getYaw());
 
-      if(!this.isTurning) { // NOT TURNING
-        double relativeAngle = RobotMath.relativeAngle(this.setAngle, yaw);
-        rotationInput = this.headingPID.calculate(relativeAngle);
-        SmartDashboard.putNumber("relative_angle", relativeAngle);
+        System.out.println(calculate);
+
+        rotationOutput = MathUtil.clamp(calculate, -1, 1);
       }
+
       
-      this.setCurvatureDrive(
-        this.speedSetpoint, 
-        rotationInput, 
-        this.shouldQuickturn
-      );
+
+
+      SmartDashboard.putNumber("RotationOutput", rotationOutput);
+      differentialDrive.curvatureDrive(this.speedSetpoint, rotationOutput, this.shouldQuickturn);
 
       SmartDashboard.putNumber("angular_velocity", this.angularVelocity);
       SmartDashboard.putNumber("set_angle", setAngle);
@@ -233,7 +266,7 @@ public class Drivetrain extends SubsystemBase {
 
   public void stop() {
     this.speedSetpoint = 0.0;
-    this.curvatureSetpoint = 0.0;
+    this.rotationInput = 0.0;
     this.shouldQuickturn = false;
   }
 
@@ -258,7 +291,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void setCurvature(double curvature) {
-    this.curvatureSetpoint = curvature;
+    this.rotationInput = curvature;
   }
 
   public void setQuickturn(boolean quickturn) {
@@ -292,7 +325,9 @@ public class Drivetrain extends SubsystemBase {
     // System.out.println("" + speed+' '+ rotationInput+' '+ quickTurn);
     SmartDashboard.putNumber("Drivetrain/speed", speed);
     SmartDashboard.putNumber("Drivetrain/rotationInput", rotationInput);
-    differentialDrive.curvatureDrive(speed, rotationInput, quickTurn);
+    speedSetpoint = speed;
+    this.rotationInput = rotationInput;
+    shouldQuickturn = quickTurn;
   }
 
   public void setRightMotors(double speed) {

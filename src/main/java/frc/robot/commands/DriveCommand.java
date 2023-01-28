@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.Drivetrain;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -44,7 +45,7 @@ public class DriveCommand extends CommandBase {
     double rightTriggerInput = Math.pow(controller.getRightTriggerAxis(), 2);//used for forward movement
     double rotationInput = Math.pow(controller.getLeftX(), 2);
     rotationInput *= Math.signum(controller.getLeftX());//This is either -1 if the input is a negative or 1 if the input is a positive 
-
+    rotationInput = MathUtil.applyDeadband(rotationInput, 0.1);
 
     // After that you should multiply the rotation input number by -1 if the input was negative and by nothing if positive, you could use signum for this if you want to make it short.
     // You have to do this to make sure the rotation is in the proper range as squaring the input gets rid of the negative on the number and makes it a positive
@@ -66,11 +67,8 @@ public class DriveCommand extends CommandBase {
 
     // Pass the speed, rotation input, and the quickTurn in that order into setCurvatureDrive
     // This will allow for Drivetrain's DifferentalDrive to assign the motors to the correct values to make that movement
-	drivetrain.setSpeed(speed);
-    drivetrain.setCurvature(rotationInput);
-    drivetrain.setQuickturn(quickTurn);
-    //drivetrain.setCurvatureDrive(speed, rotationInput, quickTurn);
-	SmartDashboard.putNumber("right motor encoder", drivetrain.getRightEncoderCount());
+    drivetrain.setCurvatureDrive(speed, rotationInput, quickTurn);
+	  SmartDashboard.putNumber("right motor encoder", drivetrain.getRightEncoderCount());
     SmartDashboard.putNumber("left motor encoder", drivetrain.getLeftEncoderCount());
   }
 

@@ -27,9 +27,9 @@ public class Bot2020DrivePorts implements IDrivePorts {
     public static final double kIDriveDistance = 0.01;
     public static final double kDDriveDistance = 0.0;
     
-    public static final double kPKeepHeading = 0.014;
-    public static final double kIKeepHeading = 0.01;
-    public static final double kDKeepHeading = 0.001;
+    public static final double kPKeepHeading = 0.001;
+    public static final double kIKeepHeading = 0;
+    public static final double kDKeepHeading = 0;
     //public final IIMUWrapper imu = new NavxIMU(SPI.Port.kMXP);
     public final IIMUWrapper imu = new PigeonIMU(30); // TODO: When you have a pigeon installed
     @Override
