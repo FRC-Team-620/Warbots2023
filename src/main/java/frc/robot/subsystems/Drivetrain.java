@@ -66,7 +66,7 @@ public class Drivetrain extends SubsystemBase {
   
   private double angularVelocity = 0.0;
   public double getHeading() { // TODO: Remove Use Odom class
-    return navx.getAngle();
+    return imu.getAngle();//Could use getYaw
   }
   public double getPitch(){
     return imu.getPitch();
@@ -97,7 +97,6 @@ public class Drivetrain extends SubsystemBase {
     headingPID.setSetpoint(0.0); // IMPORTANT
     headingPID.setTolerance(2,1);
 
-    navx = new AHRS(Port.kMXP);
     setAngle = this.getYaw();
     SmartDashboard.putNumber("heading_angle", 0.0);
 
@@ -128,7 +127,6 @@ public class Drivetrain extends SubsystemBase {
   }
 
   private void initSensors() {
-    navx = new AHRS(Port.kMXP);
     leftFrontEncoder = leftFrontMotor.getEncoder();
     rightFrontEncoder = rightFrontMotor.getEncoder();
     leftRearEncoder = leftRearMotor.getEncoder();
@@ -155,7 +153,7 @@ public class Drivetrain extends SubsystemBase {
       SmartDashboard.putNumber("Heading", imu.getYaw());
       
       // System.out.println(leftFrontEncoder.getPosition());
-	  double yaw = this.getYaw();
+	    double yaw = this.getYaw();
 
       double relativeChange = RobotMath.relativeAngle(this.previousAngle, yaw);
 
