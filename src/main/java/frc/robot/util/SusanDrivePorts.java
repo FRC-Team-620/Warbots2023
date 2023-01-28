@@ -1,5 +1,7 @@
 package frc.robot.util;
 
+import edu.wpi.first.wpilibj.SPI;
+
 public class SusanDrivePorts implements IDrivePorts {
 
     public final int leftFrontMotorCANId = 4;
@@ -11,6 +13,7 @@ public class SusanDrivePorts implements IDrivePorts {
     public final boolean leftFrontMotorInversion = true;
 
     public final double wheelDiameterInInches = 6;
+    public final IIMUWrapper imu = new NavxIMU(SPI.Port.kMXP);
 
     public final double autoDistanceKP = 50;
     public final double autoDistanceKI = 0.5;
@@ -30,37 +33,30 @@ public class SusanDrivePorts implements IDrivePorts {
     public static final double kDKeepHeading = 0.001;
     @Override
     public int getLeftFrontMotorCANId() {
-        // TODO Auto-generated method stub
         return leftFrontMotorCANId;
     }
     @Override
     public int getRightFrontMotorCANId() {
-        // TODO Auto-generated method stub
        return rightFrontMotorCANId;
     }
     @Override
     public int getLeftRearMotorCANId() {
-        // TODO Auto-generated method stub
         return leftRearMotorCANId;
     }
     @Override
     public int getRightRearMotorCANId() {
-        // TODO Auto-generated method stub
         return rightRearMotorCANId;
     }
     @Override
     public boolean getRightFrontMotorInversion() {
-        // TODO Auto-generated method stub
         return rightFrontMotorInversion;
     }
     @Override
     public boolean getLeftFrontMotorInversion() {
-        // TODO Auto-generated method stub
         return leftFrontMotorInversion;
     }
     @Override
     public double getWheelDiameterInInches() {
-        // TODO Auto-generated method stub
         return wheelDiameterInInches;
     }
     @Override
@@ -122,5 +118,9 @@ public class SusanDrivePorts implements IDrivePorts {
     public double getkDKeepHeading() {
         // TODO Auto-generated method stub
         return kDKeepHeading;
+    }
+    @Override
+    public IIMUWrapper getIMU() {
+        return imu;
     }
 }

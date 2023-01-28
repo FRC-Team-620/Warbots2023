@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.WheelConstants;
+import frc.robot.util.IIMUWrapper;
 import frc.robot.util.sim.NavxWrapper;
 import frc.robot.util.sim.RevEncoderSimWrapper;
 import frc.robot.RobotMath;
@@ -54,7 +55,7 @@ public class Drivetrain extends SubsystemBase {
   private RelativeEncoder leftRearEncoder;
   private RelativeEncoder rightFrontEncoder;
   private RelativeEncoder rightRearEncoder;
-  private AHRS navx;
+  private IIMUWrapper imu = Constants.driveports.getIMU();
   
   private PIDController headingPID; // SETPOINT IS ALWAYS 0 (we give it a relative angle)
   private DifferentialDriveOdometry odometry;
@@ -68,7 +69,7 @@ public class Drivetrain extends SubsystemBase {
     return navx.getAngle();
   }
   public double getPitch(){
-    return navx.getPitch();
+    return imu.getPitch();
   }
 
   private double setAngle;
@@ -78,7 +79,6 @@ public class Drivetrain extends SubsystemBase {
 
   private RobotMath.DiminishingAverageHandler angularVelocityHandler;
   private DifferentialDrive differentialDrive;
-  
   /** Creates a new Drivetrain. */
   public Drivetrain() {
     SmartDashboard.putNumber("Drivetrain/leftFrontCANID", leftFrontMotor.getDeviceId());
@@ -146,15 +146,16 @@ public class Drivetrain extends SubsystemBase {
     //leftFrontEncoder.setPositionConversionFactor(DriveConstants.metersPerEncoderTick);
     //rightFrontEncoder.setPositionConversionFactor(DriveConstants.metersPerEncoderTick);
     
-    odometry = new DifferentialDriveOdometry(navx.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
+    odometry = new DifferentialDriveOdometry(imu.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
 }
   
   @Override
   public void periodic() {
-      odometry.update(navx.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
-      SmartDashboard.putNumber("Heading", navx.getYaw());
+      odometry.update(imu.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
+      SmartDashboard.putNumber("Heading", imu.getYaw());
       
-      double yaw = this.getYaw();
+      // System.out.println(leftFrontEncoder.getPosition());
+	  double yaw = this.getYaw();
 
       double relativeChange = RobotMath.relativeAngle(this.previousAngle, yaw);
 
@@ -229,7 +230,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double getYaw() {
-    return this.navx.getYaw();
+    return this.imu.getYaw();
   }
 
   public void stop() {
