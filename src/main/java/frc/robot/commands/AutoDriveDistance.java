@@ -13,80 +13,57 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.Drivetrain;
 
-public class AutoDriveDistance extends CommandBase {//Not WORKING DO NOT USE PLEASE
+public class AutoDriveDistance extends CommandBase {
   Drivetrain drivetrain;
-  private double distance;
-  private double autoSpeed = 0.5;
 
   private Pose2d initPose;
-  
+
   private ProfiledPIDController distancePID;
-  private Timer timer;
-  // protected final PIDController leftPID;
-  // protected final PIDController rightPID;
+
   /** Creates a new AutoDriveDistance. */
   public AutoDriveDistance(Drivetrain drivetrain, double distance) {
-    // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
-    this.distance = distance;
-    this.distancePID = new ProfiledPIDController(AutoConstants.autoDistanceKP, AutoConstants.autoDistanceKI, AutoConstants.autoDistanceKD, new Constraints(AutoConstants.maxVelocity, AutoConstants.maxAcceleration));
+    this.distancePID = new ProfiledPIDController(AutoConstants.autoDistanceKP, AutoConstants.autoDistanceKI,
+        AutoConstants.autoDistanceKD, new Constraints(AutoConstants.maxVelocity, AutoConstants.maxAcceleration));
     distancePID.setGoal(distance);
-    this.timer = new Timer();
+    distancePID.setTolerance(Units.inchesToMeters(1),0.2);
     addRequirements(drivetrain);
   }
 
   @Override
   public void initialize() {
     this.initPose = this.drivetrain.getPose();
-    timer.start();
+    SmartDashboard.putData("DriveDist pid", distancePID); // Add pid loop to glass/SD and network tables
+    distancePID.reset(new State(0,0));
   }
 
-  // // Called when the command is initially scheduled.
-  // @Override
-  // public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // System.out.println(timer.get());
-    
-    double value = this.distancePID.calculate(getRelativeDistance());
-    // System.out.println(value + " " + moved + " " + setpoint);
+    var moved = getRelativeDistance();
+    double value = this.distancePID.calculate(moved);
     this.drivetrain.setCurvatureDrive(value, 0, false);
+    SmartDashboard.putNumber("DriveDist pid/distance", moved);
+    SmartDashboard.putNumber("DriveDist pid/goal", distancePID.getGoal().position);
+    SmartDashboard.putNumber("DriveDist pid/setpoint2", distancePID.getSetpoint().position);
   }
 
-  private double getRelativeDistance(){
-    return new Transform2d(initPose,this.drivetrain.getPose()).getTranslation().getX();
+  private double getRelativeDistance() {
+    return new Transform2d(initPose, this.drivetrain.getPose()).getTranslation().getX();
   }
-  public boolean withinBounds() {
-    return this.distancePID.atGoal();
-  }
-
-  private double getDisplacement() {
-    return this.initPose.getTranslation().getDistance(this.drivetrain.getPose().getTranslation());
-  }
-
-
-
-
-  // public double averageDistance() {
-  //   return (drivetrain.getLeftPosition() + drivetrain.getRightPosition()) / 2;
-  // }
-
-  // // Called once the command ends or is interrupted.
-  // @Override
-  // public void end(boolean interrupted) {}
 
   // // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println("Displacement: " + this.getDisplacement());
-    return this.withinBounds();
+    return this.distancePID.atGoal();
   }
 
   @Override
