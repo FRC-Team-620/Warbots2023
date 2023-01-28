@@ -63,12 +63,12 @@ public final class Constants {
   }
 
   public class AutoConstants{
-    public static final double autoDistanceKP = 50;
-    public static final double autoDistanceKI = 0.5;
-    public static final double autoDistanceKD = 0.0;
+    public static final double autoDistanceKP = 2;
+    public static final double autoDistanceKI = 0.2;
+    public static final double autoDistanceKD = 0.1;
 
-    public static final double maxVelocity = 10;
-    public static final double maxAcceleration = 10;
+    public static final double maxVelocity = 2;
+    public static final double maxAcceleration = 2;
 
     public static final double balanceCreepSpeed = 0.1;
   }
