@@ -37,7 +37,8 @@ public class DriveStraight extends CommandBase {
     @Override
     public void execute() {
         double current = this.drivetrain.getLeftEncoderCount();
-        this.drivetrain.setSpeed(this.distancePID.calculate(current));
+        // this.drivetrain.setSpeed(this.distancePID.calculate(current));
+        this.drivetrain.setCurvatureDrive(this.distancePID.calculate(current), 0, false);
 
         SmartDashboard.putNumber("distance setpoint", this.distancePID.getSetpoint());
         SmartDashboard.putNumber("distance current", drivetrain.getLeftEncoderCount()); 

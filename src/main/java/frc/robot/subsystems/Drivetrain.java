@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -12,33 +11,24 @@ import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.RobotController;
-//import edu.wpi.first.wpilibj.SPI.Port;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.RobotConstants;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.WheelConstants;
+import frc.robot.RobotMath;
 import frc.robot.util.IIMUWrapper;
 import frc.robot.util.sim.NavxWrapper;
 import frc.robot.util.sim.RevEncoderSimWrapper;
-import frc.robot.RobotMath;
 
 public class Drivetrain extends SubsystemBase {
   
@@ -59,16 +49,17 @@ public class Drivetrain extends SubsystemBase {
   private RelativeEncoder rightRearEncoder;
   private IIMUWrapper imu = Constants.driveports.getIMU();
   
-  private PIDController headingPID; // SETPOINT IS ALWAYS 0 (we give it a relative angle)
+  private PIDController headingPID;
   private DifferentialDriveOdometry odometry;
   
-  private double speedSetpoint = 0.0;
-  private double rotationInput = 0.0;
-  private boolean shouldQuickturn = false;
+  private double commandedXSpeed = 0.0;
+  private double commandedZRotation = 0.0;
+  private boolean commandedAllowTurnInPlace = false;
   
   private double angularVelocity = 0.0;
 
   private boolean headingLock = false;
+  
   public double getHeading() { // TODO: Remove Use Odom class
     return imu.getAngle();//Could use getYaw
   }
@@ -89,6 +80,7 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("Drivetrain/rightFrontCANID", rightFrontMotor.getDeviceId());
     SmartDashboard.putNumber("Drivetrain/leftRearCANID", leftRearMotor.getDeviceId());
     SmartDashboard.putNumber("Drivetrain/rightRearCANID", rightRearMotor.getDeviceId());
+    
     setupMotors();
     setupFollowerMotors();
     initSensors();
@@ -98,13 +90,12 @@ public class Drivetrain extends SubsystemBase {
       Constants.driveports.getkIKeepHeading(),
       Constants.driveports.getkDKeepHeading()
     );
-    SmartDashboard.putData("headingPID", headingPID);
+    SmartDashboard.putData("DriveTrainHeading", headingPID);
+    
     headingPID.enableContinuousInput(-180, 180);
-    headingPID.setSetpoint(0.0); // IMPORTANT
+    // headingPID.setSetpoint(0.0); // IMPORTANT
     headingPID.setTolerance(2,1);
 
-    //setAngle = this.getYaw();
-    SmartDashboard.putNumber("Drivetrain/heading_angle", imu.getYaw());
 
     //this.angularVelocityHandler = new RobotMath.DiminishingAverageHandler(2);
     //Setup differential drive with left front and right front motors as the parameters for the new DifferentialDrive
@@ -137,7 +128,7 @@ public class Drivetrain extends SubsystemBase {
     rightFrontEncoder = rightFrontMotor.getEncoder();
     leftRearEncoder = leftRearMotor.getEncoder();
     rightRearEncoder = rightRearMotor.getEncoder();
-    SmartDashboard.putNumber("ConversionFactor", WheelConstants.conversionFactor);
+    SmartDashboard.putNumber("Drivetrain/ConversionFactor", WheelConstants.conversionFactor);
 
     leftFrontEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
     rightFrontEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
@@ -156,13 +147,10 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
       odometry.update(imu.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
-      SmartDashboard.putNumber("Heading", imu.getYaw());
+      double yaw = imu.getYaw();
+      SmartDashboard.putNumber("Drivetrain/Heading", yaw);
       
       // System.out.println(leftFrontEncoder.getPosition());
-	    double yaw = this.getYaw();
-
-
-
       // double relativeChange = RobotMath.relativeAngle(this.previousAngle, yaw);
 
       // this.angularVelocity = this.angularVelocityHandler.feed(
@@ -194,41 +182,40 @@ public class Drivetrain extends SubsystemBase {
       //   rotationInput = this.headingPID.calculate(relativeAngle);
       //   SmartDashboard.putNumber("relative_angle", relativeAngle);
       // }
-      double rotationOutput = this.rotationInput;
-      SmartDashboard.putNumber("RotationInputPeriodic", this.rotationInput);
-      SmartDashboard.putNumber("RotationOutputPeriodic", rotationOutput);
-      //If the robot is not turning and if we are not already in a heading lock then turn on heading lock and set the target
-      //angle to the current heading
-      SmartDashboard.putBoolean("HeadingLock", headingLock);
+
+      double rotationOutput = this.commandedZRotation;
+      SmartDashboard.putNumber("Drivetrain/RotationInputPeriodic", this.commandedZRotation);
+      SmartDashboard.putNumber("Drivetrain/RotationOutputPeriodic", rotationOutput);
+      SmartDashboard.putBoolean("Drivetrain/HeadingLock", headingLock);
+      // If the robot is not turning and if we are not already in a heading lock then turn on heading lock and set the target
+      // angle to the current heading
+      
       if (rotationOutput == 0 && headingLock == false) {
         headingLock = true;
         headingPID.reset();//Prevent integral weirdness
-        headingPID.setSetpoint(imu.getYaw());
+        headingPID.setSetpoint(yaw);
       }
 
-      //Disengage heading lock if bot is turning
-      if (rotationOutput != 0) {
+      // Disengage heading lock if bot is turning
+      if (this.commandedZRotation != 0) {
         headingLock = false;
       }
 
       if (headingLock) {
-        //Locks the value in the proper range for curvature drive
-        double calculate = headingPID.calculate(imu.getYaw());
-
-        System.out.println(calculate);
-
+        // Locks the value in the proper range for curvature drive
+        double calculate = headingPID.calculate(yaw);
         rotationOutput = MathUtil.clamp(calculate, -1, 1);
       }
 
       
 
 
-      SmartDashboard.putNumber("RotationOutput", rotationOutput);
-      differentialDrive.curvatureDrive(this.speedSetpoint, rotationOutput, this.shouldQuickturn);
+      SmartDashboard.putNumber("Drivetrain/RotationOutput", rotationOutput);
+      differentialDrive.curvatureDrive(this.commandedXSpeed, rotationOutput, this.commandedAllowTurnInPlace);
 
-      SmartDashboard.putNumber("angular_velocity", this.angularVelocity);
-      SmartDashboard.putNumber("set_angle", setAngle);
-      SmartDashboard.putNumber("heading_angle", yaw);
+      SmartDashboard.putNumber("Drivetrain/angular_velocity", this.angularVelocity);
+      SmartDashboard.putNumber("Drivetrain/set_angle", setAngle);
+      SmartDashboard.putNumber("Drivetrain/heading_angle", yaw);
   }
   
   private CANSparkMax setupMotor(CANSparkMax motor) {
@@ -248,57 +235,57 @@ public class Drivetrain extends SubsystemBase {
    * 
    * @return Angular velocity for the yaw in degrees per second
    */
-  public double getAngularVelocity() {
+  public double getAngularVelocity() { // TODO: Remove
     return this.angularVelocity;
   }
 
-  public boolean hasAngularVelocity() {
+  public boolean hasAngularVelocity() { // TODO: Remove
     return !RobotMath.approximatelyZero(this.getAngularVelocity(), 0.5);
   }
 
-  public void resetAngularVelocity() {
-    this.angularVelocityHandler.reset();
+  public void resetAngularVelocity() { // TODO: Remove
+    // this.angularVelocityHandler.reset();
   }
 
-  public double getYaw() {
+  public double getYaw() { // TODO: Remove Use Odometry instead
     return this.imu.getYaw();
   }
 
   public void stop() {
-    this.speedSetpoint = 0.0;
-    this.rotationInput = 0.0;
-    this.shouldQuickturn = false;
+    this.commandedXSpeed = 0.0;
+    this.commandedZRotation = 0.0;
+    this.commandedAllowTurnInPlace = false;
   }
 
-  public void setCurrentAngle(double angle) {
+  public void setCurrentAngle(double angle) { // TODO: Remove Use command Framework
     this.setAngle = angle;
   }
 
-  public void turnRelativeAngle(double deltaAngle) {
+  public void turnRelativeAngle(double deltaAngle) { // TODO: Remove Use command Framework
     this.setCurrentAngle(RobotMath.shiftAngle(this.setAngle, deltaAngle));
   }
 
-  public boolean atAngleSetpoint() {
+  public boolean atAngleSetpoint() { // TODO: Remove
     return this.headingPID.atSetpoint();
   }
 
-  public void resetAnglePID() {
+  public void resetAnglePID() { // TODO: Remove
     this.headingPID.reset();
   }
 
-  public void setSpeed(double speed) {
-    this.speedSetpoint = speed;
-  }
+  // public void setSpeed(double speed) { // TODO: Remove
+  //   this.xspeed = speed;
+  // }
 
-  public void setCurvature(double curvature) {
-    this.rotationInput = curvature;
-  }
+  // public void setCurvature(double curvature) {
+  //   this.zrotation = curvature;
+  // }
 
-  public void setQuickturn(boolean quickturn) {
-    this.shouldQuickturn = quickturn;
-  }
+  // public void setQuickturn(boolean quickturn) {
+  //   this.allowTurnInPlace = quickturn;
+  // }
 
-  public void resetEncoders() {
+  public void resetEncoders() { // TODO: Remove create reset odometry class This will cause bugs with the odometry
     leftFrontEncoder.setPosition(0.0);
     rightFrontEncoder.setPosition(0.0);
   }
@@ -312,28 +299,28 @@ public class Drivetrain extends SubsystemBase {
     leftFrontMotor.setInverted(Constants.driveports.getLeftFrontMotorInversion());
   }
 
-  public double getRightEncoderCount() {
+  public double getRightEncoderCount() { //TODO: probably remove in favor for odometry
     return (rightFrontEncoder.getPosition() + rightRearEncoder.getPosition()) / 2.0;
   }
 
-  public double getLeftEncoderCount() {
+  public double getLeftEncoderCount() { //TODO: probably remove in favor for odometry
     return (leftFrontEncoder.getPosition() + leftRearEncoder.getPosition()) / 2.0;
   } 
 
   //Sets the differential drive using the method curvatureDrive
   public void setCurvatureDrive(double speed, double rotationInput, boolean quickTurn) {
     // System.out.println("" + speed+' '+ rotationInput+' '+ quickTurn);
-    SmartDashboard.putNumber("Drivetrain/speed", speed);
-    SmartDashboard.putNumber("Drivetrain/rotationInput", rotationInput);
-    speedSetpoint = speed;
-    this.rotationInput = rotationInput;
-    shouldQuickturn = quickTurn;
+    SmartDashboard.putNumber("Drivetrain/speed", speed); //TODO: Remove update values in periodic
+    SmartDashboard.putNumber("Drivetrain/rotationInput", rotationInput); //TODO: Remove update values in periodic
+    this.commandedXSpeed = speed;
+    this.commandedZRotation = rotationInput;
+    this.commandedAllowTurnInPlace = quickTurn;
   }
 
-  public void setRightMotors(double speed) {
+  public void setRightMotors(double speed) { //TODO: Do we need these methods?
     rightFrontMotor.set(speed);
   }
-  public void setLeftMotors(double speed) {
+  public void setLeftMotors(double speed) {//TODO: Do we need these methods?
     leftFrontMotor.set(speed);
   }
 
@@ -385,6 +372,6 @@ public class Drivetrain extends SubsystemBase {
         this.rightencsim.setDistance(m_drivetrainSimulator.getRightPositionMeters());
         this.rightencsim.setVelocity(m_drivetrainSimulator.getRightVelocityMetersPerSecond());
 
-        simGryo.getYawGyro().setAngle(-m_drivetrainSimulator.getHeading().getDegrees()); // TODO add Gyo Vel support
+        simGryo.getYawGyro().setAngle(-MathUtil.inputModulus(m_drivetrainSimulator.getHeading().getDegrees(), -180, 180)); // TODO add Gyo Vel support
     }
 }
