@@ -1,5 +1,7 @@
 package frc.robot.util;
 
+import com.ctre.phoenix.sensors.Pigeon2Configuration;
+
 import edu.wpi.first.wpilibj.SPI;
 
 public class Bot2020DrivePorts implements IDrivePorts {
@@ -27,11 +29,17 @@ public class Bot2020DrivePorts implements IDrivePorts {
     public static final double kIDriveDistance = 0.01;
     public static final double kDDriveDistance = 0.0;
     
-    public static final double kPKeepHeading = 0.001;
-    public static final double kIKeepHeading = 0;
+    public static final double kPKeepHeading = 0.010;
+    public static final double kIKeepHeading = 0.010;
     public static final double kDKeepHeading = 0;
     //public final IIMUWrapper imu = new NavxIMU(SPI.Port.kMXP);
-    public final IIMUWrapper imu = new PigeonIMU(30); // TODO: When you have a pigeon installed
+    public final IIMUWrapper imu = new PigeonIMU(30, getimConfiguration()); // TODO: When you have a pigeon installed
+
+    private Pigeon2Configuration getimConfiguration() {
+        Pigeon2Configuration config = new Pigeon2Configuration();
+        config.EnableCompass = false;
+        return config;
+    }
     @Override
     public int getLeftFrontMotorCANId() {
         return leftFrontMotorCANId;
