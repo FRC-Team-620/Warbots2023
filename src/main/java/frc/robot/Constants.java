@@ -62,7 +62,6 @@ public final class Constants {
     public static final double ksubstationShelfHeightMeters = Units.inchesToMeters(37.75);
     public static final double kchargeStationLengthMeters = Units.inchesToMeters(48);
   }
-  public static final PIDConfig autoDistanceConfig = new PIDConfig(AutoConstants.autoDistanceKP, AutoConstants.autoDistanceKI, AutoConstants.autoDistanceKD);
   public class AutoConstants{
     public static final double autoDistanceKP = 2;
     public static final double autoDistanceKI = 0.2;
