@@ -1,32 +1,32 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
-public class ArmCommand extends CommandBase{
+public class GrabberCommand extends CommandBase{
 
-  ArmSubsystem armSubsystem;
+  GrabberSubsystem grabberSubsystem;
   private CommandXboxController controller;
   
   //Constructor 
-  public ArmCommand(ArmSubsystem armSubsystem){
+  public GrabberCommand(ArmSubsystem armSubsystem){
     this.armSubsystem = armSubsystem;
   }
 
   // execute
   @Override
   public void execute() {
-    armSubsystem.setSolenoid(!this.armSubsystem.getSolenoid());
+    grabberSubsystem.setSolenoid(!this.armSubsystem.getSolenoid());
     //enables the controller inputs for arm subsystem 
     double controlLength = Math.pow(controller.getRightX(), 2);
     double controlHeight = Math.pow(controller.getRightY(), 2);
-
-
+    
+    boolean grabberClosed=controller.b().getAsBoolean();
+    
+    
 
     //enables the motors to control their respective jobs
-    armSubsystem.setHorizontalArmMotor(controlLength);
-    armSubsystem.setVerticalArmMotor(controlHeight);
 
   }
 

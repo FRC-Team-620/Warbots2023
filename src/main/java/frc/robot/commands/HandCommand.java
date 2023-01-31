@@ -1,16 +1,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.HandSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
-public class ArmCommand extends CommandBase{
+public class HandCommand extends CommandBase{
 
   ArmSubsystem armSubsystem;
   private CommandXboxController controller;
   
   //Constructor 
-  public ArmCommand(ArmSubsystem armSubsystem){
+  public HandCommand(ArmSubsystem armSubsystem){
     this.armSubsystem = armSubsystem;
   }
 
