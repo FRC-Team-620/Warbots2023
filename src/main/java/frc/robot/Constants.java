@@ -18,8 +18,29 @@ import frc.robot.util.PIDConfig;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  public static class RobotConstants {
+    public static final double secondsPerTick = 0.02;
+  }
+
+  public static class DriveConstants {
+    public static final double kPDriveDistance = 0.8;
+    public static final double kIDriveDistance = 0.01;
+    public static final double kDDriveDistance = 0.0;
+
+    public static final double kPKeepHeading = 0.014;
+    public static final double kIKeepHeading = 0.01;
+    public static final double kDKeepHeading = 0.001;
+
+    //public static final double metersPerEncoderTick = 0.03763;
+
+    public static final double angleSetBufferSeconds = 0.25;
+    public static final double angleSetBufferTicks = 
+      DriveConstants.angleSetBufferSeconds / RobotConstants.secondsPerTick;
+  }
   public static class OperatorConstants {
     public static final int driverControllerPort = 0;
+	  public static final int operatorControllerPort = 1;
   }
 
   public static class RobotMathConstants {
@@ -40,9 +61,8 @@ public final class Constants {
 
     public static final double gearRatio = 0.12;
     
-
-  }
-   //All measurements in meters
+ }
+	//All measurements in meters
   public static class ArenaConstants {
     public static final double kmidCubeHeightMeters = Units.inchesToMeters(18.25);
     public static final double khighCubeHeightMeters = Units.inchesToMeters(35.5);
@@ -62,6 +82,7 @@ public final class Constants {
     public static final double ksubstationShelfHeightMeters = Units.inchesToMeters(37.75);
     public static final double kchargeStationLengthMeters = Units.inchesToMeters(48);
   }
+
   public class AutoConstants{
     public static final double autoDistanceKP = 2;
     public static final double autoDistanceKI = 0.2;

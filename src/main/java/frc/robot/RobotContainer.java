@@ -4,16 +4,16 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.ArmCommand;
-import frc.robot.commands.AutoDriveDistance;
-import frc.robot.commands.Autos;
-import frc.robot.commands.DriveCommand;
-import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ArmCommand;
+import frc.robot.commands.DriveCommand;
+import frc.robot.commands.DriveStraight;
+import frc.robot.commands.TurnDeltaAngle;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.Drivetrain;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -38,7 +38,7 @@ public class RobotContainer {
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupp1lier)} constructor with an arbitrary
+   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
    * predicate, or via the named factories in {@link
    * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
    * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
@@ -47,8 +47,13 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Triggers are a thing that we might need to use so keep that in mind
-    driver.b().onTrue(new ArmCommand(armSubsystem));
+	  driver.b().onTrue(new ArmCommand(armSubsystem));
     // driver.x().onTrue(new AutoDriveDistance(drivetrain, 100));
+
+    // driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
+    driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
+
+    driver.x().onTrue(new DriveStraight(drivetrain, 2));
   }
 
   /**
@@ -58,11 +63,11 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    // return Autos.taxi(drivetrain);
-    return new AutoDriveDistance(drivetrain, 0.05);
+    //return Autos.taxi(drivetrain);
+    return new DriveStraight(drivetrain, 2);
   }
 
-  public Drivetrain getDrivetrain(){
+  public Drivetrain getDrivetrain() {
     return this.drivetrain;
   }
 }

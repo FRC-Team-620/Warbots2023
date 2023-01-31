@@ -13,6 +13,23 @@ public interface IDrivePorts {
 
   public double getWheelDiameterInInches();
 
+  public double getAutoDistanceKP();
+  public double getAutoDistanceKI();
+  public double getAutoDistanceKD();
+
+  public double getMaxVelocity();
+  public double getMaxAcceleration();
+
+  public double getBalanceCreepSpeed();
+
+  public double getkPDriveDistance();
+  public double getkIDriveDistance(); 
+  public double getkDDriveDistance();
+
+  public double getkPKeepHeading();
+  public double getkIKeepHeading();
+  public double getkDKeepHeading();
+
   public IIMUWrapper getIMU();
 
   public static IDrivePorts getDrivePorts(Constants.RobotType type) {

@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.Drivetrain;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -44,7 +45,12 @@ public class DriveCommand extends CommandBase {
     double rightTriggerInput = Math.pow(controller.getRightTriggerAxis(), 2);//used for forward movement
     double rotationInput = Math.pow(controller.getLeftX(), 2);
     rotationInput *= Math.signum(controller.getLeftX());//This is either -1 if the input is a negative or 1 if the input is a positive 
+    rotationInput = MathUtil.applyDeadband(rotationInput, 0.1);
 
+    // After that you should multiply the rotation input number by -1 if the input was negative and by nothing if positive, you could use signum for this if you want to make it short.
+    // You have to do this to make sure the rotation is in the proper range as squaring the input gets rid of the negative on the number and makes it a positive
+
+    // Create a boolean called quickTurn that equals true (quickTurn is used to give the drivers the option to use CurvertureDrive or not)
     // Make an if statement that checks if the controller has the A button held and sets quickTurn to false
     boolean quickTurn = true;//Used for tank steering if true
     if (controller.a().getAsBoolean()) {//if the A button is held then tank steering is enabled
@@ -56,32 +62,21 @@ public class DriveCommand extends CommandBase {
 
     //The if statement allows for the left and right inputs to be pressed down at the same time but the one pressed down more
     //controls the bot
-    //rightfront, rightback
     speed = rightTriggerInput > leftTriggerInput ? rightTriggerInput : -leftTriggerInput;
     
+
     // Pass the speed, rotation input, and the quickTurn in that order into setCurvatureDrive
     // This will allow for Drivetrain's DifferentalDrive to assign the motors to the correct values to make that movement
-
-    if (controller.rightBumper().getAsBoolean()) {
-      rotationInput *= 0.5;
-    }
     drivetrain.setCurvatureDrive(speed, rotationInput, quickTurn);
-    //drivetrain.setRightMotors(1);
-    //drivetrain.setLeftMotors(1);
-
-    // SmartDashboard.putNumber("left encoder meter", Units.inchesToMeters((drivetrain.getLeftEncoderCount() * 2.77)));
-    // SmartDashboard.putNumber("right encoder meter", Units.inchesToMeters((drivetrain.getRightEncoderCount() * 2.77)));
-    //1 meter = 2.255624702911377 //fudge
-    //1 meter = 1.225663065910339 //math
-    SmartDashboard.putNumber("left encoder meter", drivetrain.getLeftEncoderCount());
-    SmartDashboard.putNumber("right encoder meter", drivetrain.getRightEncoderCount());
-  
+	  SmartDashboard.putNumber("right motor encoder", drivetrain.getRightEncoderCount());
+    SmartDashboard.putNumber("left motor encoder", drivetrain.getLeftEncoderCount());
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
-
+  public void end(boolean interrupted) {
+    drivetrain.stop();
+  }
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
