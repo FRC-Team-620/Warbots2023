@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.WheelConstants;
 import frc.robot.RobotMath;
 import frc.robot.util.IIMUWrapper;
@@ -128,6 +129,8 @@ public class Drivetrain extends SubsystemBase {
   }
 
   private void initSensors() {
+    this.previousAngle = this.getHeading();
+
     leftFrontEncoder = leftFrontMotor.getEncoder();
     rightFrontEncoder = rightFrontMotor.getEncoder();
     leftRearEncoder = leftRearMotor.getEncoder();
@@ -146,12 +149,15 @@ public class Drivetrain extends SubsystemBase {
     //rightFrontEncoder.setPositionConversionFactor(DriveConstants.metersPerEncoderTick);
     
     odometry = new DifferentialDriveOdometry(imu.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
+    
 }
   
   @Override
   public void periodic() {
       odometry.update(imu.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
       double yaw = imu.getYaw();
+      angularVelocityHandler.feed((yaw-previousAngle)/RobotConstants.secondsPerTick);
+
       SmartDashboard.putNumber("Drivetrain/Heading", yaw);
       
       // System.out.println(leftFrontEncoder.getPosition());
@@ -202,7 +208,16 @@ public class Drivetrain extends SubsystemBase {
         if (!isAntiSnapback) {
           antiSnapBackTimer.start();
         }
-
+        else{
+          if (!this.hasAngularVelocity()){
+            antiSnapBackTimer.stop();
+            antiSnapBackTimer.reset();
+            isAntiSnapback= false;
+            headingLock = true;
+            headingPID.reset();
+            headingPID.setSetpoint(imu.getYaw());
+          }
+        }
         if (antiSnapBackTimer.get() > 2) {
           antiSnapBackTimer.stop();
           antiSnapBackTimer.reset();
@@ -270,12 +285,8 @@ public class Drivetrain extends SubsystemBase {
     return !RobotMath.approximatelyZero(this.getAngularVelocity(), 0.5);
   }
 
-  public void resetAngularVelocity() { // TODO: Remove
-    // this.angularVelocityHandler.reset();
-  }
-
   public double getYaw() { // TODO: Remove Use Odometry instead
-    return this.imu.getYaw();
+    return MathUtil.angleModulus(this.odometry.getPoseMeters().getRotation().getDegrees());
   }
 
   public void stop() {
