@@ -41,7 +41,7 @@ public interface IDrivePorts {
       case BOT_2020:
         return new Bot2020DrivePorts();
       default:
-        System.err.println("WARNING!: babybot defaulted");
+        System.err.println("WARNING!: DEFAULTED TO BABYBOT");
         return new BabybotDrivePorts(); // TODO: Default to babybot
     }
   }

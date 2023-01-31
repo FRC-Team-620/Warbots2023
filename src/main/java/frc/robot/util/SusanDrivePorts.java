@@ -15,22 +15,15 @@ public class SusanDrivePorts implements IDrivePorts {
     public final double wheelDiameterInInches = 6;
     public final IIMUWrapper imu = new NavxIMU(SPI.Port.kMXP);
 
-    public final double autoDistanceKP = 50;
-    public final double autoDistanceKI = 0.5;
-    public final double autoDistanceKD = 0.0;
+    public PIDConfig autoDistanceSusanPID = new PIDConfig(50, 0.5, 0.0);
+    public PIDConfig DriveDistanceSusanPID = new PIDConfig(0.8, 0.01, 0.0);
+    public PIDConfig KeepHeadingSusanPID = new PIDConfig(0.014, 0.01, 0.001);
 
     public final double maxVelocity = 10;
     public final double maxAcceleration = 10;
 
     public final double balanceCreepSpeed = 0.1;
 
-    public static final double kPDriveDistance = 0.8;
-    public static final double kIDriveDistance = 0.01;
-    public static final double kDDriveDistance = 0.0;
-
-    public static final double kPKeepHeading = 0.014;
-    public static final double kIKeepHeading = 0.01;
-    public static final double kDKeepHeading = 0.001;
     @Override
     public int getLeftFrontMotorCANId() {
         return leftFrontMotorCANId;
@@ -62,17 +55,17 @@ public class SusanDrivePorts implements IDrivePorts {
     @Override
     public double getAutoDistanceKP() {
         // TODO Auto-generated method stub
-        return autoDistanceKP;
+        return autoDistanceSusanPID.kp;
     }
     @Override
     public double getAutoDistanceKI() {
         // TODO Auto-generated method stub
-        return autoDistanceKI;
+        return autoDistanceSusanPID.ki;
     }
     @Override
     public double getAutoDistanceKD() {
         // TODO Auto-generated method stub
-        return autoDistanceKD;
+        return autoDistanceSusanPID.kd;
     }
     @Override
     public double getMaxVelocity() {
@@ -92,32 +85,32 @@ public class SusanDrivePorts implements IDrivePorts {
     @Override
     public double getkPDriveDistance() {
         // TODO Auto-generated method stub
-        return kPDriveDistance;
+        return DriveDistanceSusanPID.kp;
     }
     @Override
     public double getkIDriveDistance() {
         // TODO Auto-generated method stub
-        return kIDriveDistance;
+        return DriveDistanceSusanPID.ki;
     }
     @Override
     public double getkDDriveDistance() {
         // TODO Auto-generated method stub
-        return kDDriveDistance;
+        return DriveDistanceSusanPID.kd;
     }
     @Override
     public double getkPKeepHeading() {
         // TODO Auto-generated method stub
-        return kPKeepHeading;
+        return KeepHeadingSusanPID.kp;
     }
     @Override
     public double getkIKeepHeading() {
         // TODO Auto-generated method stub
-        return kIKeepHeading;
+        return KeepHeadingSusanPID.ki;
     }
     @Override
     public double getkDKeepHeading() {
         // TODO Auto-generated method stub
-        return kDKeepHeading;
+        return KeepHeadingSusanPID.kd;
     }
     @Override
     public IIMUWrapper getIMU() {

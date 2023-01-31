@@ -16,22 +16,15 @@ public class Bot2020DrivePorts implements IDrivePorts {
 
     public final double wheelDiameterInInches = 6;
 
-    public final double autoDistanceKP = 50;
-    public final double autoDistanceKI = 0.5;
-    public final double autoDistanceKD = 0.0;
-
+    public PIDConfig autoDistanceBot2020PID = new PIDConfig(50, 0.5, 0.0);
+    public PIDConfig DriveDistanceBot2020PID = new PIDConfig(0.8, 0.01, 0.0);
+    public PIDConfig KeepHeadingBot2020PID = new PIDConfig(0.010, 0.010, 0);
+   
     public final double maxVelocity = 10;
     public final double maxAcceleration = 10;
 
     public final double balanceCreepSpeed = 0.1;
 
-    public static final double kPDriveDistance = 0.8;
-    public static final double kIDriveDistance = 0.01;
-    public static final double kDDriveDistance = 0.0;
-    
-    public static final double kPKeepHeading = 0.010;
-    public static final double kIKeepHeading = 0.010;
-    public static final double kDKeepHeading = 0;
     //public final IIMUWrapper imu = new NavxIMU(SPI.Port.kMXP);
     public final IIMUWrapper imu = new PigeonIMU(30, getimConfiguration()); // TODO: When you have a pigeon installed
 
@@ -71,17 +64,17 @@ public class Bot2020DrivePorts implements IDrivePorts {
     @Override
     public double getAutoDistanceKP() {
         // TODO Auto-generated method stub
-        return autoDistanceKP;
+        return autoDistanceBot2020PID.kp;
     }
     @Override
     public double getAutoDistanceKI() {
         // TODO Auto-generated method stub
-        return autoDistanceKI;
+        return autoDistanceBot2020PID.ki;
     }
     @Override
     public double getAutoDistanceKD() {
         // TODO Auto-generated method stub
-        return autoDistanceKD;
+        return autoDistanceBot2020PID.kd;
     }
     @Override
     public double getMaxVelocity() {
@@ -101,32 +94,32 @@ public class Bot2020DrivePorts implements IDrivePorts {
     @Override
     public double getkPDriveDistance() {
         // TODO Auto-generated method stub
-        return kPDriveDistance;
+        return DriveDistanceBot2020PID.kp;
     }
     @Override
     public double getkIDriveDistance() {
         // TODO Auto-generated method stub
-        return kIDriveDistance;
+        return DriveDistanceBot2020PID.ki;
     }
     @Override
     public double getkDDriveDistance() {
         // TODO Auto-generated method stub
-        return kDDriveDistance;
+        return DriveDistanceBot2020PID.kd;
     }
     @Override
     public double getkPKeepHeading() {
         // TODO Auto-generated method stub
-        return kPKeepHeading;
+        return KeepHeadingBot2020PID.kp;
     }
     @Override
     public double getkIKeepHeading() {
         // TODO Auto-generated method stub
-        return kIKeepHeading;
+        return KeepHeadingBot2020PID.ki;
     }
     @Override
     public double getkDKeepHeading() {
         // TODO Auto-generated method stub
-        return kDKeepHeading;
+        return KeepHeadingBot2020PID.kd;
     }
     @Override
     public IIMUWrapper getIMU() {
