@@ -19,6 +19,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -48,6 +49,9 @@ public class Drivetrain extends SubsystemBase {
   private RelativeEncoder rightFrontEncoder;
   private RelativeEncoder rightRearEncoder;
   private IIMUWrapper imu = Constants.driveports.getIMU();
+
+  private Timer antiSnapBackTimer = new Timer();
+  private boolean isAntiSnapback = false;
   
   private PIDController headingPID;
   private DifferentialDriveOdometry odometry;
@@ -191,14 +195,34 @@ public class Drivetrain extends SubsystemBase {
       // angle to the current heading
       
       if (rotationOutput == 0 && headingLock == false) {
-        headingLock = true;
-        headingPID.reset();//Prevent integral weirdness
-        headingPID.setSetpoint(yaw);
+
+        // headingLock = true;
+        // headingPID.reset();//Prevent integral weirdness
+        // headingPID.setSetpoint(yaw);
+        if (!isAntiSnapback) {
+          antiSnapBackTimer.start();
+        }
+
+        if (antiSnapBackTimer.get() > 2) {
+          antiSnapBackTimer.stop();
+          antiSnapBackTimer.reset();
+          isAntiSnapback = false;
+          headingLock = true;
+          headingPID.reset();//Prevent integral weirdness
+          headingPID.setSetpoint(imu.getYaw());
+        } else {
+          isAntiSnapback = true;
+          headingPID.setSetpoint(imu.getYaw());
+          rotationOutput = MathUtil.clamp(headingPID.calculate(imu.getYaw()), -1, 1);
+        }
       }
 
       // Disengage heading lock if bot is turning
       if (this.commandedZRotation != 0) {
         headingLock = false;
+        isAntiSnapback = false;
+        antiSnapBackTimer.stop();
+        antiSnapBackTimer.reset();
       }
 
       if (headingLock) {
