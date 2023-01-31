@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.Drivetrain;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
@@ -65,6 +66,9 @@ public class DriveCommand extends CommandBase {
     //drivetrain.setRightMotors(1);
     //drivetrain.setLeftMotors(1);
 
+    SmartDashboard.putNumber("left encoder", drivetrain.getLeftEncoderCount());
+    SmartDashboard.putNumber("right encoder", drivetrain.getRightEncoderCount());
+    
   }
 
   // Called once the command ends or is interrupted.
