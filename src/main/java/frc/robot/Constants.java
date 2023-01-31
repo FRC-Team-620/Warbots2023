@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.util.Units;
 import frc.robot.util.DetectRobot;
 import frc.robot.util.IDrivePorts;
+import frc.robot.util.PIDConfig;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -81,14 +82,14 @@ public final class Constants {
     public static final double ksubstationShelfHeightMeters = Units.inchesToMeters(37.75);
     public static final double kchargeStationLengthMeters = Units.inchesToMeters(48);
   }
-  
-  public class AutoConstants{
-    public static final double autoDistanceKP = 50;
-    public static final double autoDistanceKI = 0.5;
-    public static final double autoDistanceKD = 0.0;
 
-    public static final double maxVelocity = 10;
-    public static final double maxAcceleration = 10;
+  public class AutoConstants{
+    public static final double autoDistanceKP = 2;
+    public static final double autoDistanceKI = 0.2;
+    public static final double autoDistanceKD = 0.1;
+
+    public static final double maxVelocity = 2;
+    public static final double maxAcceleration = 2;
 
     public static final double balanceCreepSpeed = 0.1;
   }
