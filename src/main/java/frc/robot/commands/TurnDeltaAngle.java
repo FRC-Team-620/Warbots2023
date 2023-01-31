@@ -1,15 +1,27 @@
 package frc.robot.commands;
 
+import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /** An DriveCommand command that uses an Drivetrain subsystem. */
 public class TurnDeltaAngle extends InstantCommand {
+  Drivetrain drivetrain;
+  double relativeAngle;
+  PIDController turnAnglePID = new PIDController(
+    Constants.driveports.getkPKeepHeading(),
+  Constants.driveports.getkIKeepHeading(),
+  Constants.driveports.getkDKeepHeading());
 
+  
   public TurnDeltaAngle(Drivetrain drivetrain, double relativeAngle) {
-    super(() -> drivetrain.turnRelativeAngle(relativeAngle));
+    this.drivetrain = drivetrain;
+    this.relativeAngle = relativeAngle;
+    
+    
   }
 
     // private Drivetrain drivetrain;
@@ -22,11 +34,12 @@ public class TurnDeltaAngle extends InstantCommand {
     //   addRequirements(drivetrain);    
     // }
 
-    // // Called when the command is initially scheduled.
-    // @Override
-    // public void initialize() {
-    //     this.drivetrain.turnRelativeAngle(this.deltaAngle);
-    // }
+    // Called when the command is initially scheduled.
+    @Override
+    public void initialize() {
+      turnAnglePID.enableContinuousInput(-180, 180);
+      turnAnglePID.setTolerance(2,1);
+    }
 
     // // Called every time the scheduler runs while the command is scheduled.
     // @Override
