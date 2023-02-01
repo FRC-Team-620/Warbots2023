@@ -25,6 +25,18 @@ public class PIDConfig {
         PIDController controller = new PIDController(config.kp, config.ki, config.kd);
         controller.setTolerance(config.posTol, config.velTol);
          return controller; 
-
     }
+
+    public double getKp() {
+        return kp;
+    }
+
+    public double getKd() {
+        return kd;
+    }
+
+    public double getKi() {
+        return ki;
+    }
+
 }

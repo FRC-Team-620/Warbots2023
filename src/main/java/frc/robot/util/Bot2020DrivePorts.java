@@ -16,9 +16,9 @@ public class Bot2020DrivePorts implements IDrivePorts {
 
     public final double wheelDiameterInInches = 6;
 
-    public PIDConfig autoDistanceBot2020PID = new PIDConfig(50, 0.5, 0.0);
-    public PIDConfig DriveDistanceBot2020PID = new PIDConfig(0.8, 0.01, 0.0);
-    public PIDConfig KeepHeadingBot2020PID = new PIDConfig(0.010, 0.010, 0);
+    public PIDConfig getAutoDistancePID = new PIDConfig(50, 0.5, 0.0);
+    public PIDConfig getDriveDistancePID = new PIDConfig(0.8, 0.01, 0.0);
+    public PIDConfig getKeepHeadingPID = new PIDConfig(0.010, 0.010, 0);
    
     public final double maxVelocity = 10;
     public final double maxAcceleration = 10;
@@ -33,6 +33,23 @@ public class Bot2020DrivePorts implements IDrivePorts {
         config.EnableCompass = false;
         return config;
     }
+
+    @Override
+    public PIDConfig getAutoDistancePID() {
+        // TODO Auto-generated method stub
+        return getAutoDistancePID;
+    }
+    @Override
+    public PIDConfig getDriveDistancePID() {
+        // TODO Auto-generated method stub
+        return getDriveDistancePID;
+    }
+    @Override
+    public PIDConfig getKeepHeadingPID() {
+        // TODO Auto-generated method stub
+        return getKeepHeadingPID;
+    }
+
     @Override
     public int getLeftFrontMotorCANId() {
         return leftFrontMotorCANId;
@@ -61,21 +78,7 @@ public class Bot2020DrivePorts implements IDrivePorts {
     public double getWheelDiameterInInches() {
         return wheelDiameterInInches;
     }
-    @Override
-    public double getAutoDistanceKP() {
-        // TODO Auto-generated method stub
-        return autoDistanceBot2020PID.kp;
-    }
-    @Override
-    public double getAutoDistanceKI() {
-        // TODO Auto-generated method stub
-        return autoDistanceBot2020PID.ki;
-    }
-    @Override
-    public double getAutoDistanceKD() {
-        // TODO Auto-generated method stub
-        return autoDistanceBot2020PID.kd;
-    }
+
     @Override
     public double getMaxVelocity() {
         // TODO Auto-generated method stub
@@ -91,36 +94,7 @@ public class Bot2020DrivePorts implements IDrivePorts {
         // TODO Auto-generated method stub
         return balanceCreepSpeed;
     }
-    @Override
-    public double getkPDriveDistance() {
-        // TODO Auto-generated method stub
-        return DriveDistanceBot2020PID.kp;
-    }
-    @Override
-    public double getkIDriveDistance() {
-        // TODO Auto-generated method stub
-        return DriveDistanceBot2020PID.ki;
-    }
-    @Override
-    public double getkDDriveDistance() {
-        // TODO Auto-generated method stub
-        return DriveDistanceBot2020PID.kd;
-    }
-    @Override
-    public double getkPKeepHeading() {
-        // TODO Auto-generated method stub
-        return KeepHeadingBot2020PID.kp;
-    }
-    @Override
-    public double getkIKeepHeading() {
-        // TODO Auto-generated method stub
-        return KeepHeadingBot2020PID.ki;
-    }
-    @Override
-    public double getkDKeepHeading() {
-        // TODO Auto-generated method stub
-        return KeepHeadingBot2020PID.kd;
-    }
+
     @Override
     public IIMUWrapper getIMU() {
         return imu;
