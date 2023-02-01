@@ -7,13 +7,16 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.util.armPorts;
+
 
 public class GrabberSubsystem extends SubsystemBase {
 
-    //private  grabber
+    private  Solenoid GrabberPiston= new Solenoid(PneumaticsModuleType.REVPH, 43); 
     
-    public void setGrabberState(boolean closed){
-        armHorizontal.set(amount);
+    public void setGrabberState(boolean state){
+        GrabberPiston.set(state);
+    }
+    public boolean getGrabberState(){
+        return GrabberPiston.get();
     }
 }

@@ -17,7 +17,7 @@ public class ArmCommand extends CommandBase{
   // execute
   @Override
   public void execute() {
-    armSubsystem.setSolenoid(!this.armSubsystem.getSolenoid());
+    //armSubsystem.setSolenoid(!this.armSubsystem.getSolenoid());
     //enables the controller inputs for arm subsystem 
     double controlLength = Math.pow(controller.getRightX(), 2);
     double controlHeight = Math.pow(controller.getRightY(), 2);
