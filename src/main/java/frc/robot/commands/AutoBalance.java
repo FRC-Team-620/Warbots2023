@@ -25,7 +25,6 @@ public class AutoBalance extends CommandBase {
     private Pose2d balancedPosition; 
     private boolean atLimit = false;
     private Pose2d limitPosition;
-    private Pose2d chargeStationInitialPosition;
 
     public AutoBalance(Drivetrain drivetrain, boolean backwards){
         this.drivetrain = drivetrain;
@@ -110,7 +109,6 @@ public class AutoBalance extends CommandBase {
         if (this.onChargeStation == false){
             if (Math.abs(this.robotPitchHandler.get()) > AutoConstants.onChargeStationAngle){
                 this.onChargeStation = true;
-                this.chargeStationInitialPosition = this.drivetrain.getPose();
                 this.chargeCenterPosition = this.drivetrain.getPose().plus(new Transform2d(new Translation2d(-1 * AutoConstants.balanceCenterLimitFromInitialTip, 0.0), new Rotation2d()));
                 return true;
             }
