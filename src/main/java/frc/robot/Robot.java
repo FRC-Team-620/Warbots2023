@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.auto.AutoSelector;
 import frc.robot.util.DetectRobot;
 import frc.robot.util.sim.BuildDataLogger;
 
@@ -28,7 +27,6 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   private boolean lastAutonomous = false;
-  private AutoSelector autoSelector;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -53,9 +51,6 @@ public class Robot extends TimedRobot {
     BuildDataLogger.LogToNetworkTables();
     BuildDataLogger.LogToWpiLib(DataLogManager.getLog());
     DetectRobot.identifyRobot();
-
-    
-
   }
 
   /**
