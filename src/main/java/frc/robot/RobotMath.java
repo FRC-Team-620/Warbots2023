@@ -1,6 +1,8 @@
 package frc.robot;
 
 import java.lang.Math;
+
+import edu.wpi.first.math.MathUtil;
 import frc.robot.Constants.RobotMathConstants;
 
 public class RobotMath {
@@ -58,6 +60,10 @@ public class RobotMath {
      */
     public static boolean approximatelyZero(double value, double threshhold) {
         return value > -threshhold && value < threshhold;
+    }
+
+    public static double constrain180(double angle) {
+        return MathUtil.inputModulus(angle, -180, 180);
     }
 
     public static class DiminishingAverageHandler {

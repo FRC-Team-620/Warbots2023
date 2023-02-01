@@ -1,6 +1,15 @@
 package frc.robot.commands;
 
+import frc.robot.Constants;
+import frc.robot.RobotMath;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.TurnAngleCommandConstants;
 import frc.robot.subsystems.Drivetrain;
+
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -8,47 +17,76 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 /** An DriveCommand command that uses an Drivetrain subsystem. */
 public class TurnDeltaAngle extends InstantCommand {
 
-  public TurnDeltaAngle(Drivetrain drivetrain, double relativeAngle) {
-    super(() -> drivetrain.turnRelativeAngle(relativeAngle));
+  // public TurnDeltaAngle(Drivetrain drivetrain, double relativeAngle) {
+  //   super(() -> drivetrain.turnRelativeAngle(relativeAngle));
+  // }
+
+  private Drivetrain drivetrain;
+  private double deltaAngle;
+
+  private ProfiledPIDController profiledAnglePID;
+
+  public TurnDeltaAngle(Drivetrain drivetrain, double deltaAngle) {
+
+    this.drivetrain = drivetrain;
+    this.deltaAngle = RobotMath.constrain180(deltaAngle);
+
+    this.profiledAnglePID = new ProfiledPIDController(
+      TurnAngleCommandConstants.kPTurnAngle, 
+      TurnAngleCommandConstants.kITurnAngle, 
+      TurnAngleCommandConstants.kDTurnAngle, 
+      new Constraints(
+          TurnAngleCommandConstants.maxAngularVelocity, 
+          TurnAngleCommandConstants.maxAngularAcceleration
+      )
+    );
+
+    this.profiledAnglePID.enableContinuousInput(-180, 180);
+    this.profiledAnglePID.setTolerance(1.0, 1.0);
+
+    addRequirements(drivetrain);    
   }
 
-    // private Drivetrain drivetrain;
-    // private double deltaAngle;
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
 
-    // public TurnDeltaAngle(Drivetrain drivetrain, double deltaAngle) {
-    //   this.drivetrain = drivetrain;
-    //   this.deltaAngle = deltaAngle;
-    //   // Use addRequirements() here to declare subsystem dependencies.
-    //   addRequirements(drivetrain);    
-    // }
+      double finalAngle = RobotMath.shiftAngle(
+        this.drivetrain.getAngleSetpoint(),
+        this.deltaAngle
+      );
 
-    // // Called when the command is initially scheduled.
-    // @Override
-    // public void initialize() {
-    //     this.drivetrain.turnRelativeAngle(this.deltaAngle);
-    // }
+      this.profiledAnglePID.setGoal(finalAngle);
 
-    // // Called every time the scheduler runs while the command is scheduled.
-    // @Override
-    // public void execute() { }
+      this.drivetrain.disableHeadingLock();
+  }
 
-    // // Called once the command ends or is interrupted.
-    // @Override
-    // public void end(boolean interrupted) {
-    //   if(interrupted) {
-    //     System.out.println("INTERRUPTED");
-    //   }
-    //   // this.drivetrain.resetAnglePID();
-    //   System.out.println("TURN COMMAND ENDED");
-    // }
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
 
-    // // Returns true when the command should end.
-    // @Override
-    // public boolean isFinished() {
-    //   // System.out.println("SETPOINT: " + this.drivetrain.atAngleSetpoint());
-    //   // System.out.println("ANG VEL:  " + this.drivetrain.hasAngularVelocity());
-    //   // System.out.println(this.drivetrain.getAngularVelocity());
-    //   // return this.drivetrain.atAngleSetpoint() && !this.drivetrain.hasAngularVelocity();
-    //   return true;
-    // }
+    double rotation = this.profiledAnglePID.calculate(
+      this.drivetrain.getYaw()
+    );
+
+    this.drivetrain.setCurvatureDrive(0, rotation, true);
+  }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {
+
+    this.drivetrain.enableHeadingLock();
+    this.drivetrain.lockCurrentHeading();
+  }
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    // System.out.println("SETPOINT: " + this.drivetrain.atAngleSetpoint());
+    // System.out.println("ANG VEL:  " + this.drivetrain.hasAngularVelocity());
+    // System.out.println(this.drivetrain.getAngularVelocity());
+    // return this.drivetrain.atAngleSetpoint() && !this.drivetrain.hasAngularVelocity();
+    return this.profiledAnglePID.atGoal();
+  }
 }

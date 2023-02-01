@@ -112,7 +112,8 @@ public class Robot extends TimedRobot {
     }
 	  m_robotContainer.getDrivetrain().setBrake(true);
     this.lastAutonomous = false;
-	  this.m_robotContainer.getDrivetrain().setCurrentAngle(
+    
+	  this.m_robotContainer.getDrivetrain().setAngleSetpoint(
       this.m_robotContainer.getDrivetrain().getYaw()
     ); 
 
