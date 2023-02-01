@@ -202,10 +202,11 @@ public class Drivetrain extends SubsystemBase {
       // double rotationOutput = this.commandedZRotation;
       SmartDashboard.putNumber("Drivetrain/RotationInputPeriodic", rotationInput);
       SmartDashboard.putNumber("Drivetrain/DriveSpeedPeriodic", this.speedSetpoint);
-      SmartDashboard.putBoolean("Drivetrain/isTurning", this.isTurning);
+      // SmartDashboard.putBoolean("Drivetrain/isTurning", this.isTurning);
       SmartDashboard.putNumber("Drivetrain/DriveAngularVelocity", this.angularVelocity);
       SmartDashboard.putNumber("Drivetrain/DriveHeadingAngle", yaw);
       SmartDashboard.putNumber("Drivetrain/DriveAngleSetpoint", this.headingPID.getSetpoint());
+      SmartDashboard.putNumber("Drivetrain/shouldHeadingLock", this.shouldHeadingLock ? 1 : -1);
   }
 
   public void resetOdometry(Pose2d pose) {

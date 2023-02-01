@@ -5,11 +5,11 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.ArmCommand;
+// import frc.robot.commands.ArmCommand;
 import frc.robot.commands.DriveCommand;
-import frc.robot.subsystems.ArmSubsystem;
+// import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.GrabberSubsystem;
+// import frc.robot.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -28,8 +28,8 @@ public class RobotContainer {
   private final CommandXboxController driver =
       new CommandXboxController(OperatorConstants.driverControllerPort);
   public final Drivetrain drivetrain = new Drivetrain();
-  private final ArmSubsystem armSubsystem = new ArmSubsystem();
-  private final GrabberSubsystem grabberSubsystem=new GrabberSubsystem();
+  // private final ArmSubsystem armSubsystem = new ArmSubsystem();
+  // private final GrabberSubsystem grabberSubsystem=new GrabberSubsystem();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -37,7 +37,7 @@ public class RobotContainer {
     configureBindings();
     //Setting up default command which is a command that runs every time no other command that uses that subsystem is running
     drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
-    armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem));
+    // armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem));
   }
 
   /**
@@ -51,12 +51,12 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Triggers are a thing that we might need to use so keep that in mind
-    driver.b().onTrue(new ArmCommand(armSubsystem));
-    driver.leftBumper().onTrue(new InstantCommand(() -> grabberSubsystem.setGrabberState(!grabberSubsystem.getGrabberState())));
+    // driver.b().onTrue(new ArmCommand(armSubsystem));
+    // driver.leftBumper().onTrue(new InstantCommand(() -> grabberSubsystem.setGrabberState(!grabberSubsystem.getGrabberState())));
     // driver.x().onTrue(new AutoDriveDistance(drivetrain, 100));
 
     // driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
-    driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
+    driver.y().onTrue(new TurnDeltaAngle(drivetrain, 180));
 
     driver.x().onTrue(new DriveStraight(drivetrain, 2));
   }

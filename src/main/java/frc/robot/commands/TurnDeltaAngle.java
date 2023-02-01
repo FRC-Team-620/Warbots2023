@@ -7,7 +7,7 @@ import frc.robot.Constants.TurnAngleCommandConstants;
 import frc.robot.subsystems.Drivetrain;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -42,7 +42,10 @@ public class TurnDeltaAngle extends InstantCommand {
     );
 
     this.profiledAnglePID.enableContinuousInput(-180, 180);
-    this.profiledAnglePID.setTolerance(1.0, 1.0);
+    this.profiledAnglePID.setTolerance(
+      2, 
+      TurnAngleCommandConstants.maxAngularVelocity
+    );
 
     addRequirements(drivetrain);    
   }
@@ -56,8 +59,10 @@ public class TurnDeltaAngle extends InstantCommand {
         this.deltaAngle
       );
 
+      this.profiledAnglePID.reset(this.drivetrain.getYaw());
       this.profiledAnglePID.setGoal(finalAngle);
 
+      this.drivetrain.resetAnglePID();
       this.drivetrain.disableHeadingLock();
   }
 
@@ -70,12 +75,16 @@ public class TurnDeltaAngle extends InstantCommand {
     );
 
     this.drivetrain.setCurvatureDrive(0, rotation, true);
+
+    SmartDashboard.putNumber("TurnDeltaAngle/setpoint", this.profiledAnglePID.getSetpoint().position);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
 
+    this.drivetrain.resetAnglePID();
+    this.drivetrain.stop();
     this.drivetrain.enableHeadingLock();
     this.drivetrain.lockCurrentHeading();
   }

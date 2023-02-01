@@ -41,11 +41,11 @@ public final class Constants {
 
   public static class TurnAngleCommandConstants {
     public static final double kPTurnAngle = 0.014;
-    public static final double kITurnAngle = 0.01;
+    public static final double kITurnAngle = 0.06;
     public static final double kDTurnAngle = 0.001;
 
-    public static final double maxAngularVelocity = 60.0;
-    public static final double maxAngularAcceleration = 15.0;
+    public static final double maxAngularVelocity = 1000.0;
+    public static final double maxAngularAcceleration = 200.0;
   }
 
   public static class OperatorConstants {
