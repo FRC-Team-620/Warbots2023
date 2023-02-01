@@ -12,6 +12,7 @@ import frc.robot.commands.ArmCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DriveStraight;
 import frc.robot.commands.TurnDeltaAngle;
+import frc.robot.commands.auto.AutoSelector;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.Drivetrain;
 
@@ -27,6 +28,8 @@ public class RobotContainer {
       new CommandXboxController(OperatorConstants.driverControllerPort);
   public final Drivetrain drivetrain = new Drivetrain();
   private final ArmSubsystem armSubsystem = new ArmSubsystem();
+  public AutoSelector autoSelector;
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -34,6 +37,7 @@ public class RobotContainer {
     configureBindings();
     //Setting up default command which is a command that runs every time no other command that uses that subsystem is running
     drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
+    autoSelector = new AutoSelector(this);
   }
 
   /**
@@ -64,7 +68,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     //return Autos.taxi(drivetrain);
-    return new DriveStraight(drivetrain, 2);
+    return autoSelector.getCommand();
   }
 
   public Drivetrain getDrivetrain() {
