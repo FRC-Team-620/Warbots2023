@@ -73,7 +73,7 @@ public class AlignPeg extends CommandBase {
     SmartDashboard.putNumber("alignpeg1/output", output);
     SmartDashboard.putNumber("alignpeg1/robotyaw", currentHeading);
 
-    m_drivetrain.setCurvatureDrive(0, output, true); // Update Drivetrain
+    m_drivetrain.setCurvatureDrive(0, -output, true); // Update Drivetrain
   }
 
   // Called once the command ends or is interrupted.

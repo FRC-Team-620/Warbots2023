@@ -9,8 +9,10 @@ import frc.robot.commands.ArmCommand;
 import frc.robot.commands.AutoDriveDistance;
 import frc.robot.commands.Autos;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.vision.AlignPeg;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.Drivetrain;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -48,7 +50,8 @@ public class RobotContainer {
   private void configureBindings() {
     // Triggers are a thing that we might need to use so keep that in mind
     //driver.b().onTrue(new ArmCommand(armSubsystem));
-    // driver.x().onTrue(new AutoDriveDistance(drivetrain, 100));
+    driver.x().onTrue(new AlignPeg(drivetrain));
+    SmartDashboard.putData(new AlignPeg(drivetrain));
   }
 
   /**
