@@ -103,6 +103,10 @@ public final class Constants {
 
     public static final double balanceCreepSpeed = 0.1;
   }
+  public class ArmConstants {
+    public static final double armLengthMeters=1;          //TODO; find real length and height
+    public static final double armHeightMeters=1;
+  }
 
   public static double kSimUpdateTime = 0.02;
   public static double kSimDrivekVLinear = 1.98;
@@ -110,6 +114,7 @@ public final class Constants {
   public static final double ksimDrivekVAngular = 1.5;
   public static final double kSimDrivekAAngular = 0.3;
   public static final double kSimTrackwidthMeters = 0.64;// 0.5207
+  
 
   public static final boolean kCoastOnDisable = true;
 }
