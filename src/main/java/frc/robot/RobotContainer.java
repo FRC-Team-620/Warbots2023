@@ -4,28 +4,18 @@
 
 package frc.robot;
 
-<<<<<<< HEAD
-=======
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArmCommand;
-import frc.robot.commands.AutoDriveDistance;
-import frc.robot.commands.Autos;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.GrabberSubsystem;
->>>>>>> 90c54231577904fd43473f114b0db4d6bd532cf4
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.ArmCommand;
-import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DriveStraight;
 import frc.robot.commands.TurnDeltaAngle;
-import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.Drivetrain;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -61,12 +51,8 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Triggers are a thing that we might need to use so keep that in mind
-<<<<<<< HEAD
-	  driver.b().onTrue(new ArmCommand(armSubsystem));
-=======
     driver.b().onTrue(new ArmCommand(armSubsystem));
     driver.leftBumper().onTrue(new InstantCommand(() -> grabberSubsystem.setGrabberState(!grabberSubsystem.getGrabberState())));
->>>>>>> 90c54231577904fd43473f114b0db4d6bd532cf4
     // driver.x().onTrue(new AutoDriveDistance(drivetrain, 100));
 
     // driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));

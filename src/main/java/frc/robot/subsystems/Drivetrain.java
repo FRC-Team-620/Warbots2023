@@ -19,7 +19,6 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -29,7 +28,6 @@ import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.WheelConstants;
 import frc.robot.RobotMath;
 import frc.robot.util.IIMUWrapper;
-import frc.robot.util.PigeonIMU;
 import frc.robot.util.sim.NavxWrapper;
 import frc.robot.util.sim.RevEncoderSimWrapper;
 
@@ -51,9 +49,6 @@ public class Drivetrain extends SubsystemBase {
   private RelativeEncoder rightFrontEncoder;
   private RelativeEncoder rightRearEncoder;
   private IIMUWrapper imu = Constants.driveports.getIMU();
-
-  private Timer antiSnapBackTimer = new Timer();
-  private boolean isAntiSnapback = false;
   
   private PIDController headingPID;
   private DifferentialDriveOdometry odometry;
@@ -122,9 +117,6 @@ public class Drivetrain extends SubsystemBase {
     rightRearMotor.setIdleMode(mode);
   }
 
-  // public double getHeading() { // TODO: Remove Use Odom class
-  //   return imu.getAngle();//Could use getYaw
-  // }
   public double getPitch(){
     return imu.getPitch();
   }
@@ -160,22 +152,30 @@ public class Drivetrain extends SubsystemBase {
   
   @Override
   public void periodic() {
-    
+      // Update the odometry
       odometry.update(imu.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
 
       double yaw = this.getYaw();
       
+      // get the change in angles, used to calculate the momentary angular velocity
       double relativeChange = RobotMath.relativeAngle(this.previousAngle, yaw);
+
+      // get the angular velocity, denoised with a diminishing average loop
       this.angularVelocity = this.angularVelocityHandler.feed(
         relativeChange / RobotConstants.secondsPerTick
       );
+
+      // save the current angle so next loop it can be used in the above loop to calculate angular velocity
       this.previousAngle = yaw;
 
+
+      // check whether there is curvature input 
       boolean noCurvatureInput = RobotMath.approximatelyZero(this.curvatureSetpoint);
 
+      // If the robot is still registering itself as spinning (so it was spinning), 
+      // but there is no input, and there is no angular velocity 
       if(this.isTurning && noCurvatureInput && !this.hasAngularVelocity()) {
-
-        // this.setAngle = yaw;
+        // register the robot as not turning and set the current angle as the heading lock angle
         this.isTurning = false;
         this.lockCurrentHeading();
         this.headingPID.reset();
@@ -183,17 +183,20 @@ public class Drivetrain extends SubsystemBase {
       }
 
       if(!noCurvatureInput) { // YES curvature input
+        // set the robot as turning, so it doesnt lock its heading
         this.isTurning = true;
       }
-
+      
       double rotationInput = this.curvatureSetpoint;
 
-      if(this.shouldHeadingLock && !this.isTurning) { // NOT TURNING
-        // double relativeAngle = RobotMath.relativeAngle(this.setAngle, yaw);
+      // if the robot should be locking its heading, and is not turning, 
+      // calculate the pid output and set it as the rotationInput
+      if(this.shouldHeadingLock && !this.isTurning) {
         rotationInput = this.headingPID.calculate(yaw);
         rotationInput = MathUtil.clamp(rotationInput, -1, 1);
       }
 
+      // set the differentialDrive outputs
       differentialDrive.curvatureDrive(this.speedSetpoint, rotationInput, this.shouldQuickturn);
 
       // double rotationOutput = this.commandedZRotation;
@@ -203,49 +206,6 @@ public class Drivetrain extends SubsystemBase {
       SmartDashboard.putNumber("Drivetrain/DriveAngularVelocity", this.angularVelocity);
       SmartDashboard.putNumber("Drivetrain/DriveHeadingAngle", yaw);
       SmartDashboard.putNumber("Drivetrain/DriveAngleSetpoint", this.headingPID.getSetpoint());
-
-      // If the robot is not turning and if we are not already in a heading lock then turn on heading lock and set the target
-      // angle to the current heading
-      
-      // if (rotationOutput == 0 && headingLock == false) {
-
-      //   // headingLock = true;
-      //   // headingPID.reset();//Prevent integral weirdness
-      //   // headingPID.setSetpoint(yaw);
-      //   if (!isAntiSnapback) {
-      //     antiSnapBackTimer.start();
-      //   }
-
-      //   if (antiSnapBackTimer.get() > 2) {
-      //     antiSnapBackTimer.stop();
-      //     antiSnapBackTimer.reset();
-      //     isAntiSnapback = false;
-      //     headingLock = true;
-      //     headingPID.reset(); // Prevent integral weirdness
-      //     headingPID.setSetpoint(imu.getYaw());
-      //   } else {
-      //     isAntiSnapback = true;
-      //     headingPID.setSetpoint(imu.getYaw());
-      //     rotationOutput = MathUtil.clamp(headingPID.calculate(imu.getYaw()), -1, 1);
-      //   }
-      // }
-
-      // // Disengage heading lock if bot is turning
-      // if (this.commandedZRotation != 0) {
-      //   headingLock = false;
-      //   isAntiSnapback = false;
-      //   antiSnapBackTimer.stop();
-      //   antiSnapBackTimer.reset();
-      // }
-
-      // if (headingLock) {
-      //   // Locks the value in the proper range for curvature drive
-      //   double calculate = headingPID.calculate(yaw);
-      //   rotationOutput = MathUtil.clamp(calculate, -1, 1);
-      // }
-
-      // SmartDashboard.putNumber("Drivetrain/RotationOutput", rotationOutput);
-      // differentialDrive.curvatureDrive(this.commandedXSpeed, rotationOutput, this.commandedAllowTurnInPlace);
   }
 
   public void resetOdometry(Pose2d pose) {

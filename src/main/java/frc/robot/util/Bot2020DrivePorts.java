@@ -33,7 +33,7 @@ public class Bot2020DrivePorts implements IDrivePorts {
     public static final double kIKeepHeading = 0.010;
     public static final double kDKeepHeading = 0;
     //public final IIMUWrapper imu = new NavxIMU(SPI.Port.kMXP);
-    public final IIMUWrapper imu = new PigeonIMU(30, getimConfiguration()); // TODO: When you have a pigeon installed
+    public final IIMUWrapper imu = new PigeonIMU(30, getimConfiguration()); 
 
     private Pigeon2Configuration getimConfiguration() {
         Pigeon2Configuration config = new Pigeon2Configuration();
