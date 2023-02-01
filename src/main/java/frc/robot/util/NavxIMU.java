@@ -31,4 +31,10 @@ public class NavxIMU implements IIMUWrapper {
         return navx.getRotation2d();
     }
 
+    @Override
+    public double getAngle() {
+        // TODO Auto-generated method stub
+        return navx.getAngle();
+    }
+
 }

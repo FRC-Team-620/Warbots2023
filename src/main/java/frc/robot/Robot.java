@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-
-
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -38,7 +36,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    m_robotContainer.getDrivetrain().setBrake(false);
+	  m_robotContainer.getDrivetrain().setBrake(false);
     if(Robot.isSimulation()){
       DataLogManager.start(Filesystem.getOperatingDirectory().getAbsolutePath() + "\\logs");
     }else{
@@ -69,7 +67,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    field.setRobotPose(m_robotContainer.drivetrain.getPose());
+	  field.setRobotPose(m_robotContainer.drivetrain.getPose());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -80,8 +78,9 @@ public class Robot extends TimedRobot {
     else{
       m_robotContainer.getDrivetrain().setBrake(true);
     }
+    this.m_robotContainer.getDrivetrain().resetAnglePID();
   }
-
+  
   @Override
   public void disabledPeriodic() {}
 
@@ -94,7 +93,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-    m_robotContainer.getDrivetrain().setBrake(true);
+	  m_robotContainer.getDrivetrain().setBrake(true);
     this.lastAutonomous = true;
   }
 
@@ -111,8 +110,16 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    m_robotContainer.getDrivetrain().setBrake(true);
+	  m_robotContainer.getDrivetrain().setBrake(true);
     this.lastAutonomous = false;
+	  this.m_robotContainer.getDrivetrain().setCurrentAngle(
+      this.m_robotContainer.getDrivetrain().getYaw()
+    ); 
+
+    this.m_robotContainer.getDrivetrain().resetAngularVelocity();
+
+    this.m_robotContainer.getDrivetrain().resetAnglePID();
+
   }
 
   /** This function is called periodically during operator control. */
@@ -123,7 +130,7 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-    m_robotContainer.getDrivetrain().setBrake(true);
+	  m_robotContainer.getDrivetrain().setBrake(true);
     this.lastAutonomous = false;
   }
 
@@ -137,11 +144,5 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically whilst in simulation. */
   @Override
-  public void simulationPeriodic() {  
-    
-
-  }
-
-   
-   
+  public void simulationPeriodic() {}
 }
