@@ -25,7 +25,7 @@ public class AutoDriveTrajectory extends SequentialCommandGroup {
 			System.out.println("Done loading trajectory!");
 			Pose2d initialPose = trajectory.getInitialPose();
 
-			RamseteCommand pathCommand = drivetrain.createRamseteCommand(trajectory);
+			SequentialCommandGroup pathCommand = drivetrain.createRamseteCommand(trajectory);
 
 			addCommands(
 				new InstantCommand(() -> {
@@ -35,11 +35,12 @@ public class AutoDriveTrajectory extends SequentialCommandGroup {
 				pathCommand
 				// new InstantCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain)
 			);
-
+            
 		} catch (Exception ex) {
 			DriverStation.reportError("Unable to open trajectory: " + path, ex.getStackTrace());
 		}
 
     }
+
 
 }

@@ -30,7 +30,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
@@ -167,7 +169,9 @@ public class Drivetrain extends SubsystemBase {
       odometry.update(imu.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
       double yaw = imu.getYaw();
       SmartDashboard.putNumber("Drivetrain/Heading", yaw);
-
+      if (this.isInRamsete){
+        return;
+      }
       // System.out.println(leftFrontEncoder.getPosition());
       // double relativeChange = RobotMath.relativeAngle(this.previousAngle, yaw);
 
@@ -348,10 +352,10 @@ public class Drivetrain extends SubsystemBase {
     return (leftFrontEncoder.getPosition() + leftRearEncoder.getPosition()) / 2.0;
   } 
 
-  public RamseteCommand createRamseteCommand(Trajectory path) {
+  public SequentialCommandGroup createRamseteCommand(Trajectory path) {
     final DifferentialDriveKinematics driveKinematics = new DifferentialDriveKinematics(AutoConstants.trackWidthMeters);
     
-		return new RamseteCommand(
+		return new InstantCommand(() -> {this.isInRamsete = true;}).andThen( new RamseteCommand(
 			path,
 			this::getPose,
 			new RamseteController(),
@@ -366,7 +370,7 @@ public class Drivetrain extends SubsystemBase {
 			new PIDController(AutoConstants.trajectorykP, AutoConstants.trajectorykI, AutoConstants.trajectorykD),
 			this::tankDriveVolts,
 			this
-		);
+		)).andThen(new InstantCommand(() -> {this.isInRamsete = false;}));
 	}
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
 		return new DifferentialDriveWheelSpeeds(
