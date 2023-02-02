@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import org.apache.commons.lang3.NotImplementedException;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -11,20 +13,28 @@ import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.WheelConstants;
 import frc.robot.RobotMath;
 import frc.robot.util.IIMUWrapper;
@@ -70,6 +80,9 @@ public class Drivetrain extends SubsystemBase {
   public double getPitch(){
     return imu.getPitch();
   }
+  public void resetGyro(){
+    return;
+  }
 
   private double setAngle;
   private boolean isTurning = false;
@@ -78,6 +91,7 @@ public class Drivetrain extends SubsystemBase {
 
   private RobotMath.DiminishingAverageHandler angularVelocityHandler;
   private DifferentialDrive differentialDrive;
+  private boolean isInRamsete;
   /** Creates a new Drivetrain. */
   public Drivetrain() {
     SmartDashboard.putNumber("Drivetrain/leftFrontCANID", leftFrontMotor.getDeviceId());
@@ -153,7 +167,7 @@ public class Drivetrain extends SubsystemBase {
       odometry.update(imu.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
       double yaw = imu.getYaw();
       SmartDashboard.putNumber("Drivetrain/Heading", yaw);
-      
+
       // System.out.println(leftFrontEncoder.getPosition());
       // double relativeChange = RobotMath.relativeAngle(this.previousAngle, yaw);
 
@@ -334,6 +348,32 @@ public class Drivetrain extends SubsystemBase {
     return (leftFrontEncoder.getPosition() + leftRearEncoder.getPosition()) / 2.0;
   } 
 
+  public RamseteCommand createRamseteCommand(Trajectory path) {
+    final DifferentialDriveKinematics driveKinematics = new DifferentialDriveKinematics(AutoConstants.trackWidthMeters);
+    
+		return new RamseteCommand(
+			path,
+			this::getPose,
+			new RamseteController(),
+			new SimpleMotorFeedforward(
+				AutoConstants.trajectoryFeedForwardVolts,
+				AutoConstants.trajectoryFeedForwardVoltSecondsPerMeter,
+				AutoConstants.trajectoryFeedForwardVoltSecondsSquaredPerMeter
+			),
+			driveKinematics,
+			this::getWheelSpeeds,
+			new PIDController(AutoConstants.trajectorykP, AutoConstants.trajectorykI, AutoConstants.trajectorykD),
+			new PIDController(AutoConstants.trajectorykP, AutoConstants.trajectorykI, AutoConstants.trajectorykD),
+			this::tankDriveVolts,
+			this
+		);
+	}
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+		return new DifferentialDriveWheelSpeeds(
+			leftFrontEncoder.getVelocity(),
+			rightFrontEncoder.getVelocity()
+		);
+	}
   //Sets the differential drive using the method curvatureDrive
   public void setCurvatureDrive(double speed, double rotationInput, boolean quickTurn) {
     // System.out.println("" + speed+' '+ rotationInput+' '+ quickTurn);
@@ -343,6 +383,11 @@ public class Drivetrain extends SubsystemBase {
     this.commandedZRotation = rotationInput;
     this.commandedAllowTurnInPlace = quickTurn;
   }
+  public void tankDriveVolts(double leftVolts, double rightVolts) {
+		leftFrontMotor.setVoltage(leftVolts);
+		rightFrontMotor.setVoltage(-rightVolts);
+		// drive.feed();
+	}
 
   public void setRightMotors(double speed) { //TODO: Do we need these methods?
     rightFrontMotor.set(speed);
