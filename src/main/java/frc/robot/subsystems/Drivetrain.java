@@ -93,7 +93,7 @@ public class Drivetrain extends SubsystemBase {
 
   private RobotMath.DiminishingAverageHandler angularVelocityHandler;
   private DifferentialDrive differentialDrive;
-  private boolean isInRamsete;
+  private boolean isInRamsete = false;
   /** Creates a new Drivetrain. */
   public Drivetrain() {
     SmartDashboard.putNumber("Drivetrain/leftFrontCANID", leftFrontMotor.getDeviceId());
