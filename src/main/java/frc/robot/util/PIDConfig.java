@@ -27,16 +27,4 @@ public class PIDConfig {
          return controller; 
     }
 
-    public double getKp() {
-        return kp;
-    }
-
-    public double getKd() {
-        return kd;
-    }
-
-    public double getKi() {
-        return ki;
-    }
-
 }

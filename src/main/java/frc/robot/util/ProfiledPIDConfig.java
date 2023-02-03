@@ -9,6 +9,7 @@ public class ProfiledPIDConfig {
     public final double posTol;
     public final double velTol;
     public final Constraints constraints;  
+    
     public ProfiledPIDConfig(double kp, double ki, double kd, Constraints constraints){
         this(kp,ki,kd,constraints, 0 ,0);
 
@@ -24,7 +25,7 @@ public class ProfiledPIDConfig {
     }   
 
     public static ProfiledPIDController getProfiledPIDController(ProfiledPIDConfig config) {
-        ProfiledPIDController controller = new ProfiledPIDController(config.kp, config.ki , config.kd , config.constraints );
+        ProfiledPIDController controller = new ProfiledPIDController(config.kp, config.ki , config.kd , config.constraints);
         controller.setTolerance(config.posTol, config.velTol);
         return controller;
 
