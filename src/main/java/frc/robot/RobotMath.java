@@ -51,8 +51,7 @@ public class RobotMath {
     }
 
     /** 
-     * Checking whether a number appoximates zero based on the
-     * threshhold given
+     * Checking whether a number appoximates zero based on the threshhold given.
      * 
      * @param value The value to be checked
      * @param threshhold Determines how close the value needs to be to zero to pass
@@ -62,10 +61,24 @@ public class RobotMath {
         return value > -threshhold && value < threshhold;
     }
 
+    /**
+     * Takes any angle in degrees in the domain (-infinity, infinitiy) and 
+     * returns its value relative to 0 in the domain [-180, 180].
+     * 
+     * @param angle The absolute angle in the domain (-infinity, infinity)
+     * @return The angle's value relative to 0 in the domain [-180, 180]
+     */
     public static double constrain180(double angle) {
         return MathUtil.inputModulus(angle, -180, 180);
     }
 
+    /**
+     * A classed used to handle running averages where past data should be 
+     * discarded over time. This is often used for denoising purposes. 
+     * 
+     * As new data comes in, the previous data is reduced in weight by some factor, 
+     * and over time, this makes old data approach irrelevancy.
+     */
     public static class DiminishingAverageHandler {
     
         private java.lang.Double average = null; // for nullability
@@ -85,7 +98,7 @@ public class RobotMath {
         }
     
         /**
-         * Getter for the current average
+         * Getter for the current average.
          * 
          * @return The current average
          */
@@ -110,7 +123,7 @@ public class RobotMath {
         }
     
         /**
-         * Resets the DimishingAverageHandler, deleting past data
+         * Resets the DimishingAverageHandler, deleting past data.
          */
         public void reset() {
             this.average = null;
