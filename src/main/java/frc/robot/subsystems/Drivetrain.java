@@ -96,20 +96,22 @@ public class Drivetrain extends SubsystemBase {
     headingPID.setTolerance(2,1);
 
     this.lockCurrentHeading();
+    
+    /*
+    This is used to denoise the angular velocity input from the gyro.
 
+    The method used to calculate the angular velocity is not perfectly accurate, as any one
+    reading from the gyro might have significant error. Therefore, a sort of running average
+    is used to make sure that any one wrong reading does not throw off the stored angular
+    velocity too much.
+    */
     this.angularVelocityHandler = new RobotMath.DiminishingAverageHandler(2.0);
 
     //Setup differential drive with left front and right front motors as the parameters for the new DifferentialDrive
     differentialDrive = new DifferentialDrive(rightFrontMotor, leftFrontMotor);
   }
 
-  public void setBrake(boolean brake){
-    // if (brake){
-    //   mode = IdleMode.kBrake;
-    // }
-    // else{
-    //   mode = IdleMode.kCoast;
-    // }
+  public void setBrake(boolean brake) {
     IdleMode mode = brake ? IdleMode.kBrake : IdleMode.kCoast;
     leftFrontMotor.setIdleMode(mode);
     rightFrontMotor.setIdleMode(mode);
@@ -117,7 +119,7 @@ public class Drivetrain extends SubsystemBase {
     rightRearMotor.setIdleMode(mode);
   }
 
-  public double getPitch(){
+  public double getPitch() {
     return imu.getPitch();
   }
 
@@ -152,51 +154,61 @@ public class Drivetrain extends SubsystemBase {
   
   @Override
   public void periodic() {
+
       // Update the odometry
       odometry.update(imu.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
 
       double yaw = this.getYaw();
       
-      // get the change in angles, used to calculate the momentary angular velocity
+      // Get the change in angle, used to calculate the momentary angular velocity
+      // The RobotMath.relativeAngle method is used because the angles wrap around
+      // from -180 to 180, so a change from 170 to -160 will be correctly identified
+      // as a 30 degree shift using this method, as 170 wraps around to -160 after 
+      // 30 more degrees.
       double relativeChange = RobotMath.relativeAngle(this.previousAngle, yaw);
 
-      // get the angular velocity, denoised with a diminishing average loop
+      // Get the angular velocity, denoised with a diminishing average loop.
+      // The change in angle divided by the change in time since that last reading is
+      // a good approximation of the instantaneous velocity.
       this.angularVelocity = this.angularVelocityHandler.feed(
         relativeChange / RobotConstants.secondsPerTick
       );
 
-      // save the current angle so next loop it can be used in the above loop to calculate angular velocity
+      // Save the current angle so next loop it can be used in the above loop to calculate angular velocity
       this.previousAngle = yaw;
 
-
-      // check whether there is curvature input 
+      // Check whether there is curvature input 
       boolean noCurvatureInput = RobotMath.approximatelyZero(this.curvatureSetpoint);
 
       // If the robot is still registering itself as spinning (so it was spinning), 
-      // but there is no input, and there is no angular velocity 
+      // but there is no input, and there is no angular velocity.
+      // Therefore, this if statement catches when the robot has just stopped after
+      // having been spun by the driver.
       if(this.isTurning && noCurvatureInput && !this.hasAngularVelocity()) {
-        // register the robot as not turning and set the current angle as the heading lock angle
-        this.isTurning = false;
-        this.lockCurrentHeading();
-        this.headingPID.reset();
+        this.isTurning = false;     // Register the robot as not turning
+        this.lockCurrentHeading();  // Lock the current heading
+        this.headingPID.reset();    // Stop the integral value from running off
         System.out.println("SET PIVOT ANGLE:  " + yaw);
       }
 
+      // The driver is turning the robot with the joystick
       if(!noCurvatureInput) { // YES curvature input
-        // set the robot as turning, so it doesnt lock its heading
+        // Set the robot as turning, so it doesnt lock its heading
         this.isTurning = true;
       }
       
       double rotationInput = this.curvatureSetpoint;
 
-      // if the robot should be locking its heading, and is not turning, 
+      // If the robot should be locking its heading, and is not turning, 
       // calculate the pid output and set it as the rotationInput
       if(this.shouldHeadingLock && !this.isTurning) {
+        // NOTE: It does not matter if this goes beyond [-1, 1], as the curvatureDrive
+        // method already clamps the values (i.e. values above 1 with be considered as 1, and
+        // values below -1 will be considered as -1) inside the method.
         rotationInput = this.headingPID.calculate(yaw);
-        rotationInput = MathUtil.clamp(rotationInput, -1, 1);
       }
 
-      // set the differentialDrive outputs
+      // Set the differentialDrive outputs
       differentialDrive.curvatureDrive(this.speedSetpoint, rotationInput, this.shouldQuickturn);
 
       // double rotationOutput = this.commandedZRotation;
