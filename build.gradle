@@ -2,6 +2,7 @@ plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2023.1.1"
     id "com.peterabeles.gversion" version "1.10"
+    id 'com.diffplug.spotless' version '6.12.0'
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -101,11 +102,68 @@ tasks.withType(JavaCompile) {
 
 // Create version file
 project.compileJava.dependsOn(createVersionFile)
+
 gversion {
-  srcDir       = "src/main/java/"
-  classPackage = "frc.robot"
-  className    = "BuildConstants"
-  dateFormat   = "yyyy-MM-dd HH:mm:ss z"
-  timeZone     = "America/New_York"
-  indent       = "  "
+    srcDir       = "src/main/java/"
+    classPackage = "frc.robot"
+    className    = "BuildConstants"
+    dateFormat   = "yyyy-MM-dd HH:mm:ss z"
+    timeZone     = "America/New_York"
+    indent       = "  "
+}
+
+
+// gradle.projectsEvaluated {
+// if (project.automatedBuild) {
+//     preBuild.dependsOn(spotlessCheck)
+// } else {
+// preBuild.dependsOn(spotlessApply)
+// }
+// }
+project.compileJava.dependsOn(spotlessApply);
+
+spotless {
+    ratchetFrom 'origin/main'
+    enforceCheck false
+    java {
+        target fileTree('.') {
+            include '**/*.java'
+            exclude '**/build/**', '**/build-*/**', '**/BuildConstants.java'
+        }
+        toggleOffOn()
+        // googleJavaFormat()
+        eclipse()
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    groovyGradle {
+        target fileTree('.') {
+            include '**/*.gradle'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        greclipse()
+        indentWithSpaces(4)
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    format 'xml', {
+        target fileTree('.') {
+            include '**/*.xml'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        eclipseWtp('xml')
+        trimTrailingWhitespace()
+        indentWithSpaces(2)
+        endWithNewline()
+    }
+    format 'misc', {
+        target fileTree('.') {
+            include '**/*.md', '**/.gitignore'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        trimTrailingWhitespace()
+        indentWithSpaces(2)
+        endWithNewline()
+    }
 }
