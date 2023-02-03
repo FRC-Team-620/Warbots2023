@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.util.vision;
 
 import org.photonvision.PhotonCamera;
 

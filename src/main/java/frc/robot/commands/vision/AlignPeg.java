@@ -5,8 +5,8 @@ package frc.robot.commands.vision;
 // the WPILib BSD license file in the root directory of this project.
 
 import frc.robot.Constants;
-import frc.robot.PhotonManager;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.util.vision.PhotonManager;
 
 // import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.photonvision.common.hardware.VisionLEDMode;

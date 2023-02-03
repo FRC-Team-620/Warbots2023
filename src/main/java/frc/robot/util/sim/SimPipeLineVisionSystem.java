@@ -8,7 +8,6 @@ import org.photonvision.SimVisionSystem;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import frc.robot.PhotonManager;
 
 public class SimPipeLineVisionSystem{
     ArrayList<SimVisionSystem> systems = new ArrayList<>();
