@@ -7,6 +7,8 @@ package frc.robot.commands.vision;
 import frc.robot.Constants;
 import frc.robot.PhotonManager;
 import frc.robot.subsystems.Drivetrain;
+
+// import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.photonvision.common.hardware.VisionLEDMode;
 import org.photonvision.targeting.PhotonPipelineResult;
 import edu.wpi.first.math.MathUtil;
@@ -17,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 /** Rotates the robot to align to a identified target. */
 public class AlignPeg extends CommandBase {
   private final Drivetrain m_drivetrain;
-  private final double kp = 0.01, ki = 0, kd = .001;
+  private final double kp = 0.014, ki = 0.01, kd = .001;
   private final double kangleTolerance = 2;
   private final double kmaxTurnSpeed = .5;
   private int lastPipeline = 0;
@@ -57,23 +59,24 @@ public class AlignPeg extends CommandBase {
   public void execute() {
 
     double currentHeading = m_drivetrain.getPose().getRotation().getDegrees();
-    double targetHeading = m_pid.getSetpoint();
+    // double targetHeading = m_pid.getSetpoint();
 
     PhotonPipelineResult result = PhotonManager.getInstance().mainCam.getLatestResult();
-    SmartDashboard.putBoolean("alignpeg1/hasTarget", result.hasTargets());
-    if (result.hasTargets()) {
-      targetHeading = currentHeading + result.getBestTarget().getYaw();
-      SmartDashboard.putNumber("alignpeg1/visionYaw", result.getBestTarget().getYaw());
-    }
-    m_pid.setSetpoint(targetHeading);
-    double output = -MathUtil.clamp(m_pid.calculate(currentHeading), -kmaxTurnSpeed, kmaxTurnSpeed); // Clamp Turn
-                                                                                                     // output between
-                                                                                                     // kmaxTurnSpeed
 
+    SmartDashboard.putNumber("alignpeg1/hasTarget", result.hasTargets() ? 1 : -1);
+    System.out.println(result.hasTargets());
+    if (result.hasTargets()) {
+      double targetHeading = currentHeading + result.getBestTarget().getYaw();
+      SmartDashboard.putNumber("alignpeg1/visionYaw", result.getBestTarget().getYaw());
+      m_pid.setSetpoint(targetHeading);
+    }
+    double output = -MathUtil.clamp(m_pid.calculate(currentHeading), -kmaxTurnSpeed, kmaxTurnSpeed); // Clamp Turn                                                                                   // output between
+                                                                                                     // kmaxTurnSpeed
+    SmartDashboard.putNumber("alignpeg1/setpoint", m_pid.getSetpoint());
     SmartDashboard.putNumber("alignpeg1/output", output);
     SmartDashboard.putNumber("alignpeg1/robotyaw", currentHeading);
 
-    m_drivetrain.setCurvatureDrive(0, -output, true); // Update Drivetrain
+    m_drivetrain.setCurvatureDrive(0, output, true); // Update Drivetrain
   }
 
   // Called once the command ends or is interrupted.
