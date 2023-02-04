@@ -6,45 +6,27 @@ import frc.robot.util.LEDs.LEDSubsystem.LEDAnimation;
 import frc.robot.util.LEDs.LEDSubsystem.LEDManager;
 
 public class LEDIdleCommand extends CommandBase {
-    //protected Intake intake;
-    //protected FiringPins firingPins;
+	// protected Intake intake;
+	// protected FiringPins firingPins;
 
-    LEDSubsystem.LEDStrip strip = LEDManager.STRIP0.strip;
+	LEDSubsystem.LEDStrip strip = LEDManager.STRIP0.strip;
 
-    private LEDAnimation noBallsAnim = this.strip.fadeAnimation(1,
-        30, 
-        Color.kYellow,
-        Color.kWhite
-    );
+	private LEDAnimation noBallsAnim = this.strip.fadeAnimation(1, 30, Color.kYellow, Color.kWhite);
 
-    private LEDAnimation oneBallAnim = this.strip.gradientAnimation(1, 
-        Color.kRed,
-        Color.kOrangeRed,
-        Color.kOrange
-    );
+	private LEDAnimation oneBallAnim = this.strip.gradientAnimation(1, Color.kRed, Color.kOrangeRed, Color.kOrange);
 
-    private LEDAnimation twoBallsAnim = this.strip.gradientAnimation(1, 
-        Color.kBlue,
-        Color.kBlueViolet,
-        Color.kPurple
-    );
+	private LEDAnimation twoBallsAnim = this.strip.gradientAnimation(1, Color.kBlue, Color.kBlueViolet, Color.kPurple);
 
-    public LEDIdleCommand(LEDSubsystem ledSubsystem) {
-        addRequirements(ledSubsystem);
-    }
+	public LEDIdleCommand(LEDSubsystem ledSubsystem) {
+		addRequirements(ledSubsystem);
+	}
 
-    @Override
-    public void execute() {
-        /*
-        if(this.firingPins.hasColor()) { 
-            if(this.intake.getIntakeSwitch()) { // TWO balls
-                this.twoBallsAnim.step();
-            } else { // ONE ball
-                this.oneBallAnim.step();
-            }
-        } else { // NO balls
-            this.noBallsAnim.step();
-        }
-        */
-    }
+	@Override
+	public void execute() {
+		/*
+		 * if(this.firingPins.hasColor()) { if(this.intake.getIntakeSwitch()) { // TWO
+		 * balls this.twoBallsAnim.step(); } else { // ONE ball this.oneBallAnim.step();
+		 * } } else { // NO balls this.noBallsAnim.step(); }
+		 */
+	}
 }
