@@ -37,7 +37,7 @@ public class TurnDeltaAngle extends InstantCommand {
       TurnAngleCommandConstants.kDTurnAngle, 
       new Constraints(
           TurnAngleCommandConstants.maxAngularVelocity, 
-          TurnAngleCommandConstants.maxAngularAcceleration
+          TurnAngleCommandConstants.maxAngularAcceleration // This is the limiting factor
       )
     );
 
@@ -76,7 +76,8 @@ public class TurnDeltaAngle extends InstantCommand {
 
     this.drivetrain.setCurvatureDrive(0, rotation, true);
 
-    SmartDashboard.putNumber("TurnDeltaAngle/setpoint", this.profiledAnglePID.getSetpoint().position);
+    SmartDashboard.putNumber("TurnDeltaAngle/setpoint.position", this.profiledAnglePID.getSetpoint().position);
+    SmartDashboard.putNumber("TurnDeltaAngle/setpoint.velocity", this.profiledAnglePID.getSetpoint().velocity);
   }
 
   // Called once the command ends or is interrupted.
