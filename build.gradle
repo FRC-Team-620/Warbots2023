@@ -113,14 +113,12 @@ gversion {
 }
 
 
-// gradle.projectsEvaluated {
-// if (project.automatedBuild) {
-//     preBuild.dependsOn(spotlessCheck)
-// } else {
-// preBuild.dependsOn(spotlessApply)
-// }
+
+// if(System.getenv('AUTOMATEDBUILD')){
+//     project.compileJava.dependsOn(spotlessCheck);
 // }
 project.compileJava.dependsOn(spotlessApply);
+
 
 spotless {
     ratchetFrom 'origin/main'
