@@ -74,9 +74,9 @@ public class Drivetrain extends SubsystemBase {
 	// private int tickAccumulation = 0;
 	private double previousAngle;
 
-	private double speedSetpoint = 0.0;
-	private double curvatureSetpoint = 0.0;
-	private boolean shouldQuickturn = false;
+	private double commandedSpeed = 0.0;
+	private double commandedCurvature = 0.0;
+	private boolean commandedAllowTurnInPlace = false;
 
 	private boolean shouldHeadingLock = true;
 
@@ -94,8 +94,14 @@ public class Drivetrain extends SubsystemBase {
 		setupFollowerMotors();
 		initSensors();
 
-		headingPID = new PIDController(Constants.driveports.getKeepHeadingPID().kp,
-				Constants.driveports.getKeepHeadingPID().kd, Constants.driveports.getKeepHeadingPID().kd);
+		// spotless:off
+		headingPID = new PIDController(
+			Constants.driveports.getKeepHeadingPID().kp,
+			Constants.driveports.getKeepHeadingPID().kd, 
+			Constants.driveports.getKeepHeadingPID().kd
+		);
+		// spotless:on
+
 		SmartDashboard.putData("DriveTrainHeading", headingPID);
 
 		headingPID.enableContinuousInput(-180, 180);
@@ -178,14 +184,18 @@ public class Drivetrain extends SubsystemBase {
 		// Get the angular velocity, denoised with a diminishing average loop.
 		// The change in angle divided by the change in time since that last reading is
 		// a good approximation of the instantaneous velocity.
-		this.angularVelocity = this.angularVelocityHandler.feed(relativeChange / RobotConstants.secondsPerTick);
+		// spotless:off
+		this.angularVelocity = this.angularVelocityHandler.feed(
+			relativeChange / RobotConstants.secondsPerTick
+		);
+		// spotless:on
 
 		// Save the current angle so next loop it can be used in the above loop to
 		// calculate angular velocity
 		this.previousAngle = yaw;
 
 		// Check whether there is curvature input
-		boolean noCurvatureInput = RobotMath.approximatelyZero(this.curvatureSetpoint);
+		boolean noCurvatureInput = RobotMath.approximatelyZero(this.commandedCurvature);
 
 		// If the robot is still registering itself as spinning (so it was spinning),
 		// but there is no input, and there is no angular velocity.
@@ -194,7 +204,7 @@ public class Drivetrain extends SubsystemBase {
 		if (this.isTurning && noCurvatureInput && !this.hasAngularVelocity()) {
 			this.isTurning = false; // Register the robot as not turning
 			this.lockCurrentHeading(); // Lock the current heading
-			this.headingPID.reset(); // Stop the integral value from running off
+			this.resetHeadingLockPID(); // Stop the integral value from running off
 			System.out.println("SET PIVOT ANGLE:  " + yaw);
 		}
 
@@ -204,25 +214,24 @@ public class Drivetrain extends SubsystemBase {
 			this.isTurning = true;
 		}
 
-		double rotationInput = this.curvatureSetpoint;
+		double rotationInput = this.commandedCurvature;
 
 		// If the robot should be locking its heading, and is not turning,
 		// calculate the pid output and set it as the rotationInput
 		if (this.shouldHeadingLock && !this.isTurning) {
 			// NOTE: It does not matter if this goes beyond [-1, 1], as the curvatureDrive
 			// method already clamps the values (i.e. values above 1 with be considered as
-			// 1, and
-			// values below -1 will be considered as -1) inside the method.
+			// 1, and values below -1 will be considered as -1) inside the method.
 			rotationInput = this.headingPID.calculate(yaw);
 		}
 
 		// Set the differentialDrive outputs
-		differentialDrive.curvatureDrive(this.speedSetpoint, rotationInput, this.shouldQuickturn);
+		differentialDrive.curvatureDrive(this.commandedSpeed, rotationInput, this.commandedAllowTurnInPlace);
 
 		// double rotationOutput = this.commandedZRotation;
 		SmartDashboard.putNumber("Drivetrain/RotationInputPeriodic", rotationInput);
-		SmartDashboard.putNumber("Drivetrain/DriveSpeedPeriodic", this.speedSetpoint);
-		// SmartDashboard.putBoolean("Drivetrain/isTurning", this.isTurning);
+		SmartDashboard.putNumber("Drivetrain/DriveSpeedPeriodic", this.commandedSpeed);
+		SmartDashboard.putNumber("Drivetrain/isTurning", this.isTurning ? 1 : -1);
 		SmartDashboard.putNumber("Drivetrain/DriveAngularVelocity", this.angularVelocity);
 		SmartDashboard.putNumber("Drivetrain/DriveHeadingAngle", yaw);
 		SmartDashboard.putNumber("Drivetrain/DriveAngleSetpoint", this.headingPID.getSetpoint());
@@ -230,8 +239,14 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	public void resetOdometry(Pose2d pose) {
-		odometry.resetPosition(imu.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition(),
-				pose);
+		// spotless:off
+		odometry.resetPosition(
+			imu.getRotation2d(), 
+			leftFrontEncoder.getPosition(), 
+			rightFrontEncoder.getPosition(),
+			pose
+		);
+		// spotless:on
 	}
 
 	private CANSparkMax setupMotor(CANSparkMax motor) {
@@ -272,7 +287,7 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	public void resetAngularVelocity() { // TODO: Remove
-		// this.angularVelocityHandler.reset();
+		this.angularVelocityHandler.reset();
 	}
 
 	public double getYaw() { // TODO: Remove Use Odometry instead
@@ -280,33 +295,35 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	public void stop() {
-		this.speedSetpoint = 0.0;
-		this.curvatureSetpoint = 0.0;
-		this.shouldQuickturn = false;
+		this.commandedSpeed = 0.0;
+		this.commandedCurvature = 0.0;
+		this.commandedAllowTurnInPlace = false;
 	}
 
 	public void lockCurrentHeading() {
-		this.headingPID.setSetpoint(this.getYaw());
+		this.setHeadingLockSetpoint(this.getYaw());
 	}
 
 	public double getAngleSetpoint() {
 		return this.headingPID.getSetpoint();
 	}
 
-	public void setAngleSetpoint(double angle) { // TODO: Remove Use command Framework
+	public void setHeadingLockSetpoint(double angle) { // TODO: Remove Use command Framework
 		this.headingPID.setSetpoint(RobotMath.constrain180(angle));
 	}
 
-	public void turnRelativeAngle(double deltaAngle) { // TODO: Remove Use command Framework
-		this.setAngleSetpoint(RobotMath.shiftAngle(this.headingPID.getSetpoint(), RobotMath.constrain180(deltaAngle)));
-		System.out.println(RobotMath.constrain180(deltaAngle));
-	}
+	// public void turnRelativeAngle(double deltaAngle) { // TODO: Remove Use
+	// command Framework
+	// this.setAngleSetpoint(RobotMath.shiftAngle(this.headingPID.getSetpoint(),
+	// RobotMath.constrain180(deltaAngle)));
+	// System.out.println(RobotMath.constrain180(deltaAngle));
+	// }
 
 	// public boolean atAngleSetpoint() { // TODO: Remove
 	// return this.headingPID.atSetpoint();
 	// }
 
-	public void resetAnglePID() {
+	public void resetHeadingLockPID() {
 		this.headingPID.reset();
 	}
 
@@ -322,8 +339,9 @@ public class Drivetrain extends SubsystemBase {
 	// this.allowTurnInPlace = quickturn;
 	// }
 
-	public void resetEncoders() { // TODO: Remove create reset odometry class This will cause bugs with the
-									// odometry
+	// TODO: Remove create reset odometry class This will cause bugs with the
+	// odometry
+	public void resetEncoders() {
 		leftFrontEncoder.setPosition(0.0);
 		rightFrontEncoder.setPosition(0.0);
 	}
@@ -353,9 +371,9 @@ public class Drivetrain extends SubsystemBase {
 		// System.out.println("" + speed+' '+ rotationInput+' '+ quickTurn);
 		SmartDashboard.putNumber("Drivetrain/speed", speed); // TODO: Remove update values in periodic
 		SmartDashboard.putNumber("Drivetrain/rotationInput", rotationInput); // TODO: Remove update values in periodic
-		this.speedSetpoint = speed;
-		this.curvatureSetpoint = rotationInput;
-		this.shouldQuickturn = quickTurn;
+		this.commandedSpeed = speed;
+		this.commandedCurvature = rotationInput;
+		this.commandedAllowTurnInPlace = quickTurn;
 	}
 
 	public void setRightMotors(double speed) { // TODO: Do we need these methods?
