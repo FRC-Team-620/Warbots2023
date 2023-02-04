@@ -35,6 +35,8 @@ public final class Constants {
 
 		// public static final double metersPerEncoderTick = 0.03763;
 
+		public static final double headingLockPIDOutputLimit = 0.3;
+
 		public static final double angleSetBufferSeconds = 0.25;
 		public static final double angleSetBufferTicks = DriveConstants.angleSetBufferSeconds
 				/ RobotConstants.secondsPerTick;
@@ -74,6 +76,7 @@ public final class Constants {
 		public static final double gearRatio = 0.12;
 
 	}
+
 	// All measurements in meters
 	public static class ArenaConstants {
 		public static final double kmidCubeHeightMeters = Units.inchesToMeters(18.25);
@@ -83,9 +86,8 @@ public final class Constants {
 
 		public static final double kmidConeHeightMeters = Units.inchesToMeters(34);
 		public static final double khighConeHeightMeters = Units.inchesToMeters(46);
-		public static final double kmidConeFromFrontMeters = Units.inchesToMeters(22.75); // how far the arm will have
-																							// to reach to get to mid
-																							// peg
+		// how far the arm will have to reach to get to mid peg
+		public static final double kmidConeFromFrontMeters = Units.inchesToMeters(22.75);
 		public static final double khighConeFromFrontMeters = Units.inchesToMeters(37.75);
 
 		public static final double kmidTapeFromTopMeters = Units.inchesToMeters(8);
@@ -106,6 +108,7 @@ public final class Constants {
 
 		public static final double balanceCreepSpeed = 0.1;
 	}
+
 	public class ArmConstants {
 		public static final double armLengthMeters = 1; // TODO; find real length and height
 		public static final double armHeightMeters = 1;

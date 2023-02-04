@@ -85,7 +85,7 @@ public class Robot extends TimedRobot {
 		else {
 			m_robotContainer.getDrivetrain().setBrake(true);
 		}
-		this.m_robotContainer.getDrivetrain().resetAnglePID();
+		this.m_robotContainer.getDrivetrain().resetHeadingLockPID();
 	}
 
 	@Override
@@ -129,7 +129,7 @@ public class Robot extends TimedRobot {
 
 		this.m_robotContainer.getDrivetrain().resetAngularVelocity();
 
-		this.m_robotContainer.getDrivetrain().resetAnglePID();
+		this.m_robotContainer.getDrivetrain().resetHeadingLockPID();
 
 	}
 

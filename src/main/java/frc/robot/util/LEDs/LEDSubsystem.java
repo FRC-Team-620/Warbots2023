@@ -324,6 +324,19 @@ public class LEDSubsystem extends SubsystemBase {
 		}
 
 		/**
+		 * Sets the LED at a given index to a given color.
+		 *
+		 * @param index
+		 *            The index of the LED.
+		 * @param color
+		 *            The color to set the LED to.
+		 */
+		public void set(int index, Color color) {
+			this.buffer.setLED(index, color);
+			this.lights.setData(this.buffer);
+		}
+
+		/**
 		 * Sets the entire LED strip to a given color.
 		 *
 		 * @param color

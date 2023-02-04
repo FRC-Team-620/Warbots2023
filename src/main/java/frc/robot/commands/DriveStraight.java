@@ -17,8 +17,14 @@ public class DriveStraight extends CommandBase {
 
 		this.distance = distance;
 
-		this.distancePID = new PIDController(Constants.driveports.getDriveDistancePID().kp,
-				Constants.driveports.getDriveDistancePID().ki, Constants.driveports.getDriveDistancePID().kd);
+		// spotless:off
+		this.distancePID = new PIDController(
+			Constants.driveports.getDriveDistancePID().kp,
+			Constants.driveports.getDriveDistancePID().ki, 
+			Constants.driveports.getDriveDistancePID().kd
+		);
+		// spotless:on
+
 		this.distancePID.setTolerance(0.04, 0.1);
 
 		addRequirements(drivetrain);
@@ -35,7 +41,14 @@ public class DriveStraight extends CommandBase {
 	public void execute() {
 		double current = this.drivetrain.getLeftEncoderCount();
 		// this.drivetrain.setSpeed(this.distancePID.calculate(current));
-		this.drivetrain.setCurvatureDrive(this.distancePID.calculate(current), 0, false);
+
+		// spotless:off
+		this.drivetrain.setCurvatureDrive(
+			this.distancePID.calculate(current), 
+			0, 
+			false
+		);
+		// spotless:on
 
 		SmartDashboard.putNumber("distance setpoint", this.distancePID.getSetpoint());
 		SmartDashboard.putNumber("distance current", drivetrain.getLeftEncoderCount());

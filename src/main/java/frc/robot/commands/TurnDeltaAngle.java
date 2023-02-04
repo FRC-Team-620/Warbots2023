@@ -26,14 +26,17 @@ public class TurnDeltaAngle extends InstantCommand {
 		this.drivetrain = drivetrain;
 		this.deltaAngle = RobotMath.constrain180(deltaAngle);
 
-		this.profiledAnglePID = new ProfiledPIDController(TurnAngleCommandConstants.kPTurnAngle,
-				TurnAngleCommandConstants.kITurnAngle, TurnAngleCommandConstants.kDTurnAngle, new Constraints(
-						TurnAngleCommandConstants.maxAngularVelocity, TurnAngleCommandConstants.maxAngularAcceleration // This
-																														// is
-																														// the
-																														// limiting
-																														// factor
-				));
+		// spotless:off
+		this.profiledAnglePID = new ProfiledPIDController(
+      TurnAngleCommandConstants.kPTurnAngle,
+			TurnAngleCommandConstants.kITurnAngle, 
+      TurnAngleCommandConstants.kDTurnAngle, 
+      new Constraints(
+				TurnAngleCommandConstants.maxAngularVelocity, 
+        TurnAngleCommandConstants.maxAngularAcceleration
+			)
+    );
+    // spotless:on
 
 		this.profiledAnglePID.enableContinuousInput(-180, 180);
 		this.profiledAnglePID.setTolerance(2, TurnAngleCommandConstants.maxAngularVelocity);
@@ -50,7 +53,7 @@ public class TurnDeltaAngle extends InstantCommand {
 		this.profiledAnglePID.reset(this.drivetrain.getYaw());
 		this.profiledAnglePID.setGoal(finalAngle);
 
-		this.drivetrain.resetAnglePID();
+		this.drivetrain.resetHeadingLockPID();
 		this.drivetrain.disableHeadingLock();
 	}
 
@@ -70,7 +73,7 @@ public class TurnDeltaAngle extends InstantCommand {
 	@Override
 	public void end(boolean interrupted) {
 
-		this.drivetrain.resetAnglePID();
+		this.drivetrain.resetHeadingLockPID();
 		this.drivetrain.stop();
 		this.drivetrain.enableHeadingLock();
 		this.drivetrain.lockCurrentHeading();
