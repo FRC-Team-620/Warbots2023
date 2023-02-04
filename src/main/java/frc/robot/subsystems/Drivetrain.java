@@ -90,9 +90,9 @@ public class Drivetrain extends SubsystemBase {
     initSensors();
 
     headingPID = new PIDController(
-      Constants.driveports.getkPKeepHeading(),
-      Constants.driveports.getkIKeepHeading(),
-      Constants.driveports.getkDKeepHeading()
+      Constants.driveports.getKeepHeadingPID().kp,
+      Constants.driveports.getKeepHeadingPID().kd,
+      Constants.driveports.getKeepHeadingPID().kd
     );
     SmartDashboard.putData("DriveTrainHeading", headingPID);
     
