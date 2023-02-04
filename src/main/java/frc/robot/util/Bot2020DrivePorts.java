@@ -21,10 +21,16 @@ public class Bot2020DrivePorts implements IDrivePorts {
 	public final double maxVelocity = 10;
 	public final double maxAcceleration = 10;
 
-	public final double balanceCreepSpeed = 0.1;
+	public static final double kPDriveDistance = 0.8;
+	public static final double kIDriveDistance = 0.01;
+	public static final double kDDriveDistance = 0.0;
 
+	public static final double kPKeepHeading = 0.010;
+	public static final double kIKeepHeading = 0.010;
+	public static final double kDKeepHeading = 0;
 	// public final IIMUWrapper imu = new NavxIMU(SPI.Port.kMXP);
-	public final IIMUWrapper imu = new PigeonIMU(30, getimConfiguration()); // TODO: When you have a pigeon installed
+	public final IIMUWrapper imu = new PigeonIMU(30, getimConfiguration());
+	public final double balanceCreepSpeed = 0.1;
 
 	private Pigeon2Configuration getimConfiguration() {
 		Pigeon2Configuration config = new Pigeon2Configuration();
