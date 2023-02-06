@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import org.apache.commons.lang3.NotImplementedException;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
