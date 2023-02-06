@@ -8,6 +8,7 @@ public class PIDConfig {
     public final double kd;
     public final double posTol;
     public final double velTol; 
+
     public PIDConfig(double kp, double ki, double kd){
         this(kp,ki,kd, 0 ,0);
     }
@@ -24,6 +25,6 @@ public class PIDConfig {
         PIDController controller = new PIDController(config.kp, config.ki, config.kd);
         controller.setTolerance(config.posTol, config.velTol);
          return controller; 
-
     }
+
 }
