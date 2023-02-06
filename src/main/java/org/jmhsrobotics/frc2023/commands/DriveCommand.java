@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 public class DriveCommand extends CommandBase {
 	private Drivetrain drivetrain;
 	private CommandXboxController controller;
+	private boolean rightStick = false;
+
 	/**
 	 * Creates a new DriveCommand.
 	 *
@@ -45,11 +47,24 @@ public class DriveCommand extends CommandBase {
 		// Squared input: allows you to have more control when moving slowly but be able
 		// to move fast quickly
 		// This was the input scheme we went with last season in 2022
-		double leftTriggerInput = Math.pow(controller.getLeftTriggerAxis(), 2);// used for backward movement
-		double rightTriggerInput = Math.pow(controller.getRightTriggerAxis(), 2);// used for forward movement
-		double rotationInput = Math.pow(controller.getLeftX(), 2);
-		rotationInput *= Math.signum(controller.getLeftX());// This is either -1 if the input is a negative or 1 if the
-															// input is a positive
+
+		//double leftTriggerInput = Math.pow(controller.getLeftTriggerAxis(), 2);//used for backward movement
+    	//double rightTriggerInput = Math.pow(controller.getRightTriggerAxis(), 2);//used for forward movement
+    	double leftTriggerInput = controller.getLeftTriggerAxis();//used for backward movement
+    	double rightTriggerInput = controller.getRightTriggerAxis();//used for forward movement
+    
+    	double rotationInput;
+    	if (rightStick) {
+      		System.out.println(rightStick);
+      		rotationInput = controller.getRightX();
+      		//rotationInput = Math.pow(controller.getRightX(), 2);
+      		//rotationInput *= Math.signum(controller.getRightX());//This is either -1 if the input is a negative or 1 if the input is a positive 
+    	} else {
+      		rotationInput = controller.getLeftX();
+      		//rotationInput = Math.pow(controller.getLeftX(), 2);
+      		//rotationInput *= Math.signum(controller.getLeftX());//This is either -1 if the input is a negative or 1 if the input is a positive 
+    	}
+														// input is a positive
 		rotationInput = MathUtil.applyDeadband(rotationInput, 0.1);
 
 		// After that you should multiply the rotation input number by -1 if the input
@@ -77,6 +92,15 @@ public class DriveCommand extends CommandBase {
 		// controls the bot
 		speed = rightTriggerInput > leftTriggerInput ? rightTriggerInput : -leftTriggerInput;
 
+		//speed *= 0.5;
+    	//rotationInput *= 0.5;
+
+    	if (controller.rightBumper().getAsBoolean()) {
+      		// speed *= 2;
+      		// rotationInput *= 2; 
+      		speed /= 2;
+      		rotationInput /= 2;
+    	}
 		// Pass the speed, rotation input, and the quickTurn in that order into
 		// setCurvatureDrive
 		// This will allow for Drivetrain's DifferentalDrive to assign the motors to the
