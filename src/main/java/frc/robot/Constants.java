@@ -88,13 +88,21 @@ public final class Constants {
     public static final double autoDistanceKI = 0.2;
     public static final double autoDistanceKD = 0.1;
 
+    public static final double kPPitchSpeed = 0.1;
+    public static final double kIPitchSpeed = 0.01;
+    public static final double kDPitchSpeed = 0.001;
+
+    public static final double kPRollCurvature = 0.014;
+    public static final double kIRollCurvature = 0.01;
+    public static final double kDRollCurvature = 0.001;
+
     public static final double maxVelocity = 2;
     public static final double maxAcceleration = 2;
 
     public static final double balanceCreepSpeed = 0.1;
     public static final double balanceCenterLimitFromInitialTip = 0.3;
     public static final double onChargeStationAngle = 8; 
-    public static final double balancedAngle = 6; 
+    public static final double balancedAngle = 2; 
   }
 
   public static double kSimUpdateTime = 0.02;

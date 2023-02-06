@@ -11,7 +11,7 @@ public class Bot2020DrivePorts implements IDrivePorts {
     public final int leftRearMotorCANId = 3;
     public final int rightRearMotorCANId = 4;
 
-    public final boolean rightFrontMotorInversion = true;
+    public final boolean rightFrontMotorInversion = false;
     public final boolean leftFrontMotorInversion = true;
 
     public final double wheelDiameterInInches = 6;

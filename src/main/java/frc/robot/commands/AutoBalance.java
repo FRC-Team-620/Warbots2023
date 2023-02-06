@@ -80,10 +80,10 @@ public class AutoBalance extends CommandBase {
                 this.isBalancing = false;
                 
                 if (pitch < 0 && getRelativeDistance(chargeCenterPosition) > moveLimit){
-                    this.drivetrain.setCurvatureDrive(-1 * AutoConstants.balanceCreepSpeed, 0, false);
+                    this.drivetrain.setCurvatureDrive(AutoConstants.balanceCreepSpeed, 0, false);
                 }
                 else if (pitch > 0 && getRelativeDistance(chargeCenterPosition) < moveLimit){
-                    this.drivetrain.setCurvatureDrive(AutoConstants.balanceCreepSpeed, 0, false);
+                    this.drivetrain.setCurvatureDrive(-1 * AutoConstants.balanceCreepSpeed, 0, false);
                 }
                 else{
                     if (!atLimit){

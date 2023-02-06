@@ -63,6 +63,8 @@ public class Drivetrain extends SubsystemBase {
   private double angularVelocity = 0.0;
 
   private boolean headingLock = false;
+
+  private boolean shouldHeadingLock = true;
   
   public double getHeading() { // TODO: Remove Use Odom class
     return imu.getAngle();//Could use getYaw
@@ -225,7 +227,7 @@ public class Drivetrain extends SubsystemBase {
         antiSnapBackTimer.reset();
       }
 
-      if (headingLock) {
+      if (this.shouldHeadingLock && headingLock) {
         // Locks the value in the proper range for curvature drive
         double calculate = headingPID.calculate(yaw);
         rotationOutput = MathUtil.clamp(calculate, -1, 1);
@@ -276,6 +278,14 @@ public class Drivetrain extends SubsystemBase {
 
   public double getYaw() { // TODO: Remove Use Odometry instead
     return this.imu.getYaw();
+  }
+
+  public void enableHeadingLock() {
+    this.headingLock = true;
+  }
+
+  public void disableHeadingLock() {
+    this.headingLock = false;
   }
 
   public void stop() {

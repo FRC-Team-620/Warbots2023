@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArmCommand;
+import frc.robot.commands.AutoBalance;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DriveStraight;
 import frc.robot.commands.TurnDeltaAngle;
@@ -57,7 +58,7 @@ public class RobotContainer {
     // driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
     driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
 
-    driver.x().onTrue(new DriveStraight(drivetrain, 2));
+    driver.x().onTrue(new AutoBalance(drivetrain, true));
   }
 
   /**
