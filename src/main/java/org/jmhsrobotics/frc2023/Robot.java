@@ -80,7 +80,7 @@ public class Robot extends TimedRobot {
 	/** This function is called once each time the robot enters Disabled mode. */
 	@Override
 	public void disabledInit() {
-		if (lastAutonomous && Constants.kCoastOnDisable)
+		if (!lastAutonomous && Constants.kCoastOnDisable)
 			m_robotContainer.getDrivetrain().setBrake(false);
 		else {
 			m_robotContainer.getDrivetrain().setBrake(true);
