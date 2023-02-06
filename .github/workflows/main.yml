@@ -23,7 +23,9 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
     # Grant execute permission for gradlew
     - name: Grant execute permission for gradlew
@@ -35,4 +37,24 @@ jobs:
 
     - name: Run Unit Tests
       run: ./gradlew test
+  run-spotless:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-22.04
 
+    # This grabs the WPILib docker container
+    container: wpilib/roborio-cross-ubuntu:2023-22.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    # Grant execute permission for gradlew
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    # Runs a single command using the runners shell
+    - name: Check that code is formatted correctly
+      run: ./gradlew spotlessCheck
