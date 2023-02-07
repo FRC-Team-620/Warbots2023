@@ -12,6 +12,7 @@ public class LEDSubsystem extends SubsystemBase {
 
 	public static enum LEDManager {
 
+		/* ***** ADD NEW LED STRIPS HERE ***** */
 		STRIP0(65, 9); // 65 lights, PWM port 9
 
 		public LEDStrip strip;
@@ -19,48 +20,6 @@ public class LEDSubsystem extends SubsystemBase {
 		private LEDManager(int LEDCount, int PWMPort) {
 			this.strip = new LEDStrip(LEDCount, PWMPort);
 		}
-
-		// public LEDAnimation colorBlocksAnimation(double speed, int[] lengthPattern,
-		// Color... colors) {
-		// return this.strip.colorBlockAnimation(speed, lengthPattern, colors);
-		// }
-		// public LEDAnimation gradientAnimation(double speed, Color... colors) {
-		// return this.strip.gradientAnimation(speed, colors);
-		// }
-		// public LEDAnimation blinkingAnimation(double speed, Color... colors) {
-		// return this.strip.blinkingAnimation(speed, colors);
-		// }
-		// public LEDAnimation solidColorAnimation(Color color) {
-		// return this.strip.solidColorAnimation(color);
-		// }
-		// public LEDAnimation fadeTwoAnimation(double speed, int steps, boolean
-		// bidirectional, Color c1, Color c2) {
-		// return this.strip.fadeTwoAnimation(speed, steps, bidirectional, c1, c2);
-		// }
-		// public LEDAnimation fadeTwoAnimation(double speed, int steps, Color c1, Color
-		// c2) {
-		// return this.strip.fadeTwoAnimation(speed, steps, c1, c2);
-		// }
-		// public LEDAnimation fadeAnimation(double speed, int stepsPer, Color...
-		// colors) {
-		// return this.strip.fadeAnimation(speed, stepsPer, colors);
-		// }
-
-		// public void set(Color c) {
-		// this.strip.setSolidColor(c);
-		// }
-		// public void setColorBlocks(int[] lengths, Color... colors) {
-		// this.strip.setColorBlocks(lengths, colors);
-		// }
-		// public void setColorBlocks(int offset, int[] lengths, Color... colors) {
-		// this.strip.setColorBlocks(offset, lengths, colors);
-		// }
-		// public void setGradient(Color... colors) {
-		// this.strip.setGradient(colors);
-		// }
-		// public void setGradient(int offset, Color... colors) {
-		// this.strip.setGradient(offset, colors);
-		// }
 
 	}
 

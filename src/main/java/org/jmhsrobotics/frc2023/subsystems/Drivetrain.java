@@ -298,6 +298,10 @@ public class Drivetrain extends SubsystemBase {
 		return imu.getPitch();
 	}
 
+	public boolean getIsTurning() {
+		return this.isTurning;
+	}
+
 	public void stop() {
 		this.commandedSpeed = 0.0;
 		this.commandedCurvature = 0.0;
