@@ -4,91 +4,66 @@
 
 package org.jmhsrobotics.frc2023.commands;
 
-import java.sql.Time;
-
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import org.jmhsrobotics.frc2023.Constants.AutoConstants;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 
-public class AutoDriveDistance extends CommandBase {//Not WORKING DO NOT USE PLEASE
-  Drivetrain drivetrain;
-  private double distance;
-  private double autoSpeed = 0.5;
+public class AutoDriveDistance extends CommandBase {
+	Drivetrain drivetrain;
 
-  private Pose2d initPose;
-  
-  private PIDController distancePID;
-  private TrapezoidProfile profile;
-  private Timer timer;
-  // protected final PIDController leftPID;
-  // protected final PIDController rightPID;
-  /** Creates a new AutoDriveDistance. */
-  public AutoDriveDistance(Drivetrain drivetrain, double distance) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.drivetrain = drivetrain;
-    this.distance = distance;
-    this.distancePID = new PIDController(AutoConstants.autoDistanceKP, AutoConstants.autoDistanceKI, AutoConstants.autoDistanceKD);
-    this.profile = new TrapezoidProfile(new Constraints(AutoConstants.maxVelocity, AutoConstants.maxAcceleration), new State(distance, 0));
-    this.timer = new Timer();
-    addRequirements(drivetrain);
-  }
+	private Pose2d initPose;
 
-  @Override
-  public void initialize() {
-    this.initPose = this.drivetrain.getPose();
-    timer.start();
-  }
+	private ProfiledPIDController distancePID;
 
-  // // Called when the command is initially scheduled.
-  // @Override
-  // public void initialize() {}
+	/** Creates a new AutoDriveDistance. */
+	public AutoDriveDistance(Drivetrain drivetrain, double distance) {
+		this.drivetrain = drivetrain;
+		this.distancePID = new ProfiledPIDController(AutoConstants.autoDistanceKP, AutoConstants.autoDistanceKI,
+				AutoConstants.autoDistanceKD,
+				new Constraints(AutoConstants.maxVelocity, AutoConstants.maxAcceleration));
+		distancePID.setGoal(distance);
+		distancePID.setTolerance(Units.inchesToMeters(1), 0.2);
+		addRequirements(drivetrain);
+	}
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    double setpoint = this.profile.calculate(timer.get()).position;
-    // System.out.println(timer.get());
-    double moved = this.initPose.getTranslation().getDistance(this.drivetrain.getPose().getTranslation());
-    double value = this.distancePID.calculate(moved, setpoint);
-    // System.out.println(value + " " + moved + " " + setpoint);
-    this.drivetrain.setCurvatureDrive(value, 0, false);
-  }
+	@Override
+	public void initialize() {
+		this.initPose = this.drivetrain.getPose();
+		SmartDashboard.putData("DriveDist pid", distancePID); // Add pid loop to glass/SD and network tables
+		distancePID.reset(new State(0, 0));
+	}
 
-  public boolean withinBounds() {
-    return this.getDisplacement() > distance;
-  }
+	// Called every time the scheduler runs while the command is scheduled.
+	@Override
+	public void execute() {
+		var moved = getRelativeDistance();
+		double value = this.distancePID.calculate(moved);
+		this.drivetrain.setCurvatureDrive(value, 0, false);
+		SmartDashboard.putNumber("DriveDist pid/distance", moved);
+		SmartDashboard.putNumber("DriveDist pid/goal", distancePID.getGoal().position);
+		SmartDashboard.putNumber("DriveDist pid/setpoint2", distancePID.getSetpoint().position);
+	}
 
-  private double getDisplacement() {
-    return this.initPose.getTranslation().getDistance(this.drivetrain.getPose().getTranslation());
-  }
+	private double getRelativeDistance() {
+		return new Transform2d(initPose, this.drivetrain.getPose()).getTranslation().getX();
+	}
 
+	// // Returns true when the command should end.
+	@Override
+	public boolean isFinished() {
+		return this.distancePID.atGoal();
+	}
 
-
-
-  // public double averageDistance() {
-  //   return (drivetrain.getLeftPosition() + drivetrain.getRightPosition()) / 2;
-  // }
-
-  // // Called once the command ends or is interrupted.
-  // @Override
-  // public void end(boolean interrupted) {}
-
-  // // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    System.out.println("Displacement: " + this.getDisplacement());
-    return this.withinBounds();
-  }
-
-  @Override
-  public void end(boolean interrupt) {
-    drivetrain.setCurvatureDrive(0, 0, false);
-    drivetrain.setBrake(true);
-  }
+	@Override
+	public void end(boolean interrupt) {
+		drivetrain.setCurvatureDrive(0, 0, false);
+		drivetrain.setBrake(true);
+	}
 }
