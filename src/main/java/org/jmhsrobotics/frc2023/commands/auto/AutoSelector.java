@@ -16,10 +16,10 @@ public class AutoSelector {
 		CONE, CUBE, NOTHING
 	}
 
-	public AutoSelector(RobotContainer container) {
+	public AutoSelector(frc.robot.RobotContainer robotContainer) {
 		// Add auto Options
-		autoSelector.setDefaultOption("BaseLineAuto", new BaseLineAuto(container.getDrivetrain()));
-		autoSelector.addOption("AutoDriveDistance 2 m", new AutoDriveDistance(container.getDrivetrain(), 2));
+		autoSelector.setDefaultOption("BaseLineAuto", new BaseLineAuto(robotContainer.getDrivetrain()));
+		autoSelector.addOption("AutoDriveDistance 2 m", new AutoDriveDistance(robotContainer.getDrivetrain(), 2));
 		SmartDashboard.putData("autoSelector", autoSelector);
 
 		// Add Selector for Alliance color TODO: Use DriveStation.getAlliance() to set
