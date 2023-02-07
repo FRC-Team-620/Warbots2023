@@ -115,6 +115,8 @@ public final class Constants {
 		public static final double maxAcceleration = 2;
 
 		public static final double balanceCreepSpeed = 0.1;
+		public static final double fineAdjustSpeed = 0.075;
+		public static final double climbChargeStationSpeed = 0.2;
 		public static final double balanceCenterLimitFromInitialTip = 0.3;
 		public static final double onChargeStationAngle = 8;
 		public static final double balancedAngle = 2;

@@ -25,8 +25,11 @@ public class AutoBalance extends CommandBase {
 	private Pose2d balancedPosition;
 	private boolean atLimit = false;
 	private Pose2d limitPosition;
+	private boolean backwards;
+	private boolean hasBalanced = false;
 
 	public AutoBalance(Drivetrain drivetrain, boolean backwards) {
+		this.backwards = backwards;
 		this.drivetrain = drivetrain;
 		robotPitchHandler = new DiminishingAverageHandler(0.5);
 		pidController = new PIDController(AutoConstants.autoDistanceKP, AutoConstants.autoDistanceKI,
@@ -68,10 +71,12 @@ public class AutoBalance extends CommandBase {
 		double pitch = this.robotPitchHandler.feed(drivetrain.getPitch());
 
 		if (!hasReachedChargeStation()) {
-			this.drivetrain.setCurvatureDrive(-1 * AutoConstants.balanceCreepSpeed, 0, false);
+			this.drivetrain.setCurvatureDrive(backwards?-1:1 * AutoConstants.climbChargeStationSpeed, 0, false);
 		} else {
 			if (RobotMath.approximatelyZero(pitch, AutoConstants.balancedAngle)) {
+				
 				if (!this.isBalancing) {
+					this.hasBalanced = true;
 					this.isBalancing = true;
 					this.atLimit = false;
 					this.balancedPosition = this.drivetrain.getPose();
@@ -85,9 +90,9 @@ public class AutoBalance extends CommandBase {
 				this.isBalancing = false;
 
 				if (pitch < 0 && getRelativeDistance(chargeCenterPosition) > moveLimit) {
-					this.drivetrain.setCurvatureDrive(AutoConstants.balanceCreepSpeed, 0, false);
+					this.drivetrain.setCurvatureDrive(hasBalanced? AutoConstants.fineAdjustSpeed:AutoConstants.balanceCreepSpeed, 0, false);
 				} else if (pitch > 0 && getRelativeDistance(chargeCenterPosition) < moveLimit) {
-					this.drivetrain.setCurvatureDrive(-1 * AutoConstants.balanceCreepSpeed, 0, false);
+					this.drivetrain.setCurvatureDrive(-1 * (hasBalanced? AutoConstants.fineAdjustSpeed:AutoConstants.balanceCreepSpeed), 0, false);
 				} else {
 					if (!atLimit) {
 						atLimit = true;
