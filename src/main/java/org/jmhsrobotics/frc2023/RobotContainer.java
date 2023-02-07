@@ -46,7 +46,15 @@ public class RobotContainer {
 		// Setting up default command which is a command that runs every time no other
 		// command that uses that subsystem is running
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
-		ledSubsystem.setDefaultCommand(new LEDIdleCommand(ledSubsystem, drivetrain));
+
+		// spotless:off
+		ledSubsystem.setDefaultCommand(new LEDIdleCommand(
+				ledSubsystem, 
+				() -> drivetrain.getIsTurning()
+			)
+		);
+		// spotless:on
+
 		// armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem));
 		autoSelector = new AutoSelector(this);
 	}
