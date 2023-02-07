@@ -10,19 +10,14 @@ import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.LEDAnimation;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.LEDManager;
 
 public class LEDIdleCommand extends CommandBase {
-	// protected Intake intake;
-	// protected FiringPins firingPins;
 
 	LEDSubsystem.LEDStrip strip = LEDManager.STRIP0.strip;
 	BooleanSupplier isTurningSupplier;
 
-	private LEDAnimation noBallsAnim = this.strip.fadeAnimation(1, 30, Color.kYellow, Color.kWhite);
-
-	private LEDAnimation oneBallAnim = this.strip.gradientAnimation(1, Color.kRed, Color.kOrangeRed, Color.kOrange);
-
-	private LEDAnimation twoBallsAnim = this.strip.gradientAnimation(1, Color.kBlue, Color.kBlueViolet, Color.kPurple);
-
-	private LEDAnimation solidAnimation = this.strip.solidColorAnimation(Color.kBlue);
+	private LEDAnimation fadeAnim = this.strip.fadeAnimation(1, 30, Color.kYellow, Color.kWhite);
+	private LEDAnimation redGradAnim = this.strip.gradientAnimation(1, Color.kRed, Color.kOrangeRed, Color.kOrange);
+	private LEDAnimation blueGradAnim = this.strip.gradientAnimation(1, Color.kBlue, Color.kBlueViolet, Color.kPurple);
+	private LEDAnimation solidAnim = this.strip.solidColorAnimation(Color.kBlue);
 
 	public LEDIdleCommand(LEDSubsystem ledSubsystem, Drivetrain drivetrain) {
 
@@ -35,15 +30,9 @@ public class LEDIdleCommand extends CommandBase {
 	public void execute() {
 
 		if (this.isTurningSupplier.getAsBoolean()) {
-			this.oneBallAnim.step();
+			this.redGradAnim.step();
 		} else {
-			this.twoBallsAnim.step();
+			this.blueGradAnim.step();
 		}
-
-		/*
-		 * if(this.firingPins.hasColor()) { if(this.intake.getIntakeSwitch()) { // TWO
-		 * balls this.twoBallsAnim.step(); } else { // ONE ball this.oneBallAnim.step();
-		 * } } else { // NO balls this.noBallsAnim.step(); }
-		 */
 	}
 }
