@@ -26,7 +26,7 @@ public class AutoPRBalance extends CommandBase {
 		this.pitchHandler = new RobotMath.DiminishingAverageHandler(2.0);
 		this.rollHandler = new RobotMath.DiminishingAverageHandler(2.0);
 
-        // spotless:off
+		// spotless:off
 		this.pitchSpeedPID = new PIDController(
             AutoConstants.kPPitchSpeed, 
             AutoConstants.kIPitchSpeed,
@@ -37,7 +37,7 @@ public class AutoPRBalance extends CommandBase {
 		this.pitchSpeedPID.setSetpoint(0.0);
 		this.pitchSpeedPID.setTolerance(0.3, 40.0);
 
-        // spotless:off
+		// spotless:off
 		this.rollCurvaturePID = new PIDController(
             AutoConstants.kPRollCurvature, 
             AutoConstants.kIRollCurvature,

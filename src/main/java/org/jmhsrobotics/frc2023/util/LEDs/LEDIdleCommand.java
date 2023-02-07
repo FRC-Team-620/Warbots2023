@@ -16,9 +16,11 @@ public class LEDIdleCommand extends CommandBase {
 	LEDSubsystem.LEDStrip strip = LEDManager.STRIP0.strip;
 	BooleanSupplier isTurningSupplier;
 
-	private LEDAnimation noBallsAnim = this.strip.fadeAnimation(1, 30, Color.kYellow, Color.kWhite);
-	private LEDAnimation oneBallAnim = this.strip.gradientAnimation(1, Color.kRed, Color.kOrangeRed, Color.kOrange);
-	private LEDAnimation twoBallsAnim = this.strip.gradientAnimation(1, Color.kBlue, Color.kBlueViolet, Color.kPurple);
+	private LEDAnimation fadeAnimation = this.strip.fadeAnimation(1, 30, Color.kYellow, Color.kWhite);
+	private LEDAnimation redGradientAnimation = this.strip.gradientAnimation(1, Color.kRed, Color.kOrangeRed,
+			Color.kOrange);
+	private LEDAnimation blueGradientAnimation = this.strip.gradientAnimation(1, Color.kBlue, Color.kBlueViolet,
+			Color.kPurple);
 	private LEDAnimation solidAnimation = this.strip.solidColorAnimation(Color.kBlue);
 
 	public LEDIdleCommand(LEDSubsystem ledSubsystem, Drivetrain drivetrain) {
@@ -32,9 +34,9 @@ public class LEDIdleCommand extends CommandBase {
 	public void execute() {
 
 		if (this.isTurningSupplier.getAsBoolean()) {
-			this.oneBallAnim.step();
+			this.redGradientAnimation.step();
 		} else {
-			this.twoBallsAnim.step();
+			this.blueGradientAnimation.step();
 		}
 	}
 }
