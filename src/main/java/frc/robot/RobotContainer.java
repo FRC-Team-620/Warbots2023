@@ -8,15 +8,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.ArmCommand;
-import frc.robot.commands.DriveCommand;
-import frc.robot.commands.DriveStraight;
-import frc.robot.commands.TurnDeltaAngle;
-import frc.robot.commands.auto.AutoSelector;
-import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.GrabberSubsystem;
+
+import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
+import org.jmhsrobotics.frc2023.commands.ArmCommand;
+import org.jmhsrobotics.frc2023.commands.DriveCommand;
+import org.jmhsrobotics.frc2023.commands.DriveStraight;
+import org.jmhsrobotics.frc2023.commands.TurnDeltaAngle;
+import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
+import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
+import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
+import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
