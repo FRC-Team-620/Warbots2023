@@ -26,14 +26,24 @@ public class AutoPRBalance extends CommandBase {
 		this.pitchHandler = new RobotMath.DiminishingAverageHandler(2.0);
 		this.rollHandler = new RobotMath.DiminishingAverageHandler(2.0);
 
-		this.pitchSpeedPID = new PIDController(AutoConstants.kPPitchSpeed, AutoConstants.kIPitchSpeed,
-				AutoConstants.kDPitchSpeed);
+        // spotless:off
+		this.pitchSpeedPID = new PIDController(
+            AutoConstants.kPPitchSpeed, 
+            AutoConstants.kIPitchSpeed,
+			AutoConstants.kDPitchSpeed
+        );
+        // spotless:on
 
 		this.pitchSpeedPID.setSetpoint(0.0);
 		this.pitchSpeedPID.setTolerance(0.3, 40.0);
 
-		this.rollCurvaturePID = new PIDController(AutoConstants.kPRollCurvature, AutoConstants.kIRollCurvature,
-				AutoConstants.kDRollCurvature);
+        // spotless:off
+		this.rollCurvaturePID = new PIDController(
+            AutoConstants.kPRollCurvature, 
+            AutoConstants.kIRollCurvature,
+			AutoConstants.kDRollCurvature
+        );
+        // spotless:on
 
 		this.rollCurvaturePID.setSetpoint(0.0);
 		this.rollCurvaturePID.setTolerance(0.3, 40.0);
