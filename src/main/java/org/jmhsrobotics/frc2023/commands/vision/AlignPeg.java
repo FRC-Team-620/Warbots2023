@@ -1,6 +1,8 @@
 package org.jmhsrobotics.frc2023.commands.vision;
 // Copyright (c) FIRST and other WPILib contributors.
 
+import org.jmhsrobotics.frc2023.Constants;
+
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -20,7 +22,7 @@ public class AlignPeg extends CommandBase {
     private final Drivetrain m_drivetrain;
     private final double kp = 0.014, ki = 0.01, kd = .001;
     private final double kangleTolerance = 2;
-    private final double kmaxTurnSpeed = .5;
+    private final double kmaxTurnSpeed = .1;
     private int lastPipeline = 0;
 
     PIDController m_pid = new PIDController(kp, ki, kd);
@@ -41,9 +43,10 @@ public class AlignPeg extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        PhotonManager.getInstance().mainCam.setLED(VisionLEDMode.kOn);
-        PhotonManager.getInstance().mainCam.setPipelineIndex(0);
         lastPipeline = PhotonManager.getInstance().mainCam.getPipelineIndex();
+        PhotonManager.getInstance().mainCam.setLED(VisionLEDMode.kOn);
+        PhotonManager.getInstance().mainCam.setPipelineIndex(Constants.VisionPipeline.REFECTIVE_TAPE.id);
+
         m_pid.reset();
         m_pid.setTolerance(kangleTolerance, 1);
         m_pid.enableContinuousInput(-180, 180);
@@ -78,14 +81,14 @@ public class AlignPeg extends CommandBase {
         SmartDashboard.putNumber("alignpeg1/output", output);
         SmartDashboard.putNumber("alignpeg1/robotyaw", currentHeading);
 
-        m_drivetrain.setCurvatureDrive(0, MathUtil.clamp(output, -.1, .1), true); // Update Drivetrain
+        m_drivetrain.setCurvatureDrive(0, output, true); // Update Drivetrain
     }
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
         PhotonManager.getInstance().mainCam.setLED(VisionLEDMode.kOff);
-        PhotonManager.getInstance().mainCam.setPipelineIndex(0);
+        PhotonManager.getInstance().mainCam.setPipelineIndex(lastPipeline);
 
         // TODO: Reset to old Pipeline or driver mode?
     }
@@ -93,7 +96,6 @@ public class AlignPeg extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        // return m_pid.atSetpoint();
-        return false;
+        return m_pid.atSetpoint();
     }
 }
