@@ -3,14 +3,14 @@ package org.jmhsrobotics.frc2023.util.sim;
 import java.util.ArrayList;
 
 import org.photonvision.PhotonCamera;
-import org.photonvision.SimVisionSystem;
+import org.photonvision.SimVisionSystemFixed;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 
 public class SimPipeLineVisionSystem{
-    ArrayList<SimVisionSystem> systems = new ArrayList<>();
+    ArrayList<SimVisionSystemFixed> systems = new ArrayList<>();
     private final String camName;
     private final PhotonCamera cam;
     private final double camDiagFOVDegrees;
@@ -31,11 +31,11 @@ public class SimPipeLineVisionSystem{
     }
     public int addPipeline(){
         
-         systems.add(new SimVisionSystem(camName,camDiagFOVDegrees,robotToCamera,maxLEDRangeMeters,cameraResWidth,cameraResHeight,minTargetArea));
+         systems.add(new SimVisionSystemFixed(camName,camDiagFOVDegrees,robotToCamera,maxLEDRangeMeters,cameraResWidth,cameraResHeight,minTargetArea));
          return systems.size() -1;
     }
 
-    public SimVisionSystem getPipeline(int index){
+    public SimVisionSystemFixed getPipeline(int index){
         try{
             return systems.get(index);
         }catch(ArrayIndexOutOfBoundsException e){
@@ -50,7 +50,7 @@ public class SimPipeLineVisionSystem{
 
     public void processFrame(Pose3d  robotPoseMeters){
         int index = this.cam.getPipelineIndex();
-        SimVisionSystem pipeline = this.getPipeline(index);
+        SimVisionSystemFixed pipeline = this.getPipeline(index);
         if(pipeline != null){
             pipeline.processFrame( robotPoseMeters);
         }else{
@@ -60,7 +60,7 @@ public class SimPipeLineVisionSystem{
     }
     public void moveCamera(Transform3d newRobotToCamera) {
         this.robotToCamera = newRobotToCamera;
-        for(SimVisionSystem sys: this.systems){
+        for(SimVisionSystemFixed sys: this.systems){
             sys.moveCamera(newRobotToCamera);
         }
     }
