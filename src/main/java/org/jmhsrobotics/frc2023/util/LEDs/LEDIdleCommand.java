@@ -17,11 +17,8 @@ public class LEDIdleCommand extends CommandBase {
 	BooleanSupplier isTurningSupplier;
 
 	private LEDAnimation noBallsAnim = this.strip.fadeAnimation(1, 30, Color.kYellow, Color.kWhite);
-
 	private LEDAnimation oneBallAnim = this.strip.gradientAnimation(1, Color.kRed, Color.kOrangeRed, Color.kOrange);
-
 	private LEDAnimation twoBallsAnim = this.strip.gradientAnimation(1, Color.kBlue, Color.kBlueViolet, Color.kPurple);
-
 	private LEDAnimation solidAnimation = this.strip.solidColorAnimation(Color.kBlue);
 
 	public LEDIdleCommand(LEDSubsystem ledSubsystem, Drivetrain drivetrain) {
@@ -39,11 +36,5 @@ public class LEDIdleCommand extends CommandBase {
 		} else {
 			this.twoBallsAnim.step();
 		}
-
-		/*
-		 * if(this.firingPins.hasColor()) { if(this.intake.getIntakeSwitch()) { // TWO
-		 * balls this.twoBallsAnim.step(); } else { // ONE ball this.oneBallAnim.step();
-		 * } } else { // NO balls this.noBallsAnim.step(); }
-		 */
 	}
 }
