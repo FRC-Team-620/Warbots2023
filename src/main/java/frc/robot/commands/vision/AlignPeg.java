@@ -42,7 +42,7 @@ public class AlignPeg extends CommandBase {
   @Override
   public void initialize() {
     PhotonManager.getInstance().mainCam.setLED(VisionLEDMode.kOn);
-    PhotonManager.getInstance().mainCam.setPipelineIndex(Constants.VisionPipeline.REFECTIVE_TAPE.id);
+    PhotonManager.getInstance().mainCam.setPipelineIndex(0);
     lastPipeline = PhotonManager.getInstance().mainCam.getPipelineIndex();
     m_pid.reset();
     m_pid.setTolerance(kangleTolerance, 1);
@@ -66,7 +66,7 @@ public class AlignPeg extends CommandBase {
     SmartDashboard.putNumber("alignpeg1/hasTarget", result.hasTargets() ? 1 : -1);
     System.out.println(result.hasTargets());
     if (result.hasTargets()) {
-      double targetHeading = currentHeading + result.getBestTarget().getYaw();
+      double targetHeading = currentHeading - result.getBestTarget().getYaw();
       SmartDashboard.putNumber("alignpeg1/visionYaw", result.getBestTarget().getYaw());
       m_pid.setSetpoint(targetHeading);
     }
@@ -76,14 +76,14 @@ public class AlignPeg extends CommandBase {
     SmartDashboard.putNumber("alignpeg1/output", output);
     SmartDashboard.putNumber("alignpeg1/robotyaw", currentHeading);
 
-    m_drivetrain.setCurvatureDrive(0, output, true); // Update Drivetrain
+    m_drivetrain.setCurvatureDrive(0, MathUtil.clamp(output, -.1, .1), true); // Update Drivetrain
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     PhotonManager.getInstance().mainCam.setLED(VisionLEDMode.kOff);
-    PhotonManager.getInstance().mainCam.setPipelineIndex(lastPipeline);
+    PhotonManager.getInstance().mainCam.setPipelineIndex(0);
 
     // TODO: Reset to old Pipeline or driver mode?
   }
@@ -91,6 +91,7 @@ public class AlignPeg extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_pid.atSetpoint();
+    //return m_pid.atSetpoint();
+    return false;
   }
 }

@@ -29,7 +29,7 @@ public class RobotContainer {
   private final CommandXboxController driver =
       new CommandXboxController(OperatorConstants.driverControllerPort);
   public final Drivetrain drivetrain = new Drivetrain();
-  public final VisionPlaceholder visionPlaceholder = new VisionPlaceholder(drivetrain);
+  //public final VisionPlaceholder visionPlaceholder = new VisionPlaceholder(drivetrain);
   //private final ArmSubsystem armSubsystem = new ArmSubsystem();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
