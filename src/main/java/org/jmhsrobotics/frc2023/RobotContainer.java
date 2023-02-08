@@ -73,6 +73,7 @@ public class RobotContainer {
 		driver.y().onTrue(new TurnDeltaAngle(drivetrain, 180));
 
 		driver.x().onTrue(new DriveStraight(drivetrain, 2));
+		driver.b().onTrue(new AlignPeg(drivetrain));
 	}
 
 	/**

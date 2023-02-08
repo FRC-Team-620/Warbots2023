@@ -20,9 +20,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 /** Rotates the robot to align to a identified target. */
 public class AlignPeg extends CommandBase {
     private final Drivetrain m_drivetrain;
-    private final double kp = 0.014, ki = 0.01, kd = .001;
-    private final double kangleTolerance = 2;
-    private final double kmaxTurnSpeed = .1;
+    private final double kp = 0.004, ki = 0.003, kd = .0003;
+    private final double kangleTolerance = .5;
+    private final double kmaxTurnSpeed = .2;
     private int lastPipeline = 0;
 
     PIDController m_pid = new PIDController(kp, ki, kd);
@@ -97,5 +97,6 @@ public class AlignPeg extends CommandBase {
     @Override
     public boolean isFinished() {
         return m_pid.atSetpoint();
+        //return false;
     }
 }
