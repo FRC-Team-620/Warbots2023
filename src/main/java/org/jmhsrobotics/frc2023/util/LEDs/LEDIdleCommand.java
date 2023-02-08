@@ -5,27 +5,22 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import java.util.function.BooleanSupplier;
 
-import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.LEDAnimation;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.LEDManager;
 
 public class LEDIdleCommand extends CommandBase {
-	// protected Intake intake;
-	// protected FiringPins firingPins;
 
 	LEDSubsystem.LEDStrip strip = LEDManager.STRIP0.strip;
-	BooleanSupplier isTurningSupplier;
+	BooleanSupplier condition;
 
-	private LEDAnimation fadeAnimation = this.strip.fadeAnimation(1, 30, Color.kYellow, Color.kWhite);
-	private LEDAnimation redGradientAnimation = this.strip.gradientAnimation(1, Color.kRed, Color.kOrangeRed,
-			Color.kOrange);
-	private LEDAnimation blueGradientAnimation = this.strip.gradientAnimation(1, Color.kBlue, Color.kBlueViolet,
-			Color.kPurple);
-	private LEDAnimation solidAnimation = this.strip.solidColorAnimation(Color.kBlue);
+	private LEDAnimation fadeAnim = this.strip.fadeAnimation(1, 30, Color.kYellow, Color.kWhite);
+	private LEDAnimation redGradAnim = this.strip.gradientAnimation(1, Color.kRed, Color.kOrangeRed, Color.kOrange);
+	private LEDAnimation blueGradAnim = this.strip.gradientAnimation(1, Color.kBlue, Color.kBlueViolet, Color.kPurple);
+	private LEDAnimation solidAnim = this.strip.solidColorAnimation(Color.kBlue);
 
-	public LEDIdleCommand(LEDSubsystem ledSubsystem, Drivetrain drivetrain) {
+	public LEDIdleCommand(LEDSubsystem ledSubsystem, BooleanSupplier condition) {
 
-		this.isTurningSupplier = () -> drivetrain.getIsTurning();
+		this.condition = condition;
 
 		addRequirements(ledSubsystem);
 	}
@@ -33,10 +28,10 @@ public class LEDIdleCommand extends CommandBase {
 	@Override
 	public void execute() {
 
-		if (this.isTurningSupplier.getAsBoolean()) {
-			this.redGradientAnimation.step();
+		if (this.condition.getAsBoolean()) {
+			this.blueGradAnim.step();
 		} else {
-			this.blueGradientAnimation.step();
+			this.redGradAnim.step();
 		}
 	}
 }

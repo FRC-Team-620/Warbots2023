@@ -410,9 +410,13 @@ public class LEDSubsystem extends SubsystemBase {
 		 */
 		public static Color colorInterpolation(double proportion, Color color1, Color color2) {
 			proportion = MathUtil.clamp(proportion, 0, 1);
-			return new Color(proportion * (color2.red - color1.red) + color1.red,
+			// spotless:off
+			return new Color(
+					proportion * (color2.red - color1.red) + color1.red,
 					proportion * (color2.green - color1.green) + color1.green,
-					proportion * (color2.blue - color1.blue) + color1.blue);
+					proportion * (color2.blue - color1.blue) + color1.blue
+				);
+			// spotless:on
 		}
 
 		/**
@@ -430,17 +434,11 @@ public class LEDSubsystem extends SubsystemBase {
 		 *         colors.
 		 */
 		private static Color[] colorGradient(Color startColor, Color endColor, int steps) {
-			Color gradient[] = new Color[steps];// , color;
+			Color gradient[] = new Color[steps]; // the colors in the gradient
 			double proportion;
 			for (int i = 0; i < gradient.length; i++) {
-				proportion = (double) i / (gradient.length - 1);
+				proportion = (double) i / (gradient.length - 1); // how far along in the gradient
 				gradient[i] = LEDStrip.colorInterpolation(proportion, startColor, endColor);
-				// color = new Color(
-				// proportion * (endColor.red - startColor.red) + startColor.red,
-				// proportion * (endColor.green - startColor.green) + startColor.green,
-				// proportion * (endColor.blue - startColor.blue) + startColor.blue
-				// );
-				// gradient[i] = color;
 			}
 			return gradient;
 		}
