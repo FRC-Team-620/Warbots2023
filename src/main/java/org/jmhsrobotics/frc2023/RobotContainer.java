@@ -9,7 +9,6 @@ import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
 // import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
-import org.jmhsrobotics.frc2023.util.vision.VisionPlaceholder;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
@@ -35,7 +34,8 @@ public class RobotContainer {
 	public final Drivetrain drivetrain = new Drivetrain();
 	// private final ArmSubsystem armSubsystem = new ArmSubsystem();
 	// private final GrabberSubsystem grabberSubsystem=new GrabberSubsystem();
-	// private final VisionPlaceholder visionPlaceholder = new VisionPlaceholder(drivetrain);
+	// private final VisionPlaceholder visionPlaceholder = new
+	// VisionPlaceholder(drivetrain);
 	public AutoSelector autoSelector;
 
 	/**

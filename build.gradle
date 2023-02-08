@@ -117,7 +117,7 @@ gversion {
 // if(System.getenv('AUTOMATEDBUILD')){
 //     project.compileJava.dependsOn(spotlessCheck);
 // }
-// project.compileJava.dependsOn(spotlessApply);
+project.compileJava.dependsOn(spotlessApply);
 
 
 spotless {
