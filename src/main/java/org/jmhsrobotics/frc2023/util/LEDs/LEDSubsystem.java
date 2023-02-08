@@ -12,6 +12,7 @@ public class LEDSubsystem extends SubsystemBase {
 
 	public static enum LEDManager {
 
+		/* ***** ADD NEW LED STRIPS HERE ***** */
 		STRIP0(65, 9); // 65 lights, PWM port 9
 
 		public LEDStrip strip;
@@ -19,48 +20,6 @@ public class LEDSubsystem extends SubsystemBase {
 		private LEDManager(int LEDCount, int PWMPort) {
 			this.strip = new LEDStrip(LEDCount, PWMPort);
 		}
-
-		// public LEDAnimation colorBlocksAnimation(double speed, int[] lengthPattern,
-		// Color... colors) {
-		// return this.strip.colorBlockAnimation(speed, lengthPattern, colors);
-		// }
-		// public LEDAnimation gradientAnimation(double speed, Color... colors) {
-		// return this.strip.gradientAnimation(speed, colors);
-		// }
-		// public LEDAnimation blinkingAnimation(double speed, Color... colors) {
-		// return this.strip.blinkingAnimation(speed, colors);
-		// }
-		// public LEDAnimation solidColorAnimation(Color color) {
-		// return this.strip.solidColorAnimation(color);
-		// }
-		// public LEDAnimation fadeTwoAnimation(double speed, int steps, boolean
-		// bidirectional, Color c1, Color c2) {
-		// return this.strip.fadeTwoAnimation(speed, steps, bidirectional, c1, c2);
-		// }
-		// public LEDAnimation fadeTwoAnimation(double speed, int steps, Color c1, Color
-		// c2) {
-		// return this.strip.fadeTwoAnimation(speed, steps, c1, c2);
-		// }
-		// public LEDAnimation fadeAnimation(double speed, int stepsPer, Color...
-		// colors) {
-		// return this.strip.fadeAnimation(speed, stepsPer, colors);
-		// }
-
-		// public void set(Color c) {
-		// this.strip.setSolidColor(c);
-		// }
-		// public void setColorBlocks(int[] lengths, Color... colors) {
-		// this.strip.setColorBlocks(lengths, colors);
-		// }
-		// public void setColorBlocks(int offset, int[] lengths, Color... colors) {
-		// this.strip.setColorBlocks(offset, lengths, colors);
-		// }
-		// public void setGradient(Color... colors) {
-		// this.strip.setGradient(colors);
-		// }
-		// public void setGradient(int offset, Color... colors) {
-		// this.strip.setGradient(offset, colors);
-		// }
 
 	}
 
@@ -451,9 +410,13 @@ public class LEDSubsystem extends SubsystemBase {
 		 */
 		public static Color colorInterpolation(double proportion, Color color1, Color color2) {
 			proportion = MathUtil.clamp(proportion, 0, 1);
-			return new Color(proportion * (color2.red - color1.red) + color1.red,
+			// spotless:off
+			return new Color(
+					proportion * (color2.red - color1.red) + color1.red,
 					proportion * (color2.green - color1.green) + color1.green,
-					proportion * (color2.blue - color1.blue) + color1.blue);
+					proportion * (color2.blue - color1.blue) + color1.blue
+				);
+			// spotless:on
 		}
 
 		/**
@@ -471,17 +434,11 @@ public class LEDSubsystem extends SubsystemBase {
 		 *         colors.
 		 */
 		private static Color[] colorGradient(Color startColor, Color endColor, int steps) {
-			Color gradient[] = new Color[steps];// , color;
+			Color gradient[] = new Color[steps]; // the colors in the gradient
 			double proportion;
 			for (int i = 0; i < gradient.length; i++) {
-				proportion = (double) i / (gradient.length - 1);
+				proportion = (double) i / (gradient.length - 1); // how far along in the gradient
 				gradient[i] = LEDStrip.colorInterpolation(proportion, startColor, endColor);
-				// color = new Color(
-				// proportion * (endColor.red - startColor.red) + startColor.red,
-				// proportion * (endColor.green - startColor.green) + startColor.green,
-				// proportion * (endColor.blue - startColor.blue) + startColor.blue
-				// );
-				// gradient[i] = color;
 			}
 			return gradient;
 		}

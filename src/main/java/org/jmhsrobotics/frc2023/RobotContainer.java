@@ -9,7 +9,8 @@ import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
 // import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
-
+import org.jmhsrobotics.frc2023.util.LEDs.LEDIdleCommand;
+import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,6 +33,7 @@ public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	private final CommandXboxController driver = new CommandXboxController(OperatorConstants.driverControllerPort);
 	public final Drivetrain drivetrain = new Drivetrain();
+	public final LEDSubsystem ledSubsystem = new LEDSubsystem();
 	// private final ArmSubsystem armSubsystem = new ArmSubsystem();
 	// private final GrabberSubsystem grabberSubsystem=new GrabberSubsystem();
 	// private final VisionPlaceholder visionPlaceholder = new
@@ -47,6 +49,15 @@ public class RobotContainer {
 		// Setting up default command which is a command that runs every time no other
 		// command that uses that subsystem is running
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
+
+		// spotless:off
+		ledSubsystem.setDefaultCommand(new LEDIdleCommand(
+				ledSubsystem, 
+				() -> drivetrain.getIsTurning()
+			)
+		);
+		// spotless:on
+
 		// armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem));
 		autoSelector = new AutoSelector(this);
 		SmartDashboard.putData(new AlignPeg(drivetrain));
