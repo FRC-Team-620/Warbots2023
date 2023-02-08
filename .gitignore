@@ -164,5 +164,5 @@ bin/
 log/*
 simgui-ds.json
 simgui.json
-src/main/java/frc/robot/BuildConstants.java
+src/main/java/org/jmhsrobotics/frc2023/BuildConstants.java
 .vscode/launch.json
