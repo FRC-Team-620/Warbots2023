@@ -9,6 +9,8 @@ import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
 // import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -16,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.jmhsrobotics.frc2023.commands.DriveStraight;
 import org.jmhsrobotics.frc2023.commands.TurnDeltaAngle;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
+import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 
 /**
@@ -31,6 +34,8 @@ public class RobotContainer {
 	public final Drivetrain drivetrain = new Drivetrain();
 	// private final ArmSubsystem armSubsystem = new ArmSubsystem();
 	// private final GrabberSubsystem grabberSubsystem=new GrabberSubsystem();
+	// private final VisionPlaceholder visionPlaceholder = new
+	// VisionPlaceholder(drivetrain);
 	public AutoSelector autoSelector;
 
 	/**
@@ -44,6 +49,7 @@ public class RobotContainer {
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
 		// armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem));
 		autoSelector = new AutoSelector(this);
+		SmartDashboard.putData(new AlignPeg(drivetrain));
 	}
 
 	/**
@@ -67,6 +73,7 @@ public class RobotContainer {
 		driver.y().onTrue(new TurnDeltaAngle(drivetrain, 180));
 
 		driver.x().onTrue(new DriveStraight(drivetrain, 2));
+		driver.b().onTrue(new AlignPeg(drivetrain));
 	}
 
 	/**
