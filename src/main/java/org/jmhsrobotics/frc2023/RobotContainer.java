@@ -5,10 +5,13 @@
 package org.jmhsrobotics.frc2023;
 
 import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
+import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
 // import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -37,6 +40,7 @@ public class RobotContainer {
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
 	public RobotContainer() {
+		SmartDashboard.putData("Scheduler/Drivetrain", drivetrain);
 		// Configure the trigger bindings
 		configureBindings();
 		// Setting up default command which is a command that runs every time no other
@@ -61,7 +65,7 @@ public class RobotContainer {
 		// driver.b().onTrue(new ArmCommand(armSubsystem));
 		// driver.leftBumper().onTrue(new InstantCommand(() ->
 		// grabberSubsystem.setGrabberState(!grabberSubsystem.getGrabberState())));
-		// driver.x().onTrue(new AutoDriveDistance(drivetrain, 100));
+		driver.start().onTrue(new AutoDriveDistance(drivetrain, -3));
 
 		// driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
 		driver.y().onTrue(new TurnDeltaAngle(drivetrain, 180));

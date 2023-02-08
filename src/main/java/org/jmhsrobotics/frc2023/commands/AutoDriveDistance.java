@@ -22,21 +22,29 @@ public class AutoDriveDistance extends CommandBase {
 
 	private ProfiledPIDController distancePID;
 
+	private double distance;
+
+	int i = 0;
+
 	/** Creates a new AutoDriveDistance. */
 	public AutoDriveDistance(Drivetrain drivetrain, double distance) {
 		this.drivetrain = drivetrain;
 		this.distancePID = new ProfiledPIDController(AutoConstants.autoDistanceKP, AutoConstants.autoDistanceKI,
 				AutoConstants.autoDistanceKD,
 				new Constraints(AutoConstants.maxVelocity, AutoConstants.maxAcceleration));
-		distancePID.setGoal(distance);
+		this.distance = distance;
+		// distancePID.setGoal(distance);
 		distancePID.setTolerance(Units.inchesToMeters(1), 0.2);
 		addRequirements(drivetrain);
+
 	}
 
 	@Override
 	public void initialize() {
 		this.initPose = this.drivetrain.getPose();
-		SmartDashboard.putData("DriveDist pid", distancePID); // Add pid loop to glass/SD and network tables
+		distancePID.setGoal(this.distance);
+		// SmartDashboard.putData("DriveDist pid", distancePID); // Add pid loop to
+		// glass/SD and network tables
 		distancePID.reset(new State(0, 0));
 	}
 
@@ -49,6 +57,9 @@ public class AutoDriveDistance extends CommandBase {
 		SmartDashboard.putNumber("DriveDist pid/distance", moved);
 		SmartDashboard.putNumber("DriveDist pid/goal", distancePID.getGoal().position);
 		SmartDashboard.putNumber("DriveDist pid/setpoint2", distancePID.getSetpoint().position);
+		SmartDashboard.putNumber("AutoTimer/time", i);
+		System.out.println(this.distancePID.atGoal());
+		i++;
 	}
 
 	private double getRelativeDistance() {
@@ -58,11 +69,14 @@ public class AutoDriveDistance extends CommandBase {
 	// // Returns true when the command should end.
 	@Override
 	public boolean isFinished() {
-		return this.distancePID.atGoal();
+		return this.distancePID.atGoal() || i > 200;
 	}
 
 	@Override
 	public void end(boolean interrupt) {
+		// this.distancePID.reset(new State(0, 0));
+		// this.distancePID.setGoal(0);
+		i = 0;
 		drivetrain.setCurvatureDrive(0, 0, false);
 		drivetrain.setBrake(true);
 	}
