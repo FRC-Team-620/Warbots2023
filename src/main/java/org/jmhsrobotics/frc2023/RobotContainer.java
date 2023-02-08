@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.jmhsrobotics.frc2023.commands.DriveStraight;
 import org.jmhsrobotics.frc2023.commands.TurnDeltaAngle;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
-import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
