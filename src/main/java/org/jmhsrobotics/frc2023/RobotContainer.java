@@ -5,18 +5,19 @@
 package org.jmhsrobotics.frc2023;
 
 import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
-// import org.jmhsrobotics.frc2023.commands.ArmCommand;
+import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
-// import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
-import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
-// import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.jmhsrobotics.frc2023.commands.DriveStraight;
 import org.jmhsrobotics.frc2023.commands.TurnDeltaAngle;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
+import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
+import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -29,8 +30,8 @@ public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	private final CommandXboxController driver = new CommandXboxController(OperatorConstants.driverControllerPort);
 	public final Drivetrain drivetrain = new Drivetrain();
-	// private final ArmSubsystem armSubsystem = new ArmSubsystem();
-	// private final GrabberSubsystem grabberSubsystem=new GrabberSubsystem();
+	private final ArmSubsystem armSubsystem = new ArmSubsystem();
+	private final GrabberSubsystem grabberSubsystem = new GrabberSubsystem();
 	public AutoSelector autoSelector;
 
 	/**
@@ -42,7 +43,7 @@ public class RobotContainer {
 		// Setting up default command which is a command that runs every time no other
 		// command that uses that subsystem is running
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
-		// armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem));
+		armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem));
 		autoSelector = new AutoSelector(this);
 	}
 
@@ -58,13 +59,13 @@ public class RobotContainer {
 	 */
 	private void configureBindings() {
 		// Triggers are a thing that we might need to use so keep that in mind
-		// driver.b().onTrue(new ArmCommand(armSubsystem));
-		// driver.leftBumper().onTrue(new InstantCommand(() ->
-		// grabberSubsystem.setGrabberState(!grabberSubsystem.getGrabberState())));
+		driver.b().onTrue(new ArmCommand(armSubsystem));
+		driver.leftBumper().onTrue(
+				new InstantCommand(() -> grabberSubsystem.setGrabberState(!grabberSubsystem.getGrabberState())));
 		// driver.x().onTrue(new AutoDriveDistance(drivetrain, 100));
 
 		// driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
-		driver.y().onTrue(new TurnDeltaAngle(drivetrain, 180));
+		driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
 
 		driver.x().onTrue(new DriveStraight(drivetrain, 2));
 	}

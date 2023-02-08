@@ -16,7 +16,7 @@ public class AutoSelector {
 		CONE, CUBE, NOTHING
 	}
 
-	public AutoSelector(frc.robot.RobotContainer robotContainer) {
+	public AutoSelector(RobotContainer robotContainer) {
 		// Add auto Options
 		autoSelector.setDefaultOption("BaseLineAuto", new BaseLineAuto(robotContainer.getDrivetrain()));
 		autoSelector.addOption("AutoDriveDistance 2 m", new AutoDriveDistance(robotContainer.getDrivetrain(), 2));
