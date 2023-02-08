@@ -1,4 +1,4 @@
-package org.jmhsrobotics.frc2023;
+package org.jmhsrobotics.frc2023.util.vision;
 
 import org.photonvision.PhotonCamera;
 
@@ -6,7 +6,7 @@ public class PhotonManager {
 	public PhotonCamera mainCam;
 	private static PhotonManager instance;
 	private PhotonManager() {
-		this.mainCam = new PhotonCamera("photonvision");
+		this.mainCam = new PhotonCamera("mainCam");
 	}
 
 	public static PhotonManager getInstance() {
