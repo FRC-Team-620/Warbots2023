@@ -6,6 +6,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+
 import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 
@@ -16,6 +17,7 @@ public class BaseLineAuto extends SequentialCommandGroup {
 	// Constructor
 	public BaseLineAuto(Drivetrain drivetrain) {
 		this.drivetrain = drivetrain;
+
 		addCommands(new InstantCommand(() -> {
 			drivetrain.resetOdometry(
 					new Pose2d(Units.inchesToMeters(54.42), Units.inchesToMeters(42.079), Rotation2d.fromDegrees(180)));

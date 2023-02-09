@@ -28,15 +28,15 @@ public class TurnDeltaAngle extends InstantCommand {
 
 		// spotless:off
 		this.profiledAnglePID = new ProfiledPIDController(
-      TurnAngleCommandConstants.kPTurnAngle,
+      		TurnAngleCommandConstants.kPTurnAngle,
 			TurnAngleCommandConstants.kITurnAngle, 
-      TurnAngleCommandConstants.kDTurnAngle, 
-      new Constraints(
+     		TurnAngleCommandConstants.kDTurnAngle, 
+      		new Constraints(
 				TurnAngleCommandConstants.maxAngularVelocity, 
-        TurnAngleCommandConstants.maxAngularAcceleration
+        		TurnAngleCommandConstants.maxAngularAcceleration
 			)
-    );
-    // spotless:on
+    	);
+    	// spotless:on
 
 		this.profiledAnglePID.enableContinuousInput(-180, 180);
 		this.profiledAnglePID.setTolerance(2, TurnAngleCommandConstants.maxAngularVelocity);
