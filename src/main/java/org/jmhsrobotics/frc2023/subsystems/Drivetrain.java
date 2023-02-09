@@ -263,7 +263,7 @@ public class Drivetrain extends SubsystemBase {
 	}
 	public SequentialCommandGroup createRamseteCommand(Trajectory path) {
 		final DifferentialDriveKinematics driveKinematics = new DifferentialDriveKinematics(
-				Constants.driveports.getTrackWidthMeters(),
+				Constants.driveports.getTrackWidthMeters()
 			);
 
 		return new InstantCommand(() -> {
