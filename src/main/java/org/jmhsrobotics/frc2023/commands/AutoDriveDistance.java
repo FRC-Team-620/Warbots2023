@@ -34,7 +34,7 @@ public class AutoDriveDistance extends CommandBase {
 				new Constraints(AutoConstants.maxVelocity, AutoConstants.maxAcceleration));
 		this.distance = distance;
 		// distancePID.setGoal(distance);
-		distancePID.setTolerance(Units.inchesToMeters(1), 0.2);
+		distancePID.setTolerance(Units.inchesToMeters(5), AutoConstants.maxVelocity);
 		addRequirements(drivetrain);
 
 	}
@@ -56,20 +56,42 @@ public class AutoDriveDistance extends CommandBase {
 		this.drivetrain.setCurvatureDrive(value, 0, false);
 		SmartDashboard.putNumber("DriveDist pid/distance", moved);
 		SmartDashboard.putNumber("DriveDist pid/goal", distancePID.getGoal().position);
-		SmartDashboard.putNumber("DriveDist pid/setpoint2", distancePID.getSetpoint().position);
+		SmartDashboard.putNumber("DriveDist pid/setpoint2", distancePID.getSetpoint().velocity);
+		SmartDashboard.putNumber("DriveDist pid/error", distancePID.getPositionError());
+		SmartDashboard.putNumber("DriveDist pid/vel_error", distancePID.getVelocityError());
 		SmartDashboard.putNumber("AutoTimer/time", i);
-		System.out.println(this.distancePID.atGoal());
-		i++;
+		// System.out.println(this.distancePID.atGoal());
+		// i++;
 	}
 
 	private double getRelativeDistance() {
 		return new Transform2d(initPose, this.drivetrain.getPose()).getTranslation().getX();
 	}
 
+	private boolean hasError() {
+		return (Math.abs(distancePID.getPositionError()) > distancePID.getPositionTolerance())
+				|| (Math.abs(distancePID.getVelocityError()) > distancePID.getVelocityTolerance());
+	}
+
+	private boolean atGoalSetpoint() {
+		return distancePID.getGoal().equals(distancePID.getSetpoint()) && !hasError();
+	}
+
 	// // Returns true when the command should end.
 	@Override
 	public boolean isFinished() {
-		return this.distancePID.atGoal() || i > 200;
+		// System.out.println("POS: " + (Math.abs(distancePID.getPositionError()) <
+		// distancePID.getPositionTolerance()));
+		// System.out.println("VEL: " + (Math.abs(distancePID.getVelocityError()) <
+		// distancePID.getVelocityTolerance()));
+		// System.out.println("GOL: " + distancePID.atSetpoint());
+		// System.out.println("STA: " +
+		// (distancePID.getGoal().equals(distancePID.getSetpoint())));
+		// // return this.distancePID.atGoal() || i > 200;
+
+		System.out.println("HAS ERROR: " + hasError());
+		System.out.println("FINAL GOAL: " + atGoalSetpoint());
+		return atGoalSetpoint();
 	}
 
 	@Override
@@ -79,5 +101,6 @@ public class AutoDriveDistance extends CommandBase {
 		i = 0;
 		drivetrain.setCurvatureDrive(0, 0, false);
 		drivetrain.setBrake(true);
+		System.out.println("DONEDONEDONEDONEDONE\n");
 	}
 }
