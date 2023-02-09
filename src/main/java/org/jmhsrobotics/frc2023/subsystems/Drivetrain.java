@@ -11,19 +11,28 @@ import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.jmhsrobotics.frc2023.Constants;
+import org.jmhsrobotics.frc2023.Constants.AutoConstants;
 import org.jmhsrobotics.frc2023.Constants.RobotConstants;
 import org.jmhsrobotics.frc2023.Constants.WheelConstants;
 import org.jmhsrobotics.frc2023.RobotMath;
@@ -82,6 +91,8 @@ public class Drivetrain extends SubsystemBase {
 
 	private RobotMath.DiminishingAverageHandler angularVelocityHandler;
 	private DifferentialDrive differentialDrive;
+
+	private boolean isInRamsete = false;
 
 	/** Creates a new Drivetrain. */
 	public Drivetrain() {
@@ -173,7 +184,9 @@ public class Drivetrain extends SubsystemBase {
 		odometry.update(imu.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
 
 		double yaw = this.getYaw();
-
+		if (this.isInRamsete) {
+			return;
+		}
 		// Get the change in angle, used to calculate the momentary angular velocity
 		// The RobotMath.relativeAngle method is used because the angles wrap around
 		// from -180 to 180, so a change from 170 to -160 will be correctly identified
@@ -247,6 +260,34 @@ public class Drivetrain extends SubsystemBase {
 			pose
 		);
 		// spotless:on
+	}
+	public SequentialCommandGroup createRamseteCommand(Trajectory path) {
+		final DifferentialDriveKinematics driveKinematics = new DifferentialDriveKinematics(
+				Constants.driveports.getTrackWidthMeters()
+			);
+
+		return new InstantCommand(() -> {
+			this.isInRamsete = true;
+		}).andThen(new RamseteCommand(path, this::getPose, new RamseteController(),
+				new SimpleMotorFeedforward(AutoConstants.trajectoryFeedForwardVolts,
+						AutoConstants.trajectoryFeedForwardVoltSecondsPerMeter,
+						AutoConstants.trajectoryFeedForwardVoltSecondsSquaredPerMeter),
+				driveKinematics, this::getWheelSpeeds,
+				new PIDController(AutoConstants.trajectorykP, AutoConstants.trajectorykI, AutoConstants.trajectorykD),
+				new PIDController(AutoConstants.trajectorykP, AutoConstants.trajectorykI, AutoConstants.trajectorykD),
+				this::tankDriveVolts, this)).andThen(new InstantCommand(() -> {
+					this.isInRamsete = false;
+				}));
+	}
+
+	public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+		return new DifferentialDriveWheelSpeeds(leftFrontEncoder.getVelocity(), rightFrontEncoder.getVelocity());
+	}
+
+	public void tankDriveVolts(double leftVolts, double rightVolts) {
+		leftFrontMotor.setVoltage(leftVolts);
+		rightFrontMotor.setVoltage(-rightVolts);
+		// drive.feed();
 	}
 
 	private CANSparkMax setupMotor(CANSparkMax motor) {

@@ -13,6 +13,7 @@ public class SusanDrivePorts implements IDrivePorts {
 	public final boolean leftFrontMotorInversion = true;
 
 	public final double wheelDiameterInInches = 6;
+	public final double trackWidthMeters = 1;
 	public final IIMUWrapper imu = new NavxIMU(SPI.Port.kMXP);
 
 	public PIDConfig getAutoDistancePID = new PIDConfig(50, 0.5, 0.0);
@@ -28,6 +29,10 @@ public class SusanDrivePorts implements IDrivePorts {
 	public PIDConfig getAutoDistancePID() {
 		// TODO Auto-generated method stub
 		return getAutoDistancePID;
+	}
+	@Override
+	public double getTrackWidthMeters(){
+		return trackWidthMeters;
 	}
 	@Override
 	public PIDConfig getDriveDistancePID() {

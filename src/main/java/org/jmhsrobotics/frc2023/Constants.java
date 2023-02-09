@@ -118,6 +118,15 @@ public final class Constants {
 		public static final double maxAcceleration = 2;
 
 		public static final double balanceCreepSpeed = 0.1;
+
+		public static final double trajectoryFeedForwardVolts = 12;
+
+		public static final double trajectoryFeedForwardVoltSecondsPerMeter = 12;
+		public static final double trajectoryFeedForwardVoltSecondsSquaredPerMeter = 12;
+		public static final double trajectorykP = 1;
+		public static final double trajectorykI = 1;
+		public static final double trajectorykD = 1;
+		public static final double trackWidthMeters = 1;
 	}
 
 	public class ArmConstants {
