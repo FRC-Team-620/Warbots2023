@@ -89,8 +89,8 @@ public class AutoDriveDistance extends CommandBase {
 		// (distancePID.getGoal().equals(distancePID.getSetpoint())));
 		// // return this.distancePID.atGoal() || i > 200;
 
-		System.out.println("HAS ERROR: " + hasError());
-		System.out.println("FINAL GOAL: " + atGoalSetpoint());
+		// System.out.println("HAS ERROR: " + hasError());
+		// System.out.println("FINAL GOAL: " + atGoalSetpoint());
 		return atGoalSetpoint();
 	}
 
@@ -98,9 +98,9 @@ public class AutoDriveDistance extends CommandBase {
 	public void end(boolean interrupt) {
 		// this.distancePID.reset(new State(0, 0));
 		// this.distancePID.setGoal(0);
-		i = 0;
+		// i = 0;
 		drivetrain.setCurvatureDrive(0, 0, false);
 		drivetrain.setBrake(true);
-		System.out.println("DONEDONEDONEDONEDONE\n");
+		// System.out.println("DONEDONEDONEDONEDONE\n");
 	}
 }
