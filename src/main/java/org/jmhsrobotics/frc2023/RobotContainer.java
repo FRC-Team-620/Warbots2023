@@ -12,15 +12,14 @@ import org.jmhsrobotics.frc2023.commands.DriveCommand;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.jmhsrobotics.frc2023.util.LEDs.LEDIdleCommand;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import org.jmhsrobotics.frc2023.commands.DriveStraight;
 import org.jmhsrobotics.frc2023.commands.TurnDeltaAngle;
+import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
@@ -55,11 +54,11 @@ public class RobotContainer {
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
 
 		// spotless:off
-		ledSubsystem.setDefaultCommand(new LEDIdleCommand(
-				ledSubsystem, 
-				() -> drivetrain.getIsTurning()
-			)
-		);
+		// ledSubsystem.setDefaultCommand(new LEDIdleCommand(
+		// 		ledSubsystem, 
+		// 		() -> drivetrain.getIsTurning()
+		// 	)
+		// );
 		// spotless:on
 
 		// armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem));
@@ -87,7 +86,7 @@ public class RobotContainer {
 		// driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
 		driver.y().onTrue(new TurnDeltaAngle(drivetrain, 180));
 
-		driver.x().onTrue(new DriveStraight(drivetrain, 2));
+		driver.x().onTrue(new AutoBalance(drivetrain, true));
 		driver.b().onTrue(new AlignPeg(drivetrain));
 	}
 

@@ -7,12 +7,15 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import org.jmhsrobotics.frc2023.RobotMath;
 import org.jmhsrobotics.frc2023.Constants.ArenaConstants;
 import org.jmhsrobotics.frc2023.Constants.AutoConstants;
 import org.jmhsrobotics.frc2023.RobotMath.DiminishingAverageHandler;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
+import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
+import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.LEDManager;
 
 public class AutoBalance extends CommandBase {
 	private Drivetrain drivetrain;
@@ -27,6 +30,8 @@ public class AutoBalance extends CommandBase {
 	private Pose2d limitPosition;
 	private boolean backwards;
 	private boolean hasBalanced = false;
+
+	LEDSubsystem.LEDStrip strip = LEDManager.STRIP0.strip;
 
 	public AutoBalance(Drivetrain drivetrain, boolean backwards) {
 		this.backwards = backwards;
@@ -71,7 +76,9 @@ public class AutoBalance extends CommandBase {
 		double pitch = this.robotPitchHandler.feed(drivetrain.getPitch());
 
 		if (!hasReachedChargeStation()) {
+			strip.setSolidColor(Color.kWhite);
 			this.drivetrain.setCurvatureDrive(backwards ? -1 : 1 * AutoConstants.climbChargeStationSpeed, 0, false);
+			System.out.println(backwards ? -1 : 1 * AutoConstants.climbChargeStationSpeed);
 		} else {
 			if (RobotMath.approximatelyZero(pitch, AutoConstants.balancedAngle)) {
 
@@ -83,6 +90,7 @@ public class AutoBalance extends CommandBase {
 					this.pidController.reset();
 					this.pidController.setSetpoint(0);
 				}
+				strip.setSolidColor(Color.kBlue);
 				this.drivetrain.setCurvatureDrive(
 						this.pidController.calculate(getRelativeDistance(this.balancedPosition)), 0, false);
 
@@ -90,6 +98,7 @@ public class AutoBalance extends CommandBase {
 				this.isBalancing = false;
 
 				if (pitch < 0 && getRelativeDistance(chargeCenterPosition) > moveLimit) {
+					strip.setSolidColor(Color.kRed);
 					this.drivetrain.setCurvatureDrive(
 							hasBalanced ? AutoConstants.fineAdjustSpeed : AutoConstants.balanceCreepSpeed, 0, false);
 				} else if (pitch > 0 && getRelativeDistance(chargeCenterPosition) < moveLimit) {
@@ -103,6 +112,7 @@ public class AutoBalance extends CommandBase {
 						this.pidController.setSetpoint(0);
 						this.pidController.reset();
 					}
+					strip.setSolidColor(Color.kOrange);
 					this.drivetrain.setCurvatureDrive(this.pidController.calculate(getRelativeDistance(limitPosition)),
 							0, false);
 				}
