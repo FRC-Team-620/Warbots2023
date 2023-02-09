@@ -1,17 +1,22 @@
 package org.jmhsrobotics.frc2023.commands;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+
 import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class ArmCommand extends CommandBase {
 
 	ArmSubsystem armSubsystem;
-	private CommandXboxController controller;
+	private XboxController controller;
 
 	// Constructor
-	public ArmCommand(ArmSubsystem armSubsystem) {
+	public ArmCommand(ArmSubsystem armSubsystem, XboxController controller) {
 		this.armSubsystem = armSubsystem;
+		addRequirements(armSubsystem);
+		this.controller = controller;
 	}
 
 	// execute
@@ -19,13 +24,12 @@ public class ArmCommand extends CommandBase {
 	public void execute() {
 		// armSubsystem.setSolenoid(!this.armSubsystem.getSolenoid());
 		// enables the controller inputs for arm subsystem
-		double controlLength = Math.pow(controller.getRightX(), 2);
-		double controlHeight = Math.pow(controller.getRightY(), 2);
+		double controlLength = MathUtil.interpolate(0, Units.inchesToMeters(45), (controller.getRightY() + 1) / 2.0);
+		double controlPitch = MathUtil.interpolate(-180, 0, (controller.getRightX() + 1) / 2.0);
 
 		// enables the motors to control their respective jobs
-		armSubsystem.setHorizontalArmMotor(controlLength);
-		armSubsystem.setVerticalArmMotor(controlHeight);
-
+		armSubsystem.setExtensionArmMotor(controlLength);
+		armSubsystem.setPitchArmMotor(controlPitch);
 	}
 
 	// isFinished

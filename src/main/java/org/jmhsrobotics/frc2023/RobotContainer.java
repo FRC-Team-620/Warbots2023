@@ -15,7 +15,6 @@ import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -43,7 +42,7 @@ public class RobotContainer {
 		// Setting up default command which is a command that runs every time no other
 		// command that uses that subsystem is running
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
-		armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem));
+		armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem, driver.getHID()));
 		autoSelector = new AutoSelector(this);
 	}
 
@@ -59,9 +58,10 @@ public class RobotContainer {
 	 */
 	private void configureBindings() {
 		// Triggers are a thing that we might need to use so keep that in mind
-		driver.b().onTrue(new ArmCommand(armSubsystem));
-		driver.leftBumper().onTrue(
-				new InstantCommand(() -> grabberSubsystem.setGrabberState(!grabberSubsystem.getGrabberState())));
+		driver.b().onTrue(new ArmCommand(armSubsystem, driver.getHID()));
+		// driver.leftBumper().onTrue(
+		// new InstantCommand(() ->
+		// grabberSubsystem.setGrabberState(!grabberSubsystem.getGrabberState())));
 		// driver.x().onTrue(new AutoDriveDistance(drivetrain, 100));
 
 		// driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
