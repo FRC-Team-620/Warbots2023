@@ -20,6 +20,7 @@ public class AutoSelector {
 		// Add auto Options
 		autoSelector.setDefaultOption("BaseLineAuto", new BaseLineAuto(container.getDrivetrain()));
 		autoSelector.addOption("AutoDriveDistance 2 m", new AutoDriveDistance(container.getDrivetrain(), 2));
+		autoSelector.addOption("Reverse and balance", new AutoBalance(container.getDrivetrain(), true));
 		SmartDashboard.putData("autoSelector", autoSelector);
 
 		// Add Selector for Alliance color TODO: Use DriveStation.getAlliance() to set
