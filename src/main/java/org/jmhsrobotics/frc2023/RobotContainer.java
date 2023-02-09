@@ -5,7 +5,7 @@
 package org.jmhsrobotics.frc2023;
 
 import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
-import org.jmhsrobotics.frc2023.commands.ArmCommand;
+// import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
 import org.jmhsrobotics.frc2023.commands.DriveStraight;
 import org.jmhsrobotics.frc2023.commands.TurnDeltaAngle;
@@ -42,7 +42,8 @@ public class RobotContainer {
 		// Setting up default command which is a command that runs every time no other
 		// command that uses that subsystem is running
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
-		armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem, driver.getHID()));
+		// armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem,
+		// driver.getHID()));
 		autoSelector = new AutoSelector(this);
 	}
 
@@ -58,7 +59,7 @@ public class RobotContainer {
 	 */
 	private void configureBindings() {
 		// Triggers are a thing that we might need to use so keep that in mind
-		driver.b().onTrue(new ArmCommand(armSubsystem, driver.getHID()));
+		// driver.b().onTrue(new ArmCommand(armSubsystem, driver.getHID()));
 		// driver.leftBumper().onTrue(
 		// new InstantCommand(() ->
 		// grabberSubsystem.setGrabberState(!grabberSubsystem.getGrabberState())));
