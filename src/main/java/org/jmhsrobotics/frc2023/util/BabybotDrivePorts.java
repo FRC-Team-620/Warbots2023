@@ -13,7 +13,7 @@ public class BabybotDrivePorts implements IDrivePorts {
 	public final boolean leftFrontMotorInversion = true;
 
 	public final double wheelDiameterInInches = 4;
-
+	public final double trackWidthMeters = 1;
 	public PIDConfig getDriveDistancePID = new PIDConfig(0.8, 0.01, 0.0);
 	public PIDConfig getKeepHeadingPID = new PIDConfig(0.014, 0.01, 0.001);
 	public PIDConfig getAutoDistancePID = new PIDConfig(50, 0.5, 0.0);
@@ -25,6 +25,10 @@ public class BabybotDrivePorts implements IDrivePorts {
 
 	public final IIMUWrapper imu = new NavxIMU(SPI.Port.kMXP);
 
+	@Override
+	public double getTrackWidthMeters(){
+		return trackWidthMeters;
+	}
 	@Override
 	public PIDConfig getAutoDistancePID() {
 		// TODO Auto-generated method stub

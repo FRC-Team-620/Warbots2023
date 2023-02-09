@@ -24,6 +24,9 @@ public interface IDrivePorts {
 
 	public IIMUWrapper getIMU();
 
+
+	public double getTrackWidthMeters();
+
 	public static IDrivePorts getDrivePorts(Constants.RobotType type) {
 		switch (type) {
 			case SUSAN :
