@@ -109,9 +109,15 @@ public final class Constants {
 		public static final double balanceCreepSpeed = 0.1;
 	}
 
-	public class ArmConstants {
+	public static class ArmConstants {
 		public static final double armLengthMeters = 1; // TODO; find real length and height
 		public static final double armHeightMeters = 1;
+		public static final double minExtensionLengthMeters = Units.inchesToMeters(25);
+		public static final double maxExtensionLengthMeters = Units.inchesToMeters(50);
+		public static final double armPitchGearRatio = 270;
+		public static final double armMasskg = 7;
+		public static final double minArmAngleDegrees = -360;
+		public static final double maxArmAngleDegrees = 360;
 	}
 
 	public static double kSimUpdateTime = 0.02;
