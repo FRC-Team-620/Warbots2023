@@ -80,7 +80,7 @@ public final class Constants {
 	public static final IDrivePorts driveports = IDrivePorts.getDrivePorts(kRobotType);
 
 	public static class WheelConstants {
-		public static final double wheelDiameterInInches = 4;
+		public static final double wheelDiameterInInches = driveports.getWheelDiameterInInches();
 		public static final double conversionFactor = WheelConstants.gearRatio
 				* Units.inchesToMeters(wheelDiameterInInches) * Math.PI;
 
@@ -110,10 +110,6 @@ public final class Constants {
 	}
 
 	public class AutoConstants {
-		public static final double autoDistanceKP = 2;
-		public static final double autoDistanceKI = 0.2;
-		public static final double autoDistanceKD = 0.1;
-
 		public static final double kPPitchSpeed = 0.1;
 		public static final double kIPitchSpeed = 0.01;
 		public static final double kDPitchSpeed = 0.001;
@@ -125,9 +121,9 @@ public final class Constants {
 		public static final double maxVelocity = 2;
 		public static final double maxAcceleration = 2;
 
-		public static final double balanceCreepSpeed = 0.05;
-		public static final double fineAdjustSpeed = 0.05;
-		public static final double climbChargeStationSpeed = 0.05;
+		public static final double balanceCreepSpeed = 0.1;
+		public static final double fineAdjustSpeed = 0.1;
+		public static final double climbChargeStationSpeed = 0.2;
 		public static final double balanceCenterLimitFromInitialTip = 1;
 		public static final double onChargeStationAngle = 8;
 		public static final double balancedAngle = 1;
@@ -145,5 +141,5 @@ public final class Constants {
 	public static final double kSimDrivekAAngular = 0.3;
 	public static final double kSimTrackwidthMeters = 0.64;// 0.5207
 
-	public static final boolean kCoastOnDisable = true;
+	public static final boolean kCoastOnDisable = false;
 }

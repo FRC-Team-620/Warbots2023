@@ -13,9 +13,9 @@ public interface IDrivePorts {
 
 	public double getWheelDiameterInInches();
 
-	public PIDConfig getAutoDistancePID();
-	public PIDConfig getDriveDistancePID();
+	public ProfiledPIDConfig getAutoDistanceProfiledPID();
 	public PIDConfig getKeepHeadingPID();
+	public PIDConfig getBalancingPID();
 
 	public double getMaxVelocity();
 	public double getMaxAcceleration();

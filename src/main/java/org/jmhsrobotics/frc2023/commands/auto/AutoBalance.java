@@ -9,6 +9,8 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+
+import org.jmhsrobotics.frc2023.Constants;
 import org.jmhsrobotics.frc2023.RobotMath;
 import org.jmhsrobotics.frc2023.Constants.ArenaConstants;
 import org.jmhsrobotics.frc2023.Constants.AutoConstants;
@@ -37,8 +39,8 @@ public class AutoBalance extends CommandBase {
 		this.backwards = backwards;
 		this.drivetrain = drivetrain;
 		robotPitchHandler = new DiminishingAverageHandler(0.5);
-		pidController = new PIDController(AutoConstants.autoDistanceKP, AutoConstants.autoDistanceKI,
-				AutoConstants.autoDistanceKD);
+		pidController = new PIDController(Constants.driveports.getBalancingPID().kp,
+				Constants.driveports.getBalancingPID().ki, Constants.driveports.getBalancingPID().kd);
 	}
 	@Override
 	public void initialize() {
@@ -77,8 +79,11 @@ public class AutoBalance extends CommandBase {
 
 		if (!hasReachedChargeStation()) {
 			strip.setSolidColor(Color.kWhite);
-			this.drivetrain.setCurvatureDrive(backwards ? -1 : 1 * AutoConstants.climbChargeStationSpeed, 0, false);
-			System.out.println(backwards ? -1 : 1 * AutoConstants.climbChargeStationSpeed);
+			this.drivetrain.setCurvatureDrive(
+					backwards ? -1 * AutoConstants.climbChargeStationSpeed : 1 * AutoConstants.climbChargeStationSpeed,
+					0, false);
+			System.out.println(
+					backwards ? -1 * AutoConstants.climbChargeStationSpeed : 1 * AutoConstants.climbChargeStationSpeed);
 		} else {
 			if (RobotMath.approximatelyZero(pitch, AutoConstants.balancedAngle)) {
 
