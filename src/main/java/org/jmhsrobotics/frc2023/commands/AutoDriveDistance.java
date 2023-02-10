@@ -7,11 +7,12 @@ package org.jmhsrobotics.frc2023.commands;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+
+import org.jmhsrobotics.frc2023.Constants;
 import org.jmhsrobotics.frc2023.Constants.AutoConstants;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 
@@ -29,9 +30,10 @@ public class AutoDriveDistance extends CommandBase {
 	/** Creates a new AutoDriveDistance. */
 	public AutoDriveDistance(Drivetrain drivetrain, double distance) {
 		this.drivetrain = drivetrain;
-		this.distancePID = new ProfiledPIDController(AutoConstants.autoDistanceKP, AutoConstants.autoDistanceKI,
-				AutoConstants.autoDistanceKD,
-				new Constraints(AutoConstants.maxVelocity, AutoConstants.maxAcceleration));
+		this.distancePID = new ProfiledPIDController(Constants.driveports.getAutoDistanceProfiledPID().kp,
+				Constants.driveports.getAutoDistanceProfiledPID().ki,
+				Constants.driveports.getAutoDistanceProfiledPID().kd,
+				Constants.driveports.getAutoDistanceProfiledPID().constraints);
 		this.distance = distance;
 		// distancePID.setGoal(distance);
 		distancePID.setTolerance(Units.inchesToMeters(5), AutoConstants.maxVelocity);

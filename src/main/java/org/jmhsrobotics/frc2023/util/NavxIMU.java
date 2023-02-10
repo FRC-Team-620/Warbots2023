@@ -27,6 +27,11 @@ public class NavxIMU implements IIMUWrapper {
 	}
 
 	@Override
+	public double getRoll() {
+		return navx.getRoll(); // -180 180 in degrees
+	}
+
+	@Override
 	public Rotation2d getRotation2d() {
 		return navx.getRotation2d();
 	}

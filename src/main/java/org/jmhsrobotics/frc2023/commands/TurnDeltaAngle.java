@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
-/** An DriveCommand command that uses an Drivetrain subsystem. */
+/** A DriveCommand command that uses the Drivetrain subsystem. */
 public class TurnDeltaAngle extends InstantCommand {
 
 	// public TurnDeltaAngle(Drivetrain drivetrain, double relativeAngle) {

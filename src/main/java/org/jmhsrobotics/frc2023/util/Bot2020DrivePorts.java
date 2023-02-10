@@ -2,6 +2,8 @@ package org.jmhsrobotics.frc2023.util;
 
 import com.ctre.phoenix.sensors.Pigeon2Configuration;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+
 public class Bot2020DrivePorts implements IDrivePorts {
 
 	public final int leftFrontMotorCANId = 1;
@@ -14,20 +16,14 @@ public class Bot2020DrivePorts implements IDrivePorts {
 
 	public final double wheelDiameterInInches = 6;
 
-	public PIDConfig getAutoDistancePID = new PIDConfig(50, 0.5, 0.0);
-	public PIDConfig getDriveDistancePID = new PIDConfig(0.8, 0.01, 0.0);
-	public PIDConfig getKeepHeadingPID = new PIDConfig(0.010, 0.010, 0);
+	public final double maxVelocity = 2;
+	public final double maxAcceleration = 2;
 
-	public final double maxVelocity = 10;
-	public final double maxAcceleration = 10;
+	public ProfiledPIDConfig autoDistanceProfiledPID = new ProfiledPIDConfig(2, 0.2, 0.0,
+			new Constraints(maxVelocity, maxAcceleration));
+	public PIDConfig keepHeadingPID = new PIDConfig(0.010, 0.010, 0);
+	public PIDConfig balancingPID = new PIDConfig(0.4, 0.2, 0);
 
-	public static final double kPDriveDistance = 0.8;
-	public static final double kIDriveDistance = 0.01;
-	public static final double kDDriveDistance = 0.0;
-
-	public static final double kPKeepHeading = 0.010;
-	public static final double kIKeepHeading = 0.010;
-	public static final double kDKeepHeading = 0;
 	// public final IIMUWrapper imu = new NavxIMU(SPI.Port.kMXP);
 	public final IIMUWrapper imu = new PigeonIMU(30, getimConfiguration());
 	public final double balanceCreepSpeed = 0.1;
@@ -39,19 +35,19 @@ public class Bot2020DrivePorts implements IDrivePorts {
 	}
 
 	@Override
-	public PIDConfig getAutoDistancePID() {
+	public ProfiledPIDConfig getAutoDistanceProfiledPID() {
 		// TODO Auto-generated method stub
-		return getAutoDistancePID;
-	}
-	@Override
-	public PIDConfig getDriveDistancePID() {
-		// TODO Auto-generated method stub
-		return getDriveDistancePID;
+		return autoDistanceProfiledPID;
 	}
 	@Override
 	public PIDConfig getKeepHeadingPID() {
 		// TODO Auto-generated method stub
-		return getKeepHeadingPID;
+		return keepHeadingPID;
+	}
+	@Override
+	public PIDConfig getBalancingPID() {
+		// TODO Auto-generated method stub
+		return balancingPID;
 	}
 
 	@Override
@@ -103,4 +99,5 @@ public class Bot2020DrivePorts implements IDrivePorts {
 	public IIMUWrapper getIMU() {
 		return imu;
 	}
+
 }

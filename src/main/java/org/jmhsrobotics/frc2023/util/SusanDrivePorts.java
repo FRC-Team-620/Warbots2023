@@ -1,5 +1,6 @@
 package org.jmhsrobotics.frc2023.util;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.SPI;
 
 public class SusanDrivePorts implements IDrivePorts {
@@ -15,29 +16,30 @@ public class SusanDrivePorts implements IDrivePorts {
 	public final double wheelDiameterInInches = 6;
 	public final IIMUWrapper imu = new NavxIMU(SPI.Port.kMXP);
 
-	public PIDConfig getAutoDistancePID = new PIDConfig(50, 0.5, 0.0);
-	public PIDConfig getDriveDistancePID = new PIDConfig(0.8, 0.01, 0.0);
-	public PIDConfig getKeepHeadingPID = new PIDConfig(0.014, 0.01, 0.001);
+	public final double maxVelocity = 2;
+	public final double maxAcceleration = 2;
 
-	public final double maxVelocity = 10;
-	public final double maxAcceleration = 10;
+	public ProfiledPIDConfig autoDistanceProfiledPID = new ProfiledPIDConfig(2, 0.2, 0.0,
+			new Constraints(maxVelocity, maxAcceleration));
+	public PIDConfig keepHeadingPID = new PIDConfig(0.010, 0.010, 0);
+	public PIDConfig balancingPID = new PIDConfig(0.4, 0.2, 0);
 
 	public final double balanceCreepSpeed = 0.1;
 
 	@Override
-	public PIDConfig getAutoDistancePID() {
+	public ProfiledPIDConfig getAutoDistanceProfiledPID() {
 		// TODO Auto-generated method stub
-		return getAutoDistancePID;
-	}
-	@Override
-	public PIDConfig getDriveDistancePID() {
-		// TODO Auto-generated method stub
-		return getDriveDistancePID;
+		return autoDistanceProfiledPID;
 	}
 	@Override
 	public PIDConfig getKeepHeadingPID() {
 		// TODO Auto-generated method stub
-		return getKeepHeadingPID;
+		return keepHeadingPID;
+	}
+	@Override
+	public PIDConfig getBalancingPID() {
+		// TODO Auto-generated method stub
+		return balancingPID;
 	}
 
 	@Override
