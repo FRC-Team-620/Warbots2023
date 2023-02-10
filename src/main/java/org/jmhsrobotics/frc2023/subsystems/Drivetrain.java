@@ -132,10 +132,6 @@ public class Drivetrain extends SubsystemBase {
 		rightRearMotor.setIdleMode(mode);
 	}
 
-	public double getPitch() {
-		return imu.getPitch();
-	}
-
 	private void setupMotors() {
 		leftFrontMotor = setupMotor(leftFrontMotor);
 		rightFrontMotor = setupMotor(rightFrontMotor);
@@ -292,6 +288,18 @@ public class Drivetrain extends SubsystemBase {
 
 	public double getYaw() { // TODO: Remove Use Odometry instead
 		return this.imu.getYaw();
+	}
+
+	public double getRoll() {
+		return imu.getRoll();
+	}
+
+	public double getPitch() {
+		return imu.getPitch();
+	}
+
+	public boolean getIsTurning() {
+		return this.isTurning;
 	}
 
 	public void stop() {

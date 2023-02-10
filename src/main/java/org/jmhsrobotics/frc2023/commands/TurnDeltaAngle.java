@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
-/** An DriveCommand command that uses an Drivetrain subsystem. */
+/** A DriveCommand command that uses the Drivetrain subsystem. */
 public class TurnDeltaAngle extends InstantCommand {
 
 	// public TurnDeltaAngle(Drivetrain drivetrain, double relativeAngle) {
@@ -28,15 +28,15 @@ public class TurnDeltaAngle extends InstantCommand {
 
 		// spotless:off
 		this.profiledAnglePID = new ProfiledPIDController(
-      TurnAngleCommandConstants.kPTurnAngle,
+      		TurnAngleCommandConstants.kPTurnAngle,
 			TurnAngleCommandConstants.kITurnAngle, 
-      TurnAngleCommandConstants.kDTurnAngle, 
-      new Constraints(
+     		TurnAngleCommandConstants.kDTurnAngle, 
+      		new Constraints(
 				TurnAngleCommandConstants.maxAngularVelocity, 
-        TurnAngleCommandConstants.maxAngularAcceleration
+        		TurnAngleCommandConstants.maxAngularAcceleration
 			)
-    );
-    // spotless:on
+    	);
+    	// spotless:on
 
 		this.profiledAnglePID.enableContinuousInput(-180, 180);
 		this.profiledAnglePID.setTolerance(2, TurnAngleCommandConstants.maxAngularVelocity);

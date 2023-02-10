@@ -34,16 +34,18 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
-		// Instantiate our RobotContainer. This will perform all our button bindings,
-		// and put our
-		// autonomous chooser on the dashboard.
-		m_robotContainer = new RobotContainer();
-		m_robotContainer.getDrivetrain().setBrake(false);
+		// This code must be the first thing that runs otherwise the directory is not
+		// updated
 		if (Robot.isSimulation()) {
 			DataLogManager.start(Filesystem.getOperatingDirectory().getAbsolutePath() + "\\logs");
 		} else {
 			DataLogManager.start();
 		}
+		// Instantiate our RobotContainer. This will perform all our button bindings,
+		// and put our
+		// autonomous chooser on the dashboard.
+		m_robotContainer = new RobotContainer();
+		m_robotContainer.getDrivetrain().setBrake(false);
 
 		// Enables network table logging for data
 		DataLogManager.logNetworkTables(true);
@@ -73,7 +75,7 @@ public class Robot extends TimedRobot {
 		// and running subsystem periodic() methods. This must be called from the
 		// robot's periodic
 		// block in order for anything in the Command-based framework to work.
-		CommandScheduler.getInstance().run();
+		CommandScheduler.getInstance().run(); // TODO: delete
 		field.setRobotPose(m_robotContainer.drivetrain.getPose());
 	}
 

@@ -41,6 +41,11 @@ public class PigeonIMU implements IIMUWrapper {
 	}
 
 	@Override
+	public double getRoll() {
+		return PigeonIMU.pigeonConstrain180(pigeon.getRoll());
+	}
+
+	@Override
 	public Rotation2d getRotation2d() {
 		return Rotation2d.fromDegrees(getYaw());
 	}

@@ -64,12 +64,23 @@ public final class Constants {
 	public enum RobotType {
 		BABY_BOT, SUSAN, BOT_2020, UNKNOWN
 	}
+
+	public enum VisionPipeline {
+		REFECTIVE_TAPE(0), APRIL_TAGS(1);
+
+		VisionPipeline(int id) {
+			this.id = id;
+		}
+
+		public final int id;
+	}
+
 	public static RobotType kRobotType = DetectRobot.identifyRobot(); // TODO: Better naming Scheme?
 
 	public static final IDrivePorts driveports = IDrivePorts.getDrivePorts(kRobotType);
 
 	public static class WheelConstants {
-		public static final double wheelDiameterInInches = 4;
+		public static final double wheelDiameterInInches = driveports.getWheelDiameterInInches();
 		public static final double conversionFactor = WheelConstants.gearRatio
 				* Units.inchesToMeters(wheelDiameterInInches) * Math.PI;
 
@@ -99,14 +110,23 @@ public final class Constants {
 	}
 
 	public class AutoConstants {
-		public static final double autoDistanceKP = 2;
-		public static final double autoDistanceKI = 0.2;
-		public static final double autoDistanceKD = 0.1;
+		public static final double kPPitchSpeed = 0.1;
+		public static final double kIPitchSpeed = 0.01;
+		public static final double kDPitchSpeed = 0.001;
+
+		public static final double kPRollCurvature = 0.014;
+		public static final double kIRollCurvature = 0.01;
+		public static final double kDRollCurvature = 0.001;
 
 		public static final double maxVelocity = 2;
 		public static final double maxAcceleration = 2;
 
 		public static final double balanceCreepSpeed = 0.1;
+		public static final double fineAdjustSpeed = 0.1;
+		public static final double climbChargeStationSpeed = 0.2;
+		public static final double balanceCenterLimitFromInitialTip = 1;
+		public static final double onChargeStationAngle = 8;
+		public static final double balancedAngle = 1;
 	}
 
 	public static class ArmConstants {
@@ -127,5 +147,5 @@ public final class Constants {
 	public static final double kSimDrivekAAngular = 0.3;
 	public static final double kSimTrackwidthMeters = 0.64;// 0.5207
 
-	public static final boolean kCoastOnDisable = true;
+	public static final boolean kCoastOnDisable = false;
 }
