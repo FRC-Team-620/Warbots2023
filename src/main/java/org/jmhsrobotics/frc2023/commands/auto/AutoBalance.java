@@ -1,5 +1,7 @@
 package org.jmhsrobotics.frc2023.commands.auto;
 
+import edu.wpi.first.math.MathUtil;
+
 //import org.apache.commons.io.filefilter.FalseFileFilter;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -14,6 +16,7 @@ import org.jmhsrobotics.frc2023.Constants;
 import org.jmhsrobotics.frc2023.RobotMath;
 import org.jmhsrobotics.frc2023.Constants.ArenaConstants;
 import org.jmhsrobotics.frc2023.Constants.AutoConstants;
+import org.jmhsrobotics.frc2023.Constants.RobotConstants;
 import org.jmhsrobotics.frc2023.RobotMath.DiminishingAverageHandler;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
@@ -23,7 +26,9 @@ public class AutoBalance extends CommandBase {
 	private Drivetrain drivetrain;
 	private double moveLimit;
 	private DiminishingAverageHandler robotPitchHandler;
+	private DiminishingAverageHandler robotPitchAngVelHandler;
 	private PIDController pidController;
+	private PIDController pitchPIDController;
 	private boolean isBalancing = false;
 	private boolean onChargeStation = false;
 	private Pose2d chargeCenterPosition;
@@ -32,19 +37,35 @@ public class AutoBalance extends CommandBase {
 	private Pose2d limitPosition;
 	private boolean backwards;
 	private boolean hasBalanced = false;
+	private boolean hasBeenOnChargeStation = false;
+	private boolean hasReachedBalancedSetpoint = false;
 
 	LEDSubsystem.LEDStrip strip = LEDManager.STRIP0.strip;
 
-	public AutoBalance(Drivetrain drivetrain, boolean backwards) {
+	public AutoBalance(Drivetrain drivetrain, boolean backwards, LEDSubsystem ledSubsystem) {
 		this.backwards = backwards;
 		this.drivetrain = drivetrain;
 		robotPitchHandler = new DiminishingAverageHandler(0.5);
+		robotPitchAngVelHandler = new DiminishingAverageHandler(0.5);
 		pidController = new PIDController(Constants.driveports.getBalancingPID().kp,
 				Constants.driveports.getBalancingPID().ki, Constants.driveports.getBalancingPID().kd);
+		pidController.setTolerance(0.02, 0.01);
+		pitchPIDController = new PIDController(0.008, 0.0002, 0.0);
+		addRequirements(drivetrain, ledSubsystem);
 	}
+
 	@Override
 	public void initialize() {
 		this.moveLimit = ArenaConstants.kchargeStationLengthMeters / 2;
+
+		this.hasBalanced = false;
+
+		pidController.reset();
+		pitchPIDController.reset();
+
+		System.out.println("KP: " + pidController.getP());
+		System.out.println("KI: " + pidController.getI());
+		System.out.println("KD: " + pidController.getD());
 	}
 
 	@Override
@@ -75,17 +96,29 @@ public class AutoBalance extends CommandBase {
 		//
 		// This command will never complete manually, as it needs to hold its position.
 
+		// spotless:off
+
+		double pitchAngVel = this.robotPitchAngVelHandler.feed(
+			(drivetrain.getPitch() - this.robotPitchHandler.get()) 
+				/ RobotConstants.secondsPerTick
+		);
+		
+		// spotless:on
+
 		double pitch = this.robotPitchHandler.feed(drivetrain.getPitch());
 
-		if (!hasReachedChargeStation()) {
+		if (!this.hasBeenOnChargeStation/* !hasReachedChargeStation() */) {
 			strip.setSolidColor(Color.kWhite);
 			this.drivetrain.setCurvatureDrive(
 					backwards ? -1 * AutoConstants.climbChargeStationSpeed : 1 * AutoConstants.climbChargeStationSpeed,
 					0, false);
-			System.out.println(
-					backwards ? -1 * AutoConstants.climbChargeStationSpeed : 1 * AutoConstants.climbChargeStationSpeed);
+			// System.out.println(
+			// backwards ? -1 * AutoConstants.climbChargeStationSpeed : 1 *
+			// AutoConstants.climbChargeStationSpeed);
+
+			this.hasBeenOnChargeStation = !RobotMath.approximatelyZero(pitch, 3.0);
 		} else {
-			if (RobotMath.approximatelyZero(pitch, AutoConstants.balancedAngle)) {
+			if (Math.abs(pitchAngVel) > 50/* RobotMath.approximatelyZero(pitch, AutoConstants.balancedAngle) */) {
 
 				if (!this.isBalancing) {
 					this.hasBalanced = true;
@@ -96,11 +129,63 @@ public class AutoBalance extends CommandBase {
 					this.pidController.setSetpoint(0);
 				}
 				strip.setSolidColor(Color.kBlue);
-				this.drivetrain.setCurvatureDrive(
-						this.pidController.calculate(getRelativeDistance(this.balancedPosition)), 0, false);
+				this.drivetrain.setCurvatureDrive(-Math.signum(pitchAngVel) * AutoConstants.balanceCreepSpeed, 0,
+						false);
+				// this.drivetrain.setCurvatureDrive(
+				// this.pidController.calculate(getRelativeDistance(this.balancedPosition)), 0,
+				// false);
 
 			} else {
+
+				if (RobotMath.approximatelyZero(pitch, AutoConstants.balancedAngle)) {
+					this.drivetrain.stop();
+					this.strip.setSolidColor(Color.kGreen);
+					return;
+				}
+
+				this.hasBeenOnChargeStation = true;
+
 				this.isBalancing = false;
+
+				// System.out.println("PITCH: " + pitch);
+
+				double pidSpeedOutput;
+
+				if (this.hasBalanced) {
+					// spotless:off
+					if(this.hasReachedBalancedSetpoint || this.pidController.atSetpoint()) {
+						this.hasReachedBalancedSetpoint = true;
+						pidSpeedOutput = this.pitchPIDController.calculate(
+							pitch
+						);
+						this.strip.setSolidColor(Color.kOrange);
+					} else {
+						pidSpeedOutput = this.pidController.calculate(
+							this.getRelativeDistance(this.balancedPosition)
+						);
+					}
+
+					double speed = MathUtil.clamp(pidSpeedOutput, -0.07, 0.07);
+
+					System.out.println("SPEED: " + speed);
+
+					this.drivetrain.setCurvatureDrive(
+						speed,
+						0, 
+						false
+					);
+
+				} else {
+
+					this.drivetrain.setCurvatureDrive(
+						-AutoConstants.balanceCreepSpeed, 
+						0, 
+						false
+					);
+
+				}
+
+				/*
 
 				if (pitch < 0 && getRelativeDistance(chargeCenterPosition) > moveLimit) {
 					strip.setSolidColor(Color.kRed);
@@ -117,17 +202,23 @@ public class AutoBalance extends CommandBase {
 						this.pidController.setSetpoint(0);
 						this.pidController.reset();
 					}
-					strip.setSolidColor(Color.kOrange);
+					strip.setSolidColor(Color.kGreen);
 					this.drivetrain.setCurvatureDrive(this.pidController.calculate(getRelativeDistance(limitPosition)),
 							0, false);
+					System.out.println("REL D: " + getRelativeDistance(limitPosition));
+					System.out.println("OUTPT: " + this.pidController.calculate(getRelativeDistance(limitPosition)));
 				}
 
+				*/
+
+				// spotless:on
 			}
 		}
 
 	}
 
 	private double getRelativeDistance(Pose2d position) {
+		System.out.println("RELD: " + new Transform2d(position, this.drivetrain.getPose()).getTranslation().getX());
 		return new Transform2d(position, this.drivetrain.getPose()).getTranslation().getX();
 	}
 

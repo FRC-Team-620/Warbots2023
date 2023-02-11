@@ -12,6 +12,8 @@ import org.jmhsrobotics.frc2023.commands.DriveCommand;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import org.jmhsrobotics.frc2023.util.LEDs.LEDIdleCommand;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
@@ -54,11 +56,11 @@ public class RobotContainer {
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
 
 		// spotless:off
-		// ledSubsystem.setDefaultCommand(new LEDIdleCommand(
-		// 		ledSubsystem, 
-		// 		() -> drivetrain.getIsTurning()
-		// 	)
-		// );
+		ledSubsystem.setDefaultCommand(new LEDIdleCommand(
+				ledSubsystem, 
+				() -> drivetrain.getIsTurning()
+			)
+		);
 		// spotless:on
 
 		// armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem));
@@ -86,7 +88,7 @@ public class RobotContainer {
 		// driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
 		driver.y().onTrue(new TurnDeltaAngle(drivetrain, 180));
 
-		driver.x().onTrue(new AutoBalance(drivetrain, true));
+		driver.x().onTrue(new AutoBalance(drivetrain, true, ledSubsystem));
 		driver.b().onTrue(new AlignPeg(drivetrain));
 	}
 
@@ -103,5 +105,9 @@ public class RobotContainer {
 
 	public Drivetrain getDrivetrain() {
 		return this.drivetrain;
+	}
+
+	public LEDSubsystem getLEDSubsystem() {
+		return this.ledSubsystem;
 	}
 }

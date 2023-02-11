@@ -21,8 +21,10 @@ public class Bot2020DrivePorts implements IDrivePorts {
 
 	public ProfiledPIDConfig autoDistanceProfiledPID = new ProfiledPIDConfig(2, 0.2, 0.0,
 			new Constraints(maxVelocity, maxAcceleration));
-	public PIDConfig keepHeadingPID = new PIDConfig(0.010, 0.010, 0);
-	public PIDConfig balancingPID = new PIDConfig(0.4, 0.2, 0);
+	// spotless:off
+	public PIDConfig keepHeadingPID = new PIDConfig(0.014, 0.01, 0.001);
+	public PIDConfig balancingPID = new PIDConfig(0.4, 0.3, 0);
+	// spotless:on
 
 	// public final IIMUWrapper imu = new NavxIMU(SPI.Port.kMXP);
 	public final IIMUWrapper imu = new PigeonIMU(30, getimConfiguration());
