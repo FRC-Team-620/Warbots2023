@@ -5,18 +5,12 @@ import edu.wpi.first.math.MathUtil;
 //import org.apache.commons.io.filefilter.FalseFileFilter;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import org.jmhsrobotics.frc2023.Constants;
 import org.jmhsrobotics.frc2023.RobotMath;
-import org.jmhsrobotics.frc2023.Constants.ArenaConstants;
 import org.jmhsrobotics.frc2023.Constants.AutoConstants;
-import org.jmhsrobotics.frc2023.Constants.RobotConstants;
 import org.jmhsrobotics.frc2023.RobotMath.DiminishingAverageHandler;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
@@ -24,21 +18,22 @@ import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.LEDManager;
 
 public class AutoBalance extends CommandBase {
 	private Drivetrain drivetrain;
-	private double moveLimit;
+	// private double moveLimit;
 	private DiminishingAverageHandler robotPitchHandler;
-	private DiminishingAverageHandler robotPitchAngVelHandler;
+	// private DiminishingAverageHandler robotPitchAngVelHandler;
 	private PIDController pidController;
 	private PIDController pitchPIDController;
 	private boolean isBalancing = false;
-	private boolean onChargeStation = false;
-	private Pose2d chargeCenterPosition;
-	private Pose2d balancedPosition;
-	private boolean atLimit = false;
-	private Pose2d limitPosition;
+	private boolean isTipping = false;
+	// private boolean onChargeStation = false;
+	// private Pose2d chargeCenterPosition;
+	// private Pose2d balancedPosition;
+	// private boolean atLimit = false;
+	// private Pose2d limitPosition;
 	private boolean backwards;
-	private boolean hasBalanced = false;
+	private boolean hasTipped = false;
 	private boolean hasBeenOnChargeStation = false;
-	private boolean hasReachedBalancedSetpoint = false;
+	// private boolean hasReachedBalancedSetpoint = false;
 
 	LEDSubsystem.LEDStrip strip = LEDManager.STRIP0.strip;
 
@@ -46,7 +41,7 @@ public class AutoBalance extends CommandBase {
 		this.backwards = backwards;
 		this.drivetrain = drivetrain;
 		robotPitchHandler = new DiminishingAverageHandler(0.5);
-		robotPitchAngVelHandler = new DiminishingAverageHandler(0.5);
+		// robotPitchAngVelHandler = new DiminishingAverageHandler(0.5);
 		pidController = new PIDController(Constants.driveports.getBalancingPID().kp,
 				Constants.driveports.getBalancingPID().ki, Constants.driveports.getBalancingPID().kd);
 		pidController.setTolerance(0.02, 0.01);
@@ -56,9 +51,12 @@ public class AutoBalance extends CommandBase {
 
 	@Override
 	public void initialize() {
-		this.moveLimit = ArenaConstants.kchargeStationLengthMeters / 2;
+		// this.moveLimit = ArenaConstants.kchargeStationLengthMeters / 2;
 
-		this.hasBalanced = false;
+		this.hasTipped = false;
+		this.isTipping = false;
+
+		this.isBalancing = false;
 
 		pidController.reset();
 		pitchPIDController.reset();
@@ -98,72 +96,101 @@ public class AutoBalance extends CommandBase {
 
 		// spotless:off
 
-		double pitchAngVel = this.robotPitchAngVelHandler.feed(
-			(drivetrain.getPitch() - this.robotPitchHandler.get()) 
-				/ RobotConstants.secondsPerTick
-		);
+		// double pitchAngVel = this.robotPitchAngVelHandler.feed(
+		// 	(drivetrain.getPitch() - this.robotPitchHandler.get()) 
+		// 		/ RobotConstants.secondsPerTick
+		// );
 		
+		double pitchAngVel = this.drivetrain.getPitchAngularVelocity();
+
 		// spotless:on
 
 		double pitch = this.robotPitchHandler.feed(drivetrain.getPitch());
 
-		if (!this.hasBeenOnChargeStation/* !hasReachedChargeStation() */) {
+		// IF THE ROBOT HAS NOT BEEN ON THE CHARGE STATION YET
+		if (!this.hasBeenOnChargeStation) {
+
 			strip.setSolidColor(Color.kWhite);
+
+			// spotless:off
 			this.drivetrain.setCurvatureDrive(
-					backwards ? -1 * AutoConstants.climbChargeStationSpeed : 1 * AutoConstants.climbChargeStationSpeed,
-					0, false);
+				(backwards ? -1.0 : 1.0) * AutoConstants.climbChargeStationSpeed,
+				0, false
+			);
+			// spotless:on
+
 			// System.out.println(
 			// backwards ? -1 * AutoConstants.climbChargeStationSpeed : 1 *
 			// AutoConstants.climbChargeStationSpeed);
 
+			// IF THE ROBOT IS AT AN ANGLE OF > 3.0 OR < 3.0 DEGREES
+			// i.e. if the robot is angling up or down
+			// REGISTER THE ROBOT AS HAVING BEEN ON THE CHARGING STATION
 			this.hasBeenOnChargeStation = !RobotMath.approximatelyZero(pitch, 3.0);
 		} else {
-			if (Math.abs(pitchAngVel) > 50/* RobotMath.approximatelyZero(pitch, AutoConstants.balancedAngle) */) {
 
-				if (!this.isBalancing) {
-					this.hasBalanced = true;
-					this.isBalancing = true;
-					this.atLimit = false;
-					this.balancedPosition = this.drivetrain.getPose();
+			// IF THE ROBOT IS FALLING FORWARD OR BACKWARD (The loading station is tipping
+			// over!)
+			if (Math.abs(pitchAngVel) > 50) {
+
+				if (!this.isTipping) {
+					this.hasTipped = true;
+					this.isTipping = true;
+					// this.atLimit = false;
+					// this.balancedPosition = this.drivetrain.getPose();
 					this.pidController.reset();
 					this.pidController.setSetpoint(0);
 				}
+
 				strip.setSolidColor(Color.kBlue);
+
+				// Drive toward the center
 				this.drivetrain.setCurvatureDrive(-Math.signum(pitchAngVel) * AutoConstants.balanceCreepSpeed, 0,
 						false);
-				// this.drivetrain.setCurvatureDrive(
-				// this.pidController.calculate(getRelativeDistance(this.balancedPosition)), 0,
-				// false);
 
 			} else {
 
+				// THE CHARGING STATION IS NOT TIPPING
+
+				// IS BALANCING
 				if (RobotMath.approximatelyZero(pitch, AutoConstants.balancedAngle)) {
 					this.drivetrain.stop();
 					this.strip.setSolidColor(Color.kGreen);
+					this.isBalancing = true;
 					return;
 				}
 
+				// IF NOT BALANCED
+
 				this.hasBeenOnChargeStation = true;
 
-				this.isBalancing = false;
+				this.isTipping = false;
 
 				// System.out.println("PITCH: " + pitch);
 
-				double pidSpeedOutput;
-
-				if (this.hasBalanced) {
+				// IF THE ROBOT HAS BALANCED BEFORE
+				// i.e. if we are near-ish to the center of balance.
+				if (this.hasTipped) {
 					// spotless:off
-					if(this.hasReachedBalancedSetpoint || this.pidController.atSetpoint()) {
-						this.hasReachedBalancedSetpoint = true;
-						pidSpeedOutput = this.pitchPIDController.calculate(
-							pitch
-						);
-						this.strip.setSolidColor(Color.kOrange);
-					} else {
-						pidSpeedOutput = this.pidController.calculate(
-							this.getRelativeDistance(this.balancedPosition)
-						);
-					}
+					// if(this.hasReachedBalancedSetpoint || this.pidController.atSetpoint()) {
+					// 	this.hasReachedBalancedSetpoint = true;
+					// 	pidSpeedOutput = this.pitchPIDController.calculate(
+					// 		pitch
+					// 	);
+					// 	this.strip.setSolidColor(Color.kOrange);
+					// }
+
+					double pidSpeedOutput = this.pitchPIDController.calculate(
+						pitch
+					);
+
+					this.strip.setSolidColor(Color.kOrange);
+
+					// } else {
+					// 	pidSpeedOutput = this.pidController.calculate(
+					// 		this.getRelativeDistance(this.balancedPosition)
+					// 	);
+					// }
 
 					double speed = MathUtil.clamp(pidSpeedOutput, -0.07, 0.07);
 
@@ -176,6 +203,9 @@ public class AutoBalance extends CommandBase {
 					);
 
 				} else {
+
+					// THE ROBOT IS ON THE CHARGE STATION WITHOUT HAVING BALANCED YET
+					// The robot is creeping up the station for the first time
 
 					this.drivetrain.setCurvatureDrive(
 						-AutoConstants.balanceCreepSpeed, 
@@ -217,28 +247,32 @@ public class AutoBalance extends CommandBase {
 
 	}
 
-	private double getRelativeDistance(Pose2d position) {
-		System.out.println("RELD: " + new Transform2d(position, this.drivetrain.getPose()).getTranslation().getX());
-		return new Transform2d(position, this.drivetrain.getPose()).getTranslation().getX();
-	}
+	// private double getRelativeDistance(Pose2d position) {
+	// System.out.println("RELD: " + new Transform2d(position,
+	// this.drivetrain.getPose()).getTranslation().getX());
+	// return new Transform2d(position,
+	// this.drivetrain.getPose()).getTranslation().getX();
+	// }
 
-	private boolean hasReachedChargeStation() {
-		if (this.onChargeStation == false) {
-			if (Math.abs(this.robotPitchHandler.get()) > AutoConstants.onChargeStationAngle) {
-				this.onChargeStation = true;
-				this.chargeCenterPosition = this.drivetrain.getPose().plus(new Transform2d(
-						new Translation2d(-1 * AutoConstants.balanceCenterLimitFromInitialTip, 0.0), new Rotation2d()));
-				return true;
-			}
-			return false;
+	// private boolean hasReachedChargeStation() {
+	// if (this.onChargeStation == false) {
+	// if (Math.abs(this.robotPitchHandler.get()) >
+	// AutoConstants.onChargeStationAngle) {
+	// this.onChargeStation = true;
+	// this.chargeCenterPosition = this.drivetrain.getPose().plus(new Transform2d(
+	// new Translation2d(-1 * AutoConstants.balanceCenterLimitFromInitialTip, 0.0),
+	// new Rotation2d()));
+	// return true;
+	// }
+	// return false;
 
-		}
-		return this.onChargeStation;
-	}
+	// }
+	// return this.onChargeStation;
+	// }
 
 	@Override
 	public boolean isFinished() {
-		return false;
+		return this.isBalancing;
 	}
 
 }

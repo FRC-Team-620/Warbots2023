@@ -66,13 +66,15 @@ public class Drivetrain extends SubsystemBase {
 	// private double commandedZRotation = 0.0;
 	// private boolean commandedAllowTurnInPlace = false;
 
-	private double angularVelocity = 0.0;
+	private double yawAngularVelocity = 0.0;
+	private double pitchAngularVelocity = 0.0;
 
 	// private boolean headingLock = false;
 
 	private boolean isTurning = false;
 	// private int tickAccumulation = 0;
-	private double previousAngle;
+	private double previousYawAngle = 0.0;
+	private double previousPitchAngle = 0.0;
 
 	private double commandedSpeed = 0.0;
 	private double commandedCurvature = 0.0;
@@ -80,7 +82,8 @@ public class Drivetrain extends SubsystemBase {
 
 	private boolean shouldHeadingLock = true;
 
-	private RobotMath.DiminishingAverageHandler angularVelocityHandler;
+	private RobotMath.DiminishingAverageHandler yawAngularVelocityHandler;
+	private RobotMath.DiminishingAverageHandler pitchAngularVelocityHandler;
 	private DifferentialDrive differentialDrive;
 
 	/** Creates a new Drivetrain. */
@@ -117,7 +120,8 @@ public class Drivetrain extends SubsystemBase {
 		 * sort of running average is used to make sure that any one wrong reading does
 		 * not throw off the stored angular velocity too much.
 		 */
-		this.angularVelocityHandler = new RobotMath.DiminishingAverageHandler(2.0);
+		this.yawAngularVelocityHandler = new RobotMath.DiminishingAverageHandler(2.0);
+		this.pitchAngularVelocityHandler = new RobotMath.DiminishingAverageHandler(2.0);
 
 		// Setup differential drive with left front and right front motors as the
 		// parameters for the new DifferentialDrive
@@ -169,26 +173,42 @@ public class Drivetrain extends SubsystemBase {
 		odometry.update(imu.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
 
 		double yaw = this.getYaw();
+		double pitch = this.getPitch();
 
-		// Get the change in angle, used to calculate the momentary angular velocity
-		// The RobotMath.relativeAngle method is used because the angles wrap around
-		// from -180 to 180, so a change from 170 to -160 will be correctly identified
-		// as a 30 degree shift using this method, as 170 wraps around to -160 after
-		// 30 more degrees.
-		double relativeChange = RobotMath.relativeAngle(this.previousAngle, yaw);
-
-		// Get the angular velocity, denoised with a diminishing average loop.
-		// The change in angle divided by the change in time since that last reading is
-		// a good approximation of the instantaneous velocity.
 		// spotless:off
-		this.angularVelocity = this.angularVelocityHandler.feed(
-			relativeChange / RobotConstants.secondsPerTick
+		this.yawAngularVelocity = Drivetrain.updateAngularVelocityHandler(
+			yawAngularVelocityHandler, yaw, this.previousYawAngle
 		);
+		this.previousYawAngle = yaw;
+
+		this.pitchAngularVelocity = Drivetrain.updateAngularVelocityHandler(
+			pitchAngularVelocityHandler, pitch, this.previousPitchAngle
+		);
+		this.previousPitchAngle = pitch;
 		// spotless:on
 
-		// Save the current angle so next loop it can be used in the above loop to
-		// calculate angular velocity
-		this.previousAngle = yaw;
+		// // Get the change in angle, used to calculate the momentary angular velocity
+		// // The RobotMath.relativeAngle method is used because the angles wrap around
+		// // from -180 to 180, so a change from 170 to -160 will be correctly
+		// identified
+		// // as a 30 degree shift using this method, as 170 wraps around to -160 after
+		// // 30 more degrees.
+		// double relativeYawChange = RobotMath.relativeAngle(this.previousYawAngle,
+		// yaw);
+
+		// // Get the angular velocity, denoised with a diminishing average loop.
+		// // The change in angle divided by the change in time since that last reading
+		// is
+		// // a good approximation of the instantaneous velocity.
+		// // spotless:off
+		// this.yawAngularVelocity = this.yawAngularVelocityHandler.feed(
+		// 	relativeYawChange / RobotConstants.secondsPerTick
+		// );
+		// // spotless:on
+
+		// // Save the current angle so next loop it can be used in the above loop to
+		// // calculate angular velocity
+		// this.previousYawAngle = yaw;
 
 		// Check whether there is curvature input
 		boolean noCurvatureInput = RobotMath.approximatelyZero(this.commandedCurvature);
@@ -197,7 +217,7 @@ public class Drivetrain extends SubsystemBase {
 		// but there is no input, and there is no angular velocity.
 		// Therefore, this if statement catches when the robot has just stopped after
 		// having been spun by the driver.
-		if (this.isTurning && noCurvatureInput && !this.hasAngularVelocity()) {
+		if (this.isTurning && noCurvatureInput && !this.hasYawAngularVelocity()) {
 			this.isTurning = false; // Register the robot as not turning
 			this.lockCurrentHeading(); // Lock the current heading
 			this.resetHeadingLockPID(); // Stop the integral value from running off
@@ -228,10 +248,26 @@ public class Drivetrain extends SubsystemBase {
 		SmartDashboard.putNumber("Drivetrain/RotationInputPeriodic", rotationInput);
 		SmartDashboard.putNumber("Drivetrain/DriveSpeedPeriodic", this.commandedSpeed);
 		SmartDashboard.putNumber("Drivetrain/isTurning", this.isTurning ? 1 : -1);
-		SmartDashboard.putNumber("Drivetrain/DriveAngularVelocity", this.angularVelocity);
+		SmartDashboard.putNumber("Drivetrain/DriveAngularVelocity", this.yawAngularVelocity);
 		SmartDashboard.putNumber("Drivetrain/DriveHeadingAngle", yaw);
 		SmartDashboard.putNumber("Drivetrain/DriveAngleSetpoint", this.headingPID.getSetpoint());
 		SmartDashboard.putNumber("Drivetrain/shouldHeadingLock", this.shouldHeadingLock ? 1 : -1);
+	}
+
+	public static double updateAngularVelocityHandler(RobotMath.DiminishingAverageHandler handler, double newReading,
+			double oldReading) {
+
+		double relativeChange = RobotMath.relativeAngle(oldReading, newReading);
+
+		// Get the angular velocity, denoised with a diminishing average loop.
+		// The change in angle divided by the change in time since that last reading is
+		// a good approximation of the instantaneous velocity.
+		// spotless:off
+		double outputAngularVelocity = handler.feed(
+			relativeChange / RobotConstants.secondsPerTick
+		);
+
+		return outputAngularVelocity;
 	}
 
 	public void resetOdometry(Pose2d pose) {
@@ -270,32 +306,49 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
-	 * Getter for the angular velocity of the robot in degrees per second
+	 * Getter for the yaw angular velocity of the robot in degrees per second
 	 *
 	 * @return Angular velocity for the yaw in degrees per second
 	 */
-	public double getAngularVelocity() { // TODO: Remove
-		return this.angularVelocity;
+	public double getYawAngularVelocity() {
+		return this.yawAngularVelocity;
 	}
 
-	public boolean hasAngularVelocity() { // TODO: Remove
-		return !RobotMath.approximatelyZero(this.getAngularVelocity(), 0.5);
+	public boolean hasYawAngularVelocity() {
+		return !RobotMath.approximatelyZero(this.getYawAngularVelocity(), 0.5);
 	}
 
-	public void resetAngularVelocity() { // TODO: Remove
-		this.angularVelocityHandler.reset();
+	public void resetYawAngularVelocity() {
+		this.yawAngularVelocityHandler.reset();
 	}
 
 	public double getYaw() { // TODO: Remove Use Odometry instead
 		return this.imu.getYaw();
 	}
 
-	public double getRoll() {
-		return imu.getRoll();
+	/**
+	 * Getter for the pitch angular velocity of the robot in degrees per second
+	 *
+	 * @return Angular velocity for the pitch in degrees per second
+	 */
+	public double getPitchAngularVelocity() {
+		return this.pitchAngularVelocity;
+	}
+
+	public boolean hasPitchAngularVelocity() {
+		return !RobotMath.approximatelyZero(this.getPitchAngularVelocity(), 0.5);
+	}
+
+	public void resetPitchAngularVelocity() {
+		this.pitchAngularVelocityHandler.reset();
 	}
 
 	public double getPitch() {
 		return imu.getPitch();
+	}
+
+	public double getRoll() {
+		return imu.getRoll();
 	}
 
 	public boolean getIsTurning() {
