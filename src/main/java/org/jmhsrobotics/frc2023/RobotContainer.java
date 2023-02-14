@@ -8,6 +8,7 @@ import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
+import org.jmhsrobotics.frc2023.commands.TeleopArm;
 import org.jmhsrobotics.frc2023.commands.TurnDeltaAngle;
 import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
@@ -36,6 +37,7 @@ public class RobotContainer {
 	public final Drivetrain drivetrain = new Drivetrain();
 	private final ArmSubsystem armSubsystem = new ArmSubsystem();
 	private final GrabberSubsystem grabberSubsystem = new GrabberSubsystem();
+
 	// public final LEDSubsystem ledSubsystem = new LEDSubsystem();
 	// private final ArmSubsystem armSubsystem = new ArmSubsystem();
 	// private final GrabberSubsystem grabberSubsystem=new GrabberSubsystem();
@@ -54,6 +56,7 @@ public class RobotContainer {
 		// command that uses that subsystem is running
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
 		// armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem,
+		armSubsystem.setDefaultCommand(new TeleopArm(armSubsystem, driver::getLeftX, driver::getLeftY));
 		// driver.getHID()));
 
 		// spotless:off
