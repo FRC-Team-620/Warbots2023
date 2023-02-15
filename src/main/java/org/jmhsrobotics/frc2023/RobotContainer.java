@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.jmhsrobotics.frc2023.commands.TurnDeltaAngle;
 import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
+import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
 import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 
@@ -64,6 +65,7 @@ public class RobotContainer {
 		// armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem));
 		autoSelector = new AutoSelector(this);
 		SmartDashboard.putData(new AlignPeg(drivetrain));
+		SmartDashboard.putData(new CenterChargeStationAuto(drivetrain));
 	}
 
 	/**
