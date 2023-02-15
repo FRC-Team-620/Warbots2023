@@ -127,7 +127,7 @@ public final class Constants {
 		public static final double balanceCenterLimitFromInitialTip = 1;
 		public static final double onChargeStationAngle = 8;
 		public static final double balancedAngle = 1;
-		public static final double autoBalanceTimeoutSeconds = 10.0; // in seconds
+		public static final double autoBalanceTimeoutSeconds = 30.0; // in seconds
 	}
 
 	public class ArmConstants {
