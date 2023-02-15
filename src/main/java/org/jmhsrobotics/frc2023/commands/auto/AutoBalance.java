@@ -5,10 +5,10 @@ import edu.wpi.first.math.MathUtil;
 //import org.apache.commons.io.filefilter.FalseFileFilter;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-import org.jmhsrobotics.frc2023.Constants;
 import org.jmhsrobotics.frc2023.RobotMath;
 import org.jmhsrobotics.frc2023.Constants.AutoConstants;
 import org.jmhsrobotics.frc2023.RobotMath.DiminishingAverageHandler;
@@ -17,11 +17,15 @@ import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.LEDManager;
 
 public class AutoBalance extends CommandBase {
+
 	private Drivetrain drivetrain;
+
+	private Timer timeoutTimer;
+
 	// private double moveLimit;
 	private DiminishingAverageHandler robotPitchHandler;
 	// private DiminishingAverageHandler robotPitchAngVelHandler;
-	private PIDController pidController;
+	// private PIDController pidController;
 	private PIDController pitchPIDController;
 	private boolean isBalancing = false;
 	private boolean isTipping = false;
@@ -40,12 +44,15 @@ public class AutoBalance extends CommandBase {
 	public AutoBalance(Drivetrain drivetrain, boolean backwards, LEDSubsystem ledSubsystem) {
 		this.backwards = backwards;
 		this.drivetrain = drivetrain;
-		robotPitchHandler = new DiminishingAverageHandler(0.5);
+		this.timeoutTimer = new Timer();
+		this.robotPitchHandler = new DiminishingAverageHandler(0.5);
 		// robotPitchAngVelHandler = new DiminishingAverageHandler(0.5);
-		pidController = new PIDController(Constants.driveports.getBalancingPID().kp,
-				Constants.driveports.getBalancingPID().ki, Constants.driveports.getBalancingPID().kd);
-		pidController.setTolerance(0.02, 0.01);
-		pitchPIDController = new PIDController(0.008, 0.0002, 0.0);
+		// this.pidController = new
+		// PIDController(Constants.driveports.getBalancingPID().kp,
+		// Constants.driveports.getBalancingPID().ki,
+		// Constants.driveports.getBalancingPID().kd);
+		// this.pidController.setTolerance(0.02, 0.01);
+		this.pitchPIDController = new PIDController(0.008, 0.0002, 0.0);
 		addRequirements(drivetrain, ledSubsystem);
 	}
 
@@ -58,12 +65,15 @@ public class AutoBalance extends CommandBase {
 
 		this.isBalancing = false;
 
-		pidController.reset();
-		pitchPIDController.reset();
+		this.timeoutTimer.reset();
+		this.timeoutTimer.start();
 
-		System.out.println("KP: " + pidController.getP());
-		System.out.println("KI: " + pidController.getI());
-		System.out.println("KD: " + pidController.getD());
+		// pidController.reset();
+		this.pitchPIDController.reset();
+
+		// System.out.println("KP: " + pidController.getP());
+		// System.out.println("KI: " + pidController.getI());
+		// System.out.println("KD: " + pidController.getD());
 	}
 
 	@Override
@@ -138,8 +148,8 @@ public class AutoBalance extends CommandBase {
 					this.isTipping = true;
 					// this.atLimit = false;
 					// this.balancedPosition = this.drivetrain.getPose();
-					this.pidController.reset();
-					this.pidController.setSetpoint(0);
+					// this.pidController.reset();
+					// this.pidController.setSetpoint(0);
 				}
 
 				strip.setSolidColor(Color.kBlue);
@@ -271,8 +281,16 @@ public class AutoBalance extends CommandBase {
 	// }
 
 	@Override
+	public void end(boolean interrupted) {
+		this.timeoutTimer.stop();
+	}
+
+	@Override
 	public boolean isFinished() {
-		return this.isBalancing;
+		// spotless:off
+		return this.isBalancing 
+			|| this.timeoutTimer.hasElapsed(AutoConstants.autoBalanceTimeoutSeconds);
+		// spotless:on
 	}
 
 }
