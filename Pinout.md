@@ -1,4 +1,4 @@
-# CANIdTestBot
+# CANIdBabybot
 - powerDistributionCanId: 41
 - PneumaticsCanId: 42
 - leftFrontCANId: 4
@@ -6,7 +6,7 @@
 - leftRearCANId:  3
 - rightRearCANId:  1
 
-# CANIdMainBot
+# CANIdBot2020
 - powerDistributionCanId: 41
 - PneumaticsCanId: 42
 - leftFrontCANId:  4
