@@ -47,7 +47,7 @@ public class ArmSubsystem extends SubsystemBase {
 		armfeedforward = new ArmFeedforward(0, 0.46, 0.09); // Calculated from https://www.reca.lc/arm
 		// TODO: MAke sure to construct profiledExtensionPID and profiledExtensionPID!!!
 		profiledAnglePID = new ProfiledPIDController(0.05, 0, 0.02, new Constraints(10, 10));
-		profiledExtensionPID = new ProfiledPIDController(1, 0, 0, new Constraints(2, 1));
+		profiledExtensionPID = new ProfiledPIDController(0, 0.1, .5, new Constraints(10, 10));
 		// Create Mech2s display of Arm.
 		// the mechanism root node
 		Mechanism2d mech = new Mechanism2d(3, 3);
@@ -72,18 +72,21 @@ public class ArmSubsystem extends SubsystemBase {
 		armPitch.set((armfeedforward.calculate(profiledAnglePID.getSetpoint().position,
 				profiledAnglePID.getSetpoint().velocity) + profiledAnglePID.calculate(pitchEncoder.getPosition()))
 				/ 12); // TODO fix janky volts hack
+
 		armExtension.set(profiledExtensionPID.calculate(extensionEncoder.getPosition()));
 
 		// Update Mech2d Display
 		m_wrist.setAngle(pitchEncoder.getPosition() - 90);
 		m_elevator.setLength(extensionEncoder.getPosition());
 
+		SmartDashboard.putNumber("lengthpid/spot", profiledExtensionPID.calculate(extensionEncoder.getPosition()));
 		SmartDashboard.putNumber("Wristpid/position", pitchEncoder.getPosition());
 		SmartDashboard.putNumber("lengthpid/position", extensionEncoder.getPosition());
 		SmartDashboard.putNumber("Wristpid/setpoint", profiledAnglePID.getSetpoint().position);
 		SmartDashboard.putNumber("lengthpid/output", armExtension.get());
 		SmartDashboard.putNumber("Wristpid/output", armPitch.get());
 		SmartDashboard.putNumber("lengthpid/setpoint", profiledExtensionPID.getSetpoint().position);
+
 	}
 
 	// todo 1.make ports in own file
@@ -93,6 +96,7 @@ public class ArmSubsystem extends SubsystemBase {
 		targetAngleDeg = MathUtil.clamp(targetAngleDeg, ArmConstants.minArmAngleDegrees,
 				ArmConstants.maxArmAngleDegrees);
 		profiledAnglePID.setGoal(new State(targetAngleDeg, 0));
+		SmartDashboard.putNumber("Wristpid/targetAngleDeg", targetAngleDeg);
 
 		if (isStopped) {
 			profiledExtensionPID.setGoal(new State(extensionEncoder.getPosition(), 0));
@@ -108,6 +112,7 @@ public class ArmSubsystem extends SubsystemBase {
 		targetDistanceMeters = MathUtil.clamp(targetDistanceMeters, 0,
 				ArmConstants.maxExtensionLengthMeters - ArmConstants.minExtensionLengthMeters);
 		profiledExtensionPID.setGoal(new State(targetDistanceMeters, 0));
+		SmartDashboard.putNumber("lengthpid/targetLength", targetDistanceMeters);
 
 		if (isStopped) {
 			profiledAnglePID.setGoal(new State(pitchEncoder.getPosition(), 0));

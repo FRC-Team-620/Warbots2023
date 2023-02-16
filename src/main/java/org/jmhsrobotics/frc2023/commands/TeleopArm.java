@@ -2,6 +2,8 @@ package org.jmhsrobotics.frc2023.commands;
 
 import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import java.util.function.Supplier;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class TeleopArm extends CommandBase {
@@ -9,8 +11,8 @@ public class TeleopArm extends CommandBase {
 	private ArmSubsystem armSubsystem;
 	private Supplier<Double> pitchSpeed;
 	private Supplier<Double> linearSpeed;
-	private final double maxPitchSpeedDegreesSec = 10;
-	private final double maxExtensionLengthMeters = 10;
+	private final double maxPitchSpeedDegreesSec = 15;
+	private final double maxExtensionLengthMeters = 1;
 
 	// Constructor
 	// Takes in a angle for the arm pitch and a distance for the linear joint
@@ -39,6 +41,8 @@ public class TeleopArm extends CommandBase {
 
 		// The arm is currenty set at 90 dregrees
 		// armSubsystem.getArmPitch()
+		SmartDashboard.putNumber("arm_info/driverDemandedSpeed", driverDemandedSpeed);
+
 		armSubsystem.setArmPitch(armSubsystem.getArmPitch() + (driverDemandedSpeed * maxPitchSpeedDegreesSec));
 		// 100
 		// 100
@@ -51,12 +55,10 @@ public class TeleopArm extends CommandBase {
 		// that it auto runs when everything starts up
 		// Does that make sense?
 		// armSubsystem.setDefaultCommand(new TelopArm());
+		SmartDashboard.putNumber("arm_info/driverDemandedExtension", driverDemandedExtension);
 
 		armSubsystem
 				.setArmExtension(armSubsystem.getArmLength() + (driverDemandedExtension * maxExtensionLengthMeters));
-		// armSubsystem.setArmPitch(0); // ABSOLUTE VALUES
-		// armSubsystem.getArmLength() // Get real time sensor values about the position
-		// of arm or length
 
 		// This needs to be done inside of the Robot container. otherwise you would need
 		// to first run the command to set it as the default.
