@@ -120,8 +120,8 @@ public class Drivetrain extends SubsystemBase {
 		 * sort of running average is used to make sure that any one wrong reading does
 		 * not throw off the stored angular velocity too much.
 		 */
-		this.yawAngularVelocityHandler = new RobotMath.DiminishingAverageHandler(2.0);
-		this.pitchAngularVelocityHandler = new RobotMath.DiminishingAverageHandler(2.0);
+		this.yawAngularVelocityHandler = new RobotMath.DiminishingAverageHandler(0.5);
+		this.pitchAngularVelocityHandler = new RobotMath.DiminishingAverageHandler(0.5);
 
 		// Setup differential drive with left front and right front motors as the
 		// parameters for the new DifferentialDrive

@@ -63,6 +63,8 @@ public class AutoBalance extends CommandBase {
 		this.hasTipped = false;
 		this.isTipping = false;
 
+		this.hasBeenOnChargeStation = false;
+
 		this.isBalancing = false;
 
 		this.timeoutTimer.reset();
@@ -106,14 +108,14 @@ public class AutoBalance extends CommandBase {
 
 		// spotless:off
 
-		// double pitchAngVel = this.robotPitchAngVelHandler.feed(
-		// 	(drivetrain.getPitch() - this.robotPitchHandler.get()) 
-		// 		/ RobotConstants.secondsPerTick
-		// );
-		
-		double pitchAngVel = this.drivetrain.getPitchAngularVelocity();
+        // double pitchAngVel = this.robotPitchAngVelHandler.feed(
+        //  (drivetrain.getPitch() - this.robotPitchHandler.get()) 
+        //      / RobotConstants.secondsPerTick
+        // );
+        
+        double pitchAngVel = this.drivetrain.getPitchAngularVelocity();
 
-		// spotless:on
+        // spotless:on
 
 		double pitch = this.robotPitchHandler.feed(drivetrain.getPitch());
 
@@ -123,11 +125,11 @@ public class AutoBalance extends CommandBase {
 			strip.setSolidColor(Color.kWhite);
 
 			// spotless:off
-			this.drivetrain.setCurvatureDrive(
-				(backwards ? -1.0 : 1.0) * AutoConstants.climbChargeStationSpeed,
-				0, false
-			);
-			// spotless:on
+            this.drivetrain.setCurvatureDrive(
+                (backwards ? -1.0 : 1.0) * AutoConstants.climbChargeStationSpeed,
+                0, false
+            );
+            // spotless:on
 
 			// System.out.println(
 			// backwards ? -1 * AutoConstants.climbChargeStationSpeed : 1 *
@@ -141,7 +143,7 @@ public class AutoBalance extends CommandBase {
 
 			// IF THE ROBOT IS FALLING FORWARD OR BACKWARD (The loading station is tipping
 			// over!)
-			if (Math.abs(pitchAngVel) > 50) {
+			if (Math.abs(pitchAngVel) > 20) {
 
 				if (!this.isTipping) {
 					this.hasTipped = true;
@@ -155,8 +157,7 @@ public class AutoBalance extends CommandBase {
 				strip.setSolidColor(Color.kBlue);
 
 				// Drive toward the center
-				this.drivetrain.setCurvatureDrive(-Math.signum(pitchAngVel) * AutoConstants.balanceCreepSpeed, 0,
-						false);
+				this.drivetrain.setCurvatureDrive(-Math.signum(pitchAngVel) * 0.05, 0, false);
 
 			} else {
 
@@ -182,76 +183,76 @@ public class AutoBalance extends CommandBase {
 				// i.e. if we are near-ish to the center of balance.
 				if (this.hasTipped) {
 					// spotless:off
-					// if(this.hasReachedBalancedSetpoint || this.pidController.atSetpoint()) {
-					// 	this.hasReachedBalancedSetpoint = true;
-					// 	pidSpeedOutput = this.pitchPIDController.calculate(
-					// 		pitch
-					// 	);
-					// 	this.strip.setSolidColor(Color.kOrange);
-					// }
+                    // if(this.hasReachedBalancedSetpoint || this.pidController.atSetpoint()) {
+                    //  this.hasReachedBalancedSetpoint = true;
+                    //  pidSpeedOutput = this.pitchPIDController.calculate(
+                    //      pitch
+                    //  );
+                    //  this.strip.setSolidColor(Color.kOrange);
+                    // }
 
-					double pidSpeedOutput = this.pitchPIDController.calculate(
-						pitch
-					);
+                    double pidSpeedOutput = this.pitchPIDController.calculate(
+                        pitch
+                    );
 
-					this.strip.setSolidColor(Color.kOrange);
+                    this.strip.setSolidColor(Color.kOrange);
 
-					// } else {
-					// 	pidSpeedOutput = this.pidController.calculate(
-					// 		this.getRelativeDistance(this.balancedPosition)
-					// 	);
-					// }
+                    // } else {
+                    //  pidSpeedOutput = this.pidController.calculate(
+                    //      this.getRelativeDistance(this.balancedPosition)
+                    //  );
+                    // }
 
-					double speed = MathUtil.clamp(pidSpeedOutput, -0.07, 0.07);
+                    double speed = MathUtil.clamp(pidSpeedOutput, -0.07, 0.07);
 
-					System.out.println("SPEED: " + speed);
+                    System.out.println("SPEED: " + speed);
 
-					this.drivetrain.setCurvatureDrive(
-						speed,
-						0, 
-						false
-					);
+                    this.drivetrain.setCurvatureDrive(
+                        speed,
+                        0, 
+                        false
+                    );
 
-				} else {
+                } else {
 
-					// THE ROBOT IS ON THE CHARGE STATION WITHOUT HAVING BALANCED YET
-					// The robot is creeping up the station for the first time
+                    // THE ROBOT IS ON THE CHARGE STATION WITHOUT HAVING BALANCED YET
+                    // The robot is creeping up the station for the first time
 
-					this.drivetrain.setCurvatureDrive(
-						-AutoConstants.balanceCreepSpeed, 
-						0, 
-						false
-					);
+                    this.drivetrain.setCurvatureDrive(
+                        -0.075, 
+                        0, 
+                        false
+                    );
 
-				}
+                }
 
-				/*
+                /*
 
-				if (pitch < 0 && getRelativeDistance(chargeCenterPosition) > moveLimit) {
-					strip.setSolidColor(Color.kRed);
-					this.drivetrain.setCurvatureDrive(
-							hasBalanced ? AutoConstants.fineAdjustSpeed : AutoConstants.balanceCreepSpeed, 0, false);
-				} else if (pitch > 0 && getRelativeDistance(chargeCenterPosition) < moveLimit) {
-					this.drivetrain.setCurvatureDrive(
-							-1 * (hasBalanced ? AutoConstants.fineAdjustSpeed : AutoConstants.balanceCreepSpeed), 0,
-							false);
-				} else {
-					if (!atLimit) {
-						atLimit = true;
-						limitPosition = this.drivetrain.getPose();
-						this.pidController.setSetpoint(0);
-						this.pidController.reset();
-					}
-					strip.setSolidColor(Color.kGreen);
-					this.drivetrain.setCurvatureDrive(this.pidController.calculate(getRelativeDistance(limitPosition)),
-							0, false);
-					System.out.println("REL D: " + getRelativeDistance(limitPosition));
-					System.out.println("OUTPT: " + this.pidController.calculate(getRelativeDistance(limitPosition)));
-				}
+                if (pitch < 0 && getRelativeDistance(chargeCenterPosition) > moveLimit) {
+                    strip.setSolidColor(Color.kRed);
+                    this.drivetrain.setCurvatureDrive(
+                            hasBalanced ? AutoConstants.fineAdjustSpeed : AutoConstants.balanceCreepSpeed, 0, false);
+                } else if (pitch > 0 && getRelativeDistance(chargeCenterPosition) < moveLimit) {
+                    this.drivetrain.setCurvatureDrive(
+                            -1 * (hasBalanced ? AutoConstants.fineAdjustSpeed : AutoConstants.balanceCreepSpeed), 0,
+                            false);
+                } else {
+                    if (!atLimit) {
+                        atLimit = true;
+                        limitPosition = this.drivetrain.getPose();
+                        this.pidController.setSetpoint(0);
+                        this.pidController.reset();
+                    }
+                    strip.setSolidColor(Color.kGreen);
+                    this.drivetrain.setCurvatureDrive(this.pidController.calculate(getRelativeDistance(limitPosition)),
+                            0, false);
+                    System.out.println("REL D: " + getRelativeDistance(limitPosition));
+                    System.out.println("OUTPT: " + this.pidController.calculate(getRelativeDistance(limitPosition)));
+                }
 
-				*/
+                */
 
-				// spotless:on
+                // spotless:on
 			}
 		}
 
@@ -288,9 +289,9 @@ public class AutoBalance extends CommandBase {
 	@Override
 	public boolean isFinished() {
 		// spotless:off
-		return this.isBalancing 
+        return this.isBalancing 
 			|| this.timeoutTimer.hasElapsed(AutoConstants.autoBalanceTimeoutSeconds);
-		// spotless:on
+        // spotless:on
 	}
 
 }
