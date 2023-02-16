@@ -143,7 +143,7 @@ public class AutoBalance extends CommandBase {
 
 			// IF THE ROBOT IS FALLING FORWARD OR BACKWARD (The loading station is tipping
 			// over!)
-			if (Math.abs(pitchAngVel) > 20) {
+			if (Math.abs(pitchAngVel) > 15) {
 
 				if (!this.isTipping) {
 					this.hasTipped = true;
@@ -157,7 +157,7 @@ public class AutoBalance extends CommandBase {
 				strip.setSolidColor(Color.kBlue);
 
 				// Drive toward the center
-				this.drivetrain.setCurvatureDrive(-Math.signum(pitchAngVel) * 0.05, 0, false);
+				this.drivetrain.setCurvatureDrive(-Math.signum(pitchAngVel) * 0.042, 0, false);
 
 			} else {
 

@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.jmhsrobotics.frc2023.commands.TurnDeltaAngle;
 import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
+import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
 import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 
@@ -87,7 +88,7 @@ public class RobotContainer {
 
 		// driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
 		driver.y().onTrue(new TurnDeltaAngle(drivetrain, 180));
-
+		driver.a().onTrue(new CenterChargeStationAuto(drivetrain, ledSubsystem));
 		driver.x().onTrue(new AutoBalance(drivetrain, true, ledSubsystem));
 		driver.b().onTrue(new AlignPeg(drivetrain));
 	}
