@@ -58,7 +58,8 @@ public class ArmSubsystem extends SubsystemBase {
 				.append(new MechanismLigament2d("wrist", Units.inchesToMeters(25), 0, 6, new Color8Bit(Color.kPurple)));
 		m_elevator = m_wrist.append(new MechanismLigament2d("elevator", ArmConstants.minExtensionLengthMeters, 0, 6,
 				new Color8Bit(Color.kGray)));
-
+		armPitch.setSmartCurrentLimit(40);
+		armExtension.setSmartCurrentLimit(40);
 		SmartDashboard.putData("arm_info", mech);
 		SmartDashboard.putData("Wristpid", profiledAnglePID);
 		SmartDashboard.putData("lengthpid", profiledExtensionPID);

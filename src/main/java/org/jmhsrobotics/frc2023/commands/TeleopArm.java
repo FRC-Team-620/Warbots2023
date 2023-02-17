@@ -61,7 +61,7 @@ public class TeleopArm extends CommandBase {
 		if (inputArmExtension != 0) {
 			armSubsystem.setArmExtension(armSubsystem.getArmLength() + (inputArmExtension * maxExtensionSpeedMPS));
 		}
-		
+
 		double inputArmPitch = MathUtil.applyDeadband(pitchSpeed.get(), 0.2);
 		if (inputArmPitch != 0) {
 			armSubsystem.setArmPitch(armSubsystem.getArmPitch() + (driverDemandedSpeed * maxPitchSpeedDegreesSec));
