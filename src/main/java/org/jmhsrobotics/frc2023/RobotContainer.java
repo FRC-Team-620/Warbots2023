@@ -6,6 +6,7 @@ package org.jmhsrobotics.frc2023;
 
 import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
+import org.jmhsrobotics.frc2023.commands.CommandArm;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
 import org.jmhsrobotics.frc2023.commands.TeleopArm;
@@ -21,6 +22,7 @@ import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -49,7 +51,7 @@ public class RobotContainer {
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
 	public RobotContainer() {
-		SmartDashboard.putData("Scheduler/Drivetrain", drivetrain);
+		SmartDashboard.putData(CommandScheduler.getInstance());
 		// Configure the trigger bindings
 		configureBindings();
 		// Setting up default command which is a command that runs every time no other
@@ -95,6 +97,10 @@ public class RobotContainer {
 
 		driver.x().onTrue(new AutoBalance(drivetrain, true));
 		driver.b().onTrue(new AlignPeg(drivetrain));
+
+		driver.povLeft().onTrue(new CommandArm(armSubsystem, .5, 0));
+		driver.povUp().onTrue(new CommandArm(armSubsystem, 1, 45));
+		driver.povDown().onTrue(new CommandArm(armSubsystem, 0, -45));
 	}
 
 	/**
