@@ -46,16 +46,18 @@ public class ArmSubsystem extends SubsystemBase {
 
 		armfeedforward = new ArmFeedforward(0, 0.46, 0.09); // Calculated from https://www.reca.lc/arm
 		// TODO: MAke sure to construct profiledExtensionPID and profiledExtensionPID!!!
-		profiledAnglePID = new ProfiledPIDController(0.05, 0, 0.02, new Constraints(10, 10));
-		profiledExtensionPID = new ProfiledPIDController(0, 0.1, .5, new Constraints(10, 10));
+		profiledAnglePID = new ProfiledPIDController(0.05, 0.01, 0.02, new Constraints(90, 360));
+		profiledExtensionPID = new ProfiledPIDController(25, 0, 1, new Constraints(1, 0));
 		// Create Mech2s display of Arm.
 		// the mechanism root node
 		Mechanism2d mech = new Mechanism2d(3, 3);
 		MechanismRoot2d root = mech.getRoot("climber", 1, 0);
 		var m_support = root.append(
 				new MechanismLigament2d("support", ArmConstants.armHeightMeters, 90, 6, new Color8Bit(Color.kRed)));
-		m_wrist = m_support.append(new MechanismLigament2d("wrist", 0.0, 0, 6, new Color8Bit(Color.kPurple)));
-		m_elevator = m_wrist.append(new MechanismLigament2d("elevator", ArmConstants.minExtensionLengthMeters, 0));
+		m_wrist = m_support
+				.append(new MechanismLigament2d("wrist", Units.inchesToMeters(25), 0, 6, new Color8Bit(Color.kPurple)));
+		m_elevator = m_wrist.append(new MechanismLigament2d("elevator", ArmConstants.minExtensionLengthMeters, 0, 6,
+				new Color8Bit(Color.kGray)));
 
 		SmartDashboard.putData("arm_info", mech);
 		SmartDashboard.putData("Wristpid", profiledAnglePID);
@@ -73,8 +75,8 @@ public class ArmSubsystem extends SubsystemBase {
 				profiledAnglePID.getSetpoint().velocity) + profiledAnglePID.calculate(pitchEncoder.getPosition()))
 				/ 12); // TODO fix janky volts hack
 
-		armExtension.set(profiledExtensionPID.calculate(extensionEncoder.getPosition()));
-
+		armExtension.set(profiledExtensionPID.calculate(extensionEncoder.getPosition()) / 12.0);
+		// armExtension.set(profiledExtensionPID.getGoal().position);
 		// Update Mech2d Display
 		m_wrist.setAngle(pitchEncoder.getPosition() - 90);
 		m_elevator.setLength(extensionEncoder.getPosition());
@@ -109,8 +111,9 @@ public class ArmSubsystem extends SubsystemBase {
 
 	// Sets the motor controlling arm length
 	public void setArmExtension(double targetDistanceMeters) {
-		targetDistanceMeters = MathUtil.clamp(targetDistanceMeters, 0,
-				ArmConstants.maxExtensionLengthMeters - ArmConstants.minExtensionLengthMeters);
+		// targetDistanceMeters = MathUtil.clamp(targetDistanceMeters, 0,
+		// ArmConstants.maxExtensionLengthMeters -
+		// ArmConstants.minExtensionLengthMeters);
 		profiledExtensionPID.setGoal(new State(targetDistanceMeters, 0));
 		SmartDashboard.putNumber("lengthpid/targetLength", targetDistanceMeters);
 
@@ -166,7 +169,7 @@ public class ArmSubsystem extends SubsystemBase {
 		armsim = new SingleJointedArmSim(DCMotor.getNEO(1), ArmConstants.armPitchGearRatio, moi,
 				ArmConstants.armLengthMeters, Units.degreesToRadians(ArmConstants.minArmAngleDegrees),
 				Units.degreesToRadians(ArmConstants.maxArmAngleDegrees), ArmConstants.armMasskg, true);
-		prismaticSim = new ElevatorSim(DCMotor.getNEO(1), 10, 1, Units.inchesToMeters(3),
+		prismaticSim = new ElevatorSim(DCMotor.getNEO(1), 10, 10, Units.inchesToMeters(3),
 				ArmConstants.minExtensionLengthMeters, ArmConstants.maxExtensionLengthMeters, false);
 		pitchencsim = new SparkMaxAnalogSensorSimWrapper(pitchEncoder);
 		extensionencsim = new SparkMaxAnalogSensorSimWrapper(extensionEncoder);
@@ -192,7 +195,7 @@ public class ArmSubsystem extends SubsystemBase {
 		pitchencsim.setVelocity((float) Units.radiansToDegrees(armsim.getVelocityRadPerSec())); // TODO should this be
 																								// in rpm?
 
-		extensionencsim.setPosition((float) prismaticSim.getPositionMeters());
+		extensionencsim.setPosition((float) (prismaticSim.getPositionMeters() - ArmConstants.minExtensionLengthMeters));
 		extensionencsim.setVelocity((float) prismaticSim.getVelocityMetersPerSecond()); // TODO should this be in rpm?
 
 	}

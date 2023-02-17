@@ -1,8 +1,10 @@
 package org.jmhsrobotics.frc2023.commands;
 
 import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
+
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -11,8 +13,8 @@ public class TeleopArm extends CommandBase {
 	private ArmSubsystem armSubsystem;
 	private Supplier<Double> pitchSpeed;
 	private Supplier<Double> linearSpeed;
-	private final double maxPitchSpeedDegreesSec = 15;
-	private final double maxExtensionLengthMeters = 1;
+	private final double maxPitchSpeedDegreesSec = 45;
+	private final double maxExtensionSpeedMPS = 0.25;
 
 	// Constructor
 	// Takes in a angle for the arm pitch and a distance for the linear joint
@@ -43,7 +45,6 @@ public class TeleopArm extends CommandBase {
 		// armSubsystem.getArmPitch()
 		SmartDashboard.putNumber("arm_info/driverDemandedSpeed", driverDemandedSpeed);
 
-		armSubsystem.setArmPitch(armSubsystem.getArmPitch() + (driverDemandedSpeed * maxPitchSpeedDegreesSec));
 		// 100
 		// 100
 		// armSubsystem.setArmExtension(armspeed); // ABSOLUTE VALUES
@@ -56,9 +57,16 @@ public class TeleopArm extends CommandBase {
 		// Does that make sense?
 		// armSubsystem.setDefaultCommand(new TelopArm());
 		SmartDashboard.putNumber("arm_info/driverDemandedExtension", driverDemandedExtension);
-
-		armSubsystem
-				.setArmExtension(armSubsystem.getArmLength() + (driverDemandedExtension * maxExtensionLengthMeters));
+		double inputArmExtension = MathUtil.applyDeadband(linearSpeed.get(), 0.2);
+		if (inputArmExtension != 0) {
+			armSubsystem.setArmExtension(armSubsystem.getArmLength() + (inputArmExtension * maxExtensionSpeedMPS));
+		}
+		
+		double inputArmPitch = MathUtil.applyDeadband(pitchSpeed.get(), 0.2);
+		if (inputArmPitch != 0) {
+			armSubsystem.setArmPitch(armSubsystem.getArmPitch() + (driverDemandedSpeed * maxPitchSpeedDegreesSec));
+		}
+		// armSubsystem.setArmExtension(linearSpeed.get());
 
 		// This needs to be done inside of the Robot container. otherwise you would need
 		// to first run the command to set it as the default.
