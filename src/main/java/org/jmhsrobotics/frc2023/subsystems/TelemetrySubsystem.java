@@ -22,7 +22,7 @@ public class TelemetrySubsystem extends SubsystemBase {
 	}
 
 	private IIMUWrapper imu = Constants.driveports.getIMU();
-	private IMUState imuState;
+	private IMUState imuState = new IMUState();
 	private Rotation2d imuRotation2d;
 
 	private DiminishingAverageHandler yawAngularVelocityHandler;
