@@ -22,23 +22,24 @@ public class TelemetrySubsystem extends SubsystemBase {
 		/** angular (rotational) velocity */
 		public double rollVelocity;
 
-        public IMUState() { }
+		public IMUState() {
+		}
 
-        /**
-         * Copy constructor.
-         * 
-         * @param other
-         *            The IMUState to be copied from.
-         */
-        public IMUState(IMUState other) {
+		/**
+		 * Copy constructor.
+		 *
+		 * @param other
+		 *            The IMUState to be copied from.
+		 */
+		public IMUState(IMUState other) {
 
-            this.yaw = other.yaw;
-            this.pitch = other.pitch;
-            this.roll = other.roll;
-            this.yawVelocity = other.yawVelocity;
-            this.pitchVelocity = other.pitchVelocity;
-            this.rollVelocity = other.rollVelocity;
-        }
+			this.yaw = other.yaw;
+			this.pitch = other.pitch;
+			this.roll = other.roll;
+			this.yawVelocity = other.yawVelocity;
+			this.pitchVelocity = other.pitchVelocity;
+			this.rollVelocity = other.rollVelocity;
+		}
 	}
 
 	private IIMUWrapper imu = Constants.driveports.getIMU();
@@ -67,9 +68,9 @@ public class TelemetrySubsystem extends SubsystemBase {
 		this.imuState.pitch = this.imu.getPitch();
 		this.imuState.roll = this.imu.getRoll();
 
-        double relativeChange;
-        
-        // spotless:off
+		double relativeChange;
+
+		// spotless:off
         relativeChange = RobotMath.relativeAngle(previousState.yaw, this.imuState.yaw);
 		this.imuState.yawVelocity = this.yawAngularVelocityHandler.feed(
             relativeChange / Constants.RobotConstants.secondsPerTick
