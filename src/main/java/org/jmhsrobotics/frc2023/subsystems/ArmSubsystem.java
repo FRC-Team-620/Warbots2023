@@ -59,7 +59,7 @@ public class ArmSubsystem extends SubsystemBase {
 		m_elevator = m_wrist.append(new MechanismLigament2d("elevator", ArmConstants.minExtensionLengthMeters, 0, 6,
 				new Color8Bit(Color.kGray)));
 		armPitch.setSmartCurrentLimit(40);
-		armExtension.setSmartCurrentLimit(40);
+		armExtension.setSmartCurrentLimit(15);
 		SmartDashboard.putData("arm_info", mech);
 		SmartDashboard.putData("Wristpid", profiledAnglePID);
 		SmartDashboard.putData("lengthpid", profiledExtensionPID);
@@ -170,7 +170,7 @@ public class ArmSubsystem extends SubsystemBase {
 		armsim = new SingleJointedArmSim(DCMotor.getNEO(1), ArmConstants.armPitchGearRatio, moi,
 				ArmConstants.armLengthMeters, Units.degreesToRadians(ArmConstants.minArmAngleDegrees),
 				Units.degreesToRadians(ArmConstants.maxArmAngleDegrees), ArmConstants.armMasskg, true);
-		prismaticSim = new ElevatorSim(DCMotor.getNEO(1), 10, 10, Units.inchesToMeters(3),
+		prismaticSim = new ElevatorSim(DCMotor.getNeo550(1), 10, 10, Units.inchesToMeters(3),
 				ArmConstants.minExtensionLengthMeters, ArmConstants.maxExtensionLengthMeters, false);
 		pitchencsim = new SparkMaxAnalogSensorSimWrapper(pitchEncoder);
 		extensionencsim = new SparkMaxAnalogSensorSimWrapper(extensionEncoder);
