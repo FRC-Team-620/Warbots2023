@@ -169,7 +169,7 @@ public class ArmSubsystem extends SubsystemBase {
 		double moi = SingleJointedArmSim.estimateMOI(ArmConstants.minExtensionLengthMeters, ArmConstants.armMasskg);
 		armsim = new SingleJointedArmSim(DCMotor.getNEO(1), ArmConstants.armPitchGearRatio, moi,
 				ArmConstants.armLengthMeters, Units.degreesToRadians(ArmConstants.minArmAngleDegrees),
-				Units.degreesToRadians(ArmConstants.maxArmAngleDegrees), ArmConstants.armMasskg, true);
+				Units.degreesToRadians(ArmConstants.maxArmAngleDegrees), true);
 		prismaticSim = new ElevatorSim(DCMotor.getNeo550(1), 10, 10, Units.inchesToMeters(3),
 				ArmConstants.minExtensionLengthMeters, ArmConstants.maxExtensionLengthMeters, false);
 		pitchencsim = new SparkMaxAnalogSensorSimWrapper(pitchEncoder);
