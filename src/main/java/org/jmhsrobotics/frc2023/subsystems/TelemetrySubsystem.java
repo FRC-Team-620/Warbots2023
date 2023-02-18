@@ -1,6 +1,7 @@
 package org.jmhsrobotics.frc2023.subsystems;
 
 import org.jmhsrobotics.frc2023.Constants;
+import org.jmhsrobotics.frc2023.RobotMath;
 import org.jmhsrobotics.frc2023.RobotMath.DiminishingAverageHandler;
 import org.jmhsrobotics.frc2023.util.IIMUWrapper;
 
@@ -21,24 +22,23 @@ public class TelemetrySubsystem extends SubsystemBase {
 		/** angular (rotational) velocity */
 		public double rollVelocity;
 
-		public IMUState() {
-		}
+        public IMUState() { }
 
-		/**
-		 * Copy constructor.
-		 *
-		 * @param other
-		 *            The IMUState to be copied from.
-		 */
-		public IMUState(IMUState other) {
+        /**
+         * Copy constructor.
+         * 
+         * @param other
+         *            The IMUState to be copied from.
+         */
+        public IMUState(IMUState other) {
 
-			this.yaw = other.yaw;
-			this.pitch = other.pitch;
-			this.roll = other.roll;
-			this.yawVelocity = other.yawVelocity;
-			this.pitchVelocity = other.pitchVelocity;
-			this.rollVelocity = other.rollVelocity;
-		}
+            this.yaw = other.yaw;
+            this.pitch = other.pitch;
+            this.roll = other.roll;
+            this.yawVelocity = other.yawVelocity;
+            this.pitchVelocity = other.pitchVelocity;
+            this.rollVelocity = other.rollVelocity;
+        }
 	}
 
 	private IIMUWrapper imu = Constants.driveports.getIMU();
@@ -67,17 +67,22 @@ public class TelemetrySubsystem extends SubsystemBase {
 		this.imuState.pitch = this.imu.getPitch();
 		this.imuState.roll = this.imu.getRoll();
 
-		// spotless:off
+        double relativeChange;
+        
+        // spotless:off
+        relativeChange = RobotMath.relativeAngle(previousState.yaw, this.imuState.yaw);
 		this.imuState.yawVelocity = this.yawAngularVelocityHandler.feed(
-            (this.imuState.yaw - previousState.yaw) / Constants.RobotConstants.secondsPerTick
+            relativeChange / Constants.RobotConstants.secondsPerTick
         );
 
+        relativeChange = RobotMath.relativeAngle(previousState.pitch, this.imuState.pitch);
 		this.imuState.pitchVelocity = this.pitchAngularVelocityHandler.feed(
-            (this.imuState.pitch - previousState.pitch) / Constants.RobotConstants.secondsPerTick
+            relativeChange / Constants.RobotConstants.secondsPerTick
         );
 
+        relativeChange = RobotMath.relativeAngle(previousState.roll, this.imuState.roll);
 		this.imuState.rollVelocity = this.rollAngularVelocityHandler.feed(
-            (this.imuState.roll - previousState.roll) / Constants.RobotConstants.secondsPerTick
+            relativeChange / Constants.RobotConstants.secondsPerTick
         );
         // spotless:on
 	}
