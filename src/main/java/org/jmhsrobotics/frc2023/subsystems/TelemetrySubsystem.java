@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class TelemetrySubsystem extends SubsystemBase {
 
 	public static class IMUState {
+
 		public double yaw;
 		public double pitch;
 		public double roll;
@@ -19,6 +20,25 @@ public class TelemetrySubsystem extends SubsystemBase {
 		public double pitchVelocity;
 		/** angular (rotational) velocity */
 		public double rollVelocity;
+
+		public IMUState() {
+		}
+
+		/**
+		 * Copy constructor.
+		 *
+		 * @param other
+		 *            The IMUState to be copied from.
+		 */
+		public IMUState(IMUState other) {
+
+			this.yaw = other.yaw;
+			this.pitch = other.pitch;
+			this.roll = other.roll;
+			this.yawVelocity = other.yawVelocity;
+			this.pitchVelocity = other.pitchVelocity;
+			this.rollVelocity = other.rollVelocity;
+		}
 	}
 
 	private IIMUWrapper imu = Constants.driveports.getIMU();
@@ -41,7 +61,7 @@ public class TelemetrySubsystem extends SubsystemBase {
 
 		this.imuRotation2d = this.imu.getRotation2d();
 
-		IMUState previousState = this.imuState;
+		IMUState previousState = new IMUState(this.imuState);
 
 		this.imuState.yaw = this.imu.getYaw();
 		this.imuState.pitch = this.imu.getPitch();
@@ -63,7 +83,7 @@ public class TelemetrySubsystem extends SubsystemBase {
 	}
 
 	public IMUState getIMUState() {
-		return this.imuState;
+		return new IMUState(this.imuState);
 	}
 
 	public Rotation2d getRotation2d() {
