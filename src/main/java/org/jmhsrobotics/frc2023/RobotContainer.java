@@ -5,11 +5,15 @@
 package org.jmhsrobotics.frc2023;
 
 import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
+import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
+import org.jmhsrobotics.frc2023.commands.GrabberCommand;
+import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 // import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
+import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
@@ -35,8 +39,13 @@ import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	private final CommandXboxController driver = new CommandXboxController(OperatorConstants.driverControllerPort);
+	private final CommandXboxController operator = new CommandXboxController(OperatorConstants.operatorControllerPort);
+
+
 	public final Drivetrain drivetrain = new Drivetrain();
 	public final LEDSubsystem ledSubsystem = new LEDSubsystem();
+	public final GrabberSubsystem grabberSubsystem = new GrabberSubsystem();
+	public final ArmSubsystem armSubsystem = new ArmSubsystem();
 	// private final ArmSubsystem armSubsystem = new ArmSubsystem();
 	// private final GrabberSubsystem grabberSubsystem=new GrabberSubsystem();
 	// private final VisionPlaceholder visionPlaceholder = new
@@ -53,6 +62,10 @@ public class RobotContainer {
 		// Setting up default command which is a command that runs every time no other
 		// command that uses that subsystem is running
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
+		grabberSubsystem.setDefaultCommand(new GrabberCommand(grabberSubsystem, operator));
+		
+		// To be used for the armSubsystem (distance and angle parameters will likely changes)
+		//armSubsystem.setDefaultCommand(new CommandArm(armSubsystem, distance, angle, operator));
 
 		// spotless:off
 		// ledSubsystem.setDefaultCommand(new LEDIdleCommand(
