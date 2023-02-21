@@ -132,8 +132,8 @@ public final class Constants {
 	public static class ArmConstants {
 		public static final double armLengthMeters = 1; // TODO; find real length and height
 		public static final double armHeightMeters = 1;
-		public static final double minExtensionLengthMeters = Units.inchesToMeters(25);
-		public static final double maxExtensionLengthMeters = Units.inchesToMeters(50);
+		public static final double minExtensionLengthMeters = Units.inchesToMeters(22);
+		public static final double maxExtensionLengthMeters = Units.inchesToMeters(45);
 		public static final double armPitchGearRatio = 270;
 		public static final double armMasskg = 7;
 		public static final double minArmAngleDegrees = -360;
