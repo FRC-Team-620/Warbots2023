@@ -63,9 +63,7 @@ public class RobotContainer {
 		// command that uses that subsystem is running
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
 		grabberSubsystem.setDefaultCommand(new GrabberCommand(grabberSubsystem, operator));
-		
-		// To be used for the armSubsystem (distance and angle parameters will likely changes)
-		//armSubsystem.setDefaultCommand(new CommandArm(armSubsystem, distance, angle, operator));
+		armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem, operator));
 
 		// spotless:off
 		// ledSubsystem.setDefaultCommand(new LEDIdleCommand(
