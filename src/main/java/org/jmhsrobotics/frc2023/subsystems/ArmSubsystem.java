@@ -3,6 +3,8 @@ package org.jmhsrobotics.frc2023.subsystems;
 import com.revrobotics.CANSparkMax;
 
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAnalogSensor.Mode;
+
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -32,4 +34,22 @@ public class ArmSubsystem extends SubsystemBase {
 	public void setHorizontalArmMotor(double amount) {
 		armHorizontal.set(amount);
 	}
+	
+	public double getPotVoltage() {
+		return armVertical.getAnalog(Mode.kAbsolute).getVoltage();
+	} 
+
+	public double getPotPosition(){
+		return armVertical.getAnalog(Mode.kAbsolute).getPosition();
+	}
+
+	public double getAbsEncoderVoltage(){
+		return armHorizontal.getAnalog(Mode.kAbsolute).getVoltage();
+	}
+
+	public double getAbsEncoderPosition(){
+		return armHorizontal.getAnalog(Mode.kAbsolute).getPosition();
+	}
+
+
 }
