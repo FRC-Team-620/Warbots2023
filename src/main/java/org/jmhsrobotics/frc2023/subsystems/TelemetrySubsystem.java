@@ -6,6 +6,7 @@ import org.jmhsrobotics.frc2023.RobotMath.DiminishingAverageHandler;
 import org.jmhsrobotics.frc2023.util.IIMUWrapper;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class TelemetrySubsystem extends SubsystemBase {
@@ -42,8 +43,8 @@ public class TelemetrySubsystem extends SubsystemBase {
 		}
 	}
 
-	private IIMUWrapper imu = Constants.driveports.getIMU();
-	private IMUState imuState = new IMUState();
+	private IIMUWrapper imu;
+	private IMUState imuState;
 	private Rotation2d imuRotation2d;
 
 	private DiminishingAverageHandler yawAngularVelocityHandler;
@@ -52,6 +53,9 @@ public class TelemetrySubsystem extends SubsystemBase {
 
 	public TelemetrySubsystem() {
 
+		this.imu = Constants.driveports.getIMU();
+		this.imuState = new IMUState();
+		this.imuRotation2d = this.imu.getRotation2d();
 		this.yawAngularVelocityHandler = new DiminishingAverageHandler(0.5);
 		this.pitchAngularVelocityHandler = new DiminishingAverageHandler(0.5);
 		this.rollAngularVelocityHandler = new DiminishingAverageHandler(0.5);
@@ -86,6 +90,13 @@ public class TelemetrySubsystem extends SubsystemBase {
             relativeChange / Constants.RobotConstants.secondsPerTick
         );
         // spotless:on
+
+		SmartDashboard.putNumber("Telemetry/yaw", this.imuState.yaw);
+		SmartDashboard.putNumber("Telemetry/pitch", this.imuState.pitch);
+		SmartDashboard.putNumber("Telemetry/roll", this.imuState.roll);
+		SmartDashboard.putNumber("Telemetry/yawVelocity", this.imuState.yawVelocity);
+		SmartDashboard.putNumber("Telemetry/pitchVelocity", this.imuState.pitchVelocity);
+		SmartDashboard.putNumber("Telemetry/rollVelocity", this.imuState.rollVelocity);
 	}
 
 	public IMUState getIMUState() {
