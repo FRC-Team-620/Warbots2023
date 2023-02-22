@@ -23,7 +23,6 @@ public class GrabberCommand extends CommandBase {
 	public void execute() {
 
 		// enables the controller inputs for arm subsystem
-		
 
 		// is B pushed and its not the same press as last tick
 		if (operatorController.b().getAsBoolean()) {
@@ -37,11 +36,9 @@ public class GrabberCommand extends CommandBase {
 		// enables the motor to control it
 		if (operatorController.x().getAsBoolean()) {
 			grabberSubsystem.wheelForward();
-		}
-		else if (operatorController.y().getAsBoolean()) {
+		} else if (operatorController.y().getAsBoolean()) {
 			grabberSubsystem.wheelBackward();
-		}
-		else {
+		} else {
 			grabberSubsystem.stopGrabberWheel();
 		}
 

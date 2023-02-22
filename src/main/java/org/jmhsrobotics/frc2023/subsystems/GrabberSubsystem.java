@@ -17,7 +17,7 @@ public class GrabberSubsystem extends SubsystemBase {
 		grabberMotor.setSmartCurrentLimit(60);
 		grabberMotor.setIdleMode(IdleMode.kBrake);
 	}
-	
+
 	public void setGrabberState(boolean state) {
 		grabberPiston.set(state);
 	}
