@@ -5,6 +5,7 @@
 package org.jmhsrobotics.frc2023;
 
 import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
+import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
 import org.jmhsrobotics.frc2023.commands.CommandArm;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
@@ -14,6 +15,8 @@ import org.jmhsrobotics.frc2023.commands.TurnDeltaAngle;
 import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
+import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
+import org.jmhsrobotics.frc2023.commands.GrabberCommand;
 import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 // import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
@@ -25,6 +28,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import org.jmhsrobotics.frc2023.commands.TurnDeltaAngle;
+import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
+import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
+import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
+import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
+import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -36,11 +45,13 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	private final CommandXboxController driver = new CommandXboxController(OperatorConstants.driverControllerPort);
-	public final Drivetrain drivetrain = new Drivetrain();
-	private final ArmSubsystem armSubsystem = new ArmSubsystem();
-	private final GrabberSubsystem grabberSubsystem = new GrabberSubsystem();
+	private final CommandXboxController operator = new CommandXboxController(OperatorConstants.operatorControllerPort);
 
-	// public final LEDSubsystem ledSubsystem = new LEDSubsystem();
+
+	public final Drivetrain drivetrain = new Drivetrain();
+	public final LEDSubsystem ledSubsystem = new LEDSubsystem();
+	public final GrabberSubsystem grabberSubsystem = new GrabberSubsystem();
+	public final ArmSubsystem armSubsystem = new ArmSubsystem();
 	// private final ArmSubsystem armSubsystem = new ArmSubsystem();
 	// private final GrabberSubsystem grabberSubsystem=new GrabberSubsystem();
 	// private final VisionPlaceholder visionPlaceholder = new
@@ -72,6 +83,7 @@ public class RobotContainer {
 		// armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem));
 		autoSelector = new AutoSelector(this);
 		SmartDashboard.putData(new AlignPeg(drivetrain));
+		SmartDashboard.putData(new CenterChargeStationAuto(drivetrain));
 	}
 
 	/**
