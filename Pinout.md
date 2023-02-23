@@ -1,11 +1,13 @@
 # CANIdBabybot
 - powerDistributionCanId: 41
 - PneumaticsCanId: 42
-- leftFrontCANId: 4
+- leftFrontCANId: 1
 - rightFrontCANId: 2
-- leftRearCANId:  3
-- rightRearCANId:  1
-
+- leftRearCANId: 3
+- rightRearCANId: 4
+- winchMotor: 6
+- pitchMotor: 5
+- grabberMotor: 7
 # CANIdBot2020
 - powerDistributionCanId: 41
 - PneumaticsCanId: 42
@@ -15,10 +17,10 @@
 - rightRearCANId:  1
 
 # CANIdSusan
-- leftFrontMotorCANId = 1;
-- rightFrontMotorCANId = 2;
-- leftRearMotorCANId = 3;
-- rightRearMotorCANId = 4;
+- leftFrontMotorCANId = 1
+- rightFrontMotorCANId = 2
+- leftRearMotorCANId = 3
+- rightRearMotorCANId = 4
 
 # PWM
 LEDPWM: 9

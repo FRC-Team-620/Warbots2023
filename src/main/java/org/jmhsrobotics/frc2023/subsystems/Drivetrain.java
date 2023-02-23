@@ -24,10 +24,10 @@ import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.jmhsrobotics.frc2023.Constants;
-import org.jmhsrobotics.frc2023.Constants.RobotConstants;
+import org.jmhsrobotics.frc2023.RobotContainer;
 import org.jmhsrobotics.frc2023.Constants.WheelConstants;
+import org.jmhsrobotics.frc2023.subsystems.TelemetrySubsystem.IMUState;
 import org.jmhsrobotics.frc2023.RobotMath;
-import org.jmhsrobotics.frc2023.util.IIMUWrapper;
 import org.jmhsrobotics.frc2023.util.sim.NavxWrapper;
 import org.jmhsrobotics.frc2023.util.sim.RevEncoderSimWrapper;
 
@@ -57,7 +57,7 @@ public class Drivetrain extends SubsystemBase {
 	private RelativeEncoder leftRearEncoder;
 	private RelativeEncoder rightFrontEncoder;
 	private RelativeEncoder rightRearEncoder;
-	private IIMUWrapper imu = Constants.driveports.getIMU();
+	// private IIMUWrapper imu = Constants.driveports.getIMU();
 
 	private PIDController headingPID;
 	private DifferentialDriveOdometry odometry;
@@ -66,13 +66,13 @@ public class Drivetrain extends SubsystemBase {
 	// private double commandedZRotation = 0.0;
 	// private boolean commandedAllowTurnInPlace = false;
 
-	private double angularVelocity = 0.0;
+	// private double angularVelocity = 0.0;
 
 	// private boolean headingLock = false;
 
 	private boolean isTurning = false;
 	// private int tickAccumulation = 0;
-	private double previousAngle;
+	// private double previousAngle;
 
 	private double commandedSpeed = 0.0;
 	private double commandedCurvature = 0.0;
@@ -80,7 +80,7 @@ public class Drivetrain extends SubsystemBase {
 
 	private boolean shouldHeadingLock = true;
 
-	private RobotMath.DiminishingAverageHandler angularVelocityHandler;
+	// private RobotMath.DiminishingAverageHandler angularVelocityHandler;
 	private DifferentialDrive differentialDrive;
 
 	/** Creates a new Drivetrain. */
@@ -117,7 +117,7 @@ public class Drivetrain extends SubsystemBase {
 		 * sort of running average is used to make sure that any one wrong reading does
 		 * not throw off the stored angular velocity too much.
 		 */
-		this.angularVelocityHandler = new RobotMath.DiminishingAverageHandler(2.0);
+		// this.angularVelocityHandler = new RobotMath.DiminishingAverageHandler(2.0);
 
 		// Setup differential drive with left front and right front motors as the
 		// parameters for the new DifferentialDrive
@@ -158,37 +158,48 @@ public class Drivetrain extends SubsystemBase {
 		// leftFrontEncoder.setPositionConversionFactor(DriveConstants.metersPerEncoderTick);
 		// rightFrontEncoder.setPositionConversionFactor(DriveConstants.metersPerEncoderTick);
 
-		odometry = new DifferentialDriveOdometry(imu.getRotation2d(), leftFrontEncoder.getPosition(),
-				rightFrontEncoder.getPosition());
+		// spotless:off
+		odometry = new DifferentialDriveOdometry(
+			RobotContainer.getTelemetry().getRotation2d(), 
+			leftFrontEncoder.getPosition(),
+			rightFrontEncoder.getPosition()
+		);
+		// spotless:on
 	}
 
 	@Override
 	public void periodic() {
 
 		// Update the odometry
-		odometry.update(imu.getRotation2d(), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
+		// spotless:off
+		odometry.update(
+			RobotContainer.getTelemetry().getRotation2d(), 
+			leftFrontEncoder.getPosition(), 
+			rightFrontEncoder.getPosition()
+		);
+		// spotless:on
 
-		double yaw = this.getYaw();
+		IMUState imuState = RobotContainer.getTelemetry().getIMUState();
 
 		// Get the change in angle, used to calculate the momentary angular velocity
 		// The RobotMath.relativeAngle method is used because the angles wrap around
 		// from -180 to 180, so a change from 170 to -160 will be correctly identified
 		// as a 30 degree shift using this method, as 170 wraps around to -160 after
 		// 30 more degrees.
-		double relativeChange = RobotMath.relativeAngle(this.previousAngle, yaw);
+		// double relativeChange = RobotMath.relativeAngle(this.previousAngle, yaw);
 
 		// Get the angular velocity, denoised with a diminishing average loop.
 		// The change in angle divided by the change in time since that last reading is
 		// a good approximation of the instantaneous velocity.
 		// spotless:off
-		this.angularVelocity = this.angularVelocityHandler.feed(
-			relativeChange / RobotConstants.secondsPerTick
-		);
+		// this.angularVelocity = this.angularVelocityHandler.feed(
+		// 	relativeChange / RobotConstants.secondsPerTick
+		// );
 		// spotless:on
 
 		// Save the current angle so next loop it can be used in the above loop to
 		// calculate angular velocity
-		this.previousAngle = yaw;
+		// this.previousAngle = yaw;
 
 		// Check whether there is curvature input
 		boolean noCurvatureInput = RobotMath.approximatelyZero(this.commandedCurvature);
@@ -201,7 +212,7 @@ public class Drivetrain extends SubsystemBase {
 			this.isTurning = false; // Register the robot as not turning
 			this.lockCurrentHeading(); // Lock the current heading
 			this.resetHeadingLockPID(); // Stop the integral value from running off
-			System.out.println("SET PIVOT ANGLE:  " + yaw);
+			System.out.println("SET PIVOT ANGLE:  " + imuState.yaw);
 		}
 
 		// The driver is turning the robot with the joystick
@@ -218,7 +229,7 @@ public class Drivetrain extends SubsystemBase {
 			// NOTE: It does not matter if this goes beyond [-1, 1], as the curvatureDrive
 			// method already clamps the values (i.e. values above 1 with be considered as
 			// 1, and values below -1 will be considered as -1) inside the method.
-			rotationInput = this.headingPID.calculate(yaw);
+			rotationInput = this.headingPID.calculate(imuState.yaw);
 		}
 
 		// Set the differentialDrive outputs
@@ -228,8 +239,8 @@ public class Drivetrain extends SubsystemBase {
 		SmartDashboard.putNumber("Drivetrain/RotationInputPeriodic", rotationInput);
 		SmartDashboard.putNumber("Drivetrain/DriveSpeedPeriodic", this.commandedSpeed);
 		SmartDashboard.putNumber("Drivetrain/isTurning", this.isTurning ? 1 : -1);
-		SmartDashboard.putNumber("Drivetrain/DriveAngularVelocity", this.angularVelocity);
-		SmartDashboard.putNumber("Drivetrain/DriveHeadingAngle", yaw);
+		SmartDashboard.putNumber("Drivetrain/DriveAngularVelocity", imuState.yawVelocity);
+		SmartDashboard.putNumber("Drivetrain/DriveHeadingAngle", imuState.yaw);
 		SmartDashboard.putNumber("Drivetrain/DriveAngleSetpoint", this.headingPID.getSetpoint());
 		SmartDashboard.putNumber("Drivetrain/shouldHeadingLock", this.shouldHeadingLock ? 1 : -1);
 	}
@@ -237,7 +248,7 @@ public class Drivetrain extends SubsystemBase {
 	public void resetOdometry(Pose2d pose) {
 		// spotless:off
 		odometry.resetPosition(
-			imu.getRotation2d(), 
+			RobotContainer.getTelemetry().getRotation2d(), 
 			leftFrontEncoder.getPosition(), 
 			rightFrontEncoder.getPosition(),
 			pose
@@ -269,34 +280,39 @@ public class Drivetrain extends SubsystemBase {
 		this.shouldHeadingLock = true;
 	}
 
-	/**
-	 * Getter for the angular velocity of the robot in degrees per second
-	 *
-	 * @return Angular velocity for the yaw in degrees per second
-	 */
-	public double getAngularVelocity() { // TODO: Remove
-		return this.angularVelocity;
+	// /**
+	// * Getter for the angular velocity of the robot in degrees per second
+	// *
+	// * @return Angular velocity for the yaw in degrees per second
+	// */
+	// public double getAngularVelocity() { // TODO: Remove
+	// return this.angularVelocity;
+	// }
+
+	public boolean hasAngularVelocity() {
+		// spotless:off
+		return !RobotMath.approximatelyZero(
+			RobotContainer.getTelemetry().getYawVelocity(), 
+			0.5
+		);
+		// spotless:on
 	}
 
-	public boolean hasAngularVelocity() { // TODO: Remove
-		return !RobotMath.approximatelyZero(this.getAngularVelocity(), 0.5);
-	}
+	// public void resetAngularVelocity() { // TODO: Remove
+	// this.angularVelocityHandler.reset();
+	// }
 
-	public void resetAngularVelocity() { // TODO: Remove
-		this.angularVelocityHandler.reset();
-	}
+	// public double getYaw() { // TODO: Remove Use Odometry instead
+	// return this.imu.getYaw();
+	// }
 
-	public double getYaw() { // TODO: Remove Use Odometry instead
-		return this.imu.getYaw();
-	}
+	// public double getRoll() {
+	// return imu.getRoll();
+	// }
 
-	public double getRoll() {
-		return imu.getRoll();
-	}
-
-	public double getPitch() {
-		return imu.getPitch();
-	}
+	// public double getPitch() {
+	// return imu.getPitch();
+	// }
 
 	public boolean getIsTurning() {
 		return this.isTurning;
@@ -309,7 +325,7 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	public void lockCurrentHeading() {
-		this.setHeadingLockSetpoint(this.getYaw());
+		this.setHeadingLockSetpoint(RobotContainer.getTelemetry().getYaw());
 	}
 
 	public double getAngleSetpoint() {

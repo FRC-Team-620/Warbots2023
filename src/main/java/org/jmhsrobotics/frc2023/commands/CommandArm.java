@@ -23,8 +23,8 @@ public class CommandArm extends CommandBase {
 	// execute
 	@Override
 	public void initialize() {
-		armSubsystem.setArmExtension(distance);
-		armSubsystem.setArmPitch(angle);
+		armSubsystem.setExtension(distance);
+		armSubsystem.setPitch(angle);
 	}
 
 	@Override

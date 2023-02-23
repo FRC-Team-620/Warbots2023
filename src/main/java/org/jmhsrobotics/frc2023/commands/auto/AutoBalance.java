@@ -11,10 +11,10 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import org.jmhsrobotics.frc2023.Constants;
+import org.jmhsrobotics.frc2023.RobotContainer;
 import org.jmhsrobotics.frc2023.RobotMath;
 import org.jmhsrobotics.frc2023.Constants.ArenaConstants;
 import org.jmhsrobotics.frc2023.Constants.AutoConstants;
-import org.jmhsrobotics.frc2023.RobotMath.DiminishingAverageHandler;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.LEDManager;
@@ -22,7 +22,7 @@ import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.LEDManager;
 public class AutoBalance extends CommandBase {
 	private Drivetrain drivetrain;
 	private double moveLimit;
-	private DiminishingAverageHandler robotPitchHandler;
+	// private DiminishingAverageHandler robotPitchHandler;
 	private PIDController pidController;
 	private boolean isBalancing = false;
 	private boolean onChargeStation = false;
@@ -38,7 +38,7 @@ public class AutoBalance extends CommandBase {
 	public AutoBalance(Drivetrain drivetrain, boolean backwards) {
 		this.backwards = backwards;
 		this.drivetrain = drivetrain;
-		robotPitchHandler = new DiminishingAverageHandler(0.5);
+		// robotPitchHandler = new DiminishingAverageHandler(0.5);
 		pidController = new PIDController(Constants.driveports.getBalancingPID().kp,
 				Constants.driveports.getBalancingPID().ki, Constants.driveports.getBalancingPID().kd);
 	}
@@ -75,7 +75,9 @@ public class AutoBalance extends CommandBase {
 		//
 		// This command will never complete manually, as it needs to hold its position.
 
-		double pitch = this.robotPitchHandler.feed(drivetrain.getPitch());
+		// double pitch = this.robotPitchHandler.feed(drivetrain.getPitch());
+
+		double pitch = RobotContainer.getTelemetry().getPitch();
 
 		if (!hasReachedChargeStation()) {
 			strip.setSolidColor(Color.kWhite);
@@ -133,7 +135,7 @@ public class AutoBalance extends CommandBase {
 
 	private boolean hasReachedChargeStation() {
 		if (this.onChargeStation == false) {
-			if (Math.abs(this.robotPitchHandler.get()) > AutoConstants.onChargeStationAngle) {
+			if (Math.abs(RobotContainer.getTelemetry().getPitch()) > AutoConstants.onChargeStationAngle) {
 				this.onChargeStation = true;
 				this.chargeCenterPosition = this.drivetrain.getPose().plus(new Transform2d(
 						new Translation2d(-1 * AutoConstants.balanceCenterLimitFromInitialTip, 0.0), new Rotation2d()));

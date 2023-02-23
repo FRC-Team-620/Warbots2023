@@ -9,6 +9,9 @@ public class BabybotDrivePorts implements IDrivePorts {
 	public final int rightFrontMotorCANId = 3;
 	public final int leftRearMotorCANId = 2;
 	public final int rightRearMotorCANId = 1;
+	public final int winchMotorCANId = 6;
+	public final int pitchMotorCANId = 5;
+	public final int grabberMotorCANId = 7;
 
 	public final boolean rightFrontMotorInversion = false;
 	public final boolean leftFrontMotorInversion = true;
