@@ -68,7 +68,7 @@ public class ArmSubsystem extends SubsystemBase {
 
 	public void init2d() {
 		Mechanism2d mech = new Mechanism2d(3, 3);
-		MechanismRoot2d root = mech.getRoot("climber", ArmConstants.armDistanceToCenterMeters, 0);
+		MechanismRoot2d root = mech.getRoot("climber", 1.5 + ArmConstants.armDistanceToCenterMeters, 0);
 		var m_support = root.append(
 				new MechanismLigament2d("support", ArmConstants.armHeightMeters, 90, 6, new Color8Bit(Color.kRed)));
 		m_wrist = m_support.append(new MechanismLigament2d("wrist", ArmConstants.minExtensionLengthMeters, 0, 6,
