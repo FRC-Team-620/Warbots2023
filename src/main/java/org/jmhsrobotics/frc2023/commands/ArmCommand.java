@@ -23,8 +23,8 @@ public class ArmCommand extends CommandBase {
 		double controlHeight = Math.pow(controller.getRightY(), 2);
 
 		// enables the motors to control their respective jobs
-		armSubsystem.setHorizontalArmMotor(controlLength);
-		armSubsystem.setVerticalArmMotor(controlHeight);
+		armSubsystem.setTelescopeMotor(controlLength);
+		armSubsystem.setPitchMotor(controlHeight);
 
 	}
 

@@ -12,8 +12,8 @@ public class ArmSubsystem extends SubsystemBase {
 	// Set the motors which power the basic functions of the arm
 	private Compressor phCompressor = new Compressor(42, PneumaticsModuleType.REVPH);
 	private Solenoid solenoid = new Solenoid(PneumaticsModuleType.REVPH, 42);
-	private CANSparkMax armVertical = new CANSparkMax(5, MotorType.kBrushless);
-	private CANSparkMax armHorizontal = new CANSparkMax(6, MotorType.kBrushless);
+	private CANSparkMax pitchMotor = new CANSparkMax(5, MotorType.kBrushless);
+	private CANSparkMax telescopeMotor = new CANSparkMax(6, MotorType.kBrushless);
 
 	// todo 1.make ports in own file
 
@@ -25,11 +25,11 @@ public class ArmSubsystem extends SubsystemBase {
 		return solenoid.get();
 	}
 	// Sets the motor controlling arm height
-	public void setVerticalArmMotor(double amount) {
-		armVertical.set(amount);
+	public void setPitchMotor(double amount) {
+		pitchMotor.set(amount);
 	}
 	// Sets the motor controlling arm length
-	public void setHorizontalArmMotor(double amount) {
-		armHorizontal.set(amount);
+	public void setTelescopeMotor(double amount) {
+		telescopeMotor.set(amount);
 	}
 }
