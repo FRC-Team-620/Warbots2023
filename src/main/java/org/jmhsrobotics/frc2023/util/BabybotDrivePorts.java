@@ -26,7 +26,7 @@ public class BabybotDrivePorts implements IDrivePorts {
 	public final IIMUWrapper imu = new NavxIMU(SPI.Port.kMXP);
 
 	@Override
-	public double getTrackWidthMeters(){
+	public double getTrackWidthMeters() {
 		return trackWidthMeters;
 	}
 	@Override

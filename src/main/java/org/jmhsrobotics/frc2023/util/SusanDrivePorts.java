@@ -31,7 +31,7 @@ public class SusanDrivePorts implements IDrivePorts {
 		return getAutoDistancePID;
 	}
 	@Override
-	public double getTrackWidthMeters(){
+	public double getTrackWidthMeters() {
 		return trackWidthMeters;
 	}
 	@Override

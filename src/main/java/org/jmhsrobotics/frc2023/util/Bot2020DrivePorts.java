@@ -32,12 +32,11 @@ public class Bot2020DrivePorts implements IDrivePorts {
 	public final IIMUWrapper imu = new PigeonIMU(30, getimConfiguration());
 	public final double balanceCreepSpeed = 0.1;
 
-
 	@Override
-	public double getTrackWidthMeters(){
+	public double getTrackWidthMeters() {
 		return trackWidthMeters;
 	}
-	public final double trackWidthMeters = 0.1; 
+	public final double trackWidthMeters = 0.1;
 
 	private Pigeon2Configuration getimConfiguration() {
 		Pigeon2Configuration config = new Pigeon2Configuration();
