@@ -2,29 +2,31 @@ package org.jmhsrobotics.frc2023.commands.auto;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import org.jmhsrobotics.frc2023.RobotMath;
+
+import org.jmhsrobotics.frc2023.RobotContainer;
 import org.jmhsrobotics.frc2023.Constants.AutoConstants;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
+import org.jmhsrobotics.frc2023.subsystems.TelemetrySubsystem.IMUState;
 
 public class AutoPRBalance extends CommandBase {
 
 	private Drivetrain drivetrain;
 
-	private RobotMath.DiminishingAverageHandler pitchHandler;
-	private RobotMath.DiminishingAverageHandler rollHandler;
+	// private RobotMath.DiminishingAverageHandler pitchHandler;
+	// private RobotMath.DiminishingAverageHandler rollHandler;
 
 	private PIDController pitchSpeedPID;
 	private PIDController rollCurvaturePID;
 
-	private double pitch;
-	private double roll;
+	// private double pitch;
+	// private double roll;
 
 	private AutoPRBalance(Drivetrain drivetrain) {
 
 		this.drivetrain = drivetrain;
 
-		this.pitchHandler = new RobotMath.DiminishingAverageHandler(2.0);
-		this.rollHandler = new RobotMath.DiminishingAverageHandler(2.0);
+		// this.pitchHandler = new RobotMath.DiminishingAverageHandler(2.0);
+		// this.rollHandler = new RobotMath.DiminishingAverageHandler(2.0);
 
 		// spotless:off
 		this.pitchSpeedPID = new PIDController(
@@ -53,8 +55,8 @@ public class AutoPRBalance extends CommandBase {
 	@Override
 	public void initialize() {
 
-		this.pitchHandler.reset();
-		this.rollHandler.reset();
+		// this.pitchHandler.reset();
+		// this.rollHandler.reset();
 
 		this.pitchSpeedPID.reset();
 		this.rollCurvaturePID.reset();
@@ -65,11 +67,13 @@ public class AutoPRBalance extends CommandBase {
 	@Override
 	public void execute() {
 
-		this.pitch = this.pitchHandler.feed(this.drivetrain.getPitch());
-		this.roll = this.rollHandler.feed(this.drivetrain.getRoll());
+		// this.pitch = this.pitchHandler.feed(this.drivetrain.getPitch());
+		// this.roll = this.rollHandler.feed(this.drivetrain.getRoll());
 
-		double speed = this.pitchSpeedPID.calculate(this.pitch);
-		double curvature = this.rollCurvaturePID.calculate(this.roll);
+		IMUState imuState = RobotContainer.getTelemetry().getIMUState();
+
+		double speed = this.pitchSpeedPID.calculate(imuState.pitch);
+		double curvature = this.rollCurvaturePID.calculate(imuState.roll);
 
 		this.drivetrain.setCurvatureDrive(speed, curvature, false);
 	}

@@ -10,6 +10,7 @@ import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
 // import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
+import org.jmhsrobotics.frc2023.subsystems.TelemetrySubsystem;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
@@ -33,6 +34,9 @@ import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
  * commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+
+	private static final TelemetrySubsystem telemetry = new TelemetrySubsystem();
+
 	// The robot's subsystems and commands are defined here...
 	private final CommandXboxController driver = new CommandXboxController(OperatorConstants.driverControllerPort);
 	public final Drivetrain drivetrain = new Drivetrain();
@@ -105,5 +109,9 @@ public class RobotContainer {
 
 	public Drivetrain getDrivetrain() {
 		return this.drivetrain;
+	}
+
+	public static TelemetrySubsystem getTelemetry() {
+		return RobotContainer.telemetry;
 	}
 }
