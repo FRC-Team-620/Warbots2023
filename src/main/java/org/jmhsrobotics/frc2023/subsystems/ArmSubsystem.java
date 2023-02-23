@@ -31,8 +31,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class ArmSubsystem extends SubsystemBase {
 	// Set the motors which power the basic functions of the arm
 	// private Solenoid solenoid = new Solenoid(PneumaticsModuleType.REVPH, 42);
-	private CANSparkMax armPitch = new CANSparkMax(5, MotorType.kBrushless);
-	private CANSparkMax armExtension = new CANSparkMax(6, MotorType.kBrushless);
+	private CANSparkMax armPitch = new CANSparkMax(Constants.driveports.getArmAngleCANId(), MotorType.kBrushless);
+	private CANSparkMax armExtension = new CANSparkMax(Constants.driveports.getArmExtensionCANId(),
+			MotorType.kBrushless);
 	private SparkMaxAnalogSensor pitchEncoder = armPitch.getAnalog(Mode.kAbsolute);
 	private SparkMaxAnalogSensor extensionEncoder = armExtension.getAnalog(Mode.kAbsolute);
 	private MechanismLigament2d m_elevator;
@@ -40,7 +41,14 @@ public class ArmSubsystem extends SubsystemBase {
 	private ProfiledPIDController profiledAnglePID;
 	private ProfiledPIDController profiledExtensionPID;
 	private ArmFeedforward armfeedforward;
-	private boolean isStopped = false;
+	private double openLoopExtensionSpeed;
+	private double openLoopPitchSpeed;
+
+	private enum ControlMode {
+		STOPPED, OPEN_LOOP, CLOSED_LOOP;
+	}
+
+	private ControlMode controlMode = ControlMode.CLOSED_LOOP;
 
 	public ArmSubsystem() {
 
@@ -48,27 +56,37 @@ public class ArmSubsystem extends SubsystemBase {
 		// TODO: MAke sure to construct profiledExtensionPID and profiledExtensionPID!!!
 		profiledAnglePID = new ProfiledPIDController(0.05, 0.01, 0.02, new Constraints(90, 360));
 		profiledExtensionPID = new ProfiledPIDController(25, 0, 1, new Constraints(1, 0));
-		// Create Mech2s display of Arm.
-		// the mechanism root node
-		Mechanism2d mech = new Mechanism2d(3, 3);
-		MechanismRoot2d root = mech.getRoot("climber", 1, 0);
-		var m_support = root.append(
-				new MechanismLigament2d("support", ArmConstants.armHeightMeters, 90, 6, new Color8Bit(Color.kRed)));
-		m_wrist = m_support
-				.append(new MechanismLigament2d("wrist", Units.inchesToMeters(25), 0, 6, new Color8Bit(Color.kPurple)));
-		m_elevator = m_wrist.append(new MechanismLigament2d("elevator", ArmConstants.minExtensionLengthMeters, 0, 6,
-				new Color8Bit(Color.kGray)));
-		armPitch.setSmartCurrentLimit(40);
-		armExtension.setSmartCurrentLimit(15);
-		SmartDashboard.putData("arm_info", mech);
 		SmartDashboard.putData("Wristpid", profiledAnglePID);
 		SmartDashboard.putData("lengthpid", profiledExtensionPID);
+		// Create Mech2s display of Arm.
+		// the mechanism root node
+		init2d();
+		// Set Current Limits
+		armPitch.setSmartCurrentLimit(40);
+		armExtension.setSmartCurrentLimit(40);
+	}
 
+	public void init2d() {
+		Mechanism2d mech = new Mechanism2d(3, 3);
+		MechanismRoot2d root = mech.getRoot("climber", ArmConstants.armDistanceToCenterMeters, 0);
+		var m_support = root.append(
+				new MechanismLigament2d("support", ArmConstants.armHeightMeters, 90, 6, new Color8Bit(Color.kRed)));
+		m_wrist = m_support.append(new MechanismLigament2d("wrist", ArmConstants.minExtensionLengthMeters, 0, 6,
+				new Color8Bit(Color.kPurple)));
+		m_elevator = m_wrist.append(new MechanismLigament2d("elevator", ArmConstants.minExtensionLengthMeters, 0, 6,
+				new Color8Bit(Color.kGray)));
+		SmartDashboard.putData("arm_info", mech);
 	}
 
 	@Override
 	public void periodic() {
-		if (isStopped) {
+		if (getControlMode() == ControlMode.STOPPED) {
+			armPitch.set(0); // Keeps motor safety watchdog happy
+			armExtension.set(0);
+			return;
+		} else if (getControlMode() == ControlMode.OPEN_LOOP) {
+			armPitch.set(openLoopPitchSpeed);
+			armExtension.set(openLoopExtensionSpeed);
 			return;
 		}
 
@@ -89,10 +107,22 @@ public class ArmSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("lengthpid/output", armExtension.get());
 		SmartDashboard.putNumber("Wristpid/output", armPitch.get());
 		SmartDashboard.putNumber("lengthpid/setpoint", profiledExtensionPID.getSetpoint().position);
-
 	}
 
-	// todo 1.make ports in own file
+	/**
+	 * Raw duty cycle control of the arm motors. WARNING! does not respect soft
+	 * limits!
+	 *
+	 * @param pitchSpeed
+	 *            pitch motor duty cycle (-1,1)
+	 * @param extentionSpeed
+	 *            extention motor duty cycle (-1,1)
+	 */
+	public void setDutyCycle(double pitchSpeed, double extentionSpeed) {
+		controlMode = ControlMode.OPEN_LOOP;
+		openLoopExtensionSpeed = extentionSpeed;
+		openLoopPitchSpeed = pitchSpeed;
+	}
 
 	// Sets the motor controlling arm height
 	public void setArmPitch(double targetAngleDeg) {
@@ -101,29 +131,28 @@ public class ArmSubsystem extends SubsystemBase {
 		profiledAnglePID.setGoal(new State(targetAngleDeg, 0));
 		SmartDashboard.putNumber("Wristpid/targetAngleDeg", targetAngleDeg);
 
-		if (isStopped) {
+		if (controlMode != ControlMode.CLOSED_LOOP) {
 			profiledExtensionPID.setGoal(new State(extensionEncoder.getPosition(), 0));
 			profiledExtensionPID.reset(new State(extensionEncoder.getPosition(), 0));
 		}
-
-		isStopped = false;
-
+		controlMode = ControlMode.CLOSED_LOOP;
 	}
 
 	// Sets the motor controlling arm length
-	public void setArmExtension(double targetDistanceMeters) {
+	public void setArmExtension(double targetDistanceMeters) { // TODO: Add back distance clamps for arm extention oops
 		// targetDistanceMeters = MathUtil.clamp(targetDistanceMeters, 0,
 		// ArmConstants.maxExtensionLengthMeters -
 		// ArmConstants.minExtensionLengthMeters);
-		profiledExtensionPID.setGoal(new State(targetDistanceMeters, 0));
+		profiledExtensionPID.setGoal(new State(targetDistanceMeters, 0)); // TODO: Potential Bug because we reset the
+																			// goal we set here when switching into
+																			// closed loop control
 		SmartDashboard.putNumber("lengthpid/targetLength", targetDistanceMeters);
 
-		if (isStopped) {
+		if (controlMode != ControlMode.CLOSED_LOOP) {
 			profiledAnglePID.setGoal(new State(pitchEncoder.getPosition(), 0));
 			profiledAnglePID.reset(new State(pitchEncoder.getPosition(), 0));
 		}
-		isStopped = false;
-
+		controlMode = ControlMode.CLOSED_LOOP;
 	}
 
 	/*
@@ -149,12 +178,15 @@ public class ArmSubsystem extends SubsystemBase {
 		return profiledExtensionPID.atGoal();
 	}
 
-	public boolean isStopped() {
-		return isStopped;
+	public ControlMode getControlMode() {
+		return controlMode;
 	}
+
 	public void stop() {
-		isStopped = true;
+		controlMode = ControlMode.STOPPED;
+
 	}
+
 	/**
 	 * Simulation Code
 	 */

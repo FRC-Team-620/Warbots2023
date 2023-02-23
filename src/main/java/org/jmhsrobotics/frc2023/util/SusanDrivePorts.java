@@ -28,17 +28,14 @@ public class SusanDrivePorts implements IDrivePorts {
 
 	@Override
 	public ProfiledPIDConfig getAutoDistanceProfiledPID() {
-		// TODO Auto-generated method stub
 		return autoDistanceProfiledPID;
 	}
 	@Override
 	public PIDConfig getKeepHeadingPID() {
-		// TODO Auto-generated method stub
 		return keepHeadingPID;
 	}
 	@Override
 	public PIDConfig getBalancingPID() {
-		// TODO Auto-generated method stub
 		return balancingPID;
 	}
 
@@ -58,6 +55,27 @@ public class SusanDrivePorts implements IDrivePorts {
 	public int getRightRearMotorCANId() {
 		return rightRearMotorCANId;
 	}
+
+	@Override
+	public int getArmAngleCANId() {
+		return 5;
+	}
+
+	@Override
+	public int getArmExtensionCANId() {
+		return 6;
+	}
+
+	@Override
+	public int getIntakeCANId() {
+		return 7;
+	}
+
+	@Override
+	public int getIntakeSolenoidId() {
+		return 2;
+	}
+
 	@Override
 	public boolean getRightFrontMotorInversion() {
 		return rightFrontMotorInversion;
@@ -73,17 +91,14 @@ public class SusanDrivePorts implements IDrivePorts {
 
 	@Override
 	public double getMaxVelocity() {
-		// TODO Auto-generated method stub
 		return maxVelocity;
 	}
 	@Override
 	public double getMaxAcceleration() {
-		// TODO Auto-generated method stub
 		return maxAcceleration;
 	}
 	@Override
 	public double getBalanceCreepSpeed() {
-		// TODO Auto-generated method stub
 		return balanceCreepSpeed;
 	}
 
