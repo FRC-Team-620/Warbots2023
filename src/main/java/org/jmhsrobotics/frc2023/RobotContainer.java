@@ -71,7 +71,7 @@ public class RobotContainer {
 		// command that uses that subsystem is running
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
 		// armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem,
-		armSubsystem.setDefaultCommand(new TeleopArm(armSubsystem, driver::getLeftX, driver::getLeftY));
+		armSubsystem.setDefaultCommand(new TeleopArm(armSubsystem, operator::getLeftX, operator::getLeftY));
 		// driver.getHID()));
 
 		// spotless:off
@@ -82,7 +82,6 @@ public class RobotContainer {
 		// );
 		// spotless:on
 
-		// armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem));
 		autoSelector = new AutoSelector(this);
 		SmartDashboard.putData(new AlignPeg(drivetrain));
 		SmartDashboard.putData(new CenterChargeStationAuto(drivetrain));
