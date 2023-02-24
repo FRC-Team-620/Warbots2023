@@ -27,7 +27,6 @@ public class TeleopArm extends CommandBase {
 	}
 
 	// Only runs when the command is scedualed
-	// Are you good?
 	@Override
 	public void initialize() {
 
@@ -59,12 +58,12 @@ public class TeleopArm extends CommandBase {
 		SmartDashboard.putNumber("arm_info/driverDemandedExtension", driverDemandedExtension);
 		double inputArmExtension = MathUtil.applyDeadband(linearSpeed.get(), 0.2);
 		if (inputArmExtension != 0) {
-			armSubsystem.setArmExtension(armSubsystem.getArmLength() + (inputArmExtension * maxExtensionSpeedMPS));
+			armSubsystem.setExtension(armSubsystem.getArmLength() + (inputArmExtension * maxExtensionSpeedMPS));
 		}
 
 		double inputArmPitch = MathUtil.applyDeadband(pitchSpeed.get(), 0.2);
 		if (inputArmPitch != 0) {
-			armSubsystem.setArmPitch(armSubsystem.getArmPitch() + (driverDemandedSpeed * maxPitchSpeedDegreesSec));
+			armSubsystem.setPitch(armSubsystem.getPitchMotor() + (driverDemandedSpeed * maxPitchSpeedDegreesSec));
 		}
 		// armSubsystem.setArmExtension(linearSpeed.get());
 

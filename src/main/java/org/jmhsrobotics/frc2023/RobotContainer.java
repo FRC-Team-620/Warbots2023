@@ -13,16 +13,14 @@ import org.jmhsrobotics.frc2023.commands.TeleopArm;
 import org.jmhsrobotics.frc2023.commands.TurnDeltaAngle;
 import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
+import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
 import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
-import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 // import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.TelemetrySubsystem;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDIdleCommand;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
 
@@ -32,12 +30,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import org.jmhsrobotics.frc2023.commands.TurnDeltaAngle;
-import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
-import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
-import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
-import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
-import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 
 /**
  * This class is where the bulk of the robot should be declared. Since

@@ -31,11 +31,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class ArmSubsystem extends SubsystemBase {
 	// Set the motors which power the basic functions of the arm
 	// private Solenoid solenoid = new Solenoid(PneumaticsModuleType.REVPH, 42);
-	private CANSparkMax armPitch = new CANSparkMax(Constants.driveports.getArmAngleCANId(), MotorType.kBrushless);
-	private CANSparkMax armExtension = new CANSparkMax(Constants.driveports.getArmExtensionCANId(),
+	private CANSparkMax pitchMotor = new CANSparkMax(Constants.driveports.getArmAngleCANId(), MotorType.kBrushless);
+	private CANSparkMax telescopeMotor = new CANSparkMax(Constants.driveports.getArmExtensionCANId(),
 			MotorType.kBrushless);
-	private SparkMaxAnalogSensor pitchEncoder = armPitch.getAnalog(Mode.kAbsolute);
-	private SparkMaxAnalogSensor extensionEncoder = armExtension.getAnalog(Mode.kAbsolute);
+	private SparkMaxAnalogSensor pitchEncoder = pitchMotor.getAnalog(Mode.kAbsolute);
+	private SparkMaxAnalogSensor extensionEncoder = telescopeMotor.getAnalog(Mode.kAbsolute);
 	private MechanismLigament2d m_elevator;
 	private MechanismLigament2d m_wrist;
 	private ProfiledPIDController profiledAnglePID;
@@ -62,8 +62,8 @@ public class ArmSubsystem extends SubsystemBase {
 		// the mechanism root node
 		init2d();
 		// Set Current Limits
-		armPitch.setSmartCurrentLimit(40);
-		armExtension.setSmartCurrentLimit(40);
+		pitchMotor.setSmartCurrentLimit(40);
+		telescopeMotor.setSmartCurrentLimit(40);
 	}
 
 	public void init2d() {
@@ -81,20 +81,20 @@ public class ArmSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		if (getControlMode() == ControlMode.STOPPED) {
-			armPitch.set(0); // Keeps motor safety watchdog happy
-			armExtension.set(0);
+			pitchMotor.set(0); // Keeps motor safety watchdog happy
+			telescopeMotor.set(0);
 			return;
 		} else if (getControlMode() == ControlMode.OPEN_LOOP) {
-			armPitch.set(openLoopPitchSpeed);
-			armExtension.set(openLoopExtensionSpeed);
+			pitchMotor.set(openLoopPitchSpeed);
+			telescopeMotor.set(openLoopExtensionSpeed);
 			return;
 		}
 
-		armPitch.set((armfeedforward.calculate(profiledAnglePID.getSetpoint().position,
+		pitchMotor.set((armfeedforward.calculate(profiledAnglePID.getSetpoint().position,
 				profiledAnglePID.getSetpoint().velocity) + profiledAnglePID.calculate(pitchEncoder.getPosition()))
 				/ 12); // TODO fix janky volts hack
 
-		armExtension.set(profiledExtensionPID.calculate(extensionEncoder.getPosition()) / 12.0);
+		telescopeMotor.set(profiledExtensionPID.calculate(extensionEncoder.getPosition()) / 12.0);
 		// armExtension.set(profiledExtensionPID.getGoal().position);
 		// Update Mech2d Display
 		m_wrist.setAngle(pitchEncoder.getPosition() - 90);
@@ -104,8 +104,8 @@ public class ArmSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("Wristpid/position", pitchEncoder.getPosition());
 		SmartDashboard.putNumber("lengthpid/position", extensionEncoder.getPosition());
 		SmartDashboard.putNumber("Wristpid/setpoint", profiledAnglePID.getSetpoint().position);
-		SmartDashboard.putNumber("lengthpid/output", armExtension.get());
-		SmartDashboard.putNumber("Wristpid/output", armPitch.get());
+		SmartDashboard.putNumber("lengthpid/output", telescopeMotor.get());
+		SmartDashboard.putNumber("Wristpid/output", pitchMotor.get());
 		SmartDashboard.putNumber("lengthpid/setpoint", profiledExtensionPID.getSetpoint().position);
 	}
 
@@ -125,7 +125,7 @@ public class ArmSubsystem extends SubsystemBase {
 	}
 
 	// Sets the motor controlling arm height
-	public void setArmPitch(double targetAngleDeg) {
+	public void setPitch(double targetAngleDeg) {
 		targetAngleDeg = MathUtil.clamp(targetAngleDeg, ArmConstants.minArmAngleDegrees,
 				ArmConstants.maxArmAngleDegrees);
 		profiledAnglePID.setGoal(new State(targetAngleDeg, 0));
@@ -139,7 +139,7 @@ public class ArmSubsystem extends SubsystemBase {
 	}
 
 	// Sets the motor controlling arm length
-	public void setArmExtension(double targetDistanceMeters) { // TODO: Add back distance clamps for arm extention oops
+	public void setExtension(double targetDistanceMeters) { // TODO: Add back distance clamps for arm extention oops
 		// targetDistanceMeters = MathUtil.clamp(targetDistanceMeters, 0,
 		// ArmConstants.maxExtensionLengthMeters -
 		// ArmConstants.minExtensionLengthMeters);
@@ -159,7 +159,7 @@ public class ArmSubsystem extends SubsystemBase {
 	 * Returns the angle of the arm in degrees. Zero degrees being parallel to the
 	 * floor. CWW+
 	 */
-	public double getArmPitch() {
+	public double getPitchMotor() {
 		return pitchEncoder.getPosition();
 	}
 
@@ -214,8 +214,8 @@ public class ArmSubsystem extends SubsystemBase {
 			initSim();
 			simInit = true;
 		}
-		var armvolts = armPitch.get() * RobotController.getInputVoltage();
-		var prismaticvolts = armExtension.get() * RobotController.getInputVoltage();
+		var armvolts = pitchMotor.get() * RobotController.getInputVoltage();
+		var prismaticvolts = telescopeMotor.get() * RobotController.getInputVoltage();
 		if (RobotState.isDisabled()) {
 			armvolts = 0;
 			prismaticvolts = 0;
