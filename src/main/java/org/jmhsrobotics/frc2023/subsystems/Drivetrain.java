@@ -66,6 +66,8 @@ public class Drivetrain extends SubsystemBase {
 	// private double commandedZRotation = 0.0;
 	// private boolean commandedAllowTurnInPlace = false;
 
+	// private double yawAngularVelocity = 0.0;
+	// private double pitchAngularVelocity = 0.0;
 	// private double angularVelocity = 0.0;
 
 	// private boolean headingLock = false;
@@ -188,9 +190,6 @@ public class Drivetrain extends SubsystemBase {
 		// 30 more degrees.
 		// double relativeChange = RobotMath.relativeAngle(this.previousAngle, yaw);
 
-		// Get the angular velocity, denoised with a diminishing average loop.
-		// The change in angle divided by the change in time since that last reading is
-		// a good approximation of the instantaneous velocity.
 		// spotless:off
 		// this.angularVelocity = this.angularVelocityHandler.feed(
 		// 	relativeChange / RobotConstants.secondsPerTick
@@ -208,7 +207,7 @@ public class Drivetrain extends SubsystemBase {
 		// but there is no input, and there is no angular velocity.
 		// Therefore, this if statement catches when the robot has just stopped after
 		// having been spun by the driver.
-		if (this.isTurning && noCurvatureInput && !this.hasAngularVelocity()) {
+		if (this.isTurning && noCurvatureInput && !this.hasYawAngularVelocity()) {
 			this.isTurning = false; // Register the robot as not turning
 			this.lockCurrentHeading(); // Lock the current heading
 			this.resetHeadingLockPID(); // Stop the integral value from running off
@@ -289,7 +288,7 @@ public class Drivetrain extends SubsystemBase {
 	// return this.angularVelocity;
 	// }
 
-	public boolean hasAngularVelocity() {
+	public boolean hasYawAngularVelocity() {
 		// spotless:off
 		return !RobotMath.approximatelyZero(
 			RobotContainer.getTelemetry().getYawVelocity(), 

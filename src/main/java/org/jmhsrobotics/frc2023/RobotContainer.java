@@ -18,8 +18,12 @@ import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 // import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
-import org.jmhsrobotics.frc2023.subsystems.TelemetrySubsystem;
 import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
+import org.jmhsrobotics.frc2023.subsystems.TelemetrySubsystem;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import org.jmhsrobotics.frc2023.util.LEDs.LEDIdleCommand;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -75,16 +79,16 @@ public class RobotContainer {
 		// driver.getHID()));
 
 		// spotless:off
-		// ledSubsystem.setDefaultCommand(new LEDIdleCommand(
-		// 		ledSubsystem, 
-		// 		() -> drivetrain.getIsTurning()
-		// 	)
-		// );
+		ledSubsystem.setDefaultCommand(new LEDIdleCommand(
+				ledSubsystem, 
+				() -> drivetrain.getIsTurning()
+			)
+		);
 		// spotless:on
 
 		autoSelector = new AutoSelector(this);
 		SmartDashboard.putData(new AlignPeg(drivetrain));
-		SmartDashboard.putData(new CenterChargeStationAuto(drivetrain));
+		SmartDashboard.putData(new CenterChargeStationAuto(drivetrain, ledSubsystem));
 	}
 
 	/**
@@ -106,9 +110,9 @@ public class RobotContainer {
 		driver.start().onTrue(new AutoDriveDistance(drivetrain, -3));
 
 		// driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
-		driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
-
-		driver.x().onTrue(new AutoBalance(drivetrain, true));
+		driver.y().onTrue(new TurnDeltaAngle(drivetrain, 180));
+		driver.a().onTrue(new CenterChargeStationAuto(drivetrain, ledSubsystem));
+		driver.x().onTrue(new AutoBalance(drivetrain, true, ledSubsystem));
 		driver.b().onTrue(new AlignPeg(drivetrain));
 
 		driver.povLeft().onTrue(new CommandArm(armSubsystem, .5, 0));
@@ -129,6 +133,10 @@ public class RobotContainer {
 
 	public Drivetrain getDrivetrain() {
 		return this.drivetrain;
+	}
+
+	public LEDSubsystem getLEDSubsystem() {
+		return this.ledSubsystem;
 	}
 
 	public static TelemetrySubsystem getTelemetry() {

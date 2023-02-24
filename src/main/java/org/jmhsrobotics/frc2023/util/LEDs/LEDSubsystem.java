@@ -296,16 +296,31 @@ public class LEDSubsystem extends SubsystemBase {
 		}
 
 		/**
+		 * Sets the LEDs in the range [startIndex, endIndex) to the given color. Does
+		 * not touch other LEDs.
+		 *
+		 * @param startIndex
+		 *            The index of the first LED in the range (inclusive).
+		 * @param endIndex
+		 *            The index of the last LED in the range (exclusive).
+		 * @param color
+		 *            The color to set the LEDs to.
+		 */
+		public void setSubsetSolidColor(int startIndex, int endIndex, Color color) {
+			for (int i = startIndex; i < endIndex; i++) {
+				this.buffer.setLED(i, color);
+			}
+			this.lights.setData(this.buffer);
+		}
+
+		/**
 		 * Sets the entire LED strip to a given color.
 		 *
 		 * @param color
 		 *            The color to be set to the LED strip.
 		 */
 		public void setSolidColor(Color color) {
-			for (int i = 0; i < this.buffer.getLength(); i++) {
-				this.buffer.setLED(i, color);
-			}
-			this.lights.setData(this.buffer);
+			this.setSubsetSolidColor(0, this.buffer.getLength(), color);
 		}
 
 		/**
