@@ -16,6 +16,8 @@ public class SusanDrivePorts implements IDrivePorts {
 	public final double wheelDiameterInInches = 6;
 	public final IIMUWrapper imu = new NavxIMU(SPI.Port.kMXP);
 
+	public final double driveOpenLoopRampRate = 0.2;
+
 	public final double maxVelocity = 2;
 	public final double maxAcceleration = 2;
 
@@ -23,6 +25,7 @@ public class SusanDrivePorts implements IDrivePorts {
 			new Constraints(maxVelocity, maxAcceleration));
 	public PIDConfig keepHeadingPID = new PIDConfig(0.010, 0.010, 0);
 	public PIDConfig balancingPID = new PIDConfig(0.4, 0.2, 0);
+	public PIDConfig turnDeltaAnglePID = new PIDConfig(0.014, 0.06, 0.001);
 
 	public final double balanceCreepSpeed = 0.1;
 
@@ -37,6 +40,10 @@ public class SusanDrivePorts implements IDrivePorts {
 	@Override
 	public PIDConfig getBalancingPID() {
 		return balancingPID;
+	}
+	@Override
+	public PIDConfig getTurnDeltaAnglePID() {
+		return turnDeltaAnglePID;
 	}
 
 	@Override
@@ -87,6 +94,11 @@ public class SusanDrivePorts implements IDrivePorts {
 	@Override
 	public double getWheelDiameterInInches() {
 		return wheelDiameterInInches;
+	}
+
+	@Override
+	public double getDriveOpenLoopRampRate() {
+		return driveOpenLoopRampRate;
 	}
 
 	@Override

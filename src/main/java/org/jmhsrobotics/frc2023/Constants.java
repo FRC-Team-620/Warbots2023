@@ -43,9 +43,6 @@ public final class Constants {
 	}
 
 	public static class TurnAngleCommandConstants {
-		public static final double kPTurnAngle = 0.014;
-		public static final double kITurnAngle = 0.06;
-		public static final double kDTurnAngle = 0.001;
 
 		// Basically a triangle profile
 		public static final double maxAngularVelocity = 1000.0; // robot will not hit this

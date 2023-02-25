@@ -21,6 +21,9 @@ public interface IDrivePorts {
 	public ProfiledPIDConfig getAutoDistanceProfiledPID();
 	public PIDConfig getKeepHeadingPID();
 	public PIDConfig getBalancingPID();
+	public PIDConfig getTurnDeltaAnglePID();
+
+	public double getDriveOpenLoopRampRate();
 
 	public double getMaxVelocity();
 	public double getMaxAcceleration();

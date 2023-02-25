@@ -201,7 +201,7 @@ public class Drivetrain extends SubsystemBase {
 		// this.previousAngle = yaw;
 
 		// Check whether there is curvature input
-		boolean noCurvatureInput = RobotMath.approximatelyZero(this.commandedCurvature);
+		boolean noCurvatureInput = RobotMath.approximatelyZero(this.commandedCurvature, 0.02);
 
 		// If the robot is still registering itself as spinning (so it was spinning),
 		// but there is no input, and there is no angular velocity.
@@ -260,7 +260,7 @@ public class Drivetrain extends SubsystemBase {
 		// through the various motor methods:
 		// Open loop ramp rate (time it takes to reach max acceleration in seconds) =
 		// 0.2
-		motor.setOpenLoopRampRate(0.2);
+		motor.setOpenLoopRampRate(Constants.driveports.getDriveOpenLoopRampRate());
 		// Smart current limit (limits on the current motors can draw even under full
 		// load) = 60
 		motor.setSmartCurrentLimit(60);

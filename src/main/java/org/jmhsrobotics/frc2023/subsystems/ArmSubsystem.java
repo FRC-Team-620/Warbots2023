@@ -30,7 +30,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArmSubsystem extends SubsystemBase {
 	// Set the motors which power the basic functions of the arm
-	// private Solenoid solenoid = new Solenoid(PneumaticsModuleType.REVPH, 42);
 	private CANSparkMax pitchMotor = new CANSparkMax(Constants.driveports.getArmAngleCANId(), MotorType.kBrushless);
 	private CANSparkMax telescopeMotor = new CANSparkMax(Constants.driveports.getArmExtensionCANId(),
 			MotorType.kBrushless);
@@ -55,15 +54,17 @@ public class ArmSubsystem extends SubsystemBase {
 		armfeedforward = new ArmFeedforward(0, 0.46, 0.09); // Calculated from https://www.reca.lc/arm
 		// TODO: MAke sure to construct profiledExtensionPID and profiledExtensionPID!!!
 		profiledAnglePID = new ProfiledPIDController(0.05, 0.01, 0.02, new Constraints(90, 360));
-		profiledExtensionPID = new ProfiledPIDController(25, 0, 1, new Constraints(1, 0));
+		profiledExtensionPID = new ProfiledPIDController(2, 0, 1, new Constraints(1, 0));
 		SmartDashboard.putData("Wristpid", profiledAnglePID);
-		SmartDashboard.putData("lengthpid", profiledExtensionPID);
+		SmartDashboard.putData("Lengthpid", profiledExtensionPID);
 		// Create Mech2s display of Arm.
 		// the mechanism root node
 		init2d();
 		// Set Current Limits
 		pitchMotor.setSmartCurrentLimit(40);
 		telescopeMotor.setSmartCurrentLimit(40);
+
+		telescopeMotor.getEncoder().setPosition(0);
 		// controlMode = ControlMode.STOPPED;
 		// System.out.println("HELLLLLLLOOOOO");
 	}
@@ -84,6 +85,9 @@ public class ArmSubsystem extends SubsystemBase {
 	public void periodic() {
 		SmartDashboard.putString("arm/controlMode", getControlMode().toString());
 		SmartDashboard.putNumber("ArmSubsystem/PitchAbsoluteEncoderPosition", pitchEncoder.getPosition());
+		// SmartDashboard.putNumber("ArmSubsystem/StringPotPosition",
+		// extensionEncoder.getPosition());
+		SmartDashboard.putNumber("ArmSubsystem/RelativeEncoderExtension", telescopeMotor.getEncoder().getPosition());
 
 		// Update Mech2d Display
 		m_wrist.setAngle(pitchEncoder.getPosition() - 90);
@@ -103,7 +107,7 @@ public class ArmSubsystem extends SubsystemBase {
 				profiledAnglePID.getSetpoint().velocity) + profiledAnglePID.calculate(pitchEncoder.getPosition()))
 				/ 12); // TODO fix janky volts hack
 
-		telescopeMotor.set(profiledExtensionPID.calculate(extensionEncoder.getPosition()) / 12.0);
+		telescopeMotor.set(profiledExtensionPID.calculate(telescopeMotor.getEncoder().getPosition()));
 		// armExtension.set(profiledExtensionPID.getGoal().position);
 		SmartDashboard.putNumber("lengthpid/spot", profiledExtensionPID.calculate(extensionEncoder.getPosition()));
 		SmartDashboard.putNumber("Wristpid/position", pitchEncoder.getPosition());
@@ -137,8 +141,8 @@ public class ArmSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("Wristpid/targetAngleDeg", targetAngleDeg);
 
 		if (controlMode != ControlMode.CLOSED_LOOP) {
-			profiledExtensionPID.setGoal(new State(extensionEncoder.getPosition(), 0));
-			profiledExtensionPID.reset(new State(extensionEncoder.getPosition(), 0));
+			profiledExtensionPID.setGoal(new State(pitchEncoder.getPosition(), 0));
+			profiledExtensionPID.reset(new State(pitchEncoder.getPosition(), 0));
 		}
 		controlMode = ControlMode.CLOSED_LOOP;
 	}
@@ -148,14 +152,16 @@ public class ArmSubsystem extends SubsystemBase {
 		// targetDistanceMeters = MathUtil.clamp(targetDistanceMeters, 0,
 		// ArmConstants.maxExtensionLengthMeters -
 		// ArmConstants.minExtensionLengthMeters);
+		targetDistanceMeters = MathUtil.clamp(targetDistanceMeters, 0, 92 - 0);
+		// TODO: not using meters using encoder counts so switch to meters
 		profiledExtensionPID.setGoal(new State(targetDistanceMeters, 0)); // TODO: Potential Bug because we reset the
 																			// goal we set here when switching into
 																			// closed loop control
 		SmartDashboard.putNumber("lengthpid/targetLength", targetDistanceMeters);
 
 		if (controlMode != ControlMode.CLOSED_LOOP) {
-			profiledAnglePID.setGoal(new State(pitchEncoder.getPosition(), 0));
-			profiledAnglePID.reset(new State(pitchEncoder.getPosition(), 0));
+			profiledAnglePID.setGoal(new State(extensionEncoder.getPosition(), 0));
+			profiledAnglePID.reset(new State(extensionEncoder.getPosition(), 0));
 		}
 		controlMode = ControlMode.CLOSED_LOOP;
 	}
