@@ -34,8 +34,8 @@ public class DrivePortsObject {
 	// spotless:off
     private static final Map<RobotType, String> layoutFilenames = Map.of(
         RobotType.SUSAN,    "DrivePortsLayouts/SusanDrivePorts.json",
-        RobotType.BABY_BOT, "DrivePortsLayouts/SusanDrivePorts.json",
-        RobotType.BOT_2020, "DrivePortsLayouts/SusanDrivePorts.json"
+        RobotType.BABY_BOT, "DrivePortsLayouts/BabyBotDrivePorts.json",
+        RobotType.BOT_2020, "DrivePortsLayouts/Bot2020DrivePorts.json"
     );
     // spotless:on
 
@@ -47,9 +47,7 @@ public class DrivePortsObject {
 
 		} catch (IOException e) {
 
-			DataLogManager.log("Failed to read driveports layout JSON (default to BabyBot).");
-			System.out.println("ERROR: Failed to read driveports layout JSON.");
-			System.err.println("WARNING!: DEFAULTED TO BABYBOT");
+			DataLogManager.log("WARNING: Failed to read driveports layout JSON (default to BabyBot).");
 
 			try {
 
@@ -57,8 +55,7 @@ public class DrivePortsObject {
 
 			} catch (IOException eFatal) {
 
-				DataLogManager.log("FATAL: Failed to read defaulted BabyBot layout JSON.");
-				System.out.println("FATAL ERROR: Failed to read the defaulted BabyBot layout JSON.");
+				DataLogManager.log("ERROR: Failed to read defaulted BabyBot layout JSON.");
 
 				return;
 			}
@@ -186,8 +183,7 @@ public class DrivePortsObject {
 		        pigeonConfig.EnableCompass = false;
                 return new PigeonIMU(30, pigeonConfig);
             default:
-                DataLogManager.log("Failed to define IMU (defaulted to NAVX).");
-                System.out.println("WARNING: Failed to define IMU: defaulted to NAVX.");
+                DataLogManager.log("WARNING: Failed to define IMU from JSON (defaulted to NAVX).");
                 return new NavxIMU(SPI.Port.kMXP);
         }
         // spotless:on
