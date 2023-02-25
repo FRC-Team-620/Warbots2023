@@ -67,6 +67,8 @@ public class RobotContainer {
 		// command that uses that subsystem is running
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
 		// armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem,
+		// armSubsystem.setDefaultCommand(new TelopArmOpenLoop(armSubsystem,
+		// operator::getLeftX, operator::getLeftY));
 		armSubsystem.setDefaultCommand(new TeleopArm(armSubsystem, operator::getLeftX, operator::getLeftY));
 		// driver.getHID()));
 
