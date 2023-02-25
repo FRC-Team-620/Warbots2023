@@ -32,10 +32,10 @@ public class DrivePortsObject {
 
 	private IIMUWrapper imu;
 
-	private static final String layoutJSONDirectoryPath = Filesystem.getDeployDirectory().getAbsolutePath()
-			+ "/portlayouts";
-
 	// spotless:off
+	private static final String layoutJSONDirectoryPath = 
+		Filesystem.getDeployDirectory().getAbsolutePath() + "/portlayouts";
+
     private static final Map<RobotType, String> layoutJSONFilenames = Map.of(
         RobotType.SUSAN,    DrivePortsObject.layoutJSONDirectoryPath + "/SusanDrivePorts.json",
         RobotType.BABY_BOT, DrivePortsObject.layoutJSONDirectoryPath + "/BabyBotDrivePorts.json",
