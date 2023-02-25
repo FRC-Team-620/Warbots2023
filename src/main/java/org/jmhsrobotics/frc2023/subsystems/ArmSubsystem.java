@@ -64,6 +64,7 @@ public class ArmSubsystem extends SubsystemBase {
 		// Set Current Limits
 		pitchMotor.setSmartCurrentLimit(40);
 		telescopeMotor.setSmartCurrentLimit(40);
+		controlMode = ControlMode.STOPPED;
 	}
 
 	public void init2d() {
@@ -107,6 +108,7 @@ public class ArmSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("lengthpid/output", telescopeMotor.get());
 		SmartDashboard.putNumber("Wristpid/output", pitchMotor.get());
 		SmartDashboard.putNumber("lengthpid/setpoint", profiledExtensionPID.getSetpoint().position);
+		SmartDashboard.putNumber("ArmSubsystem/PitchAbsoluteEncoderPosition", pitchEncoder.getPosition());
 	}
 
 	/**

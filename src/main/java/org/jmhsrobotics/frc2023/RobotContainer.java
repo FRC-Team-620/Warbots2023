@@ -6,10 +6,8 @@ package org.jmhsrobotics.frc2023;
 
 import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
-import org.jmhsrobotics.frc2023.commands.CommandArm;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
-import org.jmhsrobotics.frc2023.commands.TeleopArm;
 import org.jmhsrobotics.frc2023.commands.TurnDeltaAngle;
 import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
@@ -28,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -67,7 +66,8 @@ public class RobotContainer {
 		// command that uses that subsystem is running
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
 		// armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem,
-		armSubsystem.setDefaultCommand(new TeleopArm(armSubsystem, operator::getLeftX, operator::getLeftY));
+		// armSubsystem.setDefaultCommand(new TeleopArm(armSubsystem,
+		// operator::getLeftX, operator::getLeftY));
 		// driver.getHID()));
 
 		// spotless:off
@@ -96,9 +96,8 @@ public class RobotContainer {
 	private void configureBindings() {
 		// Triggers are a thing that we might need to use so keep that in mind
 		// driver.b().onTrue(new ArmCommand(armSubsystem, driver.getHID()));
-		// driver.leftBumper().onTrue(
-		// new InstantCommand(() ->
-		// grabberSubsystem.setGrabberState(!grabberSubsystem.getGrabberState())));
+		driver.leftBumper().onTrue(
+				new InstantCommand(() -> grabberSubsystem.setGrabberState(!grabberSubsystem.getGrabberState())));
 		driver.start().onTrue(new AutoDriveDistance(drivetrain, -3));
 
 		// driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
@@ -107,9 +106,9 @@ public class RobotContainer {
 		driver.x().onTrue(new AutoBalance(drivetrain, true, ledSubsystem));
 		driver.b().onTrue(new AlignPeg(drivetrain));
 
-		driver.povLeft().onTrue(new CommandArm(armSubsystem, .5, 0));
-		driver.povUp().onTrue(new CommandArm(armSubsystem, 1, 45));
-		driver.povDown().onTrue(new CommandArm(armSubsystem, 0, -45));
+		// driver.povLeft().onTrue(new CommandArm(armSubsystem, .5, 0));
+		// driver.povUp().onTrue(new CommandArm(armSubsystem, 1, 45));
+		// driver.povDown().onTrue(new CommandArm(armSubsystem, 0, -45));
 	}
 
 	/**

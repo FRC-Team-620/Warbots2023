@@ -5,10 +5,10 @@ import edu.wpi.first.wpilibj.SPI;
 
 public class BabybotDrivePorts implements IDrivePorts {
 	// TODO:All PID loops require tuning for
-	public final int leftFrontMotorCANId = 4;
-	public final int rightFrontMotorCANId = 3;
-	public final int leftRearMotorCANId = 2;
-	public final int rightRearMotorCANId = 1;
+	public final int leftFrontMotorCANId = 1;
+	public final int rightFrontMotorCANId = 2;
+	public final int leftRearMotorCANId = 3;
+	public final int rightRearMotorCANId = 4;
 	public final int winchMotorCANId = 6;
 	public final int pitchMotorCANId = 5;
 	public final int grabberMotorCANId = 7;

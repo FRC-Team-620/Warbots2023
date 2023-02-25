@@ -13,6 +13,8 @@ import java.util.Arrays;
 import java.util.Map;
 
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import org.jmhsrobotics.frc2023.Constants.RobotType;
 // import org.jmhsrobotics.frc2023.util.Alert.AlertType;
 
@@ -38,6 +40,21 @@ public class DetectRobot {
 			} else {
 				System.out.println("Identified MAC address as " + robot);
 			}
+
+			switch (robot) {
+				case SUSAN :
+					SmartDashboard.putString("Detect/Robot", "Susan");
+					break;
+				case BABY_BOT :
+					SmartDashboard.putString("Detect/Robot", "Baby Bot");
+					break;
+				case BOT_2020 :
+					SmartDashboard.putString("Detect/Robot", "Bot 2020");
+					break;
+				default :
+					SmartDashboard.putString("Detect/Robot", "Unknown");
+			}
+
 			return robot;
 		} catch (SocketException | NullPointerException err) {
 			// err.printStackTrace();
