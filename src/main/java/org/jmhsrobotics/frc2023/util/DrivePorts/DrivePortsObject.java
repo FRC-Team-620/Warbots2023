@@ -1,4 +1,4 @@
-package org.jmhsrobotics.frc2023.util.DrivePorts;
+package org.jmhsrobotics.frc2023.util.driveports;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,6 +19,7 @@ import com.ctre.phoenix.sensors.Pigeon2Configuration;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.SPI;
 
 public class DrivePortsObject {
@@ -31,32 +32,27 @@ public class DrivePortsObject {
 
 	private IIMUWrapper imu;
 
+	private static final String layoutJSONDirectoryPath = Filesystem.getDeployDirectory().getAbsolutePath()
+			+ "/portlayouts";
+
 	// spotless:off
-    private static final Map<RobotType, String> layoutFilenames = Map.of(
-        RobotType.SUSAN,    "DrivePortsLayouts/SusanDrivePorts.json",
-        RobotType.BABY_BOT, "DrivePortsLayouts/BabyBotDrivePorts.json",
-        RobotType.BOT_2020, "DrivePortsLayouts/Bot2020DrivePorts.json"
+    private static final Map<RobotType, String> layoutJSONFilenames = Map.of(
+        RobotType.SUSAN,    DrivePortsObject.layoutJSONDirectoryPath + "/SusanDrivePorts.json",
+        RobotType.BABY_BOT, DrivePortsObject.layoutJSONDirectoryPath + "/BabyBotDrivePorts.json",
+        RobotType.BOT_2020, DrivePortsObject.layoutJSONDirectoryPath + "/Bot2020DrivePorts.json"
     );
     // spotless:on
 
 	public DrivePortsObject(RobotType robot) {
 
 		try {
-
-			this.parseJSON(layoutFilenames.get(robot));
-
+			this.parseJSON(DrivePortsObject.layoutJSONFilenames.get(robot));
 		} catch (IOException e) {
-
 			DataLogManager.log("WARNING: Failed to read driveports layout JSON (default to BabyBot).");
-
 			try {
-
-				this.parseJSON(layoutFilenames.get(RobotType.BABY_BOT));
-
+				this.parseJSON(DrivePortsObject.layoutJSONFilenames.get(RobotType.BABY_BOT));
 			} catch (IOException eFatal) {
-
 				DataLogManager.log("ERROR: Failed to read defaulted BabyBot layout JSON.");
-
 				return;
 			}
 		}
@@ -70,17 +66,14 @@ public class DrivePortsObject {
 	}
 
 	public ProfiledPIDConfig getAutoDistanceProfiledPID() {
-		// TODO Auto-generated method stub
 		return this.autoDistanceProfiledPID;
 	}
 
 	public PIDConfig getKeepHeadingPID() {
-		// TODO Auto-generated method stub
 		return this.keepHeadingPID;
 	}
 
 	public PIDConfig getBalancingPID() {
-		// TODO Auto-generated method stub
 		return this.balancingPID;
 	}
 
@@ -113,17 +106,14 @@ public class DrivePortsObject {
 	}
 
 	public double getMaxVelocity() {
-		// TODO Auto-generated method stub
 		return this.parsedJSONObject.getDouble("maxVelocity");
 	}
 
 	public double getMaxAcceleration() {
-		// TODO Auto-generated method stub
 		return this.parsedJSONObject.getDouble("maxAcceleration");
 	}
 
 	public double getBalanceCreepSpeed() {
-		// TODO Auto-generated method stub
 		return this.parsedJSONObject.getDouble("balanceCreepSpeed");
 	}
 

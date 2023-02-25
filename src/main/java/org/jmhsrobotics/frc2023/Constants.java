@@ -4,10 +4,10 @@
 
 package org.jmhsrobotics.frc2023;
 
+import org.jmhsrobotics.frc2023.util.driveports.DetectRobot;
+import org.jmhsrobotics.frc2023.util.driveports.DrivePortsObject;
+
 import edu.wpi.first.math.util.Units;
-import org.jmhsrobotics.frc2023.util.DetectRobot;
-// import org.jmhsrobotics.frc2023.util.IDrivePorts;
-import org.jmhsrobotics.frc2023.util.DrivePorts.DrivePortsObject;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
