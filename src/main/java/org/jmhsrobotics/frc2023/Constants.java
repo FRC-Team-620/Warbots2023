@@ -6,7 +6,8 @@ package org.jmhsrobotics.frc2023;
 
 import edu.wpi.first.math.util.Units;
 import org.jmhsrobotics.frc2023.util.DetectRobot;
-import org.jmhsrobotics.frc2023.util.IDrivePorts;
+// import org.jmhsrobotics.frc2023.util.IDrivePorts;
+import org.jmhsrobotics.frc2023.util.DrivePorts.DrivePortsObject;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -77,7 +78,7 @@ public final class Constants {
 
 	public static RobotType kRobotType = DetectRobot.identifyRobot(); // TODO: Better naming Scheme?
 
-	public static final IDrivePorts driveports = IDrivePorts.getDrivePorts(kRobotType);
+	public static final DrivePortsObject driveports = new DrivePortsObject(kRobotType);
 
 	public static class WheelConstants {
 		public static final double wheelDiameterInInches = driveports.getWheelDiameterInInches();
