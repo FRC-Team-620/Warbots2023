@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class GrabberSubsystem extends SubsystemBase {
 
-	private Solenoid grabberPiston = new Solenoid(PneumaticsModuleType.REVPH,
+	private Solenoid grabberPiston = new Solenoid(42, PneumaticsModuleType.REVPH,
 			Constants.driveports.getIntakeSolenoidId());
 	private CANSparkMax grabberMotor = new CANSparkMax(Constants.driveports.getIntakeCANId(), MotorType.kBrushless);
 

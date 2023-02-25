@@ -16,14 +16,30 @@ public class Bot2020DrivePorts implements IDrivePorts {
 
 	public final double wheelDiameterInInches = 6;
 
+	public final double driveOpenLoopRampRate = 0.2;
+
 	public final double maxVelocity = 2;
 	public final double maxAcceleration = 2;
 
 	public ProfiledPIDConfig autoDistanceProfiledPID = new ProfiledPIDConfig(2, 0.2, 0.0,
 			new Constraints(maxVelocity, maxAcceleration));
 	// spotless:off
-	public PIDConfig keepHeadingPID = new PIDConfig(0.014, 0.01, 0.001);
-	public PIDConfig balancingPID = new PIDConfig(0.4, 0.3, 0);
+	public PIDConfig keepHeadingPID = new PIDConfig(
+		0.014, 
+		0.01, 
+		0.001
+	);
+	public PIDConfig balancingPID = new PIDConfig(
+		0.4, 
+		0.3, 
+		0
+	);
+	public PIDConfig turnDeltaAnglePID = new PIDConfig(
+		0.014,
+		0.06,
+		0.001
+	);
+
 	// spotless:on
 
 	// public final IIMUWrapper imu = new NavxIMU(SPI.Port.kMXP);
@@ -47,6 +63,10 @@ public class Bot2020DrivePorts implements IDrivePorts {
 	@Override
 	public PIDConfig getBalancingPID() {
 		return balancingPID;
+	}
+	@Override
+	public PIDConfig getTurnDeltaAnglePID() {
+		return turnDeltaAnglePID;
 	}
 
 	@Override
@@ -97,6 +117,11 @@ public class Bot2020DrivePorts implements IDrivePorts {
 	@Override
 	public double getWheelDiameterInInches() {
 		return wheelDiameterInInches;
+	}
+
+	@Override
+	public double getDriveOpenLoopRampRate() {
+		return driveOpenLoopRampRate;
 	}
 
 	@Override
