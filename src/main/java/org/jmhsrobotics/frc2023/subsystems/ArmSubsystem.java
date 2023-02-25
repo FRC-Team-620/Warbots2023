@@ -82,9 +82,13 @@ public class ArmSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		// System.out.println("PERIODDIC");
-
+		SmartDashboard.putString("arm/controlMode", getControlMode().toString());
 		SmartDashboard.putNumber("ArmSubsystem/PitchAbsoluteEncoderPosition", pitchEncoder.getPosition());
+
+		// Update Mech2d Display
+		m_wrist.setAngle(pitchEncoder.getPosition() - 90);
+		m_elevator.setLength(extensionEncoder.getPosition());
+
 		if (getControlMode() == ControlMode.STOPPED) {
 			pitchMotor.set(0); // Keeps motor safety watchdog happy
 			telescopeMotor.set(0);
@@ -101,9 +105,6 @@ public class ArmSubsystem extends SubsystemBase {
 
 		telescopeMotor.set(profiledExtensionPID.calculate(extensionEncoder.getPosition()) / 12.0);
 		// armExtension.set(profiledExtensionPID.getGoal().position);
-		// Update Mech2d Display
-		m_wrist.setAngle(pitchEncoder.getPosition() - 90);
-		m_elevator.setLength(extensionEncoder.getPosition());
 		SmartDashboard.putNumber("lengthpid/spot", profiledExtensionPID.calculate(extensionEncoder.getPosition()));
 		SmartDashboard.putNumber("Wristpid/position", pitchEncoder.getPosition());
 		SmartDashboard.putNumber("lengthpid/position", extensionEncoder.getPosition());

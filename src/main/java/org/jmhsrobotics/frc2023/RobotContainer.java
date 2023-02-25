@@ -8,6 +8,7 @@ import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
+import org.jmhsrobotics.frc2023.commands.TelopArmOpenLoop;
 import org.jmhsrobotics.frc2023.commands.TurnDeltaAngle;
 import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
@@ -65,9 +66,14 @@ public class RobotContainer {
 		// Setting up default command which is a command that runs every time no other
 		// command that uses that subsystem is running
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
-		// armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem,
+
+		// OpenLoop Control!
+		armSubsystem.setDefaultCommand(new TelopArmOpenLoop(armSubsystem, operator::getLeftX, operator::getLeftY));
+
+		// Closed Loop
 		// armSubsystem.setDefaultCommand(new TeleopArm(armSubsystem,
 		// operator::getLeftX, operator::getLeftY));
+
 		// driver.getHID()));
 
 		// spotless:off
