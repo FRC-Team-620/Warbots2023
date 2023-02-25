@@ -24,6 +24,8 @@ import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
 import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
+import org.jmhsrobotics.frc2023.oi.ControlBoard;
+import org.jmhsrobotics.frc2023.oi.SingleControl;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 
 /**
@@ -38,7 +40,8 @@ public class RobotContainer {
 	private static final TelemetrySubsystem telemetry = new TelemetrySubsystem();
 
 	// The robot's subsystems and commands are defined here...
-	private final CommandXboxController driver = new CommandXboxController(OperatorConstants.driverControllerPort);
+	private final ControlBoard control = new SingleControl();
+	//private final CommandXboxController driver = new CommandXboxController(OperatorConstants.driverControllerPort);
 	public final Drivetrain drivetrain = new Drivetrain();
 	public final LEDSubsystem ledSubsystem = new LEDSubsystem();
 	// private final ArmSubsystem armSubsystem = new ArmSubsystem();
@@ -56,7 +59,7 @@ public class RobotContainer {
 		configureBindings();
 		// Setting up default command which is a command that runs every time no other
 		// command that uses that subsystem is running
-		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
+		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, control));
 
 		// spotless:off
 		// ledSubsystem.setDefaultCommand(new LEDIdleCommand(
