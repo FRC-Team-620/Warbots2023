@@ -64,6 +64,7 @@ public class ArmSubsystem extends SubsystemBase {
 		// Set Current Limits
 		pitchMotor.setSmartCurrentLimit(40);
 		telescopeMotor.setSmartCurrentLimit(40);
+		controlMode = ControlMode.STOPPED;
 	}
 
 	public void init2d() {
@@ -81,6 +82,7 @@ public class ArmSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		SmartDashboard.putString("arm/controlMode", getControlMode().toString());
+		SmartDashboard.putNumber("ArmSubsystem/PitchAbsoluteEncoderPosition", pitchEncoder.getPosition());
 
 		// Update Mech2d Display
 		m_wrist.setAngle(pitchEncoder.getPosition() - 90);
@@ -110,6 +112,7 @@ public class ArmSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("lengthpid/output", telescopeMotor.get());
 		SmartDashboard.putNumber("Wristpid/output", pitchMotor.get());
 		SmartDashboard.putNumber("lengthpid/setpoint", profiledExtensionPID.getSetpoint().position);
+		SmartDashboard.putNumber("ArmSubsystem/PitchAbsoluteEncoderPosition", pitchEncoder.getPosition());
 	}
 
 	/**

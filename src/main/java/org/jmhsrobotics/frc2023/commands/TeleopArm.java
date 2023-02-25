@@ -55,6 +55,7 @@ public class TeleopArm extends CommandBase {
 		// that it auto runs when everything starts up
 		// Does that make sense?
 		// armSubsystem.setDefaultCommand(new TelopArm());
+
 		SmartDashboard.putNumber("arm_info/driverDemandedExtension", driverDemandedExtension);
 		double inputArmExtension = MathUtil.applyDeadband(linearSpeed.get(), 0.2);
 		if (inputArmExtension != 0) {
@@ -65,6 +66,7 @@ public class TeleopArm extends CommandBase {
 		if (inputArmPitch != 0) {
 			armSubsystem.setPitch(armSubsystem.getPitchMotor() + (driverDemandedSpeed * maxPitchSpeedDegreesSec));
 		}
+
 		// armSubsystem.setArmExtension(linearSpeed.get());
 
 		// This needs to be done inside of the Robot container. otherwise you would need
