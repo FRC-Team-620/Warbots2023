@@ -68,7 +68,7 @@ public class RobotContainer {
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
 
 		// OpenLoop Control!
-		armSubsystem.setDefaultCommand(new TelopArmOpenLoop(armSubsystem, operator::getLeftX, operator::getLeftY));
+		armSubsystem.setDefaultCommand(new TelopArmOpenLoop(armSubsystem, operator::getLeftY, operator::getRightY));
 
 		// Closed Loop
 		// armSubsystem.setDefaultCommand(new TeleopArm(armSubsystem,

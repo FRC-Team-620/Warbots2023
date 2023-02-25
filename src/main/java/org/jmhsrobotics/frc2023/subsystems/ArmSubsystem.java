@@ -64,7 +64,7 @@ public class ArmSubsystem extends SubsystemBase {
 		// Set Current Limits
 		pitchMotor.setSmartCurrentLimit(40);
 		telescopeMotor.setSmartCurrentLimit(40);
-		controlMode = ControlMode.STOPPED;
+		// controlMode = ControlMode.STOPPED;
 		// System.out.println("HELLLLLLLOOOOO");
 	}
 
