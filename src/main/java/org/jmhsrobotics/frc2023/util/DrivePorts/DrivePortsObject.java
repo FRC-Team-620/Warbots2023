@@ -11,6 +11,7 @@ import org.jmhsrobotics.frc2023.util.NavxIMU;
 import org.jmhsrobotics.frc2023.util.PIDConfig;
 import org.jmhsrobotics.frc2023.util.PigeonIMU;
 import org.jmhsrobotics.frc2023.util.ProfiledPIDConfig;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -21,10 +22,12 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DrivePortsObject {
 
 	private JSONObject parsedJSONObject;
+	private boolean usingDefaultConfig = false;
 
 	private ProfiledPIDConfig autoDistanceProfiledPID;
 	private PIDConfig keepHeadingPID;
@@ -33,29 +36,36 @@ public class DrivePortsObject {
 	private IIMUWrapper imu;
 
 	// spotless:off
-	private static final String layoutJSONDirectoryPath = 
+	private static final String layoutDirectoryPath = 
 		Filesystem.getDeployDirectory().getAbsolutePath() + "/portlayouts";
 
-    private static final Map<RobotType, String> layoutJSONFilenames = Map.of(
-        RobotType.SUSAN,    DrivePortsObject.layoutJSONDirectoryPath + "/SusanDrivePorts.json",
-        RobotType.BABY_BOT, DrivePortsObject.layoutJSONDirectoryPath + "/BabyBotDrivePorts.json",
-        RobotType.BOT_2020, DrivePortsObject.layoutJSONDirectoryPath + "/Bot2020DrivePorts.json"
+    private static final Map<RobotType, String> layoutFilenames = Map.of(
+        RobotType.SUSAN,    	"SusanDrivePorts.json",
+        RobotType.BABY_BOT, 	"BabyBotDrivePorts.json",
+        RobotType.BOT_2020, 	"Bot2020DrivePorts.json",
+		/* DEFAULT = Baby Bot */
+		RobotType.UNKNOWN, 		"BabyBotDrivePorts.json"
     );
     // spotless:on
 
 	public DrivePortsObject(RobotType robot) {
 
 		try {
-			this.parseJSON(DrivePortsObject.layoutJSONFilenames.get(robot));
+			this.parsedJSONObject = this.parsePortsLayoutJSON(robot);
 		} catch (IOException e) {
-			DataLogManager.log("WARNING: Failed to read driveports layout JSON (default to BabyBot).");
+			this.usingDefaultConfig = true;
+			DataLogManager.log("WARNING: Failed to read driveports layout JSON, using default config.");
 			try {
-				this.parseJSON(DrivePortsObject.layoutJSONFilenames.get(RobotType.BABY_BOT));
+				this.parsedJSONObject = this.parsePortsLayoutJSON(RobotType.UNKNOWN);
 			} catch (IOException eFatal) {
-				DataLogManager.log("ERROR: Failed to read defaulted BabyBot layout JSON.");
+				DataLogManager.log("ERROR: Failed to read default robot config.");
 				return;
 			}
 		}
+
+		DataLogManager.log("Successfully parsed robot config JSON.");
+
+		SmartDashboard.putString("DrivePorts/robot", this.usingDefaultConfig ? "UNKNOWN" : robot.toString());
 
 		this.autoDistanceProfiledPID = this.parseProfiledPIDConfig("autoDistanceProfiledPID");
 
@@ -63,6 +73,12 @@ public class DrivePortsObject {
 		this.balancingPID = this.parsePIDConfig("balancingPID");
 
 		this.imu = this.parseIMU("imu");
+	}
+
+	/* Access methods */
+
+	public boolean usingDefaultConfig() {
+		return this.usingDefaultConfig;
 	}
 
 	public ProfiledPIDConfig getAutoDistanceProfiledPID() {
@@ -121,11 +137,19 @@ public class DrivePortsObject {
 		return imu;
 	}
 
-	private void parseJSON(String path) throws IOException {
+	/* Private methods */
+
+	private JSONObject parseJSON(String path) throws IOException {
 
 		File jsonFile = new File(path);
 		JSONTokener tokener = new JSONTokener(new FileInputStream(jsonFile));
-		this.parsedJSONObject = new JSONObject(tokener);
+		return new JSONObject(tokener);
+	}
+
+	private JSONObject parsePortsLayoutJSON(RobotType robot) throws IOException {
+
+		String path = layoutDirectoryPath + "/" + layoutFilenames.get(robot);
+		return parseJSON(path);
 	}
 
 	private PIDConfig parsePIDConfig(String key) {
@@ -172,6 +196,8 @@ public class DrivePortsObject {
                 Pigeon2Configuration pigeonConfig = new Pigeon2Configuration();
 		        pigeonConfig.EnableCompass = false;
                 return new PigeonIMU(30, pigeonConfig);
+			case "NONE":
+				return null;
             default:
                 DataLogManager.log("WARNING: Failed to define IMU from JSON (defaulted to NAVX).");
                 return new NavxIMU(SPI.Port.kMXP);
