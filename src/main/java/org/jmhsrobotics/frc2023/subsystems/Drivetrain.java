@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -17,6 +18,7 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -436,28 +438,24 @@ public class Drivetrain extends SubsystemBase {
 
 	@Override
 	public void simulationPeriodic() {
-		return;
+		if (!simInit) {
+			initSim();
+			simInit = true;
+		}
+		m_drivetrainSimulator.setInputs(this.leftFrontMotor.get() * RobotController.getInputVoltage(),
+				this.rightFrontMotor.get() * RobotController.getInputVoltage());
+		m_drivetrainSimulator.update(Constants.kSimUpdateTime);
+		this.leftencsim.setDistance(m_drivetrainSimulator.getLeftPositionMeters());
+		this.leftencsim.setVelocity(m_drivetrainSimulator.getLeftVelocityMetersPerSecond());
 
-		// if (!simInit) {
-		// initSim();
-		// simInit = true;
-		// }
-		// m_drivetrainSimulator.setInputs(this.leftFrontMotor.get() *
-		// RobotController.getInputVoltage(),
-		// this.rightFrontMotor.get() * RobotController.getInputVoltage());
-		// m_drivetrainSimulator.update(Constants.kSimUpdateTime);
-		// this.leftencsim.setDistance(m_drivetrainSimulator.getLeftPositionMeters());
-		// this.leftencsim.setVelocity(m_drivetrainSimulator.getLeftVelocityMetersPerSecond());
+		this.rightencsim.setDistance(m_drivetrainSimulator.getRightPositionMeters());
+		this.rightencsim.setVelocity(m_drivetrainSimulator.getRightVelocityMetersPerSecond());
 
-		// this.rightencsim.setDistance(m_drivetrainSimulator.getRightPositionMeters());
-		// this.rightencsim.setVelocity(m_drivetrainSimulator.getRightVelocityMetersPerSecond());
-
-		// simGryo.getYawGyro()
-		// .setAngle(-MathUtil.inputModulus(m_drivetrainSimulator.getHeading().getDegrees(),
-		// -180, 180)); // TODO
-		// // add
-		// // Gyo
-		// // Vel
-		// // support
+		simGryo.getYawGyro()
+				.setAngle(-MathUtil.inputModulus(m_drivetrainSimulator.getHeading().getDegrees(), -180, 180)); // TODO
+																												// add
+																												// Gyo
+																												// Vel
+																												// support
 	}
 }
