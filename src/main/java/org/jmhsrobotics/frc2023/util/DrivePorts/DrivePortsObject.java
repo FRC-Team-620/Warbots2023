@@ -75,9 +75,11 @@ public class DrivePortsObject {
 			"Successfully parsed robot config JSON for " + robot.toString() 
 			+ " (" + layoutFilenames.get(robot) + ")."
 		);
-		// spotless:on
 
-		SmartDashboard.putString("DrivePorts/robot", this.usingDefaultConfig ? "UNKNOWN" : robot.toString());
+		SmartDashboard.putString("DrivePorts/robot", 
+			this.usingDefaultConfig ? defaultRobot.toString() : robot.toString()
+		);
+		// spotless:on
 
 		this.autoDistanceProfiledPID = this.parseProfiledPIDConfig("autoDistanceProfiledPID");
 
