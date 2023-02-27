@@ -4,28 +4,23 @@
 
 package org.jmhsrobotics.frc2023;
 
-import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
+import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
+import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
+import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
+import org.jmhsrobotics.frc2023.oi.ControlBoard;
+import org.jmhsrobotics.frc2023.oi.SingleControl;
 // import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 import org.jmhsrobotics.frc2023.subsystems.TelemetrySubsystem;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import org.jmhsrobotics.frc2023.commands.TurnDeltaAngle;
-import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
-import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
-import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
-import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
-import org.jmhsrobotics.frc2023.oi.ControlBoard;
-import org.jmhsrobotics.frc2023.oi.CompControl;
-import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -39,7 +34,7 @@ public class RobotContainer {
 	private static final TelemetrySubsystem telemetry = new TelemetrySubsystem();
 
 	// The robot's subsystems and commands are defined here...
-	private final ControlBoard control = new CompControl();
+	private final ControlBoard controlBoard = new SingleControl();
 	// private final CommandXboxController driver = new
 	// CommandXboxController(OperatorConstants.driverControllerPort);
 	public final Drivetrain drivetrain = new Drivetrain();
@@ -59,7 +54,7 @@ public class RobotContainer {
 		configureBindings();
 		// Setting up default command which is a command that runs every time no other
 		// command that uses that subsystem is running
-		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, control));
+		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, controlBoard));
 
 		// spotless:off
 		// ledSubsystem.setDefaultCommand(new LEDIdleCommand(
@@ -90,13 +85,13 @@ public class RobotContainer {
 		// driver.b().onTrue(new ArmCommand(armSubsystem));
 		// driver.leftBumper().onTrue(new InstantCommand(() ->
 		// grabberSubsystem.setGrabberState(!grabberSubsystem.getGrabberState())));
-		driver.start().onTrue(new AutoDriveDistance(drivetrain, -3));
+		// driver.start().onTrue(new AutoDriveDistance(drivetrain, -3));
 
-		// driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
-		driver.y().onTrue(new TurnDeltaAngle(drivetrain, 180));
+		// // driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
+		// driver.y().onTrue(new TurnDeltaAngle(drivetrain, 180));
 
-		driver.x().onTrue(new AutoBalance(drivetrain, true));
-		driver.b().onTrue(new AlignPeg(drivetrain));
+		// driver.x().onTrue(new AutoBalance(drivetrain, true));
+		controlBoard.alignPeg().onTrue(new AlignPeg(drivetrain));
 	}
 
 	/**
