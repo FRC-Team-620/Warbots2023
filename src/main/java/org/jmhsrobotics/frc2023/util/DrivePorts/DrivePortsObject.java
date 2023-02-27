@@ -218,10 +218,10 @@ public class DrivePortsObject {
 			case "NONE":
 				DataLogManager.log("WARNING: IMU is 'NONE' in this preset (it will be stored as null).");
 				return null;
-				
+
             default:
-                DataLogManager.log("WARNING: Failed to define IMU from JSON (defaulted to NAVX).");
-                return new NavxIMU(SPI.Port.kMXP);
+                DataLogManager.log("WARNING: Failed to define IMU from JSON (defaulted to null).");
+                return null;
         }
         // spotless:on
 	}
