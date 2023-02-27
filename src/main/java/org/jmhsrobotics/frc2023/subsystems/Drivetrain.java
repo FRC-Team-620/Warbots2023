@@ -438,9 +438,6 @@ public class Drivetrain extends SubsystemBase {
 
 	@Override
 	public void simulationPeriodic() {
-		if (this.commandedCurvature < 10)
-			return;
-
 		if (!simInit) {
 			initSim();
 			simInit = true;
