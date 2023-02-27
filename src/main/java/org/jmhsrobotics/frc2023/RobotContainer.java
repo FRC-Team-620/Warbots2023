@@ -4,7 +4,6 @@
 
 package org.jmhsrobotics.frc2023;
 
-import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
@@ -25,7 +24,7 @@ import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
 import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
 import org.jmhsrobotics.frc2023.oi.ControlBoard;
-import org.jmhsrobotics.frc2023.oi.SingleControl;
+import org.jmhsrobotics.frc2023.oi.CompControl;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 
 /**
@@ -40,8 +39,9 @@ public class RobotContainer {
 	private static final TelemetrySubsystem telemetry = new TelemetrySubsystem();
 
 	// The robot's subsystems and commands are defined here...
-	private final ControlBoard control = new SingleControl();
-	//private final CommandXboxController driver = new CommandXboxController(OperatorConstants.driverControllerPort);
+	private final ControlBoard control = new CompControl();
+	// private final CommandXboxController driver = new
+	// CommandXboxController(OperatorConstants.driverControllerPort);
 	public final Drivetrain drivetrain = new Drivetrain();
 	public final LEDSubsystem ledSubsystem = new LEDSubsystem();
 	// private final ArmSubsystem armSubsystem = new ArmSubsystem();

@@ -6,16 +6,14 @@ package org.jmhsrobotics.frc2023.commands;
 
 import org.jmhsrobotics.frc2023.oi.ControlBoard;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /** An DriveCommand command that uses an Drivetrain subsystem. */
 public class DriveCommand extends CommandBase {
 	private Drivetrain drivetrain;
-	private ControlBoard control; 
-	//private CommandXboxController controller;
+	private ControlBoard control;
+	// private CommandXboxController controller;
 	private boolean rightStick = false;
 
 	/**

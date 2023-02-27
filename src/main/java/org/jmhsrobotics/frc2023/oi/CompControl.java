@@ -4,13 +4,15 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-public class SingleControl implements ControlBoard {
+public class CompControl implements ControlBoard {
 
-	private CommandXboxController controller;
+	private CommandXboxController driverController;
+	private CommandXboxController operatorController;
 	private final double deadband;
 
-	public SingleControl() {
-		controller = new CommandXboxController(0);
+	public CompControl() {
+		driverController = new CommandXboxController(0);
+		operatorController = new CommandXboxController(1);
 		deadband = 0.1;
 	}
 
@@ -19,69 +21,67 @@ public class SingleControl implements ControlBoard {
 		// The if statement allows for the left and right inputs to be pressed down at
 		// the same time but the one pressed down more
 		// controls the bot
-		return controller.getRightTriggerAxis() > controller.getLeftTriggerAxis()
-				? controller.getRightTriggerAxis()
-				: -controller.getLeftTriggerAxis();
+		return driverController.getLeftTriggerAxis();
 	}
 
 	@Override
 	public boolean isDriveSlow() {
-		return controller.rightBumper().getAsBoolean();
+		return driverController.rightBumper().getAsBoolean();
 	}
 
 	@Override
 	public double driveTurn() {
-		return MathUtil.applyDeadband(controller.getRightX(), deadband);
+		return MathUtil.applyDeadband(driverController.getRightX(), deadband);
 	}
 
 	@Override
 	public boolean isQuickTurn() {
-		return !controller.a().getAsBoolean();
+		return !driverController.a().getAsBoolean();
 	}
 
 	@Override
 	public double armPitch() {
-		return MathUtil.applyDeadband(controller.getLeftY(), deadband);
+		return MathUtil.applyDeadband(operatorController.getLeftY(), deadband);
 	}
 
 	@Override
 	public double armExtend() {
-		return MathUtil.applyDeadband(controller.getLeftX(), deadband);
+		return MathUtil.applyDeadband(operatorController.getLeftX(), deadband);
 	}
 
 	@Override
 	public Trigger armPresetFloor() {
-		return controller.povDown();
+		return operatorController.povDown();
 	}
 
 	@Override
 	public Trigger armPresetMid() {
-		return controller.povLeft();
+		return operatorController.povLeft();
 	}
 
 	@Override
 	public Trigger armPresetHigh() {
-		return controller.povUp();
+		return operatorController.povUp();
 	}
 
 	@Override
 	public Trigger armStop() {
-		return controller.start();
+		return operatorController.start();
 	}
 
 	@Override
 	public Trigger Intake() {
-		return controller.leftBumper();
+		return operatorController.leftBumper();
 	}
 
 	@Override
 	public Trigger armWrist() {
-		return controller.y();
+		return operatorController.y();
 	}
 
 	@Override
 	public Trigger alignPeg() {
-		return controller.x();
+		return operatorController.x();
 	}
 
 }
