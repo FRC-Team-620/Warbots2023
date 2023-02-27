@@ -9,7 +9,9 @@ import org.jmhsrobotics.frc2023.commands.DriveCommand;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
 import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
+import org.jmhsrobotics.frc2023.oi.CompControl;
 import org.jmhsrobotics.frc2023.oi.ControlBoard;
+import org.jmhsrobotics.frc2023.oi.SelectableControlBoard;
 import org.jmhsrobotics.frc2023.oi.SingleControl;
 // import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
@@ -34,7 +36,7 @@ public class RobotContainer {
 	private static final TelemetrySubsystem telemetry = new TelemetrySubsystem();
 
 	// The robot's subsystems and commands are defined here...
-	private final ControlBoard controlBoard = new SingleControl();
+	private final ControlBoard controlBoard;
 	// private final CommandXboxController driver = new
 	// CommandXboxController(OperatorConstants.driverControllerPort);
 	public final Drivetrain drivetrain = new Drivetrain();
@@ -50,6 +52,9 @@ public class RobotContainer {
 	 */
 	public RobotContainer() {
 		SmartDashboard.putData("Scheduler/Drivetrain", drivetrain);
+		SelectableControlBoard selectable = new SelectableControlBoard("single", new SingleControl());
+		selectable.addOption("competition", new CompControl());
+		controlBoard = selectable;
 		// Configure the trigger bindings
 		configureBindings();
 		// Setting up default command which is a command that runs every time no other

@@ -21,7 +21,9 @@ public class CompControl implements ControlBoard {
 		// The if statement allows for the left and right inputs to be pressed down at
 		// the same time but the one pressed down more
 		// controls the bot
-		return driverController.getLeftTriggerAxis();
+				return driverController.getRightTriggerAxis() > driverController.getLeftTriggerAxis()
+				? driverController.getRightTriggerAxis()
+				: -driverController.getLeftTriggerAxis();
 	}
 
 	@Override
