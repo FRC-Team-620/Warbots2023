@@ -54,7 +54,7 @@ public class DrivePortsObject {
 
 		// spotless:off
 		try {
-			this.parsedJSONObject = this.parsePortsLayoutJSON(robot);
+			this.parsedJSONObject = DrivePortsObject.parsePortsLayoutJSON(robot);
 		} catch (IOException e) {
 			this.usingDefaultConfig = true;
 			DataLogManager.log(
@@ -62,7 +62,7 @@ public class DrivePortsObject {
 				+ robot.toString() + " (" + layoutFilenames.get(robot) + "), using default config."
 			);
 			try {
-				this.parsedJSONObject = this.parsePortsLayoutJSON(defaultRobot);
+				this.parsedJSONObject = DrivePortsObject.parsePortsLayoutJSON(defaultRobot);
 			} catch (IOException eFatal) {
 				DataLogManager.log(
 					"ERROR: Failed to read default robot config '" + layoutFilenames.get(defaultRobot) + "'."
@@ -151,20 +151,22 @@ public class DrivePortsObject {
 		return imu;
 	}
 
-	/* Private methods */
+	/* Private static methods */
 
-	private JSONObject parseJSON(String path) throws IOException {
+	private static JSONObject parseJSON(String path) throws IOException {
 
 		File jsonFile = new File(path);
 		JSONTokener tokener = new JSONTokener(new FileInputStream(jsonFile));
 		return new JSONObject(tokener);
 	}
 
-	private JSONObject parsePortsLayoutJSON(RobotType robot) throws IOException {
+	private static JSONObject parsePortsLayoutJSON(RobotType robot) throws IOException {
 
 		String path = layoutDirectoryPath + "/" + layoutFilenames.get(robot);
-		return parseJSON(path);
+		return DrivePortsObject.parseJSON(path);
 	}
+
+	/* Private member methods */
 
 	private PIDConfig parsePIDConfig(String key) {
 
