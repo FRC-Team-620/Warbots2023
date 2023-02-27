@@ -39,6 +39,8 @@ public class DrivePortsObject {
 	private static final String layoutDirectoryPath = 
 		Filesystem.getDeployDirectory().getAbsolutePath() + "/portlayouts";
 
+	private static final RobotType defaultRobot = RobotType.UNKNOWN;
+
     private static final Map<RobotType, String> layoutFilenames = Map.of(
         RobotType.SUSAN,    	"SusanDrivePorts.json",
         RobotType.BABY_BOT, 	"BabyBotDrivePorts.json",
@@ -50,20 +52,30 @@ public class DrivePortsObject {
 
 	public DrivePortsObject(RobotType robot) {
 
+		// spotless:off
 		try {
 			this.parsedJSONObject = this.parsePortsLayoutJSON(robot);
 		} catch (IOException e) {
 			this.usingDefaultConfig = true;
-			DataLogManager.log("WARNING: Failed to read driveports layout JSON, using default config.");
+			DataLogManager.log(
+				"WARNING: Failed to read driveports layout JSON for "
+				+ robot.toString() + " (" + layoutFilenames.get(robot) + "), using default config."
+			);
 			try {
-				this.parsedJSONObject = this.parsePortsLayoutJSON(RobotType.UNKNOWN);
+				this.parsedJSONObject = this.parsePortsLayoutJSON(defaultRobot);
 			} catch (IOException eFatal) {
-				DataLogManager.log("ERROR: Failed to read default robot config.");
+				DataLogManager.log(
+					"ERROR: Failed to read default robot config '" + layoutFilenames.get(defaultRobot) + "'."
+				);
 				return;
 			}
 		}
 
-		DataLogManager.log("Successfully parsed robot config JSON.");
+		DataLogManager.log(
+			"Successfully parsed robot config JSON for " + robot.toString() 
+			+ " (" + layoutFilenames.get(robot) + ")."
+		);
+		// spotless:on
 
 		SmartDashboard.putString("DrivePorts/robot", this.usingDefaultConfig ? "UNKNOWN" : robot.toString());
 
