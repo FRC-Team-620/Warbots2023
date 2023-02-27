@@ -202,14 +202,23 @@ public class DrivePortsObject {
 
 		// spotless:off
         switch(this.parsedJSONObject.getString("imu")) {
+
             case "NAVX":
                 return new NavxIMU(SPI.Port.kMXP);
+
             case "PIGEON":
                 Pigeon2Configuration pigeonConfig = new Pigeon2Configuration();
 		        pigeonConfig.EnableCompass = false;
-                return new PigeonIMU(30, pigeonConfig);
+                return new PigeonIMU(
+					/* Change this in the preset to change CAN Id */
+					this.parsedJSONObject.getInt("pigeonCANId"),
+					pigeonConfig
+				);
+
 			case "NONE":
+				DataLogManager.log("WARNING: IMU is 'NONE' in this preset (it will be stored as null).");
 				return null;
+				
             default:
                 DataLogManager.log("WARNING: Failed to define IMU from JSON (defaulted to NAVX).");
                 return new NavxIMU(SPI.Port.kMXP);

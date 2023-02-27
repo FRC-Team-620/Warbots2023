@@ -19,5 +19,6 @@
 
     "balanceCreepSpeed":0.1,
 
-    "imu":"PIGEON"
+    "imu":"PIGEON",
+	"pigeonCANId":30
 }
