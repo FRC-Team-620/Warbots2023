@@ -1,0 +1,24 @@
+{
+    "leftFrontMotorCANId":4,
+	"rightFrontMotorCANId":3,
+	"leftRearMotorCANId":2,
+	"rightRearMotorCANId":1,
+
+	"rightFrontMotorInversion":false,
+	"leftFrontMotorInversion":true,
+
+	"wheelDiameterInInches":4,
+
+	"maxVelocity":2,
+	"maxAcceleration":2,
+
+	"autoDistanceProfiledPID":[2, 0.2, 0.0, 2, 2],
+
+    "keepHeadingPID":[0.010, 0.010, 0],
+    "balancingPID":[0.4, 0.2, 0],
+
+    "balanceCreepSpeed":0.1,
+
+    "imu":"PIGEON",
+	"pigeonCANId":30
+}

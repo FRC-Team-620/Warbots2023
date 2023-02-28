@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package org.jmhsrobotics.frc2023.util;
+package org.jmhsrobotics.frc2023.util.driveports;
 
 import java.net.NetworkInterface;
 import java.net.SocketException;
