@@ -16,7 +16,7 @@ public class BabybotDrivePorts implements IDrivePorts {
 	public final boolean rightFrontMotorInversion = false;
 	public final boolean leftFrontMotorInversion = true;
 
-	public final double wheelDiameterInInches = 4;
+	public final double wheelDiameterInInches = 5;
 
 	public final double maxVelocity = 2;
 	public final double maxAcceleration = 2;
