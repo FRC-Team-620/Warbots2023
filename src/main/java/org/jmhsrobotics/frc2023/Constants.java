@@ -129,8 +129,10 @@ public final class Constants {
 
 	public static class ArmConstants {
 		public static final double armHeightMeters = Units.inchesToMeters(27.5);
-		public static final double minExtensionLengthMeters = Units.inchesToMeters(22);
-		public static final double maxExtensionLengthMeters = Units.inchesToMeters(45);
+		public static final double maxEncoderCounts = 62.5;
+		public static final double minExtensionLengthMeters = Units.inchesToMeters(0);
+		public static final double maxExtensionLengthMeters = Units.inchesToMeters(10);
+		public static final double conversionFactor = maxExtensionLengthMeters / maxEncoderCounts;
 		public static final double armPitchGearRatio = 270;
 		public static final double armMasskg = 7;
 		public static final double minArmAngleDegrees = -360;
