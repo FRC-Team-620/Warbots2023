@@ -53,6 +53,13 @@ public class DrivePortsObject {
     );
     // spotless:on
 
+	/**
+	 * A constructor that accepts a RobotType and parses the corresponding preset
+	 * JSON file
+	 *
+	 * @param robot
+	 *            The RobotType that corresponds to the detected robot
+	 */
 	public DrivePortsObject(RobotType robot) {
 
 		// spotless:off
@@ -94,6 +101,13 @@ public class DrivePortsObject {
 
 	/* Access methods */
 
+	/**
+	 * A getter which is used to access whether the current robot preset was
+	 * defaulted to, i.e. whether there was an issue accessing the JSON file
+	 * corresponding to the preset of the detected robot
+	 *
+	 * @return whether the parsed preset JSON was defaulted to
+	 */
 	public boolean usingDefaultConfig() {
 		return this.usingDefaultConfig;
 	}
@@ -156,6 +170,14 @@ public class DrivePortsObject {
 
 	/* Private static methods */
 
+	/**
+	 * Parses a JSON file given a path, creating a JSONObject
+	 *
+	 * @param path
+	 *            The path to the JSON file (including extension)
+	 * @return A JSONObject that allows the members of the file to be read
+	 * @throws IOException
+	 */
 	private static JSONObject parseJSON(String path) throws IOException {
 
 		File jsonFile = new File(path);
