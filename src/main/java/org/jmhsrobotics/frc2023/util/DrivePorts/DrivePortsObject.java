@@ -36,11 +36,14 @@ public class DrivePortsObject {
 	private IIMUWrapper imu;
 
 	// spotless:off
+	/** The absolute path to the folder that contains the preset JSON files */
 	private static final String layoutDirectoryPath = 
 		Filesystem.getDeployDirectory().getAbsolutePath() + "/portlayouts";
 
+	/** The RobotType that will be defaulted to if the detected robot's preset file cannot be accessed */
 	private static final RobotType defaultRobot = RobotType.UNKNOWN;
 
+	/** Maps a RobotType to the name of a preset JSON file */
     private static final Map<RobotType, String> layoutFilenames = Map.of(
         RobotType.SUSAN,    	"SusanDrivePorts.json",
         RobotType.BABY_BOT, 	"BabyBotDrivePorts.json",
