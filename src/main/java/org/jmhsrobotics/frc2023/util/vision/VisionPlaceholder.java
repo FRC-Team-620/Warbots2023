@@ -26,7 +26,7 @@ public class VisionPlaceholder extends SubsystemBase {
 	public static final Field2d field = new Field2d();
 	private SimPipeLineVisionSystem simPhoton;
 	private Drivetrain drivetrain;
-	private Transform3d camPos = new Transform3d(new Translation3d(0, 0, 1),
+	private Transform3d camPos = new Transform3d(new Translation3d(0, 0, 1), // TODO: Make a constant
 			new Rotation3d(Units.degreesToRadians(180), 0, 0));
 
 	/*

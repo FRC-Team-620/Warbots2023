@@ -8,23 +8,22 @@ import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
-// import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
-import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
-import org.jmhsrobotics.frc2023.subsystems.TelemetrySubsystem;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.jmhsrobotics.frc2023.commands.TurnDeltaAngle;
 import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
 import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
+// import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
+import org.jmhsrobotics.frc2023.subsystems.TelemetrySubsystem;
+import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
+import org.jmhsrobotics.frc2023.util.vision.VisionPlaceholder;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -35,15 +34,13 @@ import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
  */
 public class RobotContainer {
 
-	private static final TelemetrySubsystem telemetry = new TelemetrySubsystem();
-
 	// The robot's subsystems and commands are defined here...
 	private final CommandXboxController driver = new CommandXboxController(OperatorConstants.driverControllerPort);
-	public final Drivetrain drivetrain = new Drivetrain();
-	public final LEDSubsystem ledSubsystem = new LEDSubsystem();
+	public static final Drivetrain drivetrain = new Drivetrain();
+	public static final LEDSubsystem ledSubsystem = new LEDSubsystem();
+	private static final TelemetrySubsystem telemetry = new TelemetrySubsystem(drivetrain);
 	// private final ArmSubsystem armSubsystem = new ArmSubsystem();
 	// private final GrabberSubsystem grabberSubsystem=new GrabberSubsystem();
-	// private final VisionPlaceholder visionPlaceholder = new
 	// VisionPlaceholder(drivetrain);
 	public AutoSelector autoSelector;
 
@@ -60,9 +57,9 @@ public class RobotContainer {
 
 		// spotless:off
 		// ledSubsystem.setDefaultCommand(new LEDIdleCommand(
-		// 		ledSubsystem, 
-		// 		() -> drivetrain.getIsTurning()
-		// 	)
+		// ledSubsystem,
+		// () -> drivetrain.getIsTurning()
+		// )
 		// );
 		// spotless:on
 
@@ -70,6 +67,10 @@ public class RobotContainer {
 		autoSelector = new AutoSelector(this);
 		SmartDashboard.putData(new AlignPeg(drivetrain));
 		SmartDashboard.putData(new CenterChargeStationAuto(drivetrain));
+
+		if (Robot.isSimulation()) {
+			VisionPlaceholder visionSim = new VisionPlaceholder(drivetrain);
+		}
 	}
 
 	/**

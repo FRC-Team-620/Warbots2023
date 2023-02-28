@@ -1,15 +1,33 @@
 package org.jmhsrobotics.frc2023.subsystems;
 
+import java.io.IOException;
+import java.util.Optional;
+
 import org.jmhsrobotics.frc2023.Constants;
+import org.jmhsrobotics.frc2023.Robot;
 import org.jmhsrobotics.frc2023.RobotMath;
 import org.jmhsrobotics.frc2023.RobotMath.DiminishingAverageHandler;
 import org.jmhsrobotics.frc2023.util.IIMUWrapper;
+import org.jmhsrobotics.frc2023.util.vision.PhotonManager;
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class TelemetrySubsystem extends SubsystemBase {
+
+	private AprilTagFieldLayout layout;
+	private PhotonPoseEstimator currentEstimator;
+	private Drivetrain drivetrain;
 
 	public static class IMUState {
 
@@ -24,6 +42,7 @@ public class TelemetrySubsystem extends SubsystemBase {
 		public double rollVelocity;
 
 		public IMUState() {
+
 		}
 
 		/**
@@ -51,18 +70,45 @@ public class TelemetrySubsystem extends SubsystemBase {
 	private DiminishingAverageHandler pitchAngularVelocityHandler;
 	private DiminishingAverageHandler rollAngularVelocityHandler;
 
-	public TelemetrySubsystem() {
-
+	public TelemetrySubsystem(Drivetrain drivetrain) {
+		this.drivetrain = drivetrain;
 		this.imu = Constants.driveports.getIMU();
 		this.imuState = new IMUState();
 		this.imuRotation2d = this.imu.getRotation2d();
 		this.yawAngularVelocityHandler = new DiminishingAverageHandler(0.5);
 		this.pitchAngularVelocityHandler = new DiminishingAverageHandler(0.5);
 		this.rollAngularVelocityHandler = new DiminishingAverageHandler(0.5);
+		// PhotonManager.getInstance().mainCam
+
+		AprilTagFieldLayout tmp = null;
+		try {
+			tmp = new AprilTagFieldLayout(Filesystem.getDeployDirectory().getAbsolutePath() + "/2023-chargedup.json");
+			currentEstimator = new PhotonPoseEstimator(tmp, PhotonPoseEstimator.PoseStrategy.AVERAGE_BEST_TARGETS,
+					PhotonManager.getInstance().mainCam, new Transform3d(new Translation3d(0, 0, 1), new Rotation3d()));
+		} catch (IOException e) {
+			DriverStation.reportError("Failed to load Vision targets!", false);
+			e.printStackTrace();
+		}
+		layout = tmp;
+
 	}
 
 	@Override
 	public void periodic() {
+
+		if (currentEstimator != null) {
+			PhotonCamera mainCam = PhotonManager.getInstance().mainCam;
+			if (mainCam.getPipelineIndex() == Constants.VisionPipeline.APRIL_TAGS.id) {
+				currentEstimator.setReferencePose(drivetrain.getPose());
+				Optional<EstimatedRobotPose> estPoses = currentEstimator.update();
+				if (estPoses.isPresent()) {
+					// estPoses.get().estimatedPose
+					Robot.field.getObject("VisionEst").setPose(estPoses.get().estimatedPose.toPose2d());
+					EstimatedRobotPose estpose = estPoses.get();
+
+				}
+			}
+		}
 
 		this.imuRotation2d = this.imu.getRotation2d();
 
@@ -75,21 +121,18 @@ public class TelemetrySubsystem extends SubsystemBase {
 		double relativeChange;
 
 		// spotless:off
-        relativeChange = RobotMath.relativeAngle(previousState.yaw, this.imuState.yaw);
+		relativeChange = RobotMath.relativeAngle(previousState.yaw, this.imuState.yaw);
 		this.imuState.yawVelocity = this.yawAngularVelocityHandler.feed(
-            relativeChange / Constants.RobotConstants.secondsPerTick
-        );
+				relativeChange / Constants.RobotConstants.secondsPerTick);
 
-        relativeChange = RobotMath.relativeAngle(previousState.pitch, this.imuState.pitch);
+		relativeChange = RobotMath.relativeAngle(previousState.pitch, this.imuState.pitch);
 		this.imuState.pitchVelocity = this.pitchAngularVelocityHandler.feed(
-            relativeChange / Constants.RobotConstants.secondsPerTick
-        );
+				relativeChange / Constants.RobotConstants.secondsPerTick);
 
-        relativeChange = RobotMath.relativeAngle(previousState.roll, this.imuState.roll);
+		relativeChange = RobotMath.relativeAngle(previousState.roll, this.imuState.roll);
 		this.imuState.rollVelocity = this.rollAngularVelocityHandler.feed(
-            relativeChange / Constants.RobotConstants.secondsPerTick
-        );
-        // spotless:on
+				relativeChange / Constants.RobotConstants.secondsPerTick);
+		// spotless:on
 
 		SmartDashboard.putNumber("Telemetry/yaw", this.imuState.yaw);
 		SmartDashboard.putNumber("Telemetry/pitch", this.imuState.pitch);
@@ -97,6 +140,7 @@ public class TelemetrySubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("Telemetry/yawVelocity", this.imuState.yawVelocity);
 		SmartDashboard.putNumber("Telemetry/pitchVelocity", this.imuState.pitchVelocity);
 		SmartDashboard.putNumber("Telemetry/rollVelocity", this.imuState.rollVelocity);
+
 	}
 
 	public IMUState getIMUState() {
