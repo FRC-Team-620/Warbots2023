@@ -57,8 +57,17 @@ public class ArmSubsystem extends SubsystemBase {
 
 		armfeedforward = new ArmFeedforward(0, 0.46, 0.09); // Calculated from https://www.reca.lc/arm
 		// TODO: MAke sure to construct profiledExtensionPID and profiledExtensionPID!!!
-		profiledAnglePID = new ProfiledPIDController(0.1, 0.01, 0.02, new Constraints(90, 360));
-		profiledExtensionPID = new ProfiledPIDController(7.5, 0, 0, new Constraints(1, .2));
+
+		// spotless:off
+		profiledAnglePID = new ProfiledPIDController(
+			0.1, 0.01, 0.02, 
+			new Constraints(90, 360)
+		);
+		profiledExtensionPID = new ProfiledPIDController(
+			9, 1, 0.2, 
+			new Constraints(1, .2)
+		);
+		// spotless:on
 		SmartDashboard.putData("Wristpid", profiledAnglePID);
 		SmartDashboard.putData("Lengthpid", profiledExtensionPID);
 		// Create Mech2s display of Arm.
@@ -73,7 +82,7 @@ public class ArmSubsystem extends SubsystemBase {
 		extensionEncoder.setPosition(0);
 
 		// controlMode = ControlMode.STOPPED;
-		// System.out.println("HELLLLLLLOOOOO");
+		// System.out.println("HELLLLLLLOOOOO Woooooorld");
 	}
 
 	public void init2d() {

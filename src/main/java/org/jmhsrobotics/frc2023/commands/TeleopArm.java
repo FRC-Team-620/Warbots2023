@@ -20,10 +20,10 @@ public class TeleopArm extends CommandBase {
 	// Takes in a angle for the arm pitch and a distance for the linear joint
 	// (Prizmatic joint)
 	public TeleopArm(ArmSubsystem armSubsystem, Supplier<Double> pitchSpeed, Supplier<Double> linearSpeed) {
-		addRequirements(armSubsystem);
 		this.armSubsystem = armSubsystem;
 		this.pitchSpeed = pitchSpeed;
 		this.linearSpeed = linearSpeed;
+		addRequirements(armSubsystem);
 	}
 
 	// Only runs when the command is scedualed

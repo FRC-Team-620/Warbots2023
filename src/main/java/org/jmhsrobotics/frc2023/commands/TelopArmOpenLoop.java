@@ -12,10 +12,10 @@ public class TelopArmOpenLoop extends CommandBase {
 	ArmSubsystem armSubsystem;
 	Supplier<Double> pitchSpeed, linearSpeed;
 	public TelopArmOpenLoop(ArmSubsystem armSubsystem, Supplier<Double> pitchSpeed, Supplier<Double> linearSpeed) {
-		addRequirements(armSubsystem);
 		this.armSubsystem = armSubsystem;
 		this.pitchSpeed = pitchSpeed;
 		this.linearSpeed = linearSpeed;
+		addRequirements(armSubsystem);
 	}
 
 	@Override

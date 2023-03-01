@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
+import org.jmhsrobotics.frc2023.Constants;
 import org.jmhsrobotics.frc2023.RobotContainer;
 import org.jmhsrobotics.frc2023.RobotMath;
 import org.jmhsrobotics.frc2023.Constants.AutoConstants;
@@ -25,7 +26,7 @@ public class AutoBalance extends CommandBase {
 	// private double moveLimit;
 	// private DiminishingAverageHandler robotPitchHandler;
 	// private DiminishingAverageHandler robotPitchAngVelHandler;
-	// private PIDController pidController;
+	private PIDController pidController;
 	private PIDController pitchPIDController;
 	private boolean isBalancing = false;
 	private boolean isTipping = false;
@@ -47,11 +48,10 @@ public class AutoBalance extends CommandBase {
 		this.timeoutTimer = new Timer();
 		// this.robotPitchHandler = new DiminishingAverageHandler(0.5);
 		// robotPitchAngVelHandler = new DiminishingAverageHandler(0.5);
-		// this.pidController = new
-		// PIDController(Constants.driveports.getBalancingPID().kp,
-		// Constants.driveports.getBalancingPID().ki,
-		// Constants.driveports.getBalancingPID().kd);
-		// this.pidController.setTolerance(0.02, 0.01);
+		this.pidController = new PIDController(Constants.driveports.getBalancingPID().kp,
+				Constants.driveports.getBalancingPID().ki, Constants.driveports.getBalancingPID().kd);
+
+		this.pidController.setTolerance(0.02, 0.01);
 		// this.pitchPIDController = new PIDController(0.008, 0.0002, 0.0);
 		addRequirements(drivetrain, ledSubsystem);
 	}

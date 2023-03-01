@@ -6,9 +6,9 @@ package org.jmhsrobotics.frc2023;
 
 import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
+import org.jmhsrobotics.frc2023.commands.CommandArm;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
-import org.jmhsrobotics.frc2023.commands.TeleopArm;
 import org.jmhsrobotics.frc2023.commands.TurnDeltaAngle;
 import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
@@ -71,7 +71,8 @@ public class RobotContainer {
 		// operator::getLeftY, operator::getRightY));
 
 		// Closed Loop
-		armSubsystem.setDefaultCommand(new TeleopArm(armSubsystem, operator::getLeftY, operator::getRightY));
+		// armSubsystem.setDefaultCommand(new TeleopArm(armSubsystem,
+		// operator::getLeftY, operator::getRightY));
 
 		// driver.getHID()));
 
@@ -111,6 +112,8 @@ public class RobotContainer {
 		driver.a().onTrue(new CenterChargeStationAuto(drivetrain, ledSubsystem));
 		driver.x().onTrue(new AutoBalance(drivetrain, true, ledSubsystem));
 		driver.b().onTrue(new AlignPeg(drivetrain));
+
+		operator.x().onTrue(new CommandArm(armSubsystem, 0.2, 0));
 
 		// driver.povLeft().onTrue(new CommandArm(armSubsystem, .5, 0));
 		// driver.povUp().onTrue(new CommandArm(armSubsystem, 1, 45));
