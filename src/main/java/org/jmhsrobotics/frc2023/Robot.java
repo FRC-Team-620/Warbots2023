@@ -24,7 +24,7 @@ import org.jmhsrobotics.frc2023.util.sim.BuildDataLogger;
  */
 public class Robot extends TimedRobot {
 	private Command m_autonomousCommand;
-	private Field2d field = new Field2d();
+	public static Field2d field = new Field2d();
 
 	private RobotContainer m_robotContainer;
 	private boolean lastAutonomous = false;
