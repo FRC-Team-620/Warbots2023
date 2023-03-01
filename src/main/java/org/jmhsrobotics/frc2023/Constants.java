@@ -142,4 +142,11 @@ public final class Constants {
 	public static final double kSimTrackwidthMeters = 0.64;// 0.5207
 
 	public static final boolean kCoastOnDisable = false;
+
+	public class fudgeAngleConstant{
+		public static final double limelightHeight = 1.02;// the height of the limelight sensor on the robot in meters
+		public static final double targetHeight = 1.06;// the height of the high target in meters
+		public static final double distance = 0.14;// distance between the limelight sensor and the center of the robot
+
+	}
 }
