@@ -79,7 +79,7 @@ public class SusanDrivePorts implements IDrivePorts {
 	}
 
 	@Override
-	public int getIntakeSolenoidId() {
+	public int getGrabberIntakeSolenoidId() {
 		return 2;
 	}
 

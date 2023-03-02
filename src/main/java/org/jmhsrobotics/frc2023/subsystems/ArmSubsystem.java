@@ -35,7 +35,8 @@ public class ArmSubsystem extends SubsystemBase {
 	private CANSparkMax pitchMotor = new CANSparkMax(Constants.driveports.getArmAngleCANId(), MotorType.kBrushless);
 	private CANSparkMax telescopeMotor = new CANSparkMax(Constants.driveports.getArmExtensionCANId(),
 			MotorType.kBrushless);
-	private SparkMaxAnalogSensor pitchEncoder = pitchMotor.getAnalog(Mode.kAbsolute);
+	private SparkMaxAnalogSensor pitchAbsoluteEncoder = pitchMotor.getAnalog(Mode.kAbsolute);
+	private RelativeEncoder pitchEncoder = pitchMotor.getEncoder();
 	private RelativeEncoder extensionEncoder = telescopeMotor.getEncoder();
 	// private SparkMaxAnalogSensor extensionEncoder =
 	// telescopeMotor.getAnalog(Mode.kAbsolute);
@@ -60,9 +61,13 @@ public class ArmSubsystem extends SubsystemBase {
 
 		// spotless:off
 		profiledAnglePID = new ProfiledPIDController(
-			0.1, 0.01, 0.02, 
-			new Constraints(90, 360)
+			0.05, 0.003, 0.003, 
+			new Constraints(80, 360)
 		);
+
+		profiledAnglePID.reset(new State(ArmConstants.stowedDegrees, 0.0));
+		profiledAnglePID.setTolerance(1, 1);
+
 		profiledExtensionPID = new ProfiledPIDController(
 			9, 1, 0.2, 
 			new Constraints(1, .2)
@@ -77,8 +82,10 @@ public class ArmSubsystem extends SubsystemBase {
 		pitchMotor.setSmartCurrentLimit(40);
 		telescopeMotor.setSmartCurrentLimit(40);
 
+		pitchEncoder.setPosition(0);
+
 		telescopeMotor.setIdleMode(IdleMode.kBrake);
-		extensionEncoder.setPositionConversionFactor(ArmConstants.conversionFactor);
+		extensionEncoder.setPositionConversionFactor(ArmConstants.extensionMetersPerEncoderTick);
 		extensionEncoder.setPosition(0);
 
 		// controlMode = ControlMode.STOPPED;
@@ -100,14 +107,15 @@ public class ArmSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		SmartDashboard.putString("arm/controlMode", getControlMode().toString());
-		SmartDashboard.putNumber("ArmSubsystem/PitchAbsoluteEncoderPosition", pitchEncoder.getPosition());
+		SmartDashboard.putNumber("ArmSubsystem/pitchMotorRelativeEncoder", pitchEncoder.getPosition() * -1.7379 + 30);
+		SmartDashboard.putNumber("ArmSubsystem/PitchAbsoluteEncoderPosition", pitchAbsoluteEncoder.getPosition());
 		// SmartDashboard.putNumber("ArmSubsystem/StringPotPosition",
 		// extensionEncoder.getPosition());
 		SmartDashboard.putNumber("ArmSubsystem/RelativeEncoderExtension", telescopeMotor.getEncoder().getPosition());
 		SmartDashboard.putNumber("ArmSubsystem/MaxLength", ArmConstants.maxExtensionLengthMeters);
 
 		// Update Mech2d Display
-		m_wrist.setAngle(pitchEncoder.getPosition() - 90);
+		m_wrist.setAngle(pitchAbsoluteEncoder.getPosition() - 90);
 		m_elevator.setLength(extensionEncoder.getPosition());
 
 		if (getControlMode() == ControlMode.STOPPED) {
@@ -125,15 +133,35 @@ public class ArmSubsystem extends SubsystemBase {
 		// profiledAnglePID.calculate(pitchEncoder.getPosition()))
 		// / 12); // TODO fix janky volts hack
 
+		pitchMotor.set(-profiledAnglePID.calculate(this.armPitchDegrees()));
 		telescopeMotor.set(profiledExtensionPID.calculate(telescopeMotor.getEncoder().getPosition()));
 		// armExtension.set(profiledExtensionPID.getGoal().position);
-		SmartDashboard.putNumber("lengthpid/spot", profiledExtensionPID.calculate(extensionEncoder.getPosition()));
-		SmartDashboard.putNumber("Wristpid/position", pitchEncoder.getPosition());
-		SmartDashboard.putNumber("lengthpid/position", extensionEncoder.getPosition());
-		SmartDashboard.putNumber("Wristpid/setpoint", profiledAnglePID.getSetpoint().position);
-		SmartDashboard.putNumber("lengthpid/output", telescopeMotor.get());
-		SmartDashboard.putNumber("Wristpid/output", pitchMotor.get());
-		SmartDashboard.putNumber("lengthpid/setpoint", profiledExtensionPID.getSetpoint().position);
+		SmartDashboard.putNumber("ArmSubsystem/pitch_angle", this.armPitchDegrees());
+		SmartDashboard.putNumber("ArmSubsystem/pitchPID/position_goal", this.profiledAnglePID.getGoal().position);
+		SmartDashboard.putNumber("ArmSubsystem/pitchPID/position_setpoint",
+				this.profiledAnglePID.getSetpoint().position);
+		SmartDashboard.putNumber("ArmSubsystem/pitchPID/velocity_setpoint",
+				this.profiledAnglePID.getSetpoint().velocity);
+		// SmartDashboard.putNumber("lengthpid/spot",
+		// profiledExtensionPID.calculate(extensionEncoder.getPosition()));
+		// SmartDashboard.putNumber("Wristpid/position",
+		// pitchAbsoluteEncoder.getPosition());
+		// SmartDashboard.putNumber("lengthpid/position",
+		// extensionEncoder.getPosition());
+		// SmartDashboard.putNumber("Wristpid/setpoint",
+		// profiledAnglePID.getSetpoint().position);
+		// SmartDashboard.putNumber("lengthpid/output", telescopeMotor.get());
+		// SmartDashboard.putNumber("Wristpid/output", pitchMotor.get());
+		// SmartDashboard.putNumber("lengthpid/setpoint",
+		// profiledExtensionPID.getSetpoint().position);
+	}
+
+	public double armPitchDegrees() {
+		return ArmConstants.pitchDegreesPerEncoderTick * this.pitchEncoder.getPosition() + ArmConstants.stowedDegrees;
+	}
+
+	public static double pitchEncoderPositionFromDegrees(double angle) {
+		return (angle - ArmConstants.stowedDegrees) / ArmConstants.pitchDegreesPerEncoderTick;
 	}
 
 	/**
@@ -155,12 +183,13 @@ public class ArmSubsystem extends SubsystemBase {
 	public void setPitch(double targetAngleDeg) {
 		targetAngleDeg = MathUtil.clamp(targetAngleDeg, ArmConstants.minArmAngleDegrees,
 				ArmConstants.maxArmAngleDegrees);
+		profiledAnglePID.reset(new State(this.armPitchDegrees(), 0.0));
 		profiledAnglePID.setGoal(new State(targetAngleDeg, 0));
 		SmartDashboard.putNumber("Wristpid/targetAngleDeg", targetAngleDeg);
 
 		if (controlMode != ControlMode.CLOSED_LOOP) {
-			profiledAnglePID.setGoal(new State(pitchEncoder.getPosition(), 0));
-			profiledAnglePID.reset(new State(pitchEncoder.getPosition(), 0));
+			profiledAnglePID.setGoal(new State(pitchAbsoluteEncoder.getPosition(), 0));
+			profiledAnglePID.reset(new State(pitchAbsoluteEncoder.getPosition(), 0));
 		}
 		controlMode = ControlMode.CLOSED_LOOP;
 	}
@@ -189,7 +218,7 @@ public class ArmSubsystem extends SubsystemBase {
 	 * floor. CWW+
 	 */
 	public double getPitchMotor() {
-		return pitchEncoder.getPosition();
+		return pitchAbsoluteEncoder.getPosition();
 	}
 
 	/*
@@ -209,6 +238,10 @@ public class ArmSubsystem extends SubsystemBase {
 
 	public ControlMode getControlMode() {
 		return controlMode;
+	}
+
+	public double getPitchPosition() {
+		return this.pitchAbsoluteEncoder.getPosition();
 	}
 
 	public void stop() {
@@ -233,7 +266,7 @@ public class ArmSubsystem extends SubsystemBase {
 				Units.degreesToRadians(ArmConstants.maxArmAngleDegrees), true);
 		prismaticSim = new ElevatorSim(DCMotor.getNeo550(1), 10, 10, Units.inchesToMeters(3),
 				ArmConstants.minExtensionLengthMeters, ArmConstants.maxExtensionLengthMeters, false);
-		pitchencsim = new SparkMaxAnalogSensorSimWrapper(pitchEncoder);
+		pitchencsim = new SparkMaxAnalogSensorSimWrapper(pitchAbsoluteEncoder);
 		// extensionencsim = new SparkMaxAnalogSensorSimWrapper(extensionEncoder);
 	}
 

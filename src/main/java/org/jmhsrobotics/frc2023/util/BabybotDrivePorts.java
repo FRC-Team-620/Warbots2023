@@ -96,7 +96,7 @@ public class BabybotDrivePorts implements IDrivePorts {
 	}
 
 	@Override
-	public int getIntakeSolenoidId() {
+	public int getGrabberIntakeSolenoidId() {
 		return 2;
 	}
 

@@ -11,7 +11,7 @@ public interface IDrivePorts {
 	public int getArmAngleCANId();
 	public int getArmExtensionCANId();
 	public int getIntakeCANId();
-	public int getIntakeSolenoidId();
+	public int getGrabberIntakeSolenoidId();
 
 	public boolean getRightFrontMotorInversion();
 	public boolean getLeftFrontMotorInversion();

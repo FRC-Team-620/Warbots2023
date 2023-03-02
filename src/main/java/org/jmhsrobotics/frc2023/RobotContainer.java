@@ -9,6 +9,7 @@ import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
 import org.jmhsrobotics.frc2023.commands.CommandArm;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
+import org.jmhsrobotics.frc2023.commands.TelopArmOpenLoop;
 import org.jmhsrobotics.frc2023.commands.TurnDeltaAngle;
 import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
@@ -27,6 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -67,8 +69,7 @@ public class RobotContainer {
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
 
 		// OpenLoop Control!
-		// armSubsystem.setDefaultCommand(new TelopArmOpenLoop(armSubsystem,
-		// operator::getLeftY, operator::getRightY));
+		armSubsystem.setDefaultCommand(new TelopArmOpenLoop(armSubsystem, operator::getLeftY, operator::getRightY));
 
 		// Closed Loop
 		// armSubsystem.setDefaultCommand(new TeleopArm(armSubsystem,
@@ -114,6 +115,9 @@ public class RobotContainer {
 		driver.b().onTrue(new AlignPeg(drivetrain));
 
 		operator.x().onTrue(new CommandArm(armSubsystem, 0.2, 0));
+		operator.b().onTrue(new CommandArm(armSubsystem, 0, 180));
+		operator.y().onTrue(new InstantCommand(
+				() -> this.grabberSubsystem.setGrabberPitchState(!this.grabberSubsystem.getGrabberPitchState())));
 
 		// driver.povLeft().onTrue(new CommandArm(armSubsystem, .5, 0));
 		// driver.povUp().onTrue(new CommandArm(armSubsystem, 1, 45));

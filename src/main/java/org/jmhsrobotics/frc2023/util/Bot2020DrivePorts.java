@@ -102,8 +102,8 @@ public class Bot2020DrivePorts implements IDrivePorts {
 	}
 
 	@Override
-	public int getIntakeSolenoidId() {
-		return 2;
+	public int getGrabberIntakeSolenoidId() {
+		return 1;
 	}
 
 	@Override

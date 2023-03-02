@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class GrabberSubsystem extends SubsystemBase {
 
-	private Solenoid grabberPiston = new Solenoid(42, PneumaticsModuleType.REVPH,
-			Constants.driveports.getIntakeSolenoidId());
+	private Solenoid grabberIntakePiston = new Solenoid(42, PneumaticsModuleType.REVPH, 1); // Constants.driveports.getIntakeSolenoidId()
+	private Solenoid grabberPitchPiston = new Solenoid(42, PneumaticsModuleType.REVPH, 0);
 	private CANSparkMax grabberMotor = new CANSparkMax(Constants.driveports.getIntakeCANId(), MotorType.kBrushless);
 
 	public GrabberSubsystem() {
@@ -21,11 +21,18 @@ public class GrabberSubsystem extends SubsystemBase {
 		grabberMotor.setIdleMode(IdleMode.kBrake);
 	}
 
-	public void setGrabberState(boolean state) {
-		grabberPiston.set(state);
+	public void setGrabberIntakeState(boolean state) {
+		grabberIntakePiston.set(state);
 	}
-	public boolean getGrabberState() {
-		return grabberPiston.get();
+	public boolean getGrabberIntakeState() {
+		return grabberIntakePiston.get();
+	}
+
+	public void setGrabberPitchState(boolean state) {
+		grabberPitchPiston.set(state);
+	}
+	public boolean getGrabberPitchState() {
+		return grabberPitchPiston.get();
 	}
 
 	public void setGrabberMotor(double speed) {

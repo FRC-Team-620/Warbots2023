@@ -28,7 +28,7 @@ public class GrabberCommand extends CommandBase {
 		if (operatorController.b().getAsBoolean()) {
 		}
 		if (operatorController.b().getAsBoolean() && releaseB) {
-			grabberSubsystem.setGrabberState(!this.grabberSubsystem.getGrabberState());
+			grabberSubsystem.setGrabberIntakeState(!this.grabberSubsystem.getGrabberIntakeState());
 			releaseB = false;
 		} else if (!operatorController.b().getAsBoolean()) {
 			releaseB = true;
