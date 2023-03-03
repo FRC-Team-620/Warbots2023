@@ -4,8 +4,6 @@
 
 package org.jmhsrobotics.frc2023;
 
-import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
-import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
 import org.jmhsrobotics.frc2023.commands.CommandArm;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
@@ -16,6 +14,13 @@ import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
 import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
 import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
+import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
+import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
+import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
+import org.jmhsrobotics.frc2023.oi.CompControl;
+import org.jmhsrobotics.frc2023.oi.ControlBoard;
+import org.jmhsrobotics.frc2023.oi.SelectableControlBoard;
+import org.jmhsrobotics.frc2023.oi.SingleControl;
 // import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
@@ -44,6 +49,7 @@ public class RobotContainer {
 	private static final TelemetrySubsystem telemetry = new TelemetrySubsystem();
 
 	// The robot's subsystems and commands are defined here...
+	private final ControlBoard controlBoard;
 	private final CommandXboxController driver = new CommandXboxController(OperatorConstants.driverControllerPort);
 	private final CommandXboxController operator = new CommandXboxController(OperatorConstants.operatorControllerPort);
 
@@ -62,11 +68,14 @@ public class RobotContainer {
 	 */
 	public RobotContainer() {
 		SmartDashboard.putData(CommandScheduler.getInstance());
+		SelectableControlBoard selectable = new SelectableControlBoard("single", new SingleControl());
+		selectable.addOption("competition", new CompControl());
+		controlBoard = selectable;
 		// Configure the trigger bindings
 		configureBindings();
 		// Setting up default command which is a command that runs every time no other
 		// command that uses that subsystem is running
-		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
+		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, controlBoard));
 
 		// OpenLoop Control!
 		armSubsystem.setDefaultCommand(new TelopArmOpenLoop(armSubsystem, operator::getLeftY, operator::getRightY));
@@ -106,7 +115,7 @@ public class RobotContainer {
 		// driver.leftBumper().onTrue(
 		// new InstantCommand(() ->
 		// grabberSubsystem.setGrabberState(!grabberSubsystem.getGrabberState())));
-		driver.start().onTrue(new AutoDriveDistance(drivetrain, -3));
+		// driver.start().onTrue(new AutoDriveDistance(drivetrain, -3));
 
 		// driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
 		driver.y().onTrue(new TurnDeltaAngle(drivetrain, 180));
