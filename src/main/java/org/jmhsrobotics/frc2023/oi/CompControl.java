@@ -16,7 +16,7 @@ public class CompControl implements ControlBoard {
 		deadband = 0.1;
 	}
 
-	//Driver Controller
+	// Driver Controller
 	@Override
 	public double driveForward() {
 		// The if statement allows for the left and right inputs to be pressed down at
@@ -48,11 +48,11 @@ public class CompControl implements ControlBoard {
 	}
 
 	@Override
-	public Trigger autoBalance(){
+	public Trigger autoBalance() {
 		return driverController.rightStick();
 	}
 
-	//Operator Controller
+	// Operator Controller
 
 	@Override
 	public double armPitch() {
@@ -82,7 +82,7 @@ public class CompControl implements ControlBoard {
 	}
 
 	@Override
-	public Trigger armPresetHigh() {//Not in use right now
+	public Trigger armPresetHigh() {// Not in use right now
 		return null;
 	}
 
@@ -112,7 +112,7 @@ public class CompControl implements ControlBoard {
 	}
 
 	@Override
-	public Trigger closeGrabber(){
+	public Trigger closeGrabber() {
 		return operatorController.rightBumper();
 	}
 

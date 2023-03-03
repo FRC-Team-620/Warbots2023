@@ -8,9 +8,9 @@ public class GrabberSolenoidSubsystem extends SubsystemBase {
 
 	private Solenoid grabberIntakePiston = new Solenoid(42, PneumaticsModuleType.REVPH, 1); // Constants.driveports.getIntakeSolenoidId()
 	private Solenoid grabberPitchPiston = new Solenoid(42, PneumaticsModuleType.REVPH, 0);
-	
+
 	public GrabberSolenoidSubsystem() {
-		
+
 	}
 
 	public void setGrabberIntakeState(boolean state) {

@@ -9,7 +9,6 @@ import org.jmhsrobotics.frc2023.commands.CommandArm;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
 import org.jmhsrobotics.frc2023.commands.TelopArmOpenLoop;
-import org.jmhsrobotics.frc2023.commands.TurnDeltaAngle;
 import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
@@ -34,6 +33,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -82,8 +82,8 @@ public class RobotContainer {
 		armSubsystem.setDefaultCommand(
 				new TelopArmOpenLoop(armSubsystem, operator::getLeftY, operator::getRightY, operator.start()));
 
-		grabberMotorSubsystem.setDefaultCommand(new InstantCommand(() ->
-		grabberMotorSubsystem.setGrabberMotor(controlBoard.intakeWheels())));
+		grabberMotorSubsystem.setDefaultCommand(
+				new InstantCommand(() -> grabberMotorSubsystem.setGrabberMotor(controlBoard.intakeWheels())));
 		// Closed Loop
 		// armSubsystem.setDefaultCommand(new TeleopArm(armSubsystem,
 		// operator::getLeftY, operator::getRightY));
@@ -133,8 +133,8 @@ public class RobotContainer {
 		controlBoard.armPresetFloor().onTrue(new CommandArm(armSubsystem, 0.15, 0));
 		controlBoard.armPresetMid().onTrue(new CommandArm(armSubsystem, 0.15, 0));
 		controlBoard.armPresetPickup().onTrue(new CommandArm(armSubsystem, 0.15, 0));
-		controlBoard.closeGrabber().onTrue(new InstantCommand(
-				() -> this.grabberSolenoidSubsystem.setGrabberPitchState(!this.grabberSolenoidSubsystem.getGrabberPitchState())));
+		controlBoard.closeGrabber().onTrue(new InstantCommand(() -> this.grabberSolenoidSubsystem
+				.setGrabberPitchState(!this.grabberSolenoidSubsystem.getGrabberPitchState())));
 		controlBoard.autoBalance().onTrue(new AutoBalance(drivetrain, false, ledSubsystem));
 
 		// driver.povLeft().onTrue(new CommandArm(armSubsystem, .5, 0));

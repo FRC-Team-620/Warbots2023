@@ -104,12 +104,12 @@ public class SelectableControlBoard implements ControlBoard {
 		return selector.getSelected().intakeWheels();
 	}
 	@Override
-	public Trigger closeGrabber(){
+	public Trigger closeGrabber() {
 		return selector.getSelected().closeGrabber();
 	}
 
 	@Override
-	public Trigger autoBalance(){
+	public Trigger autoBalance() {
 		return selector.getSelected().autoBalance();
 	}
 

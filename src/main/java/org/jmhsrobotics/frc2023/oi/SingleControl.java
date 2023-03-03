@@ -94,7 +94,7 @@ public class SingleControl implements ControlBoard {
 	public Trigger armPresetPickup() {
 		// TODO Auto-generated method stub
 		return null;
-		
+
 	}
 
 	@Override
@@ -104,12 +104,12 @@ public class SingleControl implements ControlBoard {
 	}
 
 	@Override
-	public Trigger closeGrabber(){
+	public Trigger closeGrabber() {
 		return controller.rightBumper();
 	}
 
 	@Override
-	public Trigger autoBalance(){
+	public Trigger autoBalance() {
 		return null;
 	}
 
