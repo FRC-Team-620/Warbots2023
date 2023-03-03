@@ -3,6 +3,8 @@ package org.jmhsrobotics.frc2023.subsystems;
 import org.jmhsrobotics.frc2023.Constants;
 import org.jmhsrobotics.frc2023.Constants.ArmConstants;
 
+import com.playingwithfusion.TimeOfFlight;
+import com.playingwithfusion.TimeOfFlight.RangingMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -31,6 +33,7 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArmSubsystem extends SubsystemBase {
+	private TimeOfFlight laser = new TimeOfFlight(31);
 	// Set the motors which power the basic functions of the arm
 	private CANSparkMax pitchMotor = new CANSparkMax(Constants.driveports.getArmAngleCANId(), MotorType.kBrushless);
 	private CANSparkMax telescopeMotor = new CANSparkMax(Constants.driveports.getArmExtensionCANId(),
@@ -74,6 +77,8 @@ public class ArmSubsystem extends SubsystemBase {
 		profiledExtensionPID = new ProfiledPIDController(
 			9, 1, 0.2, extensionPPIDConstraints
 		);
+
+		laser.setRangingMode(RangingMode.Long, 25);
 		// spotless:on
 		SmartDashboard.putData("Wristpid", profiledAnglePID);
 		SmartDashboard.putData("Lengthpid", profiledExtensionPID);
@@ -108,6 +113,8 @@ public class ArmSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
+		laser.identifySensor();
+		SmartDashboard.putNumber("ArmSubsystem/LaserDistance", laser.getRange());
 		SmartDashboard.putString("arm/controlMode", getControlMode().toString());
 		SmartDashboard.putNumber("ArmSubsystem/pitchMotorRelativeEncoder", pitchEncoder.getPosition() * -1.7379 + 30);
 		SmartDashboard.putNumber("ArmSubsystem/PitchAbsoluteEncoderPosition", pitchAbsoluteEncoder.getPosition());

@@ -69,8 +69,8 @@ public class RobotContainer {
 	 */
 	public RobotContainer() {
 		SmartDashboard.putData(CommandScheduler.getInstance());
-		SelectableControlBoard selectable = new SelectableControlBoard("single", new SingleControl());
-		selectable.addOption("competition", new CompControl());
+		SelectableControlBoard selectable = new SelectableControlBoard("competition", new CompControl());
+		selectable.addOption("single", new SingleControl());
 		controlBoard = selectable;
 		// Configure the trigger bindings
 		configureBindings();
@@ -82,8 +82,12 @@ public class RobotContainer {
 		armSubsystem.setDefaultCommand(
 				new TelopArmOpenLoop(armSubsystem, operator::getLeftY, operator::getRightY, operator.start()));
 
-		grabberMotorSubsystem.setDefaultCommand(
-				new InstantCommand(() -> grabberMotorSubsystem.setGrabberMotor(controlBoard.intakeWheels())));
+		grabberMotorSubsystem.setDefaultCommand( // TODO: LATER FIX
+				new InstantCommand(() -> {
+					grabberMotorSubsystem.setGrabberMotor(controlBoard.intakeWheels());
+				}, grabberMotorSubsystem));
+		// grabberMotorSubsystem.setGrabberMotor(controlBoard.intakeWheels()),
+		// grabberMotor));
 		// Closed Loop
 		// armSubsystem.setDefaultCommand(new TeleopArm(armSubsystem,
 		// operator::getLeftY, operator::getRightY));
