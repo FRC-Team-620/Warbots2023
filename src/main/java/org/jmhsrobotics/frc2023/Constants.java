@@ -136,7 +136,7 @@ public final class Constants {
 		public static final double armPitchGearRatio = 270;
 		public static final double armMasskg = 7;
 		public static final double pitchDegreesPerEncoderTick = -1.737861;
-		public static final double stowedDegrees = 25.0;
+		public static final double stowedDegrees = 23.33;
 		public static final double minArmAngleDegrees = ArmConstants.stowedDegrees;
 		public static final double maxArmAngleDegrees = 300;
 		public static final double armDistanceToCenterMeters = Units.inchesToMeters(-8);

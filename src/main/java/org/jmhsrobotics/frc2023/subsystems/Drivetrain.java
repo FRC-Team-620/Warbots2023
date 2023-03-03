@@ -236,6 +236,7 @@ public class Drivetrain extends SubsystemBase {
 
 		// double rotationOutput = this.commandedZRotation;
 		SmartDashboard.putNumber("Drivetrain/RotationInputPeriodic", rotationInput);
+		SmartDashboard.putNumber("Drivetrain/CommandedRotation", this.commandedCurvature);
 		SmartDashboard.putNumber("Drivetrain/DriveSpeedPeriodic", this.commandedSpeed);
 		SmartDashboard.putNumber("Drivetrain/isTurning", this.isTurning ? 1 : -1);
 		SmartDashboard.putNumber("Drivetrain/DriveAngularVelocity", imuState.yawVelocity);

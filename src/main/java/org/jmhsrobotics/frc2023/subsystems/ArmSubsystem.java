@@ -42,7 +42,9 @@ public class ArmSubsystem extends SubsystemBase {
 	// telescopeMotor.getAnalog(Mode.kAbsolute);
 	private MechanismLigament2d m_elevator;
 	private MechanismLigament2d m_wrist;
+	private Constraints anglePPIDConstraints;
 	private ProfiledPIDController profiledAnglePID;
+	private Constraints extensionPPIDConstraints;
 	private ProfiledPIDController profiledExtensionPID;
 	private ArmFeedforward armfeedforward;
 	private double openLoopExtensionSpeed;
@@ -60,17 +62,17 @@ public class ArmSubsystem extends SubsystemBase {
 		// TODO: MAke sure to construct profiledExtensionPID and profiledExtensionPID!!!
 
 		// spotless:off
+		anglePPIDConstraints = new Constraints(80, 80);
 		profiledAnglePID = new ProfiledPIDController(
-			0.05, 0.003, 0.003, 
-			new Constraints(80, 360)
+			0.05, 0.003, 0.003, anglePPIDConstraints
 		);
 
 		profiledAnglePID.reset(new State(ArmConstants.stowedDegrees, 0.0));
-		profiledAnglePID.setTolerance(1, 1);
+		profiledAnglePID.setTolerance(1.5, 4);
 
+		extensionPPIDConstraints = new Constraints(1, 0.2);
 		profiledExtensionPID = new ProfiledPIDController(
-			9, 1, 0.2, 
-			new Constraints(1, .2)
+			9, 1, 0.2, extensionPPIDConstraints
 		);
 		// spotless:on
 		SmartDashboard.putData("Wristpid", profiledAnglePID);
@@ -156,6 +158,28 @@ public class ArmSubsystem extends SubsystemBase {
 		// profiledExtensionPID.getSetpoint().position);
 	}
 
+	public void resetPitchEncoder() {
+		this.pitchEncoder.setPosition(0.0);
+	}
+
+	public double getMaxPitchPPIDVel() {
+		return this.anglePPIDConstraints.maxVelocity;
+	}
+
+	public double getMaxExtensionPPIDVel() {
+		return this.extensionPPIDConstraints.maxVelocity;
+	}
+
+	public void updatePitchGoal(double goal) {
+		this.profiledAnglePID.setGoal(goal);
+		this.controlMode = ControlMode.CLOSED_LOOP;
+	}
+
+	public void updateExtensionGoal(double goal) {
+		this.profiledExtensionPID.setGoal(goal);
+		this.controlMode = ControlMode.CLOSED_LOOP;
+	}
+
 	public double armPitchDegrees() {
 		return ArmConstants.pitchDegreesPerEncoderTick * this.pitchEncoder.getPosition() + ArmConstants.stowedDegrees;
 	}
@@ -183,7 +207,7 @@ public class ArmSubsystem extends SubsystemBase {
 	public void setPitch(double targetAngleDeg) {
 		targetAngleDeg = MathUtil.clamp(targetAngleDeg, ArmConstants.minArmAngleDegrees,
 				ArmConstants.maxArmAngleDegrees);
-		profiledAnglePID.reset(new State(this.armPitchDegrees(), 0.0));
+		profiledAnglePID.reset(this.armPitchDegrees());
 		profiledAnglePID.setGoal(new State(targetAngleDeg, 0));
 		SmartDashboard.putNumber("Wristpid/targetAngleDeg", targetAngleDeg);
 
