@@ -86,4 +86,31 @@ public class SelectableControlBoard implements ControlBoard {
 		return selector.getSelected().alignPeg();
 	}
 
+	@Override
+	public Trigger armPresetStowed() {
+		// TODO Auto-generated method stub
+		return selector.getSelected().armPresetStowed();
+	}
+
+	@Override
+	public Trigger armPresetPickup() {
+		// TODO Auto-generated method stub
+		return selector.getSelected().armPresetPickup();
+	}
+
+	@Override
+	public double intakeWheels() {
+		// TODO Auto-generated method stub
+		return selector.getSelected().intakeWheels();
+	}
+	@Override
+	public Trigger closeGrabber(){
+		return selector.getSelected().closeGrabber();
+	}
+
+	@Override
+	public Trigger autoBalance(){
+		return selector.getSelected().autoBalance();
+	}
+
 }

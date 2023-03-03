@@ -16,6 +16,7 @@ public class CompControl implements ControlBoard {
 		deadband = 0.1;
 	}
 
+	//Driver Controller
 	@Override
 	public double driveForward() {
 		// The if statement allows for the left and right inputs to be pressed down at
@@ -42,6 +43,18 @@ public class CompControl implements ControlBoard {
 	}
 
 	@Override
+	public Trigger alignPeg() {
+		return driverController.leftBumper();
+	}
+
+	@Override
+	public Trigger autoBalance(){
+		return driverController.rightStick();
+	}
+
+	//Operator Controller
+
+	@Override
 	public double armPitch() {
 		return MathUtil.applyDeadband(operatorController.getLeftY(), deadband);
 	}
@@ -51,19 +64,26 @@ public class CompControl implements ControlBoard {
 		return MathUtil.applyDeadband(operatorController.getLeftX(), deadband);
 	}
 
+	public double intakeWheels() {
+		return operatorController.getRightTriggerAxis() > operatorController.getLeftTriggerAxis()
+				? operatorController.getRightTriggerAxis()
+				: -operatorController.getLeftTriggerAxis();
+
+	}
+
 	@Override
 	public Trigger armPresetFloor() {
-		return operatorController.povDown();
+		return operatorController.a();
 	}
 
 	@Override
 	public Trigger armPresetMid() {
-		return operatorController.povLeft();
+		return operatorController.x();
 	}
 
 	@Override
-	public Trigger armPresetHigh() {
-		return operatorController.povUp();
+	public Trigger armPresetHigh() {//Not in use right now
+		return null;
 	}
 
 	@Override
@@ -73,17 +93,27 @@ public class CompControl implements ControlBoard {
 
 	@Override
 	public Trigger Intake() {
-		return operatorController.leftBumper();
+		return null;
 	}
 
 	@Override
 	public Trigger armWrist() {
+		return operatorController.povUp();
+	}
+
+	@Override
+	public Trigger armPresetStowed() {
+		return operatorController.b();
+	}
+
+	@Override
+	public Trigger armPresetPickup() {
 		return operatorController.y();
 	}
 
 	@Override
-	public Trigger alignPeg() {
-		return operatorController.x();
+	public Trigger closeGrabber(){
+		return operatorController.rightBumper();
 	}
 
 }

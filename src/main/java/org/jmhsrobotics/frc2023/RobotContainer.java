@@ -4,6 +4,7 @@
 
 package org.jmhsrobotics.frc2023;
 
+import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 import org.jmhsrobotics.frc2023.commands.CommandArm;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
@@ -23,9 +24,9 @@ import org.jmhsrobotics.frc2023.oi.SelectableControlBoard;
 import org.jmhsrobotics.frc2023.oi.SingleControl;
 // import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
-import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
+import org.jmhsrobotics.frc2023.subsystems.GrabberMotorSubsystem;
+import org.jmhsrobotics.frc2023.subsystems.GrabberSolenoidSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.TelemetrySubsystem;
-import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDIdleCommand;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
 
@@ -55,7 +56,8 @@ public class RobotContainer {
 
 	public final Drivetrain drivetrain = new Drivetrain();
 	public final LEDSubsystem ledSubsystem = new LEDSubsystem();
-	public final GrabberSubsystem grabberSubsystem = new GrabberSubsystem();
+	public final GrabberSolenoidSubsystem grabberSolenoidSubsystem = new GrabberSolenoidSubsystem();
+	public final GrabberMotorSubsystem grabberMotorSubsystem = new GrabberMotorSubsystem();
 	public final ArmSubsystem armSubsystem = new ArmSubsystem();
 	// private final ArmSubsystem armSubsystem = new ArmSubsystem();
 	// private final GrabberSubsystem grabberSubsystem=new GrabberSubsystem();
@@ -80,6 +82,8 @@ public class RobotContainer {
 		// OpenLoop Control!
 		armSubsystem.setDefaultCommand(new TelopArmOpenLoop(armSubsystem, operator::getLeftY, operator::getRightY));
 
+		grabberMotorSubsystem.setDefaultCommand(new InstantCommand(() ->
+		grabberMotorSubsystem.setGrabberMotor(controlBoard.intakeWheels())));
 		// Closed Loop
 		// armSubsystem.setDefaultCommand(new TeleopArm(armSubsystem,
 		// operator::getLeftY, operator::getRightY));
@@ -118,15 +122,20 @@ public class RobotContainer {
 		// driver.start().onTrue(new AutoDriveDistance(drivetrain, -3));
 
 		// driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
-		driver.y().onTrue(new TurnDeltaAngle(drivetrain, 180));
-		driver.a().onTrue(new CenterChargeStationAuto(drivetrain, ledSubsystem));
-		driver.x().onTrue(new AutoBalance(drivetrain, true, ledSubsystem));
-		driver.b().onTrue(new AlignPeg(drivetrain));
+		// driver.y().onTrue(new TurnDeltaAngle(drivetrain, 180));
+		// driver.a().onTrue(new CenterChargeStationAuto(drivetrain, ledSubsystem));
+		// driver.x().onTrue(new AutoBalance(drivetrain, true, ledSubsystem));
+		// driver.b().onTrue(new AlignPeg(drivetrain));
 
-		operator.x().onTrue(new CommandArm(armSubsystem, 0.2, 0));
-		operator.b().onTrue(new CommandArm(armSubsystem, 0, 180));
-		operator.y().onTrue(new InstantCommand(
-				() -> this.grabberSubsystem.setGrabberPitchState(!this.grabberSubsystem.getGrabberPitchState())));
+		// operator.x().onTrue(new CommandArm(armSubsystem, 0.2, 0));
+		// operator.b().onTrue(new CommandArm(armSubsystem, 0, 180));
+		controlBoard.armPresetStowed().onTrue(new CommandArm(armSubsystem, 0.15, 0));
+		controlBoard.armPresetFloor().onTrue(new CommandArm(armSubsystem, 0.15, 0));
+		controlBoard.armPresetMid().onTrue(new CommandArm(armSubsystem, 0.15, 0));
+		controlBoard.armPresetPickup().onTrue(new CommandArm(armSubsystem, 0.15, 0));
+		controlBoard.closeGrabber().onTrue(new InstantCommand(
+				() -> this.grabberSolenoidSubsystem.setGrabberPitchState(!this.grabberSolenoidSubsystem.getGrabberPitchState())));
+		controlBoard.autoBalance().onTrue(new AutoBalance(drivetrain, false, ledSubsystem));
 
 		// driver.povLeft().onTrue(new CommandArm(armSubsystem, .5, 0));
 		// driver.povUp().onTrue(new CommandArm(armSubsystem, 1, 45));

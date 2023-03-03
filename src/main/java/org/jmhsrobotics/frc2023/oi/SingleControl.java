@@ -84,4 +84,33 @@ public class SingleControl implements ControlBoard {
 		return controller.x();
 	}
 
+	@Override
+	public Trigger armPresetStowed() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Trigger armPresetPickup() {
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
+
+	@Override
+	public double intakeWheels() {
+		return 0;
+
+	}
+
+	@Override
+	public Trigger closeGrabber(){
+		return controller.rightBumper();
+	}
+
+	@Override
+	public Trigger autoBalance(){
+		return null;
+	}
+
 }
