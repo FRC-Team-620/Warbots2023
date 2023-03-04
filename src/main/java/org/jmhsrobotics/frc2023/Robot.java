@@ -26,7 +26,7 @@ public class Robot extends TimedRobot {
 	private Command m_autonomousCommand;
 	private Field2d field = new Field2d();
 
-	private RobotContainer m_robotContainer;
+	// private RobotContainer m_robotContainer;
 	private boolean lastAutonomous = false;
 	/**
 	 * This function is run when the robot is first started up and should be used
@@ -44,8 +44,8 @@ public class Robot extends TimedRobot {
 		// Instantiate our RobotContainer. This will perform all our button bindings,
 		// and put our
 		// autonomous chooser on the dashboard.
-		m_robotContainer = new RobotContainer();
-		m_robotContainer.getDrivetrain().setBrake(false);
+		// m_robotContainer = new RobotContainer();
+		// m_robotContainer.getDrivetrain().setBrake(false);
 
 		// Enables network table logging for data
 		DataLogManager.logNetworkTables(true);
@@ -76,46 +76,46 @@ public class Robot extends TimedRobot {
 		// robot's periodic
 		// block in order for anything in the Command-based framework to work.
 		CommandScheduler.getInstance().run(); // TODO: delete
-		field.setRobotPose(m_robotContainer.drivetrain.getPose());
+		// field.setRobotPose(m_robotContainer.drivetrain.getPose());
 	}
 
 	/** This function is called once each time the robot enters Disabled mode. */
 	@Override
-	public void disabledInit() {
-		if (!lastAutonomous && Constants.kCoastOnDisable)
-			m_robotContainer.getDrivetrain().setBrake(false);
-		else {
-			m_robotContainer.getDrivetrain().setBrake(true);
-		}
-		this.m_robotContainer.getDrivetrain().resetHeadingLockPID();
-	}
+	// public void disabledInit() {
+	// if (!lastAutonomous && Constants.kCoastOnDisable)
+	// m_robotContainer.getDrivetrain().setBrake(false);
+	// else {
+	// m_robotContainer.getDrivetrain().setBrake(true);
+	// }
+	// this.m_robotContainer.getDrivetrain().resetHeadingLockPID();
+	// }
 
-	@Override
-	public void disabledPeriodic() {
-	}
+	// @Override
+	// public void disabledPeriodic() {
+	// }
 
 	/**
 	 * This autonomous runs the autonomous command selected by your
 	 * {@link RobotContainer} class.
 	 */
-	@Override
-	public void autonomousInit() {
-		m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+	// @Override
+	// public void autonomousInit() {
+	// m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-		// schedule the autonomous command (example)
-		if (m_autonomousCommand != null) {
-			m_autonomousCommand.schedule();
-		}
-		m_robotContainer.getDrivetrain().setBrake(true);
-		this.lastAutonomous = true;
-	}
+	// // schedule the autonomous command (example)
+	// if (m_autonomousCommand != null) {
+	// m_autonomousCommand.schedule();
+	// }
+	// m_robotContainer.getDrivetrain().setBrake(true);
+	// this.lastAutonomous = true;
+	// }
 
 	/** This function is called periodically during autonomous. */
-	@Override
-	public void autonomousPeriodic() {
-	}
+	// @Override
+	// public void autonomousPeriodic() {
+	// }
 
-	@Override
+	// @Override
 	public void teleopInit() {
 		// This makes sure that the autonomous stops running when
 		// teleop starts running. If you want the autonomous to
@@ -124,14 +124,14 @@ public class Robot extends TimedRobot {
 		if (m_autonomousCommand != null) {
 			m_autonomousCommand.cancel();
 		}
-		m_robotContainer.getDrivetrain().setBrake(true);
+		// m_robotContainer.getDrivetrain().setBrake(true);
 		this.lastAutonomous = false;
 
-		this.m_robotContainer.getDrivetrain().lockCurrentHeading();
+		// this.m_robotContainer.getDrivetrain().lockCurrentHeading();
 
 		// this.m_robotContainer.getDrivetrain().resetAngularVelocity();
 
-		this.m_robotContainer.getDrivetrain().resetHeadingLockPID();
+		// this.m_robotContainer.getDrivetrain().resetHeadingLockPID();
 
 	}
 
@@ -144,7 +144,7 @@ public class Robot extends TimedRobot {
 	public void testInit() {
 		// Cancels all running commands at the start of test mode.
 		CommandScheduler.getInstance().cancelAll();
-		m_robotContainer.getDrivetrain().setBrake(true);
+		// m_robotContainer.getDrivetrain().setBrake(true);
 		this.lastAutonomous = false;
 	}
 

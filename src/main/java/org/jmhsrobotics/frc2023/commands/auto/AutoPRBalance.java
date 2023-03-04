@@ -3,10 +3,9 @@ package org.jmhsrobotics.frc2023.commands.auto;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-import org.jmhsrobotics.frc2023.RobotContainer;
+//import org.jmhsrobotics.frc2023.RobotContainer;
 import org.jmhsrobotics.frc2023.Constants.AutoConstants;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
-import org.jmhsrobotics.frc2023.subsystems.TelemetrySubsystem.IMUState;
 
 public class AutoPRBalance extends CommandBase {
 
@@ -64,30 +63,30 @@ public class AutoPRBalance extends CommandBase {
 		this.drivetrain.disableHeadingLock();
 	}
 
-	@Override
-	public void execute() {
+	// @Override
+	// public void execute() {
 
-		// this.pitch = this.pitchHandler.feed(this.drivetrain.getPitch());
-		// this.roll = this.rollHandler.feed(this.drivetrain.getRoll());
+	// // this.pitch = this.pitchHandler.feed(this.drivetrain.getPitch());
+	// // this.roll = this.rollHandler.feed(this.drivetrain.getRoll());
 
-		IMUState imuState = RobotContainer.getTelemetry().getIMUState();
+	// IMUState imuState = RobotContainer.getTelemetry().getIMUState();
 
-		double speed = this.pitchSpeedPID.calculate(imuState.pitch);
-		double curvature = this.rollCurvaturePID.calculate(imuState.roll);
+	// double speed = this.pitchSpeedPID.calculate(imuState.pitch);
+	// double curvature = this.rollCurvaturePID.calculate(imuState.roll);
 
-		this.drivetrain.setCurvatureDrive(speed, curvature, false);
-	}
+	// this.drivetrain.setCurvatureDrive(speed, curvature, false);
+	// }
 
-	@Override
-	public void end(boolean interrupted) {
+	// @Override
+	// public void end(boolean interrupted) {
 
-		this.drivetrain.resetHeadingLockPID();
+	// this.drivetrain.resetHeadingLockPID();
 
-		this.drivetrain.stop();
+	// this.drivetrain.stop();
 
-		this.drivetrain.lockCurrentHeading();
-		this.drivetrain.enableHeadingLock();
-	}
+	// this.drivetrain.lockCurrentHeading();
+	// this.drivetrain.enableHeadingLock();
+	// }
 
 	@Override
 	public boolean isFinished() {

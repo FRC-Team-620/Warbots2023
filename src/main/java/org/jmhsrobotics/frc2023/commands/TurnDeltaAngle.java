@@ -1,6 +1,6 @@
 package org.jmhsrobotics.frc2023.commands;
 
-import org.jmhsrobotics.frc2023.RobotContainer;
+//import org.jmhsrobotics.frc2023.RobotContainer;
 import org.jmhsrobotics.frc2023.RobotMath;
 import org.jmhsrobotics.frc2023.Constants.TurnAngleCommandConstants;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
@@ -51,7 +51,7 @@ public class TurnDeltaAngle extends InstantCommand {
 
 		double finalAngle = RobotMath.shiftAngle(this.drivetrain.getAngleSetpoint(), this.deltaAngle);
 
-		this.profiledAnglePID.reset(RobotContainer.getTelemetry().getYaw());
+		// this.profiledAnglePID.reset(RobotContainer.getTelemetry().getYaw());
 		this.profiledAnglePID.setGoal(finalAngle);
 
 		this.drivetrain.resetHeadingLockPID();
@@ -62,9 +62,10 @@ public class TurnDeltaAngle extends InstantCommand {
 	@Override
 	public void execute() {
 
-		double rotation = this.profiledAnglePID.calculate(RobotContainer.getTelemetry().getYaw());
+		// double rotation =
+		// this.profiledAnglePID.calculate(RobotContainer.getTelemetry().getYaw());
 
-		this.drivetrain.setCurvatureDrive(0, rotation, true);
+		// this.drivetrain.setCurvatureDrive(0, rotation, true);
 
 		SmartDashboard.putNumber("TurnDeltaAngle/setpoint.position", this.profiledAnglePID.getSetpoint().position);
 		SmartDashboard.putNumber("TurnDeltaAngle/setpoint.velocity", this.profiledAnglePID.getSetpoint().velocity);
@@ -77,7 +78,7 @@ public class TurnDeltaAngle extends InstantCommand {
 		this.drivetrain.resetHeadingLockPID();
 		this.drivetrain.stop();
 		this.drivetrain.enableHeadingLock();
-		this.drivetrain.lockCurrentHeading();
+		// this.drivetrain.lockCurrentHeading();
 	}
 
 	// Returns true when the command should end.
