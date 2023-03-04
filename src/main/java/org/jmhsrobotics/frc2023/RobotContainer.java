@@ -89,8 +89,12 @@ public class RobotContainer {
 		));
 		// spotless:on
 
-		grabberMotorSubsystem.setDefaultCommand(new InstantCommand(
-				() -> grabberMotorSubsystem.setGrabberMotor(controlBoard.intakeWheels()), grabberMotorSubsystem));
+		grabberMotorSubsystem.setDefaultCommand( // TODO: LATER FIX
+				new InstantCommand(() -> {
+					grabberMotorSubsystem.setGrabberMotor(controlBoard.intakeWheels());
+				}, grabberMotorSubsystem));
+		// grabberMotorSubsystem.setGrabberMotor(controlBoard.intakeWheels()),
+		// grabberMotor));
 		// Closed Loop
 		// armSubsystem.setDefaultCommand(new TeleopArm(armSubsystem,
 		// operator::getLeftY, operator::getRightY));
