@@ -2,6 +2,7 @@ package org.jmhsrobotics.frc2023.subsystems;
 
 import org.jmhsrobotics.frc2023.Constants;
 import org.jmhsrobotics.frc2023.Constants.ArmConstants;
+import org.jmhsrobotics.frc2023.util.sim.RevEncoderSimWrapper;
 
 import com.playingwithfusion.TimeOfFlight;
 import com.playingwithfusion.TimeOfFlight.RangingMode;
@@ -10,7 +11,6 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAnalogSensor;
 import com.revrobotics.SparkMaxAnalogSensor.Mode;
-import com.revrobotics.SparkMaxAnalogSensorSimWrapper;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.MathUtil;
@@ -127,7 +127,7 @@ public class ArmSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("ArmSubsystem/MaxLength", ArmConstants.maxExtensionLengthMeters);
 
 		// Update Mech2d Display
-		m_wrist.setAngle(pitchAbsoluteEncoder.getPosition() - 90);
+		m_wrist.setAngle(pitchEncoder.getPosition() - 90);
 		m_elevator.setLength(extensionEncoder.getPosition());
 
 		if (getControlMode() == ControlMode.STOPPED) {
@@ -300,19 +300,18 @@ public class ArmSubsystem extends SubsystemBase {
 	private boolean simInit = false;
 	SingleJointedArmSim armsim;
 	ElevatorSim prismaticSim;
-	private SparkMaxAnalogSensorSimWrapper pitchencsim;
-	private SparkMaxAnalogSensorSimWrapper extensionencsim;
-
+	private RevEncoderSimWrapper pitchencsim;
+	private RevEncoderSimWrapper extensionencsim;
 	private void initSim() {
 		// Constants.ArmConstants.minExtensionLengthMeters
-		double moi = SingleJointedArmSim.estimateMOI(ArmConstants.minExtensionLengthMeters, ArmConstants.armMasskg);
+		double moi = SingleJointedArmSim.estimateMOI(ArmConstants.maxExtensionLengthMeters, ArmConstants.armMasskg);
 		armsim = new SingleJointedArmSim(DCMotor.getNEO(1), ArmConstants.armPitchGearRatio, moi,
 				ArmConstants.maxExtensionLengthMeters, Units.degreesToRadians(ArmConstants.minArmAngleDegrees),
 				Units.degreesToRadians(ArmConstants.maxArmAngleDegrees), true);
 		prismaticSim = new ElevatorSim(DCMotor.getNeo550(1), 10, 10, Units.inchesToMeters(3),
 				ArmConstants.minExtensionLengthMeters, ArmConstants.maxExtensionLengthMeters, false);
-		pitchencsim = new SparkMaxAnalogSensorSimWrapper(pitchAbsoluteEncoder);
-		// extensionencsim = new SparkMaxAnalogSensorSimWrapper(extensionEncoder);
+		pitchencsim = RevEncoderSimWrapper.create(pitchMotor);
+		extensionencsim = RevEncoderSimWrapper.create(telescopeMotor);
 	}
 
 	@Override
@@ -331,11 +330,11 @@ public class ArmSubsystem extends SubsystemBase {
 		prismaticSim.setInputVoltage(MathUtil.clamp(prismaticvolts, -12, 12));
 		armsim.update(Constants.kSimUpdateTime);
 		prismaticSim.update(Constants.kSimUpdateTime);
-		pitchencsim.setPosition((float) Units.radiansToDegrees(armsim.getAngleRads()));
+		pitchencsim.setDistance((float) Units.radiansToDegrees(armsim.getAngleRads()));
 		pitchencsim.setVelocity((float) Units.radiansToDegrees(armsim.getVelocityRadPerSec())); // TODO should this be
 																								// in rpm?
 
-		extensionencsim.setPosition((float) (prismaticSim.getPositionMeters() - ArmConstants.minExtensionLengthMeters));
+		extensionencsim.setDistance((float) (prismaticSim.getPositionMeters() - ArmConstants.minExtensionLengthMeters));
 		extensionencsim.setVelocity((float) prismaticSim.getVelocityMetersPerSecond()); // TODO should this be in rpm?
 
 	}
