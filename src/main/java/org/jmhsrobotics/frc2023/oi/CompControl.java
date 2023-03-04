@@ -134,6 +134,4 @@ public class CompControl implements ControlBoard {
 		return operatorController.back();
 	}
 
-	
-
 }

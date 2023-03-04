@@ -149,9 +149,9 @@ public class RobotContainer {
 		controlBoard.armWrist().onTrue(new InstantCommand(() -> this.grabberSolenoidSubsystem
 				.setGrabberPitchState(!this.grabberSolenoidSubsystem.getGrabberPitchState())));
 		controlBoard.autoBalance().onTrue(new AutoBalance(drivetrain, false, ledSubsystem));
-		controlBoard.toggleHeadingLock().onTrue(new InstantCommand(() -> this.drivetrain
-				.setHeadingLock(!this.getDrivetrain().getShouldHeadingLock())));
-		
+		controlBoard.toggleHeadingLock().onTrue(
+				new InstantCommand(() -> this.drivetrain.setHeadingLock(!this.getDrivetrain().getShouldHeadingLock())));
+
 		// driver.povLeft().onTrue(new CommandArm(armSubsystem, .5, 0));
 		// driver.povUp().onTrue(new CommandArm(armSubsystem, 1, 45));
 		// driver.povDown().onTrue(new CommandArm(armSubsystem, 0, -45));

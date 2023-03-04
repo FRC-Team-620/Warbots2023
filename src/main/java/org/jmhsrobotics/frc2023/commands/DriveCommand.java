@@ -81,8 +81,8 @@ public class DriveCommand extends CommandBase {
 		rotationInput *= 0.5;
 
 		// if (control.isDriveSlow()) {
-		// 	speed /= 2;
-		// 	rotationInput /= 2;
+		// speed /= 2;
+		// rotationInput /= 2;
 		// }
 
 		if (control.isDriveFast()) {

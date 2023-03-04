@@ -118,4 +118,16 @@ public class SingleControl implements ControlBoard {
 		return null;
 	}
 
+	@Override
+	public boolean isDriveFast() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Trigger toggleHeadingLock() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
