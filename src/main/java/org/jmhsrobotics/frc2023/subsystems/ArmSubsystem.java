@@ -81,7 +81,7 @@ public class ArmSubsystem extends SubsystemBase {
 		this.resetExtensionPPIDToCurrent();
 
 
-		laser.setRangingMode(RangingMode.Long, 25);
+		laser.setRangingMode(RangingMode.Short, 25);
 		// spotless:on
 		SmartDashboard.putData("Wristpid", profiledAnglePID);
 		SmartDashboard.putData("Lengthpid", profiledExtensionPID);
@@ -117,12 +117,14 @@ public class ArmSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		laser.identifySensor();
+		SmartDashboard.putNumber("ArmSubsystem/armPitch", this.armPitchDegrees());
 		SmartDashboard.putNumber("ArmSubsystem/LaserDistance", laser.getRange());
 		SmartDashboard.putString("arm/controlMode", getControlMode().toString());
 		SmartDashboard.putNumber("ArmSubsystem/pitchMotorRelativeEncoder", pitchEncoder.getPosition() * -1.7379 + 30);
 		SmartDashboard.putNumber("ArmSubsystem/PitchAbsoluteEncoderPosition", pitchAbsoluteEncoder.getPosition());
 		// SmartDashboard.putNumber("ArmSubsystem/StringPotPosition",
 		// extensionEncoder.getPosition());
+		SmartDashboard.putNumber("ArmSubsystem/laser sensor", this.laser.getRange());
 		SmartDashboard.putNumber("ArmSubsystem/RelativeEncoderExtension", telescopeMotor.getEncoder().getPosition());
 		SmartDashboard.putNumber("ArmSubsystem/MaxLength", ArmConstants.maxExtensionLengthMeters);
 
@@ -146,7 +148,7 @@ public class ArmSubsystem extends SubsystemBase {
 		// / 12); // TODO fix janky volts hack
 
 		pitchMotor.set(-profiledAnglePID.calculate(this.armPitchDegrees()));
-		telescopeMotor.set(profiledExtensionPID.calculate(telescopeMotor.getEncoder().getPosition()));
+		telescopeMotor.set(profiledExtensionPID.calculate(this.getArmLength()));
 		// armExtension.set(profiledExtensionPID.getGoal().position);
 		SmartDashboard.putNumber("ArmSubsystem/pitch_angle", this.armPitchDegrees());
 		SmartDashboard.putNumber("ArmSubsystem/pitchPID/position_goal", this.profiledAnglePID.getGoal().position);
@@ -178,6 +180,10 @@ public class ArmSubsystem extends SubsystemBase {
 
 	public void resetPitchEncoder() {
 		this.pitchEncoder.setPosition(0.0);
+	}
+
+	public void resetExtensionEncoder() {
+		this.extensionEncoder.setPosition(0.0);
 	}
 
 	public double getMaxPitchPPIDVel() {

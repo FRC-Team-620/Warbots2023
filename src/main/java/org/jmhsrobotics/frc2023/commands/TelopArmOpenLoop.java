@@ -50,40 +50,34 @@ public class TelopArmOpenLoop extends CommandBase {
 
 		// spotless:off
 		if(this.overrideLimits.getAsBoolean()) {
-			armSubsystem.setDutyCycle(
-				MathUtil.applyDeadband(pitchSpeed.get(), 0.2),
-				MathUtil.applyDeadband(linearSpeed.get(), 0.2)
-			);
+			armSubsystem.setDutyCycle(pitchSpeed.get(), linearSpeed.get());
 			this.wasEnded = true;
 			return;
 		}
 		// spotless:on
 
 		if (this.wasEnded) {
-			this.initialize();
 			this.wasEnded = false;
+			if (this.armSubsystem.armPitchDegrees() < ArmConstants.minArmAngleDegrees) {
+				this.armSubsystem.resetPitchEncoder();
+			}
+			if (this.armSubsystem.getArmLength() < ArmConstants.minExtensionLengthMeters) {
+				this.armSubsystem.resetExtensionEncoder();
+			}
 			this.armSubsystem.resetAnglePPIDToCurrent();
 			this.armSubsystem.resetExtensionPPIDToCurrent();
-			// TODO: Fix this: sets the encoder position after the pid loops have been reset
-			// resulting in the loops
-			// trying to drive back the negitive delta between the old and reset position of
-			// zero.
-			// Also Zero degrees is poiting directly inside of the ground. (Prob not a great
-			// value to reset to.)
-			// if (this.armSubsystem.armPitchDegrees() < ArmConstants.stowedDegrees) {
-			// this.armSubsystem.resetPitchEncoder();
-			// }
+			this.initialize();
 		}
 
 		// spotless:off
-		double deltaPitch = pitchFactor * MathUtil.applyDeadband(pitchSpeed.get(), 0.2);
+		double deltaPitch = pitchFactor * pitchSpeed.get();
 		this.desiredPitch = MathUtil.clamp(
 			this.desiredPitch + deltaPitch, 
 			ArmConstants.minArmAngleDegrees,
 			ArmConstants.maxArmAngleDegrees
 		);
 
-		double deltaExtension = extensionFactor * MathUtil.applyDeadband(linearSpeed.get(), 0.2);
+		double deltaExtension = extensionFactor * linearSpeed.get();
 		this.desiredExtension = MathUtil.clamp(
 			this.desiredExtension + deltaExtension, 
 			ArmConstants.minExtensionLengthMeters, 

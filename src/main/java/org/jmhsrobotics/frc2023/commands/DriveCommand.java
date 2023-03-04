@@ -77,8 +77,8 @@ public class DriveCommand extends CommandBase {
 		// controls the bot
 		speed = control.driveForward();
 
-		speed *= 0.5;
-		rotationInput *= 0.5;
+		// speed *= 0.5;
+		// rotationInput *= 0.5;
 
 		// if (control.isDriveSlow()) {
 		// speed /= 2;
@@ -86,8 +86,11 @@ public class DriveCommand extends CommandBase {
 		// }
 
 		if (control.isDriveFast()) {
-			speed *= 2;
-			rotationInput *= 2;
+			speed *= 0.8;
+			rotationInput *= 0.7;
+		} else {
+			speed *= 0.5;
+			rotationInput *= 0.6;
 		}
 		// Pass the speed, rotation input, and the quickTurn in that order into
 		// setCurvatureDrive
