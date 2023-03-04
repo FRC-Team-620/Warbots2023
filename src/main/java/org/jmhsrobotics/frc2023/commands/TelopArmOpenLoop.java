@@ -64,6 +64,9 @@ public class TelopArmOpenLoop extends CommandBase {
 			this.wasEnded = false;
 			this.armSubsystem.resetAnglePPIDToCurrent();
 			this.armSubsystem.resetExtensionPPIDToCurrent();
+			 // TODO: Fix this: sets the encoder position after the pid loops have been reset resulting in the loops
+			 // trying to drive back the negitive delta between the old and reset position of zero.
+			 // Also Zero degrees is poiting directly inside of the ground. (Prob not a great value to reset to.)
 			if (this.armSubsystem.armPitchDegrees() < ArmConstants.stowedDegrees) {
 				this.armSubsystem.resetPitchEncoder();
 			}
