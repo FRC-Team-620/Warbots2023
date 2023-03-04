@@ -66,7 +66,7 @@ public class SingleControl implements ControlBoard {
 
 	@Override
 	public Trigger armStop() {
-		return controller.start();
+		return null;
 	}
 
 	@Override
@@ -95,6 +95,11 @@ public class SingleControl implements ControlBoard {
 		// TODO Auto-generated method stub
 		return null;
 
+	}
+
+	@Override
+	public Trigger overrideTeleopArm() {
+		return controller.start();
 	}
 
 	@Override

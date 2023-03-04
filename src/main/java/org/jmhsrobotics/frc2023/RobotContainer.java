@@ -4,6 +4,7 @@
 
 package org.jmhsrobotics.frc2023;
 
+import org.jmhsrobotics.frc2023.Constants.ArmConstants;
 import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 import org.jmhsrobotics.frc2023.commands.CommandArm;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
@@ -69,8 +70,8 @@ public class RobotContainer {
 	 */
 	public RobotContainer() {
 		SmartDashboard.putData(CommandScheduler.getInstance());
-		SelectableControlBoard selectable = new SelectableControlBoard("single", new SingleControl());
-		selectable.addOption("competition", new CompControl());
+		SelectableControlBoard selectable = new SelectableControlBoard("competition", new CompControl());
+		selectable.addOption("single", new SingleControl());
 		controlBoard = selectable;
 		// Configure the trigger bindings
 		configureBindings();
@@ -79,11 +80,17 @@ public class RobotContainer {
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, controlBoard));
 
 		// OpenLoop Control!
-		armSubsystem.setDefaultCommand(
-				new TelopArmOpenLoop(armSubsystem, operator::getLeftY, operator::getRightY, operator.start()));
+		// spotless:off
+		armSubsystem.setDefaultCommand(new TelopArmOpenLoop(
+			armSubsystem, 
+			controlBoard::armPitch, 
+			controlBoard::armExtend, 
+			controlBoard.overrideTeleopArm()
+		));
+		// spotless:on
 
-		grabberMotorSubsystem.setDefaultCommand(
-				new InstantCommand(() -> grabberMotorSubsystem.setGrabberMotor(controlBoard.intakeWheels())));
+		grabberMotorSubsystem.setDefaultCommand(new InstantCommand(
+				() -> grabberMotorSubsystem.setGrabberMotor(controlBoard.intakeWheels()), grabberMotorSubsystem));
 		// Closed Loop
 		// armSubsystem.setDefaultCommand(new TeleopArm(armSubsystem,
 		// operator::getLeftY, operator::getRightY));
@@ -129,10 +136,10 @@ public class RobotContainer {
 
 		// operator.x().onTrue(new CommandArm(armSubsystem, 0.2, 0));
 		// operator.b().onTrue(new CommandArm(armSubsystem, 0, 180));
-		controlBoard.armPresetStowed().onTrue(new CommandArm(armSubsystem, 0.15, 0));
-		controlBoard.armPresetFloor().onTrue(new CommandArm(armSubsystem, 0.15, 0));
-		controlBoard.armPresetMid().onTrue(new CommandArm(armSubsystem, 0.15, 0));
-		controlBoard.armPresetPickup().onTrue(new CommandArm(armSubsystem, 0.15, 0));
+		controlBoard.armPresetStowed().onTrue(new CommandArm(armSubsystem, 0.15, ArmConstants.stowedDegrees));
+		controlBoard.armPresetFloor().onTrue(new CommandArm(armSubsystem, 0.15, 40.0));
+		controlBoard.armPresetMid().onTrue(new CommandArm(armSubsystem, 0.15, 90.0));
+		controlBoard.armPresetPickup().onTrue(new CommandArm(armSubsystem, 0.15, ArmConstants.maxArmAngleDegrees));
 		controlBoard.closeGrabber().onTrue(new InstantCommand(() -> this.grabberSolenoidSubsystem
 				.setGrabberPitchState(!this.grabberSolenoidSubsystem.getGrabberPitchState())));
 		controlBoard.autoBalance().onTrue(new AutoBalance(drivetrain, false, ledSubsystem));

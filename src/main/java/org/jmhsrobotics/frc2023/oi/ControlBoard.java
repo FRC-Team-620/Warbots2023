@@ -17,6 +17,7 @@ public interface ControlBoard {
 	public Trigger armPresetHigh();
 	public Trigger armStop();
 	public Trigger autoBalance();
+	public Trigger overrideTeleopArm();
 	// public double Intake();
 	public Trigger Intake();
 	public Trigger armWrist();

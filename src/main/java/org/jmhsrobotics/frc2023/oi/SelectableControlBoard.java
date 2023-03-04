@@ -99,6 +99,11 @@ public class SelectableControlBoard implements ControlBoard {
 	}
 
 	@Override
+	public Trigger overrideTeleopArm() {
+		return selector.getSelected().overrideTeleopArm();
+	}
+
+	@Override
 	public double intakeWheels() {
 		// TODO Auto-generated method stub
 		return selector.getSelected().intakeWheels();

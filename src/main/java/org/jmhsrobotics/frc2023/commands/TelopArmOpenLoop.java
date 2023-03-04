@@ -62,6 +62,8 @@ public class TelopArmOpenLoop extends CommandBase {
 		if (this.wasEnded) {
 			this.initialize();
 			this.wasEnded = false;
+			this.armSubsystem.resetAnglePPIDToCurrent();
+			this.armSubsystem.resetExtensionPPIDToCurrent();
 			if (this.armSubsystem.armPitchDegrees() < ArmConstants.stowedDegrees) {
 				this.armSubsystem.resetPitchEncoder();
 			}
@@ -83,8 +85,12 @@ public class TelopArmOpenLoop extends CommandBase {
 		);
 		// spotless:on
 
+		// armSubsystem.setPitch(this.desiredPitch);
+		// armSubsystem.setExtension(this.desiredExtension);
+
 		armSubsystem.updatePitchGoal(this.desiredPitch);
 		armSubsystem.updateExtensionGoal(this.desiredExtension);
+
 		// if (deltaPitch != 0.0) {
 		// this.desiredPitch += deltaPitch;
 		// armSubsystem.setPitch(this.desiredPitch);
