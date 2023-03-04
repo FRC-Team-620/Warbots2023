@@ -80,7 +80,7 @@ public class Drivetrain extends SubsystemBase {
 	private double commandedCurvature = 0.0;
 	private boolean commandedAllowTurnInPlace = false;
 
-	private boolean shouldHeadingLock = true;
+	private boolean shouldHeadingLock = false;
 
 	// private RobotMath.DiminishingAverageHandler angularVelocityHandler;
 	private DifferentialDrive differentialDrive;
@@ -272,6 +272,13 @@ public class Drivetrain extends SubsystemBase {
 		return motor;
 	}
 
+	public boolean getShouldHeadingLock() {
+		return shouldHeadingLock;
+	}
+
+	public void setHeadingLock(boolean state) {
+		this.shouldHeadingLock = state;
+	}
 	public void disableHeadingLock() {
 		this.shouldHeadingLock = false;
 	}

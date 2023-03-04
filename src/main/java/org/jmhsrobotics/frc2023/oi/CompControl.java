@@ -34,7 +34,7 @@ public class CompControl implements ControlBoard {
 
 	@Override
 	public double driveTurn() {
-		return MathUtil.applyDeadband(driverController.getRightX(), deadband);
+		return MathUtil.applyDeadband(driverController.getLeftX(), deadband);
 	}
 
 	@Override
@@ -50,6 +50,12 @@ public class CompControl implements ControlBoard {
 	@Override
 	public Trigger autoBalance() {
 		return driverController.rightStick();
+	}
+
+	@Override
+	public boolean isDriveFast() {
+		// TODO Auto-generated method stub
+		return driverController.rightBumper().getAsBoolean();
 	}
 
 	// Operator Controller
@@ -98,6 +104,7 @@ public class CompControl implements ControlBoard {
 	}
 
 	@Override
+
 	public Trigger Intake() {
 		return null;
 	}
@@ -121,5 +128,12 @@ public class CompControl implements ControlBoard {
 	public Trigger closeGrabber() {
 		return operatorController.rightBumper();
 	}
+
+	@Override
+	public Trigger toggleHeadingLock() {
+		return operatorController.back();
+	}
+
+	
 
 }

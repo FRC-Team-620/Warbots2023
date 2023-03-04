@@ -140,14 +140,18 @@ public class RobotContainer {
 
 		// operator.x().onTrue(new CommandArm(armSubsystem, 0.2, 0));
 		// operator.b().onTrue(new CommandArm(armSubsystem, 0, 180));
-		controlBoard.armPresetStowed().onTrue(new CommandArm(armSubsystem, 0.15, ArmConstants.stowedDegrees));
+		controlBoard.armPresetStowed().onTrue(new CommandArm(armSubsystem, 0, ArmConstants.stowedDegrees));
 		controlBoard.armPresetFloor().onTrue(new CommandArm(armSubsystem, 0.15, 40.0));
 		controlBoard.armPresetMid().onTrue(new CommandArm(armSubsystem, 0.15, 90.0));
 		controlBoard.armPresetPickup().onTrue(new CommandArm(armSubsystem, 0.15, ArmConstants.maxArmAngleDegrees));
 		controlBoard.closeGrabber().onTrue(new InstantCommand(() -> this.grabberSolenoidSubsystem
+				.setGrabberIntakeState(!this.grabberSolenoidSubsystem.getGrabberIntakeState())));
+		controlBoard.armWrist().onTrue(new InstantCommand(() -> this.grabberSolenoidSubsystem
 				.setGrabberPitchState(!this.grabberSolenoidSubsystem.getGrabberPitchState())));
 		controlBoard.autoBalance().onTrue(new AutoBalance(drivetrain, false, ledSubsystem));
-
+		controlBoard.toggleHeadingLock().onTrue(new InstantCommand(() -> this.drivetrain
+				.setHeadingLock(!this.getDrivetrain().getShouldHeadingLock())));
+		
 		// driver.povLeft().onTrue(new CommandArm(armSubsystem, .5, 0));
 		// driver.povUp().onTrue(new CommandArm(armSubsystem, 1, 45));
 		// driver.povDown().onTrue(new CommandArm(armSubsystem, 0, -45));

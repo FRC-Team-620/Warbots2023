@@ -33,7 +33,7 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArmSubsystem extends SubsystemBase {
-	private TimeOfFlight laser = new TimeOfFlight(31);
+	private TimeOfFlight laser = new TimeOfFlight(35);
 	// Set the motors which power the basic functions of the arm
 	private CANSparkMax pitchMotor = new CANSparkMax(Constants.driveports.getArmAngleCANId(), MotorType.kBrushless);
 	private CANSparkMax telescopeMotor = new CANSparkMax(Constants.driveports.getArmExtensionCANId(),
@@ -168,6 +168,9 @@ public class ArmSubsystem extends SubsystemBase {
 		// profiledExtensionPID.getSetpoint().position);
 	}
 
+	public boolean getShouldHeadingLock() {
+		return shouldHeadingLock;
+	}
 	public void resetAnglePPIDToCurrent() {
 		this.profiledAnglePID.reset(this.armPitchDegrees());
 	}

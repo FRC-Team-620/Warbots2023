@@ -4,7 +4,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public interface ControlBoard {
 	public double driveForward();
+	public boolean isDriveFast();
 	public boolean isDriveSlow();
+	public Trigger toggleHeadingLock();
 	public double driveTurn();
 	public boolean isQuickTurn();
 	public double armPitch();

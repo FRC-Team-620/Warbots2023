@@ -118,4 +118,14 @@ public class SelectableControlBoard implements ControlBoard {
 		return selector.getSelected().autoBalance();
 	}
 
+	@Override
+	public boolean isDriveFast() {
+		return selector.getSelected().isDriveFast();
+	}
+
+	@Override
+	public Trigger toggleHeadingLock() {
+		return selector.getSelected().toggleHeadingLock();
+	}
+
 }
