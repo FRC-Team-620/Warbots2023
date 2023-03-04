@@ -4,6 +4,8 @@
 
 package org.jmhsrobotics.frc2023.subsystems;
 
+import com.ctre.phoenix.platform.DeviceType;
+import com.ctre.phoenix.platform.PlatformJNI;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -28,7 +30,6 @@ import org.jmhsrobotics.frc2023.RobotContainer;
 import org.jmhsrobotics.frc2023.Constants.WheelConstants;
 import org.jmhsrobotics.frc2023.subsystems.TelemetrySubsystem.IMUState;
 import org.jmhsrobotics.frc2023.RobotMath;
-import org.jmhsrobotics.frc2023.util.sim.NavxWrapper;
 import org.jmhsrobotics.frc2023.util.sim.RevEncoderSimWrapper;
 
 public class Drivetrain extends SubsystemBase {
@@ -414,7 +415,7 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * Simulation Code
 	 */
-	private NavxWrapper simGryo;
+	// private NavxWrapper simGryo;
 	private DifferentialDrivetrainSim m_drivetrainSimulator;
 	private RevEncoderSimWrapper leftencsim;
 	private RevEncoderSimWrapper rightencsim;
@@ -433,7 +434,8 @@ public class Drivetrain extends SubsystemBase {
 		this.rightencsim = RevEncoderSimWrapper.create(this.rightFrontMotor);
 
 		// Sim Motors
-		simGryo = new NavxWrapper();
+		// simGryo = new NavxWrapper();
+
 	}
 
 	@Override
@@ -451,11 +453,14 @@ public class Drivetrain extends SubsystemBase {
 		this.rightencsim.setDistance(m_drivetrainSimulator.getRightPositionMeters());
 		this.rightencsim.setVelocity(m_drivetrainSimulator.getRightVelocityMetersPerSecond());
 
-		simGryo.getYawGyro()
-				.setAngle(-MathUtil.inputModulus(m_drivetrainSimulator.getHeading().getDegrees(), -180, 180)); // TODO
-																												// add
-																												// Gyo
-																												// Vel
-																												// support
+		PlatformJNI.JNI_SimSetPhysicsInput(DeviceType.PigeonIMU.value, 30, "HeadingRaw",
+				-MathUtil.inputModulus(m_drivetrainSimulator.getHeading().getDegrees(), -180, 180));
+		// simGryo.getYawGyro()
+		// .setAngle(-MathUtil.inputModulus(m_drivetrainSimulator.getHeading().getDegrees(),
+		// -180, 180)); // TODO
+		// add
+		// Gyo
+		// Vel
+		// support
 	}
 }
