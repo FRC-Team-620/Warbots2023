@@ -16,13 +16,31 @@ public class Bot2020DrivePorts implements IDrivePorts {
 
 	public final double wheelDiameterInInches = 6;
 
+	public final double driveOpenLoopRampRate = 0.2;
+
 	public final double maxVelocity = 2;
 	public final double maxAcceleration = 2;
 
 	public ProfiledPIDConfig autoDistanceProfiledPID = new ProfiledPIDConfig(2, 0.2, 0.0,
 			new Constraints(maxVelocity, maxAcceleration));
-	public PIDConfig keepHeadingPID = new PIDConfig(0.010, 0.010, 0);
-	public PIDConfig balancingPID = new PIDConfig(0.4, 0.2, 0);
+	// spotless:off
+	public PIDConfig keepHeadingPID = new PIDConfig(
+		0.014, 
+		0.01, 
+		0.001
+	);
+	public PIDConfig balancingPID = new PIDConfig(
+		0.4, 
+		0.3, 
+		0
+	);
+	public PIDConfig turnDeltaAnglePID = new PIDConfig(
+		0.014,
+		0.06,
+		0.001
+	);
+
+	// spotless:on
 
 	// public final IIMUWrapper imu = new NavxIMU(SPI.Port.kMXP);
 	public final IIMUWrapper imu = new PigeonIMU(30, getimConfiguration());
@@ -36,18 +54,19 @@ public class Bot2020DrivePorts implements IDrivePorts {
 
 	@Override
 	public ProfiledPIDConfig getAutoDistanceProfiledPID() {
-		// TODO Auto-generated method stub
 		return autoDistanceProfiledPID;
 	}
 	@Override
 	public PIDConfig getKeepHeadingPID() {
-		// TODO Auto-generated method stub
 		return keepHeadingPID;
 	}
 	@Override
 	public PIDConfig getBalancingPID() {
-		// TODO Auto-generated method stub
 		return balancingPID;
+	}
+	@Override
+	public PIDConfig getTurnDeltaAnglePID() {
+		return turnDeltaAnglePID;
 	}
 
 	@Override
@@ -66,6 +85,27 @@ public class Bot2020DrivePorts implements IDrivePorts {
 	public int getRightRearMotorCANId() {
 		return rightRearMotorCANId;
 	}
+
+	@Override
+	public int getArmAngleCANId() {
+		return 5;
+	}
+
+	@Override
+	public int getArmExtensionCANId() {
+		return 6;
+	}
+
+	@Override
+	public int getIntakeCANId() {
+		return 7;
+	}
+
+	@Override
+	public int getGrabberIntakeSolenoidId() {
+		return 1;
+	}
+
 	@Override
 	public boolean getRightFrontMotorInversion() {
 		return rightFrontMotorInversion;
@@ -80,18 +120,20 @@ public class Bot2020DrivePorts implements IDrivePorts {
 	}
 
 	@Override
+	public double getDriveOpenLoopRampRate() {
+		return driveOpenLoopRampRate;
+	}
+
+	@Override
 	public double getMaxVelocity() {
-		// TODO Auto-generated method stub
 		return maxVelocity;
 	}
 	@Override
 	public double getMaxAcceleration() {
-		// TODO Auto-generated method stub
 		return maxAcceleration;
 	}
 	@Override
 	public double getBalanceCreepSpeed() {
-		// TODO Auto-generated method stub
 		return balanceCreepSpeed;
 	}
 

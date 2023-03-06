@@ -43,9 +43,6 @@ public final class Constants {
 	}
 
 	public static class TurnAngleCommandConstants {
-		public static final double kPTurnAngle = 0.014;
-		public static final double kITurnAngle = 0.06;
-		public static final double kDTurnAngle = 0.001;
 
 		// Basically a triangle profile
 		public static final double maxAngularVelocity = 1000.0; // robot will not hit this
@@ -123,15 +120,26 @@ public final class Constants {
 
 		public static final double balanceCreepSpeed = 0.1;
 		public static final double fineAdjustSpeed = 0.1;
-		public static final double climbChargeStationSpeed = 0.2;
+		public static final double climbChargeStationSpeed = 0.14;
 		public static final double balanceCenterLimitFromInitialTip = 1;
 		public static final double onChargeStationAngle = 8;
 		public static final double balancedAngle = 1;
+		public static final double autoBalanceTimeoutSeconds = 30.0; // in seconds
 	}
 
-	public class ArmConstants {
-		public static final double armLengthMeters = 1; // TODO; find real length and height
-		public static final double armHeightMeters = 1;
+	public static class ArmConstants {
+		public static final double armHeightMeters = Units.inchesToMeters(27.5);
+		public static final double maxEncoderCounts = 62.5;
+		public static final double minExtensionLengthMeters = Units.inchesToMeters(0);
+		public static final double maxExtensionLengthMeters = Units.inchesToMeters(10);
+		public static final double extensionMetersPerEncoderTick = maxExtensionLengthMeters / maxEncoderCounts;
+		public static final double armPitchGearRatio = 270;
+		public static final double armMasskg = 7;
+		public static final double pitchDegreesPerEncoderTick = -1.737861;
+		public static final double stowedDegrees = 23.33;
+		public static final double minArmAngleDegrees = ArmConstants.stowedDegrees;
+		public static final double maxArmAngleDegrees = 300;
+		public static final double armDistanceToCenterMeters = Units.inchesToMeters(-8);
 	}
 
 	public static double kSimUpdateTime = 0.02;
@@ -142,4 +150,11 @@ public final class Constants {
 	public static final double kSimTrackwidthMeters = 0.64;// 0.5207
 
 	public static final boolean kCoastOnDisable = false;
+
+	public class fudgeAngleConstant{
+		public static final double limelightHeight = 1.02;// the height of the limelight sensor on the robot in meters
+		public static final double targetHeight = 1.06;// the height of the high target in meters
+		public static final double distance = 0.14;// distance between the limelight sensor and the center of the robot
+
+	}
 }

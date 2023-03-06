@@ -107,10 +107,10 @@ public class RobotMath {
 		/**
 		 * Getter for the current average.
 		 *
-		 * @return The current average
+		 * @return The current average (null if still no data)
 		 */
 		public double get() {
-			return this.average;
+			return this.average == null ? 0.0 : this.average;
 		}
 
 		/**
