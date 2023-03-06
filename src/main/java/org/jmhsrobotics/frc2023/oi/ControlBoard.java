@@ -12,6 +12,7 @@ public interface ControlBoard {
 	public double armPitch();
 	public double armExtend();
 	public double intakeWheels();
+	public Trigger changeScoringType();
 	public Trigger armPresetStowed();
 	public Trigger armPresetPickup();
 	public Trigger armPresetFloor();
@@ -25,5 +26,6 @@ public interface ControlBoard {
 	public Trigger armWrist();
 	public Trigger alignPeg();
 	public Trigger closeGrabber();
+	
 
 }
