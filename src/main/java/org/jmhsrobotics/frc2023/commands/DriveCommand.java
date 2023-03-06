@@ -4,16 +4,16 @@
 
 package org.jmhsrobotics.frc2023.commands;
 
+import org.jmhsrobotics.frc2023.oi.ControlBoard;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /** An DriveCommand command that uses an Drivetrain subsystem. */
 public class DriveCommand extends CommandBase {
 	private Drivetrain drivetrain;
-	private CommandXboxController controller;
+	private ControlBoard control;
+	// private CommandXboxController controller;
 	private boolean rightStick = false;
 
 	/**
@@ -22,12 +22,12 @@ public class DriveCommand extends CommandBase {
 	 * @param drivetrain
 	 *            The subsystem used by this command.
 	 */
-	public DriveCommand(Drivetrain drivetrain, CommandXboxController controller) {
+	public DriveCommand(Drivetrain drivetrain, ControlBoard board) {
 		this.drivetrain = drivetrain;
 		// Use addRequirements() here to declare subsystem dependencies.
 		addRequirements(drivetrain);
 
-		this.controller = controller;
+		this.control = board;
 
 	}
 
@@ -52,24 +52,7 @@ public class DriveCommand extends CommandBase {
 		// for backward movement
 		// double rightTriggerInput = Math.pow(controller.getRightTriggerAxis(),
 		// 2);//used for forward movement
-		double leftTriggerInput = controller.getLeftTriggerAxis();// used for backward movement
-		double rightTriggerInput = controller.getRightTriggerAxis();// used for forward movement
-
-		double rotationInput;
-		if (rightStick) {
-			System.out.println(rightStick);
-			rotationInput = controller.getRightX();
-			// rotationInput = Math.pow(controller.getRightX(), 2);
-			// rotationInput *= Math.signum(controller.getRightX());//This is either -1 if
-			// the input is a negative or 1 if the input is a positive
-		} else {
-			rotationInput = controller.getLeftX();
-			// rotationInput = Math.pow(controller.getLeftX(), 2);
-			// rotationInput *= Math.signum(controller.getLeftX());//This is either -1 if
-			// the input is a negative or 1 if the input is a positive
-		}
-		// input is a positive
-		rotationInput = MathUtil.applyDeadband(rotationInput, 0.1);
+		double rotationInput = control.driveTurn();
 
 		// After that you should multiply the rotation input number by -1 if the input
 		// was negative and by nothing if positive, you could use signum for this if you
@@ -82,10 +65,8 @@ public class DriveCommand extends CommandBase {
 		// the drivers the option to use CurvertureDrive or not)
 		// Make an if statement that checks if the controller has the A button held and
 		// sets quickTurn to false
-		boolean quickTurn = true;// Used for tank steering if true
-		if (controller.a().getAsBoolean()) {// if the A button is held then tank steering is enabled
-			quickTurn = false;
-		}
+		boolean quickTurn = control.isQuickTurn(); // Used for tank steering if true
+
 		double speed = 0;
 		// Make an if statement that triggers if the left trigger is pressed down more
 		// then the right trigger and sets the speed to be equal to -left trigger and
@@ -94,16 +75,22 @@ public class DriveCommand extends CommandBase {
 		// The if statement allows for the left and right inputs to be pressed down at
 		// the same time but the one pressed down more
 		// controls the bot
-		speed = rightTriggerInput > leftTriggerInput ? rightTriggerInput : -leftTriggerInput;
+		speed = control.driveForward();
 
 		// speed *= 0.5;
 		// rotationInput *= 0.5;
 
-		if (controller.rightBumper().getAsBoolean()) {
-			// speed *= 2;
-			// rotationInput *= 2;
-			speed /= 2;
-			rotationInput /= 2;
+		// if (control.isDriveSlow()) {
+		// speed /= 2;
+		// rotationInput /= 2;
+		// }
+
+		if (control.isDriveFast()) {
+			speed *= 0.8;
+			rotationInput *= 0.7;
+		} else {
+			speed *= 0.5;
+			rotationInput *= 0.6;
 		}
 		// Pass the speed, rotation input, and the quickTurn in that order into
 		// setCurvatureDrive

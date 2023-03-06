@@ -4,6 +4,8 @@
 
 package org.jmhsrobotics.frc2023.subsystems;
 
+import com.ctre.phoenix.platform.DeviceType;
+import com.ctre.phoenix.platform.PlatformJNI;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -28,7 +30,6 @@ import org.jmhsrobotics.frc2023.RobotContainer;
 import org.jmhsrobotics.frc2023.Constants.WheelConstants;
 import org.jmhsrobotics.frc2023.subsystems.TelemetrySubsystem.IMUState;
 import org.jmhsrobotics.frc2023.RobotMath;
-import org.jmhsrobotics.frc2023.util.sim.NavxWrapper;
 import org.jmhsrobotics.frc2023.util.sim.RevEncoderSimWrapper;
 
 public class Drivetrain extends SubsystemBase {
@@ -66,6 +67,8 @@ public class Drivetrain extends SubsystemBase {
 	// private double commandedZRotation = 0.0;
 	// private boolean commandedAllowTurnInPlace = false;
 
+	// private double yawAngularVelocity = 0.0;
+	// private double pitchAngularVelocity = 0.0;
 	// private double angularVelocity = 0.0;
 
 	// private boolean headingLock = false;
@@ -78,7 +81,7 @@ public class Drivetrain extends SubsystemBase {
 	private double commandedCurvature = 0.0;
 	private boolean commandedAllowTurnInPlace = false;
 
-	private boolean shouldHeadingLock = true;
+	private boolean shouldHeadingLock = false;
 
 	// private RobotMath.DiminishingAverageHandler angularVelocityHandler;
 	private DifferentialDrive differentialDrive;
@@ -188,9 +191,6 @@ public class Drivetrain extends SubsystemBase {
 		// 30 more degrees.
 		// double relativeChange = RobotMath.relativeAngle(this.previousAngle, yaw);
 
-		// Get the angular velocity, denoised with a diminishing average loop.
-		// The change in angle divided by the change in time since that last reading is
-		// a good approximation of the instantaneous velocity.
 		// spotless:off
 		// this.angularVelocity = this.angularVelocityHandler.feed(
 		// 	relativeChange / RobotConstants.secondsPerTick
@@ -202,13 +202,13 @@ public class Drivetrain extends SubsystemBase {
 		// this.previousAngle = yaw;
 
 		// Check whether there is curvature input
-		boolean noCurvatureInput = RobotMath.approximatelyZero(this.commandedCurvature);
+		boolean noCurvatureInput = RobotMath.approximatelyZero(this.commandedCurvature, 0.02);
 
 		// If the robot is still registering itself as spinning (so it was spinning),
 		// but there is no input, and there is no angular velocity.
 		// Therefore, this if statement catches when the robot has just stopped after
 		// having been spun by the driver.
-		if (this.isTurning && noCurvatureInput && !this.hasAngularVelocity()) {
+		if (this.isTurning && noCurvatureInput && !this.hasYawAngularVelocity()) {
 			this.isTurning = false; // Register the robot as not turning
 			this.lockCurrentHeading(); // Lock the current heading
 			this.resetHeadingLockPID(); // Stop the integral value from running off
@@ -237,6 +237,7 @@ public class Drivetrain extends SubsystemBase {
 
 		// double rotationOutput = this.commandedZRotation;
 		SmartDashboard.putNumber("Drivetrain/RotationInputPeriodic", rotationInput);
+		SmartDashboard.putNumber("Drivetrain/CommandedRotation", this.commandedCurvature);
 		SmartDashboard.putNumber("Drivetrain/DriveSpeedPeriodic", this.commandedSpeed);
 		SmartDashboard.putNumber("Drivetrain/isTurning", this.isTurning ? 1 : -1);
 		SmartDashboard.putNumber("Drivetrain/DriveAngularVelocity", imuState.yawVelocity);
@@ -261,7 +262,7 @@ public class Drivetrain extends SubsystemBase {
 		// through the various motor methods:
 		// Open loop ramp rate (time it takes to reach max acceleration in seconds) =
 		// 0.2
-		motor.setOpenLoopRampRate(0.2);
+		motor.setOpenLoopRampRate(Constants.driveports.getDriveOpenLoopRampRate());
 		// Smart current limit (limits on the current motors can draw even under full
 		// load) = 60
 		motor.setSmartCurrentLimit(60);
@@ -272,6 +273,13 @@ public class Drivetrain extends SubsystemBase {
 		return motor;
 	}
 
+	public boolean getShouldHeadingLock() {
+		return shouldHeadingLock;
+	}
+
+	public void setHeadingLock(boolean state) {
+		this.shouldHeadingLock = state;
+	}
 	public void disableHeadingLock() {
 		this.shouldHeadingLock = false;
 	}
@@ -289,7 +297,7 @@ public class Drivetrain extends SubsystemBase {
 	// return this.angularVelocity;
 	// }
 
-	public boolean hasAngularVelocity() {
+	public boolean hasYawAngularVelocity() {
 		// spotless:off
 		return !RobotMath.approximatelyZero(
 			RobotContainer.getTelemetry().getYawVelocity(), 
@@ -414,7 +422,7 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * Simulation Code
 	 */
-	private NavxWrapper simGryo;
+	// private NavxWrapper simGryo;
 	private DifferentialDrivetrainSim m_drivetrainSimulator;
 	private RevEncoderSimWrapper leftencsim;
 	private RevEncoderSimWrapper rightencsim;
@@ -433,7 +441,8 @@ public class Drivetrain extends SubsystemBase {
 		this.rightencsim = RevEncoderSimWrapper.create(this.rightFrontMotor);
 
 		// Sim Motors
-		simGryo = new NavxWrapper();
+		// simGryo = new NavxWrapper();
+
 	}
 
 	@Override
@@ -451,11 +460,14 @@ public class Drivetrain extends SubsystemBase {
 		this.rightencsim.setDistance(m_drivetrainSimulator.getRightPositionMeters());
 		this.rightencsim.setVelocity(m_drivetrainSimulator.getRightVelocityMetersPerSecond());
 
-		simGryo.getYawGyro()
-				.setAngle(-MathUtil.inputModulus(m_drivetrainSimulator.getHeading().getDegrees(), -180, 180)); // TODO
-																												// add
-																												// Gyo
-																												// Vel
-																												// support
+		PlatformJNI.JNI_SimSetPhysicsInput(DeviceType.PigeonIMU.value, 30, "HeadingRaw",
+				-MathUtil.inputModulus(m_drivetrainSimulator.getHeading().getDegrees(), -180, 180));
+		// simGryo.getYawGyro()
+		// .setAngle(-MathUtil.inputModulus(m_drivetrainSimulator.getHeading().getDegrees(),
+		// -180, 180)); // TODO
+		// add
+		// Gyo
+		// Vel
+		// support
 	}
 }
