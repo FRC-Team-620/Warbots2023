@@ -1,14 +1,15 @@
 package org.jmhsrobotics.frc2023.util;
 
+import com.ctre.phoenix.sensors.Pigeon2Configuration;
+
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import edu.wpi.first.wpilibj.SPI;
 
 public class BabybotDrivePorts implements IDrivePorts {
 	// TODO:All PID loops require tuning for
-	public final int leftFrontMotorCANId = 4;
-	public final int rightFrontMotorCANId = 3;
-	public final int leftRearMotorCANId = 2;
-	public final int rightRearMotorCANId = 1;
+	public final int leftFrontMotorCANId = 1;
+	public final int rightFrontMotorCANId = 2;
+	public final int leftRearMotorCANId = 3;
+	public final int rightRearMotorCANId = 4;
 	public final int winchMotorCANId = 6;
 	public final int pitchMotorCANId = 5;
 	public final int grabberMotorCANId = 7;
@@ -18,32 +19,48 @@ public class BabybotDrivePorts implements IDrivePorts {
 
 	public final double wheelDiameterInInches = 5;
 
+	public final double driveOpenLoopRampRate = 0.4;
+
 	public final double maxVelocity = 2;
 	public final double maxAcceleration = 2;
 
 	public ProfiledPIDConfig autoDistanceProfiledPID = new ProfiledPIDConfig(2, 0.2, 0.0,
 			new Constraints(maxVelocity, maxAcceleration));
-	public PIDConfig keepHeadingPID = new PIDConfig(0.010, 0.010, 0);
+
+	// spotless:off
+	public PIDConfig keepHeadingPID = new PIDConfig(0.018, 0.019, 0);
+
+	public PIDConfig turnDeltaAnglePID = new PIDConfig(0.014, 0.06, 0.001);
+
+	// spotless:off
+
 	public PIDConfig balancingPID = new PIDConfig(0.4, 0.2, 0);
 
 	public final double balanceCreepSpeed = 0.1;
 
-	public final IIMUWrapper imu = new NavxIMU(SPI.Port.kMXP);
+	public final IIMUWrapper imu = new PigeonIMU(30, getimConfiguration());
+
+	private Pigeon2Configuration getimConfiguration() {
+		Pigeon2Configuration config = new Pigeon2Configuration();
+		config.EnableCompass = false;
+		return config;
+	}
 
 	@Override
 	public ProfiledPIDConfig getAutoDistanceProfiledPID() {
-		// TODO Auto-generated method stub
 		return autoDistanceProfiledPID;
 	}
 	@Override
 	public PIDConfig getKeepHeadingPID() {
-		// TODO Auto-generated method stub
 		return keepHeadingPID;
 	}
 	@Override
 	public PIDConfig getBalancingPID() {
-		// TODO Auto-generated method stub
 		return balancingPID;
+	}
+	@Override
+	public PIDConfig getTurnDeltaAnglePID() {
+		return turnDeltaAnglePID;
 	}
 
 	@Override
@@ -62,6 +79,27 @@ public class BabybotDrivePorts implements IDrivePorts {
 	public int getRightRearMotorCANId() {
 		return rightRearMotorCANId;
 	}
+
+	@Override
+	public int getArmAngleCANId() {
+		return 5;
+	}
+
+	@Override
+	public int getArmExtensionCANId() {
+		return 6;
+	}
+
+	@Override
+	public int getIntakeCANId() {
+		return 7;
+	}
+
+	@Override
+	public int getGrabberIntakeSolenoidId() {
+		return 2;
+	}
+
 	@Override
 	public boolean getRightFrontMotorInversion() {
 		return rightFrontMotorInversion;
@@ -76,18 +114,20 @@ public class BabybotDrivePorts implements IDrivePorts {
 	}
 
 	@Override
+	public double getDriveOpenLoopRampRate() {
+		return driveOpenLoopRampRate;
+	}
+
+	@Override
 	public double getMaxVelocity() {
-		// TODO Auto-generated method stub
 		return maxVelocity;
 	}
 	@Override
 	public double getMaxAcceleration() {
-		// TODO Auto-generated method stub
 		return maxAcceleration;
 	}
 	@Override
 	public double getBalanceCreepSpeed() {
-		// TODO Auto-generated method stub
 		return balanceCreepSpeed;
 	}
 

@@ -127,12 +127,10 @@ public class Robot extends TimedRobot {
 		m_robotContainer.getDrivetrain().setBrake(true);
 		this.lastAutonomous = false;
 
+		// this.m_robotContainer.getDrivetrain().resetAngularVelocity();
 		this.m_robotContainer.getDrivetrain().lockCurrentHeading();
 
-		// this.m_robotContainer.getDrivetrain().resetAngularVelocity();
-
 		this.m_robotContainer.getDrivetrain().resetHeadingLockPID();
-
 	}
 
 	/** This function is called periodically during operator control. */

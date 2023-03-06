@@ -8,6 +8,11 @@ public interface IDrivePorts {
 	public int getLeftRearMotorCANId();
 	public int getRightRearMotorCANId();
 
+	public int getArmAngleCANId();
+	public int getArmExtensionCANId();
+	public int getIntakeCANId();
+	public int getGrabberIntakeSolenoidId();
+
 	public boolean getRightFrontMotorInversion();
 	public boolean getLeftFrontMotorInversion();
 
@@ -16,6 +21,9 @@ public interface IDrivePorts {
 	public ProfiledPIDConfig getAutoDistanceProfiledPID();
 	public PIDConfig getKeepHeadingPID();
 	public PIDConfig getBalancingPID();
+	public PIDConfig getTurnDeltaAnglePID();
+
+	public double getDriveOpenLoopRampRate();
 
 	public double getMaxVelocity();
 	public double getMaxAcceleration();

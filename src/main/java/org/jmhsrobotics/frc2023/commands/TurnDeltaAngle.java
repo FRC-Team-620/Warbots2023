@@ -1,5 +1,6 @@
 package org.jmhsrobotics.frc2023.commands;
 
+import org.jmhsrobotics.frc2023.Constants;
 import org.jmhsrobotics.frc2023.RobotContainer;
 import org.jmhsrobotics.frc2023.RobotMath;
 import org.jmhsrobotics.frc2023.Constants.TurnAngleCommandConstants;
@@ -29,9 +30,9 @@ public class TurnDeltaAngle extends InstantCommand {
 
 		// spotless:off
 		this.profiledAnglePID = new ProfiledPIDController(
-      		TurnAngleCommandConstants.kPTurnAngle,
-			TurnAngleCommandConstants.kITurnAngle, 
-     		TurnAngleCommandConstants.kDTurnAngle, 
+      		Constants.driveports.getTurnDeltaAnglePID().kp,
+			Constants.driveports.getTurnDeltaAnglePID().ki,
+			Constants.driveports.getTurnDeltaAnglePID().kd,
       		new Constraints(
 				TurnAngleCommandConstants.maxAngularVelocity, 
         		TurnAngleCommandConstants.maxAngularAcceleration
