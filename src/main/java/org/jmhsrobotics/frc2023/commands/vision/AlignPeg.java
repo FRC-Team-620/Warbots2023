@@ -20,12 +20,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 /** Rotates the robot to align to a identified target. */
 public class AlignPeg extends CommandBase {
 	private final Drivetrain m_drivetrain;
-	private final double kp = 0.004, ki = 0.003, kd = .0003;
 	private final double kangleTolerance = .5;
 	private final double kmaxTurnSpeed = .2;
 	private int lastPipeline = 0;
 
-	PIDController m_pid = new PIDController(kp, ki, kd);
+	PIDController m_pid = new PIDController(Constants.driveports.getTurnDeltaAnglePID().kp, Constants.driveports.getTurnDeltaAnglePID().ki, Constants.driveports.getTurnDeltaAnglePID().kd);
 
 	/**
 	 * Rotates the robot to align to a identified target.
@@ -69,8 +68,9 @@ public class AlignPeg extends CommandBase {
 		SmartDashboard.putNumber("alignpeg1/hasTarget", result.hasTargets() ? 1 : -1);
 		System.out.println(result.hasTargets());
 		if (result.hasTargets()) {
-			double targetHeading = currentHeading - result.getBestTarget().getYaw();
+			double targetHeading = currentHeading - result.getBestTarget().getYaw() + PhotonManager.fudgeAngle();
 			SmartDashboard.putNumber("alignpeg1/visionYaw", result.getBestTarget().getYaw());
+			SmartDashboard.putNumber("alignpeg1/targetYaw_w_fdg", targetHeading);
 			m_pid.setSetpoint(targetHeading);
 		}
 		double output = -MathUtil.clamp(m_pid.calculate(currentHeading), -kmaxTurnSpeed, kmaxTurnSpeed); // Clamp Turn

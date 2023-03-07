@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import org.jmhsrobotics.frc2023.RobotContainer;
 import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
+import org.jmhsrobotics.frc2023.commands.auto.ScoringAuto.startingPositions;
 
 public class AutoSelector {
 	SendableChooser<CommandBase> autoSelector = new SendableChooser<>();
@@ -18,10 +19,14 @@ public class AutoSelector {
 
 	public AutoSelector(RobotContainer container) {
 		// Add auto Options
-		autoSelector.setDefaultOption("BaseLineAuto", new BaseLineAuto(container.getDrivetrain()));
-		autoSelector.addOption("AutoDriveDistance 2 m", new AutoDriveDistance(container.getDrivetrain(), 2));
-		autoSelector.addOption("Reverse and balance",
-				new AutoBalance(container.getDrivetrain(), true, container.getLEDSubsystem()));
+		autoSelector.setDefaultOption("StartingDistanceAuto", new StartingDistanceAuto(container.getDrivetrain()));
+		autoSelector.addOption("CenterChargeStationAuto", new CenterChargeStationAuto(container.getDrivetrain(), container.getLEDSubsystem()));
+		autoSelector.addOption("ScoringAutoLeft",
+				new ScoringAuto(container.drivetrain, container.armSubsystem, container.ledSubsystem, startingPositions.LEFT));
+		autoSelector.addOption("ScoringAutoCenter",
+				new ScoringAuto(container.drivetrain, container.armSubsystem, container.ledSubsystem, startingPositions.CENTER));
+		autoSelector.addOption("ScoringAutoLeft",
+				new ScoringAuto(container.drivetrain, container.armSubsystem, container.ledSubsystem, startingPositions.RIGHT));		
 		SmartDashboard.putData("autoSelector", autoSelector);
 
 		// Add Selector for Alliance color TODO: Use DriveStation.getAlliance() to set
