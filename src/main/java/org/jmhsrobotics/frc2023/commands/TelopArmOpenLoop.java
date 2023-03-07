@@ -24,8 +24,10 @@ public class TelopArmOpenLoop extends CommandBase {
 	double pitchFactor;
 	double extensionFactor;
 
-	public TelopArmOpenLoop(ArmSubsystem armSubsystem, Supplier<Double> pitchSpeed, Supplier<Double> linearSpeed,
-			BooleanSupplier overrideLimits) {
+	// spotless:off
+	public TelopArmOpenLoop(ArmSubsystem armSubsystem, Supplier<Double> pitchSpeed, 
+		Supplier<Double> linearSpeed, BooleanSupplier overrideLimits) {
+
 		this.armSubsystem = armSubsystem;
 		this.pitchSpeed = pitchSpeed;
 		this.linearSpeed = linearSpeed;
@@ -36,17 +38,29 @@ public class TelopArmOpenLoop extends CommandBase {
 
 		addRequirements(armSubsystem);
 	}
+	// spotless:on
 
 	@Override
 	public void initialize() {
-		this.desiredPitch = this.armSubsystem.armPitchDegrees();
+		this.resetDesiredStateToCurrent();
+	}
+
+	private void resetDesiredStateToCurrent() {
+		this.desiredPitch = this.armSubsystem.getArmPitch();
 		this.desiredExtension = this.armSubsystem.getArmLength();
 	}
 
 	@Override
 	public void execute() {
-		// armSubsystem.setDutyCycle(MathUtil.applyDeadband(pitchSpeed.get(), 0.2),
-		// MathUtil.applyDeadband(linearSpeed.get(), 0.2));
+
+		SmartDashboard.putNumber("ArmTeleop/desiredPitch", this.desiredPitch);
+		SmartDashboard.putNumber("ArmTeleop/desiredExtension", this.desiredExtension);
+		SmartDashboard.putNumber("ArmTeleop/armPitch", this.armSubsystem.getArmPitch());
+		SmartDashboard.putNumber("ArmTeleop/armExtension", this.armSubsystem.getArmLength());
+		SmartDashboard.putNumber("ArmTeleop/pitchGoalPos", this.armSubsystem.getPitchPPIDGoal().position);
+		SmartDashboard.putNumber("ArmTeleop/extensionGoalPos", this.armSubsystem.getExtensionPPIDGoal().position);
+		SmartDashboard.putNumber("ArmTeleop/pitchEncoder", this.armSubsystem.getPitchRelativeEncoderPosition());
+		SmartDashboard.putNumber("ArmTeleop/extensionEncoder", this.armSubsystem.getExtensionRelativeEncoderPosition());
 
 		// spotless:off
 		if(this.overrideLimits.getAsBoolean()) {
@@ -58,15 +72,13 @@ public class TelopArmOpenLoop extends CommandBase {
 
 		if (this.wasEnded) {
 			this.wasEnded = false;
-			if (this.armSubsystem.armPitchDegrees() < ArmConstants.minArmAngleDegrees) {
+			if (this.armSubsystem.getArmPitch() < ArmConstants.minArmAngleDegrees) {
 				this.armSubsystem.resetPitchEncoder();
 			}
 			if (this.armSubsystem.getArmLength() < ArmConstants.minExtensionLengthMeters) {
 				this.armSubsystem.resetExtensionEncoder();
 			}
-			this.armSubsystem.resetAnglePPIDToCurrent();
-			this.armSubsystem.resetExtensionPPIDToCurrent();
-			this.initialize();
+			this.resetDesiredStateToCurrent();
 		}
 
 		// spotless:off
@@ -85,24 +97,8 @@ public class TelopArmOpenLoop extends CommandBase {
 		);
 		// spotless:on
 
-		// armSubsystem.setPitch(this.desiredPitch);
-		// armSubsystem.setExtension(this.desiredExtension);
-
 		armSubsystem.updatePitchGoal(this.desiredPitch);
 		armSubsystem.updateExtensionGoal(this.desiredExtension);
-
-		// if (deltaPitch != 0.0) {
-		// this.desiredPitch += deltaPitch;
-		// armSubsystem.setPitch(this.desiredPitch);
-		// }
-
-		// if (deltaExtension != 0.0) {
-		// this.desiredExtension += deltaExtension;
-		// armSubsystem.setExtension(this.desiredExtension);
-		// }
-
-		SmartDashboard.putNumber("ArmTeleop/desiredPitch", this.desiredPitch);
-		SmartDashboard.putNumber("ArmTeleop/desiredExtension", this.desiredExtension);
 	}
 
 	@Override
