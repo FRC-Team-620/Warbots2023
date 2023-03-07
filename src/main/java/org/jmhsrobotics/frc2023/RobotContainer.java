@@ -90,7 +90,7 @@ public class RobotContainer {
 		));
 		// spotless:on
 
-		grabberMotorSubsystem.setDefaultCommand( // TODO: LATER FIX
+		grabberMotorSubsystem.setDefaultCommand(
 				new InstantCommand(() -> {
 					grabberMotorSubsystem.setGrabberMotor(controlBoard.intakeWheels());
 				}, grabberMotorSubsystem));

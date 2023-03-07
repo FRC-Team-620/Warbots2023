@@ -11,21 +11,21 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class GrabberInOutAuto extends CommandBase {
-    private GrabberMotorSubsystem grabberWheel =new GrabberMotorSubsystem();
-    private GrabberSolenoidSubsystem grabberPiston =new GrabberSolenoidSubsystem();
-    Supplier<Boolean> intakeIn;
+    private GrabberMotorSubsystem grabberWheel = new GrabberMotorSubsystem();
+    private GrabberSolenoidSubsystem grabberPiston = new GrabberSolenoidSubsystem();
+    BooleanSupplier intakeIn;
     private double speed;
     private boolean state;
-    Timer time=new Timer();
+    Timer time = new Timer();
 
-    public GrabberInOutAuto(Supplier<Boolean> intakeIn, double speed) {
+    public GrabberInOutAuto(BooleanSupplier intakeIn, double speed) {
         this.intakeIn = intakeIn;
         this.speed = speed;
     }
 
     @Override
     public void initialize() {
-        grabberWheel.setGrabberMotor(speed * (intakeIn.get() ? -1 : 1));
+        grabberWheel.setGrabberMotor(speed * (intakeIn.getAsBoolean() ? -1 : 1));
         grabberPiston.setGrabberIntakeState(state);
         
 
