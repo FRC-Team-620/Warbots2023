@@ -71,19 +71,15 @@ public class ArmSubsystem extends SubsystemBase {
 		// spotless:off
 		anglePPIDConstraints = new Constraints(80, 80);
 		profiledAnglePID = new ProfiledPIDController(
-			0.05, 0.003, 0.003, anglePPIDConstraints
+			0.15, 0.03, 0.005, anglePPIDConstraints
 		);
 
-		this.resetAnglePPIDToCurrent();
 		profiledAnglePID.setTolerance(1.5, 4);
 
 		extensionPPIDConstraints = new Constraints(1, 0.2);
 		profiledExtensionPID = new ProfiledPIDController(
-			9, 1, 0.2, extensionPPIDConstraints
+			9, 1, 0.02, extensionPPIDConstraints
 		);
-
-		this.resetExtensionPPIDToCurrent();
-
 
 		laser.setRangingMode(RangingMode.Short, 25);
 		// spotless:on
@@ -102,8 +98,8 @@ public class ArmSubsystem extends SubsystemBase {
 		extensionEncoder.setPositionConversionFactor(ArmConstants.extensionMetersPerEncoderTick);
 		extensionEncoder.setPosition(0);
 
-		// controlMode = ControlMode.STOPPED;
-		// System.out.println("HELLLLLLLOOOOO Woooooorld");
+		// this.resetAnglePPIDToCurrent();
+		// this.resetExtensionPPIDToCurrent();
 	}
 
 	public void init2d() {
@@ -121,7 +117,7 @@ public class ArmSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		laser.identifySensor();
-		SmartDashboard.putNumber("ArmSubsystem/armPitch", this.armPitchDegrees());
+		SmartDashboard.putNumber("ArmSubsystem/armPitch", this.getArmPitch());
 		SmartDashboard.putNumber("ArmSubsystem/LaserDistance", laser.getRange());
 		SmartDashboard.putString("arm/controlMode", getControlMode().toString());
 		SmartDashboard.putNumber("ArmSubsystem/pitchMotorRelativeEncoder", pitchEncoder.getPosition() * -1.7379 + 30);
@@ -151,10 +147,10 @@ public class ArmSubsystem extends SubsystemBase {
 		// profiledAnglePID.calculate(pitchEncoder.getPosition()))
 		// / 12); // TODO fix janky volts hack
 
-		pitchMotor.set(-profiledAnglePID.calculate(this.armPitchDegrees()));
+		pitchMotor.set(-profiledAnglePID.calculate(this.getArmPitch()));
 		telescopeMotor.set(profiledExtensionPID.calculate(this.getArmLength()));
 		// armExtension.set(profiledExtensionPID.getGoal().position);
-		SmartDashboard.putNumber("ArmSubsystem/pitch_angle", this.armPitchDegrees());
+		SmartDashboard.putNumber("ArmSubsystem/pitch_angle", this.getArmPitch());
 		SmartDashboard.putNumber("ArmSubsystem/pitchPID/position_goal", this.profiledAnglePID.getGoal().position);
 		SmartDashboard.putNumber("ArmSubsystem/pitchPID/position_setpoint",
 				this.profiledAnglePID.getSetpoint().position);
@@ -174,12 +170,28 @@ public class ArmSubsystem extends SubsystemBase {
 		// profiledExtensionPID.getSetpoint().position);
 	}
 
-	public void resetAnglePPIDToCurrent() {
-		this.profiledAnglePID.reset(this.armPitchDegrees());
+	private void resetAnglePPIDToCurrent() {
+		this.profiledAnglePID.reset(this.getArmPitch());
 	}
 
-	public void resetExtensionPPIDToCurrent() {
+	private void resetExtensionPPIDToCurrent() {
 		this.profiledExtensionPID.reset(this.getArmLength());
+	}
+
+	public double getPitchRelativeEncoderPosition() {
+		return this.pitchEncoder.getPosition();
+	}
+
+	public double getExtensionRelativeEncoderPosition() {
+		return this.extensionEncoder.getPosition();
+	}
+
+	public State getPitchPPIDGoal() {
+		return this.profiledAnglePID.getGoal();
+	}
+
+	public State getExtensionPPIDGoal() {
+		return this.profiledExtensionPID.getGoal();
 	}
 
 	public void resetPitchEncoder() {
@@ -208,7 +220,7 @@ public class ArmSubsystem extends SubsystemBase {
 		this.controlMode = ControlMode.CLOSED_LOOP;
 	}
 
-	public double armPitchDegrees() {
+	public double getArmPitch() {
 		return ArmConstants.pitchDegreesPerEncoderTick * this.pitchEncoder.getPosition() + ArmConstants.stowedDegrees;
 	}
 
@@ -235,13 +247,13 @@ public class ArmSubsystem extends SubsystemBase {
 	public void setPitch(double targetAngleDeg) {
 		targetAngleDeg = MathUtil.clamp(targetAngleDeg, ArmConstants.minArmAngleDegrees,
 				ArmConstants.maxArmAngleDegrees);
-		profiledAnglePID.reset(this.armPitchDegrees());
+		profiledAnglePID.reset(this.getArmPitch());
 		profiledAnglePID.setGoal(new State(targetAngleDeg, 0));
 		SmartDashboard.putNumber("Wristpid/targetAngleDeg", targetAngleDeg);
 
 		if (controlMode != ControlMode.CLOSED_LOOP) {
-			profiledAnglePID.setGoal(new State(pitchAbsoluteEncoder.getPosition(), 0));
-			profiledAnglePID.reset(new State(pitchAbsoluteEncoder.getPosition(), 0));
+			profiledAnglePID.setGoal(new State(this.getArmPitch(), 0));
+			profiledAnglePID.reset(this.getArmPitch());
 		}
 		controlMode = ControlMode.CLOSED_LOOP;
 	}
@@ -259,8 +271,8 @@ public class ArmSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("lengthpid/targetLength", targetDistanceMeters);
 
 		if (controlMode != ControlMode.CLOSED_LOOP) {
-			profiledExtensionPID.setGoal(new State(extensionEncoder.getPosition(), 0));
-			profiledExtensionPID.reset(new State(extensionEncoder.getPosition(), 0));
+			profiledExtensionPID.setGoal(new State(this.getArmLength(), 0));
+			profiledExtensionPID.reset(this.getArmLength());
 		}
 		controlMode = ControlMode.CLOSED_LOOP;
 	}
