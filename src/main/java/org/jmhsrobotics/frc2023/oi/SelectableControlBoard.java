@@ -86,6 +86,11 @@ public class SelectableControlBoard implements ControlBoard {
 		return selector.getSelected().alignPeg();
 	}
 
+	@Override 
+	public Trigger changeScoringType() {
+		return selector.getSelected().changeScoringType();
+	}
+
 	@Override
 	public Trigger armPresetStowed() {
 		// TODO Auto-generated method stub

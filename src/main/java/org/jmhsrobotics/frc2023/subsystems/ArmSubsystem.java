@@ -52,6 +52,10 @@ public class ArmSubsystem extends SubsystemBase {
 	private ArmFeedforward armfeedforward;
 	private double openLoopExtensionSpeed;
 	private double openLoopPitchSpeed;
+	public enum scoringType {
+		CONE, CUBE;
+	}
+	public scoringType armScore = scoringType.CONE;
 
 	private enum ControlMode {
 		STOPPED, OPEN_LOOP, CLOSED_LOOP;
@@ -260,6 +264,15 @@ public class ArmSubsystem extends SubsystemBase {
 		}
 		controlMode = ControlMode.CLOSED_LOOP;
 	}
+
+	public void setScoringType() {
+		if (armScore == scoringType.CONE) {
+			armScore = scoringType.CUBE;
+		}
+		else {
+			armScore = scoringType.CONE;
+		}
+	} 
 
 	/*
 	 * Returns the angle of the arm in degrees. Zero degrees being parallel to the

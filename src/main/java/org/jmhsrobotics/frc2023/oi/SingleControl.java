@@ -84,6 +84,11 @@ public class SingleControl implements ControlBoard {
 		return controller.x();
 	}
 
+	@Override 
+	public Trigger changeScoringType() {
+		return controller.a();
+	}
+
 	@Override
 	public Trigger armPresetStowed() {
 		// TODO Auto-generated method stub
