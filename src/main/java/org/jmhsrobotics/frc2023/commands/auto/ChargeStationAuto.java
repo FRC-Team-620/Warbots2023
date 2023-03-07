@@ -10,12 +10,12 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 
-public class BaseLineAuto extends SequentialCommandGroup {
+public class ChargeStationAuto extends SequentialCommandGroup {
 
 	Drivetrain drivetrain;
 
 	// Constructor
-	public BaseLineAuto(Drivetrain drivetrain) {
+	public ChargeStationAuto(Drivetrain drivetrain) {
 		this.drivetrain = drivetrain;
 
 		addCommands(new InstantCommand(() -> {
