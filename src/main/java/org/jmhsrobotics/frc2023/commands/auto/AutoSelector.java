@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import org.jmhsrobotics.frc2023.RobotContainer;
-import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
 import org.jmhsrobotics.frc2023.commands.auto.ScoringAuto.startingPositions;
 
 public class AutoSelector {
@@ -20,13 +19,17 @@ public class AutoSelector {
 	public AutoSelector(RobotContainer container) {
 		// Add auto Options
 		autoSelector.setDefaultOption("StartingDistanceAuto", new StartingDistanceAuto(container.getDrivetrain()));
-		autoSelector.addOption("CenterChargeStationAuto", new CenterChargeStationAuto(container.getDrivetrain(), container.getLEDSubsystem()));
+		autoSelector.addOption("CenterChargeStationAuto",
+				new CenterChargeStationAuto(container.getDrivetrain(), container.getLEDSubsystem()));
 		autoSelector.addOption("ScoringAutoLeft",
-				new ScoringAuto(container.drivetrain, container.armSubsystem, container.ledSubsystem, startingPositions.LEFT));
+				new ScoringAuto(container.drivetrain, container.armSubsystem, container.grabberMotorSubsystem,
+						container.grabberSolenoidSubsystem, container.ledSubsystem, startingPositions.LEFT));
 		autoSelector.addOption("ScoringAutoCenter",
-				new ScoringAuto(container.drivetrain, container.armSubsystem, container.ledSubsystem, startingPositions.CENTER));
-		autoSelector.addOption("ScoringAutoLeft",
-				new ScoringAuto(container.drivetrain, container.armSubsystem, container.ledSubsystem, startingPositions.RIGHT));		
+				new ScoringAuto(container.drivetrain, container.armSubsystem, container.grabberMotorSubsystem,
+						container.grabberSolenoidSubsystem, container.ledSubsystem, startingPositions.CENTER));
+		autoSelector.addOption("ScoringAutoRight",
+				new ScoringAuto(container.drivetrain, container.armSubsystem, container.grabberMotorSubsystem,
+						container.grabberSolenoidSubsystem, container.ledSubsystem, startingPositions.RIGHT));
 		SmartDashboard.putData("autoSelector", autoSelector);
 
 		// Add Selector for Alliance color TODO: Use DriveStation.getAlliance() to set

@@ -18,8 +18,8 @@ public class TelopArmOpenLoop extends CommandBase {
 	BooleanSupplier overrideLimits;
 
 	boolean wasEnded = false;
-	double desiredPitch = ArmConstants.stowedDegrees;
-	double desiredExtension = 0;
+	double desiredPitch;
+	double desiredExtension;
 
 	double pitchFactor;
 	double extensionFactor;
@@ -75,9 +75,10 @@ public class TelopArmOpenLoop extends CommandBase {
 			if (this.armSubsystem.getArmPitch() < ArmConstants.minArmAngleDegrees) {
 				this.armSubsystem.resetPitchEncoder();
 			}
-			if (this.armSubsystem.getArmLength() < ArmConstants.minExtensionLengthMeters) {
-				this.armSubsystem.resetExtensionEncoder();
-			}
+			// if (this.armSubsystem.getArmLength() <
+			// ArmConstants.minExtensionLengthMillims) {
+			// this.armSubsystem.resetExtensionEncoder();
+			// }
 			this.resetDesiredStateToCurrent();
 		}
 
@@ -92,8 +93,8 @@ public class TelopArmOpenLoop extends CommandBase {
 		double deltaExtension = extensionFactor * linearSpeed.get();
 		this.desiredExtension = MathUtil.clamp(
 			this.desiredExtension + deltaExtension, 
-			ArmConstants.minExtensionLengthMeters, 
-			ArmConstants.maxExtensionLengthMeters
+			ArmConstants.minExtensionLengthMillims, 
+			ArmConstants.maxExtensionLengthMillims
 		);
 		// spotless:on
 

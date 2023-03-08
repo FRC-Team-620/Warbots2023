@@ -26,6 +26,5 @@ public interface ControlBoard {
 	public Trigger armWrist();
 	public Trigger alignPeg();
 	public Trigger closeGrabber();
-	
 
 }

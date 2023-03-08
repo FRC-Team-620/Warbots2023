@@ -24,7 +24,8 @@ public class AlignPeg extends CommandBase {
 	private final double kmaxTurnSpeed = .2;
 	private int lastPipeline = 0;
 
-	PIDController m_pid = new PIDController(Constants.driveports.getTurnDeltaAnglePID().kp, Constants.driveports.getTurnDeltaAnglePID().ki, Constants.driveports.getTurnDeltaAnglePID().kd);
+	PIDController m_pid = new PIDController(Constants.driveports.getTurnDeltaAnglePID().kp,
+			Constants.driveports.getTurnDeltaAnglePID().ki, Constants.driveports.getTurnDeltaAnglePID().kd);
 
 	/**
 	 * Rotates the robot to align to a identified target.

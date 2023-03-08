@@ -114,7 +114,7 @@ public class CompControl implements ControlBoard {
 		return operatorController.povUp();
 	}
 
-	@Override 
+	@Override
 	public Trigger changeScoringType() {
 		return operatorController.a();
 	}

@@ -30,8 +30,7 @@ public class CenterChargeStationAuto extends SequentialCommandGroup {
 				new InstantCommand(() -> {
 					LEDSubsystem.LEDManager.STRIP0.strip.setSolidColor(Color.kRed);
 				}), new WaitCommand(0.5), // gets robot to pause outside of community
-			    new AutoDriveDistance(drivetrain, 2),
-				new AutoBalance(drivetrain, true, ledSubsystem));
+				new AutoDriveDistance(drivetrain, 2), new AutoBalance(drivetrain, true, ledSubsystem));
 
 	}
 }

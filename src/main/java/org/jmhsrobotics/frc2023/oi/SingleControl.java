@@ -84,7 +84,7 @@ public class SingleControl implements ControlBoard {
 		return controller.x();
 	}
 
-	@Override 
+	@Override
 	public Trigger changeScoringType() {
 		return controller.a();
 	}

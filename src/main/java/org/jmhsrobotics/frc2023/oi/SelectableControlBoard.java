@@ -86,7 +86,7 @@ public class SelectableControlBoard implements ControlBoard {
 		return selector.getSelected().alignPeg();
 	}
 
-	@Override 
+	@Override
 	public Trigger changeScoringType() {
 		return selector.getSelected().changeScoringType();
 	}
