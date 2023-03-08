@@ -69,9 +69,9 @@ public class ArmSubsystem extends SubsystemBase {
 		// TODO: MAke sure to construct profiledExtensionPID and profiledExtensionPID!!!
 
 		// spotless:off
-		anglePPIDConstraints = new Constraints(80, 80);
+		anglePPIDConstraints = new Constraints(110, 200);
 		profiledAnglePID = new ProfiledPIDController(
-			0.15, 0.03, 0.005, anglePPIDConstraints
+			0.10, 0.03, 0.005, anglePPIDConstraints
 		);
 
 		profiledAnglePID.setTolerance(1.5, 4);
@@ -186,6 +186,10 @@ public class ArmSubsystem extends SubsystemBase {
 		// SmartDashboard.putNumber("Wristpid/output", pitchMotor.get());
 		// SmartDashboard.putNumber("lengthpid/setpoint",
 		// profiledExtensionPID.getSetpoint().position);
+	}
+
+	public void resetAnglePPIDToValue(double value) {
+		this.profiledAnglePID.reset(value);
 	}
 
 	public void resetAnglePPIDToCurrent() {

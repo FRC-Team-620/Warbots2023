@@ -148,25 +148,25 @@ public class RobotContainer {
 						: new CommandArm(armSubsystem, 0, ArmConstants.stowedDegrees));
 		controlBoard.armPresetFloor()
 				.onTrue(armSubsystem.armScore == scoringType.CONE
-						? new CommandArm(armSubsystem, 0.2, 50.0)
-						: new CommandArm(armSubsystem, 0.15, 40.0));
+						? new CommandArm(armSubsystem, 214, 56)
+						: new CommandArm(armSubsystem, 214, 56));
 
 		controlBoard.armPresetFloor().whileTrue(new InstantCommand(() -> grabberMotorSubsystem.setGrabberMotor(-1)));
 		controlBoard.armPresetFloor().onFalse(new InstantCommand(() -> grabberMotorSubsystem.setGrabberMotor(0)));
 		controlBoard.armPresetMid()
 				.onTrue(armSubsystem.armScore == scoringType.CONE
-						? new CommandArm(armSubsystem, 0.2, 100.0)
-						: new CommandArm(armSubsystem, 0.15, 90.0));
+						? new CommandArm(armSubsystem, 356, 95)
+						: new CommandArm(armSubsystem, 356, 95));
 
 		controlBoard.armPresetHigh()
 				.onTrue(armSubsystem.armScore == scoringType.CONE
-						? new CommandArm(armSubsystem, 0.2, 200)
-						: new CommandArm(armSubsystem, 0.15, 200));
+						? new CommandArm(armSubsystem, 357, 247)
+						: new CommandArm(armSubsystem, 357, 247));
 
 		controlBoard.armPresetPickup()
 				.onTrue(armSubsystem.armScore == scoringType.CONE
-						? new CommandArm(armSubsystem, 0.2, ArmConstants.maxArmAngleDegrees)
-						: new CommandArm(armSubsystem, 0.15, ArmConstants.maxArmAngleDegrees));
+						? new CommandArm(armSubsystem, 357, 90)
+						: new CommandArm(armSubsystem, 357, 90));
 
 		controlBoard.closeGrabber()
 				.onTrue(armSubsystem.armScore == scoringType.CONE

@@ -55,6 +55,7 @@ public class TelopArmOpenLoop extends CommandBase {
 	@Override
 	public void execute() {
 
+		SmartDashboard.putNumber("ArmTeleop/Pitch/pitchEncoder", this.armSubsystem.getPitchRelativeEncoderPosition());
 		SmartDashboard.putNumber("ArmTeleop/Pitch/pitchInput", this.pitchSpeed.get());
 		SmartDashboard.putNumber("ArmTeleop/Pitch/desiredPitch", this.desiredPitch);
 		SmartDashboard.putNumber("ArmTeleop/Pitch/armPitch", this.armSubsystem.getArmPitch());
@@ -76,14 +77,20 @@ public class TelopArmOpenLoop extends CommandBase {
 
 		if (this.wasEnded) {
 			this.wasEnded = false;
+			// resetting the arm to a given min pitch (resetting relative encoder) if below
+			// range
 			if (this.armSubsystem.getArmPitch() < ArmConstants.minArmAngleDegrees) {
 				this.armSubsystem.resetPitchEncoder();
+				this.resetDesiredStateToCurrent();
+				// vvvvv YOU NEED TO DO THIS vvvvvv
+				// RESETTING THE PITCH ENCODER ALONE IS NOT FAST ENOUGH
+				// THE HARDWARE IS BAD AND IT DOES NOT REGISTER IN TIME (caused massive jiggle
+				// w/o)
+				// this killed me
+				this.armSubsystem.resetAnglePPIDToValue(ArmConstants.stowedDegrees);
+			} else {
+				this.resetDesiredStateToCurrent();
 			}
-			// if (this.armSubsystem.getArmLength() <
-			// ArmConstants.minExtensionLengthMillims) {
-			// this.armSubsystem.resetExtensionEncoder();
-			// }
-			this.resetDesiredStateToCurrent();
 		}
 
 		// spotless:off

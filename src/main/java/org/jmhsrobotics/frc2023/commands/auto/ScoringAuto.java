@@ -35,14 +35,14 @@ public class ScoringAuto extends SequentialCommandGroup {
 			addCommands(new InstantCommand(() -> {
 				drivetrain.resetOdometry(new Pose2d(Units.inchesToMeters(54.42), Units.inchesToMeters(42.079),
 						Rotation2d.fromDegrees(180)));
-			}), new AutoDriveDistance(drivetrain, 2), new TurnDeltaAngle(drivetrain, -90),
+			}), new AutoDriveDistance(drivetrain, 0.5), new TurnDeltaAngle(drivetrain, -90),
 					new AutoDriveDistance(drivetrain, 0.2), new TurnDeltaAngle(drivetrain, 90),
-					new AutoDriveDistance(drivetrain, 2), new AlignPeg(drivetrain),
+					new AutoDriveDistance(drivetrain, 0.5), new AlignPeg(drivetrain),
 					new CommandArm(armSubsystem, 0.2, 90),
 					new GrabberInOutAuto(grabberMotorSubsystem, grabberSolenoidSubsystem, false, 1),
-					new AutoDriveDistance(drivetrain, -2), new TurnDeltaAngle(drivetrain, -90),
+					new AutoDriveDistance(drivetrain, -0.5), new TurnDeltaAngle(drivetrain, -90),
 					new AutoDriveDistance(drivetrain, -0.2), new TurnDeltaAngle(drivetrain, 90),
-					new AutoDriveDistance(drivetrain, -2), new AutoDriveDistance(drivetrain, -4.5),
+					new AutoDriveDistance(drivetrain, -0.5), new AutoDriveDistance(drivetrain, -4.5),
 					// Gets the robot out the comunity area (Over the charge station) by driving
 					// backwards
 					new InstantCommand(() -> {

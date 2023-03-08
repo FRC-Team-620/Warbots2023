@@ -89,7 +89,7 @@ public class CompControl implements ControlBoard {
 
 	@Override
 	public Trigger armPresetHigh() {// Not in use right now
-		return operatorController.povDown();
+		return operatorController.y();
 	}
 
 	@Override
@@ -126,7 +126,7 @@ public class CompControl implements ControlBoard {
 
 	@Override
 	public Trigger armPresetPickup() {
-		return operatorController.y();
+		return operatorController.povDown();
 	}
 
 	@Override
