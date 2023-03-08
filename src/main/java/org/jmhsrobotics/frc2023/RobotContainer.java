@@ -140,22 +140,40 @@ public class RobotContainer {
 
 		// operator.x().onTrue(new CommandArm(armSubsystem, 0.2, 0));
 		// operator.b().onTrue(new CommandArm(armSubsystem, 0, 180));
-		
+
 		controlBoard.changeScoringType().onTrue(new InstantCommand(() -> armSubsystem.setScoringType()));
-		controlBoard.armPresetStowed().onTrue(armSubsystem.armScore == scoringType.CONE ? new CommandArm(armSubsystem, 0, ArmConstants.stowedDegrees) : new CommandArm(armSubsystem, 0, ArmConstants.stowedDegrees));
-		controlBoard.armPresetFloor().onTrue(armSubsystem.armScore == scoringType.CONE ? new CommandArm(armSubsystem, 0.2, 50.0) : new CommandArm(armSubsystem, 0.15, 40.0));
+		controlBoard.armPresetStowed()
+				.onTrue(armSubsystem.armScore == scoringType.CONE
+						? new CommandArm(armSubsystem, 0, ArmConstants.stowedDegrees)
+						: new CommandArm(armSubsystem, 0, ArmConstants.stowedDegrees));
+		controlBoard.armPresetFloor()
+				.onTrue(armSubsystem.armScore == scoringType.CONE
+						? new CommandArm(armSubsystem, 0.2, 50.0)
+						: new CommandArm(armSubsystem, 0.15, 40.0));
 
 		controlBoard.armPresetFloor().whileTrue(new InstantCommand(() -> grabberMotorSubsystem.setGrabberMotor(-1)));
 		controlBoard.armPresetFloor().onFalse(new InstantCommand(() -> grabberMotorSubsystem.setGrabberMotor(0)));
-		controlBoard.armPresetMid().onTrue(armSubsystem.armScore == scoringType.CONE ? new CommandArm(armSubsystem, 0.2, 100.0) : new CommandArm(armSubsystem, 0.15, 90.0));
+		controlBoard.armPresetMid()
+				.onTrue(armSubsystem.armScore == scoringType.CONE
+						? new CommandArm(armSubsystem, 0.2, 100.0)
+						: new CommandArm(armSubsystem, 0.15, 90.0));
 
-		controlBoard.armPresetHigh().onTrue(armSubsystem.armScore == scoringType.CONE ? new CommandArm(armSubsystem, 0.2, 200) : new CommandArm(armSubsystem, 0.15, 200));
+		controlBoard.armPresetHigh()
+				.onTrue(armSubsystem.armScore == scoringType.CONE
+						? new CommandArm(armSubsystem, 0.2, 200)
+						: new CommandArm(armSubsystem, 0.15, 200));
 
-		controlBoard.armPresetPickup().onTrue(armSubsystem.armScore == scoringType.CONE ? new CommandArm(armSubsystem, 0.2, ArmConstants.maxArmAngleDegrees) : new CommandArm(armSubsystem, 0.15, ArmConstants.maxArmAngleDegrees));
+		controlBoard.armPresetPickup()
+				.onTrue(armSubsystem.armScore == scoringType.CONE
+						? new CommandArm(armSubsystem, 0.2, ArmConstants.maxArmAngleDegrees)
+						: new CommandArm(armSubsystem, 0.15, ArmConstants.maxArmAngleDegrees));
 
-		controlBoard.closeGrabber().onTrue(armSubsystem.armScore == scoringType.CONE ? new InstantCommand(() -> this.grabberSolenoidSubsystem
-				.setGrabberIntakeState(!this.grabberSolenoidSubsystem.getGrabberIntakeState())) : new InstantCommand(() -> this.grabberSolenoidSubsystem
-				.setGrabberIntakeState(!this.grabberSolenoidSubsystem.getGrabberIntakeState())));
+		controlBoard.closeGrabber()
+				.onTrue(armSubsystem.armScore == scoringType.CONE
+						? new InstantCommand(() -> this.grabberSolenoidSubsystem
+								.setGrabberIntakeState(!this.grabberSolenoidSubsystem.getGrabberIntakeState()))
+						: new InstantCommand(() -> this.grabberSolenoidSubsystem
+								.setGrabberIntakeState(!this.grabberSolenoidSubsystem.getGrabberIntakeState())));
 
 		controlBoard.armWrist().onTrue(new InstantCommand(() -> this.grabberSolenoidSubsystem
 				.setGrabberPitchState(!this.grabberSolenoidSubsystem.getGrabberPitchState())));

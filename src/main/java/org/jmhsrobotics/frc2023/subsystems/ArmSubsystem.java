@@ -130,6 +130,13 @@ public class ArmSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("ArmSubsystem/RelativeEncoderExtension", telescopeMotor.getEncoder().getPosition());
 		SmartDashboard.putNumber("ArmSubsystem/MaxLength", ArmConstants.maxExtensionLengthMillims);
 
+		SmartDashboard.putNumber("ArmSubsystem/Pitch/currentPitch", this.getArmPitch());
+		SmartDashboard.putNumber("ArmSubsystem/Pitch/currentGoal", this.profiledAnglePID.getGoal().position);
+		SmartDashboard.putNumber("ArmSubsystem/Pitch/currentSetpointPosition",
+				this.profiledAnglePID.getSetpoint().position);
+		SmartDashboard.putNumber("ArmSubsystem/Pitch/currentSetpointVelocity",
+				this.profiledAnglePID.getSetpoint().velocity);
+
 		SmartDashboard.putNumber("ArmSubsystem/Extension/currentExtension", this.getArmLength());
 		SmartDashboard.putNumber("ArmSubsystem/Extension/currentGoal", this.profiledExtensionPID.getGoal().position);
 		SmartDashboard.putNumber("ArmSubsystem/Extension/currentSetpointPosition",
@@ -179,11 +186,11 @@ public class ArmSubsystem extends SubsystemBase {
 		// profiledExtensionPID.getSetpoint().position);
 	}
 
-	private void resetAnglePPIDToCurrent() {
+	public void resetAnglePPIDToCurrent() {
 		this.profiledAnglePID.reset(this.getArmPitch());
 	}
 
-	private void resetExtensionPPIDToCurrent() {
+	public void resetExtensionPPIDToCurrent() {
 		this.profiledExtensionPID.reset(this.getArmLength());
 	}
 

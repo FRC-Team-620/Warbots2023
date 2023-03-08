@@ -89,7 +89,7 @@ public class CompControl implements ControlBoard {
 
 	@Override
 	public Trigger armPresetHigh() {// Not in use right now
-		return null;
+		return operatorController.povDown();
 	}
 
 	@Override
@@ -116,7 +116,7 @@ public class CompControl implements ControlBoard {
 
 	@Override
 	public Trigger changeScoringType() {
-		return operatorController.a();
+		return operatorController.povRight();
 	}
 
 	@Override

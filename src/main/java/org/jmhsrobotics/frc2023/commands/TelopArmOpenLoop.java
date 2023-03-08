@@ -71,7 +71,7 @@ public class TelopArmOpenLoop extends CommandBase {
 		// spotless:on
 
 		if (this.wasEnded) {
-			this.wasEnded = false;
+			// this.wasEnded = false;
 			if (this.armSubsystem.getArmPitch() < ArmConstants.minArmAngleDegrees) {
 				this.armSubsystem.resetPitchEncoder();
 			}
@@ -100,6 +100,12 @@ public class TelopArmOpenLoop extends CommandBase {
 
 		armSubsystem.updatePitchGoal(this.desiredPitch);
 		armSubsystem.updateExtensionGoal(this.desiredExtension);
+
+		if (this.wasEnded) {
+			this.wasEnded = false;
+			armSubsystem.resetAnglePPIDToCurrent();
+			armSubsystem.resetExtensionPPIDToCurrent();
+		}
 	}
 
 	@Override
