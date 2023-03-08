@@ -40,29 +40,31 @@ public class TelopArmOpenLoop extends CommandBase {
 	}
 	// spotless:on
 
+	private void resetDesiredStateToCurrent() {
+		this.desiredPitch = this.armSubsystem.getArmPitch();
+		this.desiredExtension = this.armSubsystem.getArmLength();
+		armSubsystem.resetAnglePPIDToCurrent();
+		armSubsystem.resetExtensionPPIDToCurrent();
+	}
+
 	@Override
 	public void initialize() {
 		this.resetDesiredStateToCurrent();
 	}
 
-	private void resetDesiredStateToCurrent() {
-		this.desiredPitch = this.armSubsystem.getArmPitch();
-		this.desiredExtension = this.armSubsystem.getArmLength();
-	}
-
 	@Override
 	public void execute() {
 
-		SmartDashboard.putNumber("ArmTeleop/pitchInput", this.pitchSpeed.get());
-		SmartDashboard.putNumber("ArmTeleop/extensionInput", this.linearSpeed.get());
-		SmartDashboard.putNumber("ArmTeleop/desiredPitch", this.desiredPitch);
-		SmartDashboard.putNumber("ArmTeleop/desiredExtension", this.desiredExtension);
-		SmartDashboard.putNumber("ArmTeleop/armPitch", this.armSubsystem.getArmPitch());
-		SmartDashboard.putNumber("ArmTeleop/armExtension", this.armSubsystem.getArmLength());
-		SmartDashboard.putNumber("ArmTeleop/pitchGoalPos", this.armSubsystem.getPitchPPIDGoal().position);
-		SmartDashboard.putNumber("ArmTeleop/extensionGoalPos", this.armSubsystem.getExtensionPPIDGoal().position);
-		SmartDashboard.putNumber("ArmTeleop/pitchEncoder", this.armSubsystem.getPitchRelativeEncoderPosition());
-		SmartDashboard.putNumber("ArmTeleop/extensionEncoder", this.armSubsystem.getExtensionRelativeEncoderPosition());
+		SmartDashboard.putNumber("ArmTeleop/Pitch/pitchInput", this.pitchSpeed.get());
+		SmartDashboard.putNumber("ArmTeleop/Pitch/desiredPitch", this.desiredPitch);
+		SmartDashboard.putNumber("ArmTeleop/Pitch/armPitch", this.armSubsystem.getArmPitch());
+		SmartDashboard.putNumber("ArmTeleop/Pitch/pitchGoalPos", this.armSubsystem.getPitchPPIDGoal().position);
+
+		SmartDashboard.putNumber("ArmTeleop/Extension/extensionInput", this.linearSpeed.get());
+		SmartDashboard.putNumber("ArmTeleop/Extension/desiredExtension", this.desiredExtension);
+		SmartDashboard.putNumber("ArmTeleop/Extension/armExtension", this.armSubsystem.getArmLength());
+		SmartDashboard.putNumber("ArmTeleop/Extension/extensionGoalPos",
+				this.armSubsystem.getExtensionPPIDGoal().position);
 
 		// spotless:off
 		if(this.overrideLimits.getAsBoolean()) {
@@ -73,7 +75,7 @@ public class TelopArmOpenLoop extends CommandBase {
 		// spotless:on
 
 		if (this.wasEnded) {
-			// this.wasEnded = false;
+			this.wasEnded = false;
 			if (this.armSubsystem.getArmPitch() < ArmConstants.minArmAngleDegrees) {
 				this.armSubsystem.resetPitchEncoder();
 			}
@@ -102,12 +104,6 @@ public class TelopArmOpenLoop extends CommandBase {
 
 		armSubsystem.updatePitchGoal(this.desiredPitch);
 		armSubsystem.updateExtensionGoal(this.desiredExtension);
-
-		if (this.wasEnded) {
-			this.wasEnded = false;
-			armSubsystem.resetAnglePPIDToCurrent();
-			armSubsystem.resetExtensionPPIDToCurrent();
-		}
 	}
 
 	@Override
