@@ -53,6 +53,8 @@ public class TelopArmOpenLoop extends CommandBase {
 	@Override
 	public void execute() {
 
+		SmartDashboard.putNumber("ArmTeleop/pitchInput", this.pitchSpeed.get());
+		SmartDashboard.putNumber("ArmTeleop/extensionInput", this.linearSpeed.get());
 		SmartDashboard.putNumber("ArmTeleop/desiredPitch", this.desiredPitch);
 		SmartDashboard.putNumber("ArmTeleop/desiredExtension", this.desiredExtension);
 		SmartDashboard.putNumber("ArmTeleop/armPitch", this.armSubsystem.getArmPitch());

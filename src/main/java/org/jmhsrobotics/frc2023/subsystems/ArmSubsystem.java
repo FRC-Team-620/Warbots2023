@@ -76,9 +76,9 @@ public class ArmSubsystem extends SubsystemBase {
 
 		profiledAnglePID.setTolerance(1.5, 4);
 
-		extensionPPIDConstraints = new Constraints(150, 250);
+		extensionPPIDConstraints = new Constraints(220, 300);
 		profiledExtensionPID = new ProfiledPIDController(
-			0.018, 0.0, 0.0, extensionPPIDConstraints
+			0.014, 0.0, 0.0, extensionPPIDConstraints
 		);
 
 		profiledExtensionPID.setTolerance(20, 60);
@@ -130,6 +130,7 @@ public class ArmSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("ArmSubsystem/RelativeEncoderExtension", telescopeMotor.getEncoder().getPosition());
 		SmartDashboard.putNumber("ArmSubsystem/MaxLength", ArmConstants.maxExtensionLengthMillims);
 
+		// Pitch logging
 		SmartDashboard.putNumber("ArmSubsystem/Pitch/currentPitch", this.getArmPitch());
 		SmartDashboard.putNumber("ArmSubsystem/Pitch/currentGoal", this.profiledAnglePID.getGoal().position);
 		SmartDashboard.putNumber("ArmSubsystem/Pitch/currentSetpointPosition",
@@ -137,6 +138,7 @@ public class ArmSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("ArmSubsystem/Pitch/currentSetpointVelocity",
 				this.profiledAnglePID.getSetpoint().velocity);
 
+		// Extension logging
 		SmartDashboard.putNumber("ArmSubsystem/Extension/currentExtension", this.getArmLength());
 		SmartDashboard.putNumber("ArmSubsystem/Extension/currentGoal", this.profiledExtensionPID.getGoal().position);
 		SmartDashboard.putNumber("ArmSubsystem/Extension/currentSetpointPosition",
