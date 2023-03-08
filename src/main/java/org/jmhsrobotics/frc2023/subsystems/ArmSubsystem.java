@@ -78,7 +78,7 @@ public class ArmSubsystem extends SubsystemBase {
 
 		extensionPPIDConstraints = new Constraints(220, 300);
 		profiledExtensionPID = new ProfiledPIDController(
-			0.014, 0.0, 0.0, extensionPPIDConstraints
+			0.01, 0.0, 0.0, extensionPPIDConstraints
 		);
 
 		profiledExtensionPID.setTolerance(20, 60);
