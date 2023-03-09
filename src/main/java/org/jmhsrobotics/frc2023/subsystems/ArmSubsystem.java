@@ -69,7 +69,7 @@ public class ArmSubsystem extends SubsystemBase {
 		// TODO: MAke sure to construct profiledExtensionPID and profiledExtensionPID!!!
 
 		// spotless:off
-		anglePPIDConstraints = new Constraints(110, 200);
+		anglePPIDConstraints = new Constraints(110, 150);
 		profiledAnglePID = new ProfiledPIDController(
 			0.10, 0.0, 0.0, anglePPIDConstraints
 		);

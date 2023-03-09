@@ -143,35 +143,48 @@ public class RobotContainer {
 		// operator.x().onTrue(new CommandArm(armSubsystem, 0.2, 0));
 		// operator.b().onTrue(new CommandArm(armSubsystem, 0, 180));
 		controlBoard.changeScoringType().onTrue(new InstantCommand(() -> armSubsystem.setScoringType()));
-		controlBoard.armPresetStowed()
-				.onTrue(new ConditionalCommand(
-						new SequentialCommandGroup(
-								new CommandArmExtension(armSubsystem, ArmConstants.minExtensionLengthMillims),
-								new CommandArm(armSubsystem, ArmConstants.minExtensionLengthMillims,
-										ArmConstants.stowedDegrees)),
-						new SequentialCommandGroup(
-								new CommandArmExtension(armSubsystem, ArmConstants.minExtensionLengthMillims),
-								new CommandArm(armSubsystem, ArmConstants.minExtensionLengthMillims,
-										ArmConstants.stowedDegrees)),
-						armSubsystem::isCone));
+		controlBoard.armPresetStowed().onTrue(new ConditionalCommand(
+				new SequentialCommandGroup(
+						new CommandArmExtension(armSubsystem, ArmConstants.minExtensionLengthMillims,
+								controlBoard.overrideTeleopArm()),
+						new CommandArm(armSubsystem, ArmConstants.minExtensionLengthMillims, ArmConstants.stowedDegrees,
+								controlBoard.overrideTeleopArm())),
+				new SequentialCommandGroup(
+						new CommandArmExtension(armSubsystem, ArmConstants.minExtensionLengthMillims,
+								controlBoard.overrideTeleopArm()),
+						new CommandArm(armSubsystem, ArmConstants.minExtensionLengthMillims, ArmConstants.stowedDegrees,
+								controlBoard.overrideTeleopArm())),
+				armSubsystem::isCone));
 
-		controlBoard.armPresetFloor().onTrue(new ConditionalCommand(new CommandArm(armSubsystem, 214, 56),
-				new CommandArm(armSubsystem, 214, 56), armSubsystem::isCone));
+		controlBoard.armPresetFloor()
+				.onTrue(new ConditionalCommand(new CommandArm(armSubsystem, 214, 56, controlBoard.overrideTeleopArm()),
+						new CommandArm(armSubsystem, 214, 56, controlBoard.overrideTeleopArm()), armSubsystem::isCone));
 
 		controlBoard.armPresetFloor().whileTrue(new InstantCommand(() -> grabberMotorSubsystem.setGrabberMotor(-1)));
 		controlBoard.armPresetFloor().onFalse(new InstantCommand(() -> grabberMotorSubsystem.setGrabberMotor(0)));
 
-		controlBoard.armPresetMid().onTrue(new ConditionalCommand(
-				new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 115),
-				new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 95), armSubsystem::isCone));
+		controlBoard.armPresetMid()
+				.onTrue(new ConditionalCommand(
+						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 115,
+								controlBoard.overrideTeleopArm()),
+						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 95,
+								controlBoard.overrideTeleopArm()),
+						armSubsystem::isCone));
 
-		controlBoard.armPresetHigh().onTrue(new ConditionalCommand(
-				new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 247),
-				new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 247), armSubsystem::isCone));
+		controlBoard.armPresetHigh()
+				.onTrue(new ConditionalCommand(
+						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 247,
+								controlBoard.overrideTeleopArm()),
+						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 247,
+								controlBoard.overrideTeleopArm()),
+						armSubsystem::isCone));
 
 		controlBoard.armPresetPickup()
-				.onTrue(new ConditionalCommand(new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 90),
-						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 90),
+				.onTrue(new ConditionalCommand(
+						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 90,
+								controlBoard.overrideTeleopArm()),
+						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 90,
+								controlBoard.overrideTeleopArm()),
 						armSubsystem::isCone));
 
 		controlBoard.closeGrabber().onTrue(new InstantCommand(() -> this.grabberSolenoidSubsystem
@@ -207,6 +220,10 @@ public class RobotContainer {
 
 	public LEDSubsystem getLEDSubsystem() {
 		return this.ledSubsystem;
+	}
+
+	public ControlBoard getControls() {
+		return this.controlBoard;
 	}
 
 	public static TelemetrySubsystem getTelemetry() {

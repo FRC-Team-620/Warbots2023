@@ -23,13 +23,16 @@ public class AutoSelector {
 				new CenterChargeStationAuto(container.getDrivetrain(), container.getLEDSubsystem()));
 		autoSelector.addOption("ScoringAutoLeft",
 				new ScoringAuto(container.drivetrain, container.armSubsystem, container.grabberMotorSubsystem,
-						container.grabberSolenoidSubsystem, container.ledSubsystem, StartingPosition.LEFT));
+						container.grabberSolenoidSubsystem, container.ledSubsystem, StartingPosition.LEFT,
+						container.getControls()));
 		autoSelector.addOption("ScoringAutoCenter",
 				new ScoringAuto(container.drivetrain, container.armSubsystem, container.grabberMotorSubsystem,
-						container.grabberSolenoidSubsystem, container.ledSubsystem, StartingPosition.CENTER));
+						container.grabberSolenoidSubsystem, container.ledSubsystem, StartingPosition.CENTER,
+						container.getControls()));
 		autoSelector.addOption("ScoringAutoRight",
 				new ScoringAuto(container.drivetrain, container.armSubsystem, container.grabberMotorSubsystem,
-						container.grabberSolenoidSubsystem, container.ledSubsystem, StartingPosition.RIGHT));
+						container.grabberSolenoidSubsystem, container.ledSubsystem, StartingPosition.RIGHT,
+						container.getControls()));
 		SmartDashboard.putData("autoSelector", autoSelector);
 
 		// Add Selector for Alliance color TODO: Use DriveStation.getAlliance() to set

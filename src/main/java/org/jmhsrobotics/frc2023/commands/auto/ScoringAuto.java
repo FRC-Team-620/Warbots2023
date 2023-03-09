@@ -13,6 +13,7 @@ import org.jmhsrobotics.frc2023.commands.CommandArm;
 import org.jmhsrobotics.frc2023.commands.GrabberInOutAuto;
 import org.jmhsrobotics.frc2023.commands.TurnDeltaAngle;
 import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
+import org.jmhsrobotics.frc2023.oi.ControlBoard;
 import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 import org.jmhsrobotics.frc2023.subsystems.GrabberMotorSubsystem;
@@ -28,8 +29,8 @@ public class ScoringAuto extends SequentialCommandGroup {
 	private StartingPosition startingPos;
 	// Constructor
 	public ScoringAuto(Drivetrain drivetrain, ArmSubsystem armSubsystem, GrabberMotorSubsystem grabberMotorSubsystem,
-			GrabberSolenoidSubsystem grabberSolenoidSubsystem, LEDSubsystem ledSubsystem,
-			StartingPosition startingPos) {
+			GrabberSolenoidSubsystem grabberSolenoidSubsystem, LEDSubsystem ledSubsystem, StartingPosition startingPos,
+			ControlBoard controls) {
 		this.drivetrain = drivetrain;
 		this.startingPos = startingPos;
 
@@ -43,7 +44,7 @@ public class ScoringAuto extends SequentialCommandGroup {
 				}), new AutoDriveDistance(drivetrain, 0.5), new TurnDeltaAngle(drivetrain, -90),
 						new AutoDriveDistance(drivetrain, 0.2), new TurnDeltaAngle(drivetrain, 90),
 						new AutoDriveDistance(drivetrain, 0.5), new AlignPeg(drivetrain),
-						new CommandArm(armSubsystem, 0.2, 90),
+						new CommandArm(armSubsystem, 0.2, 90, controls.overrideTeleopArm()),
 						new GrabberInOutAuto(grabberMotorSubsystem, grabberSolenoidSubsystem, false, 1),
 						new AutoDriveDistance(drivetrain, -0.5), new TurnDeltaAngle(drivetrain, -90),
 						new AutoDriveDistance(drivetrain, -0.2), new TurnDeltaAngle(drivetrain, 90),
@@ -65,7 +66,7 @@ public class ScoringAuto extends SequentialCommandGroup {
 				}), new AutoDriveDistance(drivetrain, 2), new TurnDeltaAngle(drivetrain, -90),
 						new AutoDriveDistance(drivetrain, 0.2), new TurnDeltaAngle(drivetrain, 90),
 						new AutoDriveDistance(drivetrain, 2), new AlignPeg(drivetrain),
-						new CommandArm(armSubsystem, 0.2, 90),
+						new CommandArm(armSubsystem, 0.2, 90, controls.overrideTeleopArm()),
 						new GrabberInOutAuto(grabberMotorSubsystem, grabberSolenoidSubsystem, false, 1),
 						new AutoDriveDistance(drivetrain, -2), new TurnDeltaAngle(drivetrain, -90),
 						new AutoDriveDistance(drivetrain, -0.2), new TurnDeltaAngle(drivetrain, 90),
@@ -87,7 +88,7 @@ public class ScoringAuto extends SequentialCommandGroup {
 				}), new AutoDriveDistance(drivetrain, 2), new TurnDeltaAngle(drivetrain, -90),
 						new AutoDriveDistance(drivetrain, 0.2), new TurnDeltaAngle(drivetrain, 90),
 						new AutoDriveDistance(drivetrain, 2), new AlignPeg(drivetrain),
-						new CommandArm(armSubsystem, 0.2, 90),
+						new CommandArm(armSubsystem, 0.2, 90, controls.overrideTeleopArm()),
 						new GrabberInOutAuto(grabberMotorSubsystem, grabberSolenoidSubsystem, false, 1),
 						new AutoDriveDistance(drivetrain, -2), new TurnDeltaAngle(drivetrain, -90),
 						new AutoDriveDistance(drivetrain, -0.2), new TurnDeltaAngle(drivetrain, 90),
