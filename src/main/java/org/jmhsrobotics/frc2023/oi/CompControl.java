@@ -67,7 +67,7 @@ public class CompControl implements ControlBoard {
 
 	@Override
 	public double armExtend() {
-		return MathUtil.applyDeadband(operatorController.getRightY(), deadband);
+		return MathUtil.applyDeadband(-operatorController.getRightY(), deadband);
 	}
 
 	public double intakeWheels() {

@@ -52,12 +52,12 @@ public class ArmSubsystem extends SubsystemBase {
 	private ArmFeedforward armfeedforward;
 	private double openLoopExtensionSpeed;
 	private double openLoopPitchSpeed;
-	public enum scoringType {
+	public static enum scoringType {
 		CONE, CUBE;
 	}
 	public scoringType armScore = scoringType.CONE;
 
-	private enum ControlMode {
+	public enum ControlMode {
 		STOPPED, OPEN_LOOP, CLOSED_LOOP;
 	}
 
@@ -71,14 +71,14 @@ public class ArmSubsystem extends SubsystemBase {
 		// spotless:off
 		anglePPIDConstraints = new Constraints(110, 200);
 		profiledAnglePID = new ProfiledPIDController(
-			0.10, 0.03, 0.005, anglePPIDConstraints
+			0.10, 0.0, 0.0, anglePPIDConstraints
 		);
 
 		profiledAnglePID.setTolerance(1.5, 4);
 
-		extensionPPIDConstraints = new Constraints(220, 300);
+		extensionPPIDConstraints = new Constraints(400, 700);
 		profiledExtensionPID = new ProfiledPIDController(
-			0.01, 0.0, 0.0, extensionPPIDConstraints
+			0.014, 0.0, 0.0, extensionPPIDConstraints
 		);
 
 		profiledExtensionPID.setTolerance(20, 60);
@@ -188,6 +188,10 @@ public class ArmSubsystem extends SubsystemBase {
 		// profiledExtensionPID.getSetpoint().position);
 	}
 
+	public void setControlMode(ControlMode mode) {
+		this.controlMode = mode;
+	}
+
 	public void resetAnglePPIDToValue(double value) {
 		this.profiledAnglePID.reset(value);
 	}
@@ -287,16 +291,18 @@ public class ArmSubsystem extends SubsystemBase {
 		// ArmConstants.minExtensionLengthMeters);.
 		targetDistanceMillims = MathUtil.clamp(targetDistanceMillims, ArmConstants.minExtensionLengthMillims,
 				ArmConstants.maxExtensionLengthMillims);
+		profiledExtensionPID.reset(this.getArmLength());
 		// TODO: not using meters using encoder counts so switch to meters
-		profiledExtensionPID.setGoal(new State(targetDistanceMillims, 0)); // TODO: Potential Bug because we reset the
-																			// goal we set here when switching into
-																			// closed loop control
-		SmartDashboard.putNumber("lengthpid/targetLength", targetDistanceMillims);
+		profiledExtensionPID.setGoal(targetDistanceMillims); // TODO: Potential Bug because we reset the
+																// goal we set here when switching into
+																// closed loop control
+		SmartDashboard.putNumber("ArmSubsystem/lengthpid/targetLength", profiledExtensionPID.getGoal().position);
 
 		if (controlMode != ControlMode.CLOSED_LOOP) {
 			profiledExtensionPID.setGoal(new State(this.getArmLength(), 0));
 			profiledExtensionPID.reset(this.getArmLength());
 		}
+		SmartDashboard.putNumber("ArmSubsystem/lengthpid/targetLength__2", profiledExtensionPID.getGoal().position);
 		controlMode = ControlMode.CLOSED_LOOP;
 	}
 

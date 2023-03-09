@@ -7,6 +7,7 @@ package org.jmhsrobotics.frc2023;
 import org.jmhsrobotics.frc2023.Constants.ArmConstants;
 import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 import org.jmhsrobotics.frc2023.commands.CommandArm;
+import org.jmhsrobotics.frc2023.commands.CommandArmExtension;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
 import org.jmhsrobotics.frc2023.commands.TelopArmOpenLoop;
@@ -36,6 +37,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -142,10 +144,14 @@ public class RobotContainer {
 		// operator.b().onTrue(new CommandArm(armSubsystem, 0, 180));
 
 		controlBoard.changeScoringType().onTrue(new InstantCommand(() -> armSubsystem.setScoringType()));
-		controlBoard.armPresetStowed()
-				.onTrue(armSubsystem.armScore == scoringType.CONE
-						? new CommandArm(armSubsystem, 0, ArmConstants.stowedDegrees)
-						: new CommandArm(armSubsystem, 0, ArmConstants.stowedDegrees));
+		controlBoard.armPresetStowed().onTrue(armSubsystem.armScore == scoringType.CONE
+				? new SequentialCommandGroup(
+						new CommandArmExtension(armSubsystem, ArmConstants.minExtensionLengthMillims),
+						new CommandArm(armSubsystem, ArmConstants.minExtensionLengthMillims,
+								ArmConstants.stowedDegrees))
+				: new SequentialCommandGroup(
+						new CommandArmExtension(armSubsystem, ArmConstants.minExtensionLengthMillims), new CommandArm(
+								armSubsystem, ArmConstants.minExtensionLengthMillims, ArmConstants.stowedDegrees)));
 		controlBoard.armPresetFloor()
 				.onTrue(armSubsystem.armScore == scoringType.CONE
 						? new CommandArm(armSubsystem, 214, 56)
@@ -155,18 +161,18 @@ public class RobotContainer {
 		controlBoard.armPresetFloor().onFalse(new InstantCommand(() -> grabberMotorSubsystem.setGrabberMotor(0)));
 		controlBoard.armPresetMid()
 				.onTrue(armSubsystem.armScore == scoringType.CONE
-						? new CommandArm(armSubsystem, 356, 95)
-						: new CommandArm(armSubsystem, 356, 95));
+						? new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 95)
+						: new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 95));
 
 		controlBoard.armPresetHigh()
 				.onTrue(armSubsystem.armScore == scoringType.CONE
-						? new CommandArm(armSubsystem, 357, 247)
-						: new CommandArm(armSubsystem, 357, 247));
+						? new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 247)
+						: new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 247));
 
 		controlBoard.armPresetPickup()
 				.onTrue(armSubsystem.armScore == scoringType.CONE
-						? new CommandArm(armSubsystem, 357, 90)
-						: new CommandArm(armSubsystem, 357, 90));
+						? new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 90)
+						: new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 90));
 
 		controlBoard.closeGrabber()
 				.onTrue(armSubsystem.armScore == scoringType.CONE
