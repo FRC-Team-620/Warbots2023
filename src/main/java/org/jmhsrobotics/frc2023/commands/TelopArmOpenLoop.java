@@ -75,6 +75,7 @@ public class TelopArmOpenLoop extends CommandBase {
 		}
 		// spotless:on
 
+		// If closed-loop control is starting up again after having been interrupted
 		if (this.wasEnded) {
 			this.wasEnded = false;
 			// resetting the arm to a given min pitch (resetting relative encoder) if below
@@ -88,7 +89,7 @@ public class TelopArmOpenLoop extends CommandBase {
 				// w/o)
 				// this killed me
 				this.armSubsystem.resetAnglePPIDToValue(ArmConstants.stowedDegrees);
-			} else {
+			} else { // NORMALLY CALLED
 				this.resetDesiredStateToCurrent();
 			}
 		}
