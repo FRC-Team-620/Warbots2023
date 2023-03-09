@@ -131,7 +131,7 @@ public final class Constants {
 		public static final double armHeightMeters = Units.inchesToMeters(27.5);
 		// public static final double maxEncoderCounts = 62.5;
 		public static final double minExtensionLengthMillims = 90;
-		public static final double maxExtensionLengthMillims = 355;
+		public static final double maxExtensionLengthMillims = 300;
 		// public static final double extensionMetersPerEncoderTick =
 		// maxExtensionLengthMeters / maxEncoderCounts;
 		public static final double armPitchGearRatio = 270;
