@@ -313,6 +313,13 @@ public class ArmSubsystem extends SubsystemBase {
 			armScore = scoringType.CONE;
 		}
 	}
+	public boolean isCone() {
+		if (armScore == scoringType.CONE) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	/*
 	 * Returns the angle of the arm in degrees. Zero degrees being parallel to the

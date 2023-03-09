@@ -6,6 +6,7 @@ package org.jmhsrobotics.frc2023;
 
 import org.jmhsrobotics.frc2023.Constants.ArmConstants;
 import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
+import org.jmhsrobotics.frc2023.commands.BooleanCommand;
 import org.jmhsrobotics.frc2023.commands.CommandArm;
 import org.jmhsrobotics.frc2023.commands.CommandArmExtension;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
@@ -144,42 +145,42 @@ public class RobotContainer {
 		// operator.b().onTrue(new CommandArm(armSubsystem, 0, 180));
 
 		controlBoard.changeScoringType().onTrue(new InstantCommand(() -> armSubsystem.setScoringType()));
-		controlBoard.armPresetStowed().onTrue(armSubsystem.armScore == scoringType.CONE
-				? new SequentialCommandGroup(
+		controlBoard.armPresetStowed().onTrue(new BooleanCommand(armSubsystem::isCone, 
+		new SequentialCommandGroup(
 						new CommandArmExtension(armSubsystem, ArmConstants.minExtensionLengthMillims),
 						new CommandArm(armSubsystem, ArmConstants.minExtensionLengthMillims,
-								ArmConstants.stowedDegrees))
-				: new SequentialCommandGroup(
-						new CommandArmExtension(armSubsystem, ArmConstants.minExtensionLengthMillims), new CommandArm(
-								armSubsystem, ArmConstants.minExtensionLengthMillims, ArmConstants.stowedDegrees)));
+						ArmConstants.stowedDegrees)),
+		new SequentialCommandGroup(
+						new CommandArmExtension(armSubsystem, ArmConstants.minExtensionLengthMillims), 
+						new CommandArm(armSubsystem, ArmConstants.minExtensionLengthMillims, 
+						ArmConstants.stowedDegrees))));		
+		
 		controlBoard.armPresetFloor()
-				.onTrue(armSubsystem.armScore == scoringType.CONE
-						? new CommandArm(armSubsystem, 214, 56)
-						: new CommandArm(armSubsystem, 214, 56));
+				.onTrue(new BooleanCommand(armSubsystem::isCone, 
+						new CommandArm(armSubsystem, 214, 56),
+						new CommandArm(armSubsystem, 214, 56)));
 
 		controlBoard.armPresetFloor().whileTrue(new InstantCommand(() -> grabberMotorSubsystem.setGrabberMotor(-1)));
 		controlBoard.armPresetFloor().onFalse(new InstantCommand(() -> grabberMotorSubsystem.setGrabberMotor(0)));
+
 		controlBoard.armPresetMid()
-				.onTrue(armSubsystem.armScore == scoringType.CONE
-						? new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 100)
-						: new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 95));
+				.onTrue(new BooleanCommand(armSubsystem::isCone, 
+						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 100),
+						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 95)));
 
 		controlBoard.armPresetHigh()
-				.onTrue(armSubsystem.armScore == scoringType.CONE
-						? new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 247)
-						: new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 247));
+				.onTrue(new BooleanCommand(armSubsystem::isCone, 
+					new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 247),
+					new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 247)));
 
 		controlBoard.armPresetPickup()
-				.onTrue(armSubsystem.armScore == scoringType.CONE
-						? new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 90)
-						: new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 90));
+				.onTrue(new BooleanCommand(armSubsystem::isCone, 
+					new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 90),
+					new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 90)));
 
 		controlBoard.closeGrabber()
-				.onTrue(armSubsystem.armScore == scoringType.CONE
-						? new InstantCommand(() -> this.grabberSolenoidSubsystem
-								.setGrabberIntakeState(!this.grabberSolenoidSubsystem.getGrabberIntakeState()))
-						: new InstantCommand(() -> this.grabberSolenoidSubsystem
-								.setGrabberIntakeState(!this.grabberSolenoidSubsystem.getGrabberIntakeState())));
+				.onTrue(new InstantCommand(() -> this.grabberSolenoidSubsystem
+				.setGrabberIntakeState(!this.grabberSolenoidSubsystem.getGrabberIntakeState())));
 
 		controlBoard.armWrist().onTrue(new InstantCommand(() -> this.grabberSolenoidSubsystem
 				.setGrabberPitchState(!this.grabberSolenoidSubsystem.getGrabberPitchState())));
