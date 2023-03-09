@@ -6,7 +6,6 @@ package org.jmhsrobotics.frc2023;
 
 import org.jmhsrobotics.frc2023.Constants.ArmConstants;
 import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
-import org.jmhsrobotics.frc2023.commands.BooleanCommand;
 import org.jmhsrobotics.frc2023.commands.CommandArm;
 import org.jmhsrobotics.frc2023.commands.CommandArmExtension;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
@@ -29,7 +28,6 @@ import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 import org.jmhsrobotics.frc2023.subsystems.GrabberMotorSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.GrabberSolenoidSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.TelemetrySubsystem;
-import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem.scoringType;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDIdleCommand;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
 
@@ -37,6 +35,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -107,7 +106,7 @@ public class RobotContainer {
 		// spotless:off
 		ledSubsystem.setDefaultCommand(new LEDIdleCommand(
 				ledSubsystem, 
-				() -> drivetrain.getIsTurning()
+				armSubsystem::isCone
 			)
 		);
 		// spotless:on
@@ -143,43 +142,39 @@ public class RobotContainer {
 
 		// operator.x().onTrue(new CommandArm(armSubsystem, 0.2, 0));
 		// operator.b().onTrue(new CommandArm(armSubsystem, 0, 180));
-
 		controlBoard.changeScoringType().onTrue(new InstantCommand(() -> armSubsystem.setScoringType()));
-		controlBoard.armPresetStowed().onTrue(new BooleanCommand(armSubsystem::isCone, 
-		new SequentialCommandGroup(
-						new CommandArmExtension(armSubsystem, ArmConstants.minExtensionLengthMillims),
-						new CommandArm(armSubsystem, ArmConstants.minExtensionLengthMillims,
-						ArmConstants.stowedDegrees)),
-		new SequentialCommandGroup(
-						new CommandArmExtension(armSubsystem, ArmConstants.minExtensionLengthMillims), 
-						new CommandArm(armSubsystem, ArmConstants.minExtensionLengthMillims, 
-						ArmConstants.stowedDegrees))));		
-		
-		controlBoard.armPresetFloor()
-				.onTrue(new BooleanCommand(armSubsystem::isCone, 
-						new CommandArm(armSubsystem, 214, 56),
-						new CommandArm(armSubsystem, 214, 56)));
+		controlBoard.armPresetStowed()
+				.onTrue(new ConditionalCommand(
+						new SequentialCommandGroup(
+								new CommandArmExtension(armSubsystem, ArmConstants.minExtensionLengthMillims),
+								new CommandArm(armSubsystem, ArmConstants.minExtensionLengthMillims,
+										ArmConstants.stowedDegrees)),
+						new SequentialCommandGroup(
+								new CommandArmExtension(armSubsystem, ArmConstants.minExtensionLengthMillims),
+								new CommandArm(armSubsystem, ArmConstants.minExtensionLengthMillims,
+										ArmConstants.stowedDegrees)),
+						armSubsystem::isCone));
+
+		controlBoard.armPresetFloor().onTrue(new ConditionalCommand(new CommandArm(armSubsystem, 214, 56),
+				new CommandArm(armSubsystem, 214, 56), armSubsystem::isCone));
 
 		controlBoard.armPresetFloor().whileTrue(new InstantCommand(() -> grabberMotorSubsystem.setGrabberMotor(-1)));
 		controlBoard.armPresetFloor().onFalse(new InstantCommand(() -> grabberMotorSubsystem.setGrabberMotor(0)));
 
-		controlBoard.armPresetMid()
-				.onTrue(new BooleanCommand(armSubsystem::isCone, 
-						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 100),
-						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 95)));
+		controlBoard.armPresetMid().onTrue(new ConditionalCommand(
+				new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 115),
+				new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 95), armSubsystem::isCone));
 
-		controlBoard.armPresetHigh()
-				.onTrue(new BooleanCommand(armSubsystem::isCone, 
-					new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 247),
-					new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 247)));
+		controlBoard.armPresetHigh().onTrue(new ConditionalCommand(
+				new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 247),
+				new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 247), armSubsystem::isCone));
 
 		controlBoard.armPresetPickup()
-				.onTrue(new BooleanCommand(armSubsystem::isCone, 
-					new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 90),
-					new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 90)));
+				.onTrue(new ConditionalCommand(new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 90),
+						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 90),
+						armSubsystem::isCone));
 
-		controlBoard.closeGrabber()
-				.onTrue(new InstantCommand(() -> this.grabberSolenoidSubsystem
+		controlBoard.closeGrabber().onTrue(new InstantCommand(() -> this.grabberSolenoidSubsystem
 				.setGrabberIntakeState(!this.grabberSolenoidSubsystem.getGrabberIntakeState())));
 
 		controlBoard.armWrist().onTrue(new InstantCommand(() -> this.grabberSolenoidSubsystem

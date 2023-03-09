@@ -29,7 +29,7 @@ public class CompControl implements ControlBoard {
 
 	@Override
 	public boolean isDriveSlow() {
-		return driverController.a().getAsBoolean();
+		return driverController.rightBumper().getAsBoolean();
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class CompControl implements ControlBoard {
 	@Override
 	public boolean isDriveFast() {
 		// TODO Auto-generated method stub
-		return driverController.a().getAsBoolean();
+		return driverController.rightBumper().getAsBoolean();
 	}
 
 	// Operator Controller

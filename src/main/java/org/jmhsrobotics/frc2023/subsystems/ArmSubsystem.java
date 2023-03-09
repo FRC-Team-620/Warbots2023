@@ -307,18 +307,24 @@ public class ArmSubsystem extends SubsystemBase {
 	}
 
 	public void setScoringType() {
+		System.out.println("Switched Scoring Type");
 		if (armScore == scoringType.CONE) {
 			armScore = scoringType.CUBE;
+			System.out.println("to Cube");
 		} else {
 			armScore = scoringType.CONE;
+			System.out.println("to Cone");
 		}
 	}
 	public boolean isCone() {
-		if (armScore == scoringType.CONE) {
-			return true;
-		} else {
-			return false;
-		}
+		return armScore == scoringType.CONE;
+		// if (armScore == scoringType.CONE) {
+		// //System.out.print("TRUE");
+		// return true;
+		// } else {
+		// //System.out.print("FALSE");
+		// return false;
+		// }
 	}
 
 	/*

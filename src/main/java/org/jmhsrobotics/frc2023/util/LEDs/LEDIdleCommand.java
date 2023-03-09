@@ -14,7 +14,7 @@ public class LEDIdleCommand extends CommandBase {
 	BooleanSupplier condition;
 
 	private LEDAnimation fadeAnim = this.strip.fadeAnimation(1, 30, Color.kYellow, Color.kWhite);
-	private LEDAnimation redGradAnim = this.strip.gradientAnimation(1, Color.kRed, Color.kOrangeRed, Color.kOrange);
+	private LEDAnimation redGradAnim = this.strip.gradientAnimation(1, Color.kRed, Color.kOrangeRed, Color.kYellow);
 	private LEDAnimation blueGradAnim = this.strip.gradientAnimation(1, Color.kBlue, Color.kBlueViolet, Color.kPurple);
 	private LEDAnimation solidAnim = this.strip.solidColorAnimation(Color.kBlue);
 
@@ -29,9 +29,9 @@ public class LEDIdleCommand extends CommandBase {
 	public void execute() {
 
 		if (this.condition.getAsBoolean()) {
-			this.blueGradAnim.step();
-		} else {
 			this.redGradAnim.step();
+		} else {
+			this.blueGradAnim.step();
 		}
 	}
 }
