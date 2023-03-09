@@ -18,6 +18,7 @@
 - Button A -> Move the arm to floor position automatically 
 - Button B -> Stow the arm automatically 
 - Button X -> Move the arm to the mid node position automatically
-- Down on D-Pad -> Arm pick up from station
 - Button Y -> Move the arm to the high node position automatically
+- Down on D-Pad -> Arm pick up from station
+- Right on D-Pad -> Toggle cone and cube presets
 
