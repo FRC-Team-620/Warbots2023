@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import org.jmhsrobotics.frc2023.RobotContainer;
-import org.jmhsrobotics.frc2023.commands.auto.ScoringAuto.startingPositions;
+import org.jmhsrobotics.frc2023.commands.auto.ScoringAuto.StartingPosition;
 
 public class AutoSelector {
 	SendableChooser<CommandBase> autoSelector = new SendableChooser<>();
@@ -23,13 +23,13 @@ public class AutoSelector {
 				new CenterChargeStationAuto(container.getDrivetrain(), container.getLEDSubsystem()));
 		autoSelector.addOption("ScoringAutoLeft",
 				new ScoringAuto(container.drivetrain, container.armSubsystem, container.grabberMotorSubsystem,
-						container.grabberSolenoidSubsystem, container.ledSubsystem, startingPositions.LEFT));
+						container.grabberSolenoidSubsystem, container.ledSubsystem, StartingPosition.LEFT));
 		autoSelector.addOption("ScoringAutoCenter",
 				new ScoringAuto(container.drivetrain, container.armSubsystem, container.grabberMotorSubsystem,
-						container.grabberSolenoidSubsystem, container.ledSubsystem, startingPositions.CENTER));
+						container.grabberSolenoidSubsystem, container.ledSubsystem, StartingPosition.CENTER));
 		autoSelector.addOption("ScoringAutoRight",
 				new ScoringAuto(container.drivetrain, container.armSubsystem, container.grabberMotorSubsystem,
-						container.grabberSolenoidSubsystem, container.ledSubsystem, startingPositions.RIGHT));
+						container.grabberSolenoidSubsystem, container.ledSubsystem, StartingPosition.RIGHT));
 		SmartDashboard.putData("autoSelector", autoSelector);
 
 		// Add Selector for Alliance color TODO: Use DriveStation.getAlliance() to set

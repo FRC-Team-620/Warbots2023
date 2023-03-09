@@ -22,71 +22,146 @@ import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
 public class ScoringAuto extends SequentialCommandGroup {
 
 	Drivetrain drivetrain;
-	public enum startingPositions {
+	public static enum StartingPosition {
 		LEFT, CENTER, RIGHT;
 	}
-	private Enum startingPosition;
+	private StartingPosition startingPos;
 	// Constructor
 	public ScoringAuto(Drivetrain drivetrain, ArmSubsystem armSubsystem, GrabberMotorSubsystem grabberMotorSubsystem,
-			GrabberSolenoidSubsystem grabberSolenoidSubsystem, LEDSubsystem ledSubsystem, Enum startingPosition) {
+			GrabberSolenoidSubsystem grabberSolenoidSubsystem, LEDSubsystem ledSubsystem,
+			StartingPosition startingPos) {
 		this.drivetrain = drivetrain;
-		this.startingPosition = startingPosition;
-		if (this.startingPosition == startingPositions.LEFT) {
-			addCommands(new InstantCommand(() -> {
-				drivetrain.resetOdometry(new Pose2d(Units.inchesToMeters(54.42), Units.inchesToMeters(42.079),
-						Rotation2d.fromDegrees(180)));
-			}), new AutoDriveDistance(drivetrain, 0.5), new TurnDeltaAngle(drivetrain, -90),
-					new AutoDriveDistance(drivetrain, 0.2), new TurnDeltaAngle(drivetrain, 90),
-					new AutoDriveDistance(drivetrain, 0.5), new AlignPeg(drivetrain),
-					new CommandArm(armSubsystem, 0.2, 90),
-					new GrabberInOutAuto(grabberMotorSubsystem, grabberSolenoidSubsystem, false, 1),
-					new AutoDriveDistance(drivetrain, -0.5), new TurnDeltaAngle(drivetrain, -90),
-					new AutoDriveDistance(drivetrain, -0.2), new TurnDeltaAngle(drivetrain, 90),
-					new AutoDriveDistance(drivetrain, -0.5), new AutoDriveDistance(drivetrain, -4.5),
-					// Gets the robot out the comunity area (Over the charge station) by driving
-					// backwards
-					new InstantCommand(() -> {
-						LEDSubsystem.LEDManager.STRIP0.strip.setSolidColor(Color.kRed);
-					}), new WaitCommand(0.5), // gets robot to pause outside of community
-					new AutoDriveDistance(drivetrain, 2), new AutoBalance(drivetrain, true, ledSubsystem));
+		this.startingPos = startingPos;
 
-		} else if (this.startingPosition == startingPositions.CENTER) {
-			addCommands(new InstantCommand(() -> {
-				drivetrain.resetOdometry(new Pose2d(Units.inchesToMeters(54.42), Units.inchesToMeters(42.079),
-						Rotation2d.fromDegrees(180)));
-			}), new AutoDriveDistance(drivetrain, 2), new TurnDeltaAngle(drivetrain, -90),
-					new AutoDriveDistance(drivetrain, 0.2), new TurnDeltaAngle(drivetrain, 90),
-					new AutoDriveDistance(drivetrain, 2), new AlignPeg(drivetrain),
-					new CommandArm(armSubsystem, 0.2, 90),
-					new GrabberInOutAuto(grabberMotorSubsystem, grabberSolenoidSubsystem, false, 1),
-					new AutoDriveDistance(drivetrain, -2), new TurnDeltaAngle(drivetrain, -90),
-					new AutoDriveDistance(drivetrain, -0.2), new TurnDeltaAngle(drivetrain, 90),
-					new AutoDriveDistance(drivetrain, -2), new AutoDriveDistance(drivetrain, -4.5),
-					// Gets the robot out the comunity area (Over the charge station) by driving
-					// backwards
-					new InstantCommand(() -> {
-						LEDSubsystem.LEDManager.STRIP0.strip.setSolidColor(Color.kRed);
-					}), new WaitCommand(0.5), // gets robot to pause outside of community
-					new AutoDriveDistance(drivetrain, 2), new AutoBalance(drivetrain, true, ledSubsystem));
-		} else {
-			addCommands(new InstantCommand(() -> {
-				drivetrain.resetOdometry(new Pose2d(Units.inchesToMeters(54.42), Units.inchesToMeters(42.079),
-						Rotation2d.fromDegrees(180)));
-			}), new AutoDriveDistance(drivetrain, 2), new TurnDeltaAngle(drivetrain, -90),
-					new AutoDriveDistance(drivetrain, 0.2), new TurnDeltaAngle(drivetrain, 90),
-					new AutoDriveDistance(drivetrain, 2), new AlignPeg(drivetrain),
-					new CommandArm(armSubsystem, 0.2, 90),
-					new GrabberInOutAuto(grabberMotorSubsystem, grabberSolenoidSubsystem, false, 1),
-					new AutoDriveDistance(drivetrain, -2), new TurnDeltaAngle(drivetrain, -90),
-					new AutoDriveDistance(drivetrain, -0.2), new TurnDeltaAngle(drivetrain, 90),
-					new AutoDriveDistance(drivetrain, -2), new AutoDriveDistance(drivetrain, -4.5),
-					// Gets the robot out the comunity area (Over the charge station) by driving
-					// backwards
-					new InstantCommand(() -> {
-						LEDSubsystem.LEDManager.STRIP0.strip.setSolidColor(Color.kRed);
-					}), new WaitCommand(0.5), // gets robot to pause outside of community
-					new AutoDriveDistance(drivetrain, 2), new AutoBalance(drivetrain, true, ledSubsystem));
+		switch (this.startingPos) {
+
+			case LEFT :
+
+				addCommands(new InstantCommand(() -> {
+					drivetrain.resetOdometry(new Pose2d(Units.inchesToMeters(54.42), Units.inchesToMeters(42.079),
+							Rotation2d.fromDegrees(180)));
+				}), new AutoDriveDistance(drivetrain, 0.5), new TurnDeltaAngle(drivetrain, -90),
+						new AutoDriveDistance(drivetrain, 0.2), new TurnDeltaAngle(drivetrain, 90),
+						new AutoDriveDistance(drivetrain, 0.5), new AlignPeg(drivetrain),
+						new CommandArm(armSubsystem, 0.2, 90),
+						new GrabberInOutAuto(grabberMotorSubsystem, grabberSolenoidSubsystem, false, 1),
+						new AutoDriveDistance(drivetrain, -0.5), new TurnDeltaAngle(drivetrain, -90),
+						new AutoDriveDistance(drivetrain, -0.2), new TurnDeltaAngle(drivetrain, 90),
+						new AutoDriveDistance(drivetrain, -0.5), new AutoDriveDistance(drivetrain, -4.5),
+						// Gets the robot out the comunity area (Over the charge station) by driving
+						// backwards
+						new InstantCommand(() -> {
+							LEDSubsystem.LEDManager.STRIP0.strip.setSolidColor(Color.kRed);
+						}), new WaitCommand(0.5), // gets robot to pause outside of community
+						new AutoDriveDistance(drivetrain, 2), new AutoBalance(drivetrain, true, ledSubsystem));
+
+				break;
+
+			case CENTER :
+
+				addCommands(new InstantCommand(() -> {
+					drivetrain.resetOdometry(new Pose2d(Units.inchesToMeters(54.42), Units.inchesToMeters(42.079),
+							Rotation2d.fromDegrees(180)));
+				}), new AutoDriveDistance(drivetrain, 2), new TurnDeltaAngle(drivetrain, -90),
+						new AutoDriveDistance(drivetrain, 0.2), new TurnDeltaAngle(drivetrain, 90),
+						new AutoDriveDistance(drivetrain, 2), new AlignPeg(drivetrain),
+						new CommandArm(armSubsystem, 0.2, 90),
+						new GrabberInOutAuto(grabberMotorSubsystem, grabberSolenoidSubsystem, false, 1),
+						new AutoDriveDistance(drivetrain, -2), new TurnDeltaAngle(drivetrain, -90),
+						new AutoDriveDistance(drivetrain, -0.2), new TurnDeltaAngle(drivetrain, 90),
+						new AutoDriveDistance(drivetrain, -2), new AutoDriveDistance(drivetrain, -4.5),
+						// Gets the robot out the comunity area (Over the charge station) by driving
+						// backwards
+						new InstantCommand(() -> {
+							LEDSubsystem.LEDManager.STRIP0.strip.setSolidColor(Color.kRed);
+						}), new WaitCommand(0.5), // gets robot to pause outside of community
+						new AutoDriveDistance(drivetrain, 2), new AutoBalance(drivetrain, true, ledSubsystem));
+
+				break;
+
+			case RIGHT :
+
+				addCommands(new InstantCommand(() -> {
+					drivetrain.resetOdometry(new Pose2d(Units.inchesToMeters(54.42), Units.inchesToMeters(42.079),
+							Rotation2d.fromDegrees(180)));
+				}), new AutoDriveDistance(drivetrain, 2), new TurnDeltaAngle(drivetrain, -90),
+						new AutoDriveDistance(drivetrain, 0.2), new TurnDeltaAngle(drivetrain, 90),
+						new AutoDriveDistance(drivetrain, 2), new AlignPeg(drivetrain),
+						new CommandArm(armSubsystem, 0.2, 90),
+						new GrabberInOutAuto(grabberMotorSubsystem, grabberSolenoidSubsystem, false, 1),
+						new AutoDriveDistance(drivetrain, -2), new TurnDeltaAngle(drivetrain, -90),
+						new AutoDriveDistance(drivetrain, -0.2), new TurnDeltaAngle(drivetrain, 90),
+						new AutoDriveDistance(drivetrain, -2), new AutoDriveDistance(drivetrain, -4.5),
+						// Gets the robot out the comunity area (Over the charge station) by driving
+						// backwards
+						new InstantCommand(() -> {
+							LEDSubsystem.LEDManager.STRIP0.strip.setSolidColor(Color.kRed);
+						}), new WaitCommand(0.5), // gets robot to pause outside of community
+						new AutoDriveDistance(drivetrain, 2), new AutoBalance(drivetrain, true, ledSubsystem));
+
+				break;
 		}
+
+		// spotless:off
+
+		// if (this.startingPos == StartingPosition.LEFT) {
+		// 	addCommands(new InstantCommand(() -> {
+		// 		drivetrain.resetOdometry(new Pose2d(Units.inchesToMeters(54.42), Units.inchesToMeters(42.079),
+		// 				Rotation2d.fromDegrees(180)));
+		// 	}), new AutoDriveDistance(drivetrain, 0.5), new TurnDeltaAngle(drivetrain, -90),
+		// 			new AutoDriveDistance(drivetrain, 0.2), new TurnDeltaAngle(drivetrain, 90),
+		// 			new AutoDriveDistance(drivetrain, 0.5), new AlignPeg(drivetrain),
+		// 			new CommandArm(armSubsystem, 0.2, 90),
+		// 			new GrabberInOutAuto(grabberMotorSubsystem, grabberSolenoidSubsystem, false, 1),
+		// 			new AutoDriveDistance(drivetrain, -0.5), new TurnDeltaAngle(drivetrain, -90),
+		// 			new AutoDriveDistance(drivetrain, -0.2), new TurnDeltaAngle(drivetrain, 90),
+		// 			new AutoDriveDistance(drivetrain, -0.5), new AutoDriveDistance(drivetrain, -4.5),
+		// 			// Gets the robot out the comunity area (Over the charge station) by driving
+		// 			// backwards
+		// 			new InstantCommand(() -> {
+		// 				LEDSubsystem.LEDManager.STRIP0.strip.setSolidColor(Color.kRed);
+		// 			}), new WaitCommand(0.5), // gets robot to pause outside of community
+		// 			new AutoDriveDistance(drivetrain, 2), new AutoBalance(drivetrain, true, ledSubsystem));
+
+		// } else if (this.startingPos == StartingPosition.CENTER) {
+		// 	addCommands(new InstantCommand(() -> {
+		// 		drivetrain.resetOdometry(new Pose2d(Units.inchesToMeters(54.42), Units.inchesToMeters(42.079),
+		// 				Rotation2d.fromDegrees(180)));
+		// 	}), new AutoDriveDistance(drivetrain, 2), new TurnDeltaAngle(drivetrain, -90),
+		// 			new AutoDriveDistance(drivetrain, 0.2), new TurnDeltaAngle(drivetrain, 90),
+		// 			new AutoDriveDistance(drivetrain, 2), new AlignPeg(drivetrain),
+		// 			new CommandArm(armSubsystem, 0.2, 90),
+		// 			new GrabberInOutAuto(grabberMotorSubsystem, grabberSolenoidSubsystem, false, 1),
+		// 			new AutoDriveDistance(drivetrain, -2), new TurnDeltaAngle(drivetrain, -90),
+		// 			new AutoDriveDistance(drivetrain, -0.2), new TurnDeltaAngle(drivetrain, 90),
+		// 			new AutoDriveDistance(drivetrain, -2), new AutoDriveDistance(drivetrain, -4.5),
+		// 			// Gets the robot out the comunity area (Over the charge station) by driving
+		// 			// backwards
+		// 			new InstantCommand(() -> {
+		// 				LEDSubsystem.LEDManager.STRIP0.strip.setSolidColor(Color.kRed);
+		// 			}), new WaitCommand(0.5), // gets robot to pause outside of community
+		// 			new AutoDriveDistance(drivetrain, 2), new AutoBalance(drivetrain, true, ledSubsystem));
+		// } else {
+		// 	addCommands(new InstantCommand(() -> {
+		// 		drivetrain.resetOdometry(new Pose2d(Units.inchesToMeters(54.42), Units.inchesToMeters(42.079),
+		// 				Rotation2d.fromDegrees(180)));
+		// 	}), new AutoDriveDistance(drivetrain, 2), new TurnDeltaAngle(drivetrain, -90),
+		// 			new AutoDriveDistance(drivetrain, 0.2), new TurnDeltaAngle(drivetrain, 90),
+		// 			new AutoDriveDistance(drivetrain, 2), new AlignPeg(drivetrain),
+		// 			new CommandArm(armSubsystem, 0.2, 90),
+		// 			new GrabberInOutAuto(grabberMotorSubsystem, grabberSolenoidSubsystem, false, 1),
+		// 			new AutoDriveDistance(drivetrain, -2), new TurnDeltaAngle(drivetrain, -90),
+		// 			new AutoDriveDistance(drivetrain, -0.2), new TurnDeltaAngle(drivetrain, 90),
+		// 			new AutoDriveDistance(drivetrain, -2), new AutoDriveDistance(drivetrain, -4.5),
+		// 			// Gets the robot out the comunity area (Over the charge station) by driving
+		// 			// backwards
+		// 			new InstantCommand(() -> {
+		// 				LEDSubsystem.LEDManager.STRIP0.strip.setSolidColor(Color.kRed);
+		// 			}), new WaitCommand(0.5), // gets robot to pause outside of community
+		// 			new AutoDriveDistance(drivetrain, 2), new AutoBalance(drivetrain, true, ledSubsystem));
+		// }
+
+		// spotless:on
 	}
 
 }
