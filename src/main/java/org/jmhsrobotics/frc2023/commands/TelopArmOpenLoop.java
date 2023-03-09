@@ -41,10 +41,15 @@ public class TelopArmOpenLoop extends CommandBase {
 	// spotless:on
 
 	private void resetDesiredStateToCurrent() {
+		// reset desired pitch values
 		this.desiredPitch = this.armSubsystem.getArmPitch();
 		this.desiredExtension = this.armSubsystem.getArmLength();
+		// reset PPIDs (profiled PIDs)
 		armSubsystem.resetAnglePPIDToCurrent();
 		armSubsystem.resetExtensionPPIDToCurrent();
+		// reset fatal error flags
+		this.armSubsystem.resetFatalExtensionErrorFlag();
+		this.armSubsystem.resetFatalPitchErrorFlag();
 	}
 
 	@Override
@@ -83,15 +88,16 @@ public class TelopArmOpenLoop extends CommandBase {
 			if (this.armSubsystem.getArmPitch() < ArmConstants.minArmAngleDegrees) {
 				this.armSubsystem.resetPitchEncoder();
 				this.resetDesiredStateToCurrent();
-				// vvvvv YOU NEED TO DO THIS vvvvvv
-				// RESETTING THE PITCH ENCODER ALONE IS NOT FAST ENOUGH
-				// THE HARDWARE IS BAD AND IT DOES NOT REGISTER IN TIME (caused massive jiggle
-				// w/o)
-				// this killed me
+				// do this instead of setting the relative encoder position to 0 (too slow,
+				// doesn't work)
 				this.armSubsystem.resetAnglePPIDToValue(ArmConstants.stowedDegrees);
 			} else { // NORMALLY CALLED
 				this.resetDesiredStateToCurrent();
 			}
+		}
+
+		if (this.armSubsystem.detectedFatalExtensionError() || this.armSubsystem.detectedFatalPitchError()) {
+			this.resetDesiredStateToCurrent(); // also resets fatal error flags
 		}
 
 		// spotless:off

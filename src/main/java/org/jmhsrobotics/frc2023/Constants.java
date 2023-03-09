@@ -141,7 +141,14 @@ public final class Constants {
 		public static final double minArmAngleDegrees = ArmConstants.stowedDegrees;
 		public static final double maxArmAngleDegrees = 300;
 		public static final double armDistanceToCenterMeters = Units.inchesToMeters(-8);
-
+		// Max profiled PID error (between current state and setpoint) before it
+		// triggers the process
+		// to check for whether the error is being reduced at all (basically this should
+		// just be slightly
+		// outside the bounds for normal operation)
+		public static final double maxExtensionErrorMillims = 30;
+		public static final double maxPitchErrorDegrees = 5;
+		public static final double maxErrorTimeBeforeAbort = 1.5; // seconds
 	}
 
 	public static double kSimUpdateTime = 0.02;

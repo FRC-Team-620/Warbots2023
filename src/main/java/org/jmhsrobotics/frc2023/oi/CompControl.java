@@ -104,7 +104,6 @@ public class CompControl implements ControlBoard {
 	}
 
 	@Override
-
 	public Trigger Intake() {
 		return null;
 	}

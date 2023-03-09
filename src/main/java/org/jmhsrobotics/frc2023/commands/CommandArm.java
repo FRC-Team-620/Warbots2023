@@ -38,6 +38,7 @@ public class CommandArm extends CommandBase {
 	// isFinished
 	@Override
 	public boolean isFinished() {
-		return armSubsystem.atPitchGoal() && armSubsystem.atExtensionGoal();
+		return (armSubsystem.atPitchGoal() && armSubsystem.atExtensionGoal())
+				|| armSubsystem.detectedFatalExtensionError() || armSubsystem.detectedFatalPitchError();
 	}
 }

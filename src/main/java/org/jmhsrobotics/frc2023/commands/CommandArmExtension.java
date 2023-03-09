@@ -35,6 +35,6 @@ public class CommandArmExtension extends CommandBase {
 	// isFinished
 	@Override
 	public boolean isFinished() {
-		return armSubsystem.atExtensionGoal();
+		return armSubsystem.atExtensionGoal() || armSubsystem.detectedFatalExtensionError();
 	}
 }

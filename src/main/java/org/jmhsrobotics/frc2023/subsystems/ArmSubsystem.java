@@ -22,6 +22,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -52,12 +53,21 @@ public class ArmSubsystem extends SubsystemBase {
 	private ArmFeedforward armfeedforward;
 	private double openLoopExtensionSpeed;
 	private double openLoopPitchSpeed;
-	public static enum scoringType {
+
+	private Timer extensionErrorTimer;
+	private boolean extensionErrorTimerStarted = false;
+	private boolean fatalExtensionErrorDetected = false;
+
+	private Timer pitchErrorTimer;
+	private boolean pitchErrorTimerStarted = false;
+	private boolean fatalPitchErrorDetected = false;
+
+	public static enum ScoringType {
 		CONE, CUBE;
 	}
-	public scoringType armScore = scoringType.CONE;
+	public ScoringType armScore = ScoringType.CONE;
 
-	public enum ControlMode {
+	public static enum ControlMode {
 		STOPPED, OPEN_LOOP, CLOSED_LOOP;
 	}
 
@@ -68,23 +78,10 @@ public class ArmSubsystem extends SubsystemBase {
 		armfeedforward = new ArmFeedforward(0, 0.46, 0.09); // Calculated from https://www.reca.lc/arm
 		// TODO: MAke sure to construct profiledExtensionPID and profiledExtensionPID!!!
 
-		// spotless:off
-		anglePPIDConstraints = new Constraints(110, 200);
-		profiledAnglePID = new ProfiledPIDController(
-			0.10, 0.0, 0.0, anglePPIDConstraints
-		);
-
-		profiledAnglePID.setTolerance(1.5, 4);
-
-		extensionPPIDConstraints = new Constraints(400, 700);
-		profiledExtensionPID = new ProfiledPIDController(
-			0.014, 0.0, 0.0, extensionPPIDConstraints
-		);
-
-		profiledExtensionPID.setTolerance(20, 60);
+		initPID();
 
 		laser.setRangingMode(RangingMode.Short, 25);
-		// spotless:on
+
 		SmartDashboard.putData("Wristpid", profiledAnglePID);
 		SmartDashboard.putData("Lengthpid", profiledExtensionPID);
 		// Create Mech2s display of Arm.
@@ -102,6 +99,9 @@ public class ArmSubsystem extends SubsystemBase {
 
 		this.profiledAnglePID.setGoal(this.getArmPitch());
 		this.profiledExtensionPID.setGoal(this.getArmLength());
+
+		this.extensionErrorTimer = new Timer();
+		this.pitchErrorTimer = new Timer();
 	}
 
 	public void init2d() {
@@ -114,6 +114,28 @@ public class ArmSubsystem extends SubsystemBase {
 		m_elevator = m_wrist.append(new MechanismLigament2d("elevator", ArmConstants.minExtensionLengthMillims, 0, 6,
 				new Color8Bit(Color.kGray)));
 		SmartDashboard.putData("arm_info", mech);
+	}
+
+	public void initPID() {
+		// spotless:off
+
+		// PITCH
+		this.anglePPIDConstraints = new Constraints(110, 200);
+		this.profiledAnglePID = new ProfiledPIDController(
+			0.10, 0.0, 0.0, anglePPIDConstraints
+		);
+
+		this.profiledAnglePID.setTolerance(1.5, 4);
+
+		// EXTENSION
+		this.extensionPPIDConstraints = new Constraints(400, 700);
+		this.profiledExtensionPID = new ProfiledPIDController(
+			0.014, 0.0, 0.0, extensionPPIDConstraints
+		);
+
+		this.profiledExtensionPID.setTolerance(20, 60);
+
+		// spotless:on
 	}
 
 	@Override
@@ -150,6 +172,11 @@ public class ArmSubsystem extends SubsystemBase {
 		m_wrist.setAngle(pitchAbsoluteEncoder.getPosition() - 90);
 		m_elevator.setLength(extensionEncoder.getPosition());
 
+		if (getControlMode() != ControlMode.CLOSED_LOOP) {
+			this.extensionErrorTimerStarted = false;
+			this.pitchErrorTimerStarted = false;
+		}
+
 		if (getControlMode() == ControlMode.STOPPED) {
 			pitchMotor.set(0); // Keeps motor safety watchdog happy
 			telescopeMotor.set(0);
@@ -164,6 +191,40 @@ public class ArmSubsystem extends SubsystemBase {
 		// profiledAnglePID.getSetpoint().velocity) +
 		// profiledAnglePID.calculate(pitchEncoder.getPosition()))
 		// / 12); // TODO fix janky volts hack
+
+		// EXTENSION error
+		// outside error bounds
+		if (Math.abs(profiledExtensionPID.getPositionError()) > ArmConstants.maxExtensionErrorMillims) {
+			if (this.extensionErrorTimerStarted
+					&& this.extensionErrorTimer.hasElapsed(ArmConstants.maxErrorTimeBeforeAbort)) {
+				this.fatalExtensionErrorDetected = true; // use this to end commands early
+			} else if (!this.extensionErrorTimerStarted) {
+				this.extensionErrorTimer.restart();
+				this.extensionErrorTimerStarted = true;
+			}
+		} else {
+			this.extensionErrorTimerStarted = false;
+		}
+
+		// spotless:off
+
+		// // COMMENTED OUT BECAUSE THIS IS REALLY ONLY USEFUL FOR THE EXTENSION B/C IT DOESN'T RUN
+		// // OFF OF ENCODER COUNTS
+
+		// // PITCH error
+		// // outside error bounds
+		// if(Math.abs(profiledAnglePID.getPositionError()) > ArmConstants.maxPitchErrorDegrees) {
+		// 	if(this.pitchErrorTimerStarted && this.pitchErrorTimer.hasElapsed(ArmConstants.maxErrorTimeBeforeAbort)) {
+		// 		this.fatalPitchErrorDetected = true; // use this to end commands early
+		// 	} else if(!this.pitchErrorTimerStarted) {
+		// 		this.pitchErrorTimer.restart();
+		// 		this.pitchErrorTimerStarted = true;
+		// 	}
+		// } else {
+		// 	this.pitchErrorTimerStarted = false;
+		// }
+
+		// spotless:on
 
 		pitchMotor.set(-profiledAnglePID.calculate(this.getArmPitch()));
 		telescopeMotor.set(profiledExtensionPID.calculate(this.getArmLength()));
@@ -186,6 +247,22 @@ public class ArmSubsystem extends SubsystemBase {
 		// SmartDashboard.putNumber("Wristpid/output", pitchMotor.get());
 		// SmartDashboard.putNumber("lengthpid/setpoint",
 		// profiledExtensionPID.getSetpoint().position);
+	}
+
+	public boolean detectedFatalExtensionError() {
+		return this.fatalExtensionErrorDetected;
+	}
+
+	public boolean detectedFatalPitchError() {
+		return this.fatalPitchErrorDetected;
+	}
+
+	public void resetFatalExtensionErrorFlag() {
+		this.fatalExtensionErrorDetected = false;
+	}
+
+	public void resetFatalPitchErrorFlag() {
+		this.fatalPitchErrorDetected = false;
 	}
 
 	public void setControlMode(ControlMode mode) {
@@ -307,14 +384,14 @@ public class ArmSubsystem extends SubsystemBase {
 	}
 
 	public void setScoringType() {
-		if (armScore == scoringType.CONE) {
-			armScore = scoringType.CUBE;
+		if (armScore == ScoringType.CONE) {
+			armScore = ScoringType.CUBE;
 		} else {
-			armScore = scoringType.CONE;
+			armScore = ScoringType.CONE;
 		}
 	}
 	public boolean isCone() {
-		if (armScore == scoringType.CONE) {
+		if (armScore == ScoringType.CONE) {
 			return true;
 		} else {
 			return false;
