@@ -161,7 +161,7 @@ public class RobotContainer {
 		controlBoard.armPresetFloor().onFalse(new InstantCommand(() -> grabberMotorSubsystem.setGrabberMotor(0)));
 		controlBoard.armPresetMid()
 				.onTrue(armSubsystem.armScore == scoringType.CONE
-						? new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 95)
+						? new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 100)
 						: new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 95));
 
 		controlBoard.armPresetHigh()
