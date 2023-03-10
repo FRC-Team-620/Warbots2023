@@ -132,6 +132,8 @@ public class AutoBalance extends CommandBase {
 
 			// IF THE ROBOT IS FALLING FORWARD OR BACKWARD (The loading station is tipping
 			// over!)
+			// TODO: tune this on the field (determines how sensitive the robot is to
+			// tipping) higher value -> LESS sensitive
 			if (Math.abs(pitchAngVel) > 15) {
 
 				if (!this.isTipping) {
@@ -146,6 +148,7 @@ public class AutoBalance extends CommandBase {
 				strip.setSolidColor(Color.kBlue);
 
 				// Drive toward the center
+				// TODO: tune this (how hard the robot reverses when tipping)
 				this.drivetrain.setCurvatureDrive(-Math.signum(pitchAngVel) * 0.042, 0, false);
 
 			} else {
@@ -192,6 +195,7 @@ public class AutoBalance extends CommandBase {
                     //  );
                     // }
 
+					// TODO: maybe tune this (how fast the pitch PID is when recovering from tipping)
                     double speed = MathUtil.clamp(pidSpeedOutput, -0.07, 0.07);
 
                     System.out.println("SPEED: " + speed);
@@ -207,6 +211,7 @@ public class AutoBalance extends CommandBase {
                     // THE ROBOT IS ON THE CHARGE STATION WITHOUT HAVING BALANCED YET
                     // The robot is creeping up the station for the first time
 
+					// TODO: tune this (important) how fast the robot creeps up the charge station at the start
                     this.drivetrain.setCurvatureDrive(
                         -0.075, 
                         0, 
