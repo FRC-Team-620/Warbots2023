@@ -13,8 +13,6 @@ public class CommandArmPitch extends CommandBase {
 	BooleanSupplier interrupt;
 
 	// Constructor
-	// Takes in a angle for the arm pitch and a distance for the linear joint
-	// (Prizmatic joint)
 	public CommandArmPitch(ArmSubsystem armSubsystem, double angle, BooleanSupplier interrupt) {
 		this.armSubsystem = armSubsystem;
 		this.angle = angle;

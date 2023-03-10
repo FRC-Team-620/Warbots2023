@@ -175,13 +175,14 @@ public class RobotContainer {
 		controlBoard.armPresetFloor().whileTrue(new InstantCommand(() -> grabberMotorSubsystem.setGrabberMotor(-1)));
 		controlBoard.armPresetFloor().onFalse(new InstantCommand(() -> grabberMotorSubsystem.setGrabberMotor(0)));
 
-		controlBoard.armPresetMid()
-				.onTrue(new ConditionalCommand(
-						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 95,
-								controlBoard.overrideTeleopArm()),
-						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 80,
-								controlBoard.overrideTeleopArm()),
-						armSubsystem::isCone));
+		controlBoard.armPresetMid().onTrue(new ConditionalCommand(
+				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 95, controlBoard.overrideTeleopArm()),
+						new CommandArmExtension(armSubsystem, ArmConstants.maxExtensionLengthMillims,
+								controlBoard.overrideTeleopArm())),
+				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 80, controlBoard.overrideTeleopArm()),
+						new CommandArmExtension(armSubsystem, ArmConstants.maxExtensionLengthMillims,
+								controlBoard.overrideTeleopArm())),
+				armSubsystem::isCone));
 
 		controlBoard.armPresetHigh()
 				.onTrue(new ConditionalCommand(
