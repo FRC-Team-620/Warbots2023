@@ -123,6 +123,15 @@ public class LEDSubsystem extends SubsystemBase {
 		}
 
 		/**
+		 * Gets the length of the LED strip (number of LEDs).
+		 * 
+		 * @return The number of LEDs
+		 */
+		public int getLength() {
+			return this.buffer.getLength();
+		}
+
+		/**
 		 * Creates an animation which creates a gradient of an arbitrary number of
 		 * colors and moves it along the LED strip.
 		 *

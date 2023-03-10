@@ -107,7 +107,8 @@ public class RobotContainer {
 		// spotless:off
 		ledSubsystem.setDefaultCommand(new LEDIdleCommand(
 				ledSubsystem, 
-				armSubsystem::isCone
+				armSubsystem::isCone,
+				armSubsystem::getTeleopWasEnded
 			)
 		);
 		// spotless:on
@@ -172,8 +173,8 @@ public class RobotContainer {
 		// controlBoard.overrideTeleopArm()),
 		// armSubsystem::isCone));
 
-		controlBoard.armPresetFloor().whileTrue(new InstantCommand(() -> grabberMotorSubsystem.setGrabberMotor(-1)));
-		controlBoard.armPresetFloor().onFalse(new InstantCommand(() -> grabberMotorSubsystem.setGrabberMotor(0)));
+		controlBoard.armPresetFloor().whileTrue(new InstantCommand(() -> grabberMotorSubsystem.setGrabberMotor(-1), armSubsystem));
+		controlBoard.armPresetFloor().onFalse(new InstantCommand(() -> grabberMotorSubsystem.setGrabberMotor(0), armSubsystem));
 
 		controlBoard.armPresetMid().onTrue(new ConditionalCommand(
 				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 95, controlBoard.overrideTeleopArm()),

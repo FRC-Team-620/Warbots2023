@@ -66,6 +66,9 @@ public class TelopArmOpenLoop extends CommandBase {
 		SmartDashboard.putNumber("ArmTeleop/Extension/armExtension", this.armSubsystem.getArmLength());
 		SmartDashboard.putNumber("ArmTeleop/Extension/extensionGoalPos",
 				this.armSubsystem.getExtensionPPIDGoal().position);
+		
+		// For the LEDs
+		this.armSubsystem.setTeleopWasEnded(this.wasEnded);
 
 		// spotless:off
 		if(this.overrideLimits.getAsBoolean()) {
@@ -117,6 +120,7 @@ public class TelopArmOpenLoop extends CommandBase {
 	@Override
 	public void end(boolean interrupted) {
 		this.wasEnded = true;
+		this.armSubsystem.setTeleopWasEnded(true);
 		armSubsystem.stop();
 	}
 }

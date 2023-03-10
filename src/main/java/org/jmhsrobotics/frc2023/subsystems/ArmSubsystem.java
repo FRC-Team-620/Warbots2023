@@ -52,6 +52,7 @@ public class ArmSubsystem extends SubsystemBase {
 	private ArmFeedforward armfeedforward;
 	private double openLoopExtensionSpeed;
 	private double openLoopPitchSpeed;
+	private boolean teleopWasEnded = false; // for LEDs
 	public static enum scoringType {
 		CONE, CUBE;
 	}
@@ -188,6 +189,14 @@ public class ArmSubsystem extends SubsystemBase {
 		// profiledExtensionPID.getSetpoint().position);
 	}
 
+	public void setTeleopWasEnded(boolean wasEnded) {
+		this.teleopWasEnded = wasEnded;
+	}
+
+	public boolean getTeleopWasEnded() {
+		return this.teleopWasEnded;
+	}
+
 	public void setControlMode(ControlMode mode) {
 		this.controlMode = mode;
 	}
@@ -316,6 +325,7 @@ public class ArmSubsystem extends SubsystemBase {
 			System.out.println("to Cone");
 		}
 	}
+	
 	public boolean isCone() {
 		return armScore == scoringType.CONE;
 		// if (armScore == scoringType.CONE) {
