@@ -74,7 +74,7 @@ public class TelopArmOpenLoop extends CommandBase {
 			return;
 		}
 		// spotless:on
-
+		
 		// If closed-loop control is starting up again after having been interrupted
 		if (this.wasEnded) {
 			this.wasEnded = false;

@@ -1,6 +1,7 @@
 package org.jmhsrobotics.frc2023.subsystems;
 
 import org.jmhsrobotics.frc2023.Constants;
+import org.jmhsrobotics.frc2023.RobotMath;
 import org.jmhsrobotics.frc2023.Constants.ArmConstants;
 
 import com.playingwithfusion.TimeOfFlight;
@@ -52,6 +53,11 @@ public class ArmSubsystem extends SubsystemBase {
 	private ArmFeedforward armfeedforward;
 	private double openLoopExtensionSpeed;
 	private double openLoopPitchSpeed;
+
+	//Anti Ram System For Extension Arm
+	private double prevRange = laser.getRange();
+	private boolean isMovingBackwards = false;
+
 	public static enum scoringType {
 		CONE, CUBE;
 	}
@@ -102,6 +108,7 @@ public class ArmSubsystem extends SubsystemBase {
 
 		this.profiledAnglePID.setGoal(this.getArmPitch());
 		this.profiledExtensionPID.setGoal(this.getArmLength());
+		
 	}
 
 	public void init2d() {
@@ -115,7 +122,6 @@ public class ArmSubsystem extends SubsystemBase {
 				new Color8Bit(Color.kGray)));
 		SmartDashboard.putData("arm_info", mech);
 	}
-
 	@Override
 	public void periodic() {
 		laser.identifySensor();
@@ -164,9 +170,31 @@ public class ArmSubsystem extends SubsystemBase {
 		// profiledAnglePID.getSetpoint().velocity) +
 		// profiledAnglePID.calculate(pitchEncoder.getPosition()))
 		// / 12); // TODO fix janky volts hack
-
 		pitchMotor.set(-profiledAnglePID.calculate(this.getArmPitch()));
-		telescopeMotor.set(profiledExtensionPID.calculate(this.getArmLength()));
+		if (!isMovingBackwards) {
+			telescopeMotor.set(profiledExtensionPID.calculate(this.getArmLength()));
+		} else {//Engage anti break override, drivers lose temporary control till it works again, use manual control to shut off
+			telescopeMotor.set(-0.5);
+			double deltaRange = laser.getRange() - prevRange;
+			if (deltaRange > 0 && !RobotMath.approximatelyZero(deltaRange, 20)) {
+				// if (laser.getRange() < ArmConstants.maxExtensionLengthMillims) {
+
+				// }
+				isMovingBackwards = false;
+				this.resetExtensionPPIDToCurrent();
+			}
+		}
+		
+		if (!RobotMath.approximatelyZero(telescopeMotor.get()) && telescopeMotor.get() > 0) {
+			double deltaRange = laser.getRange() - prevRange;
+			if (deltaRange < 0 && !RobotMath.approximatelyZero(deltaRange, 20)) {
+				isMovingBackwards = true;
+			}
+		}
+		prevRange = laser.getRange(); 
+		// else if (!RobotMath.approximatelyZero(telescopeMotor.get()) && telescopeMotor.get() < 0) {
+
+		// }
 		// armExtension.set(profiledExtensionPID.getGoal().position);
 		SmartDashboard.putNumber("ArmSubsystem/pitch_angle", this.getArmPitch());
 		SmartDashboard.putNumber("ArmSubsystem/pitchPID/position_goal", this.profiledAnglePID.getGoal().position);
