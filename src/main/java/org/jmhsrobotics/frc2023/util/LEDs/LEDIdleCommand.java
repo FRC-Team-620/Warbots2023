@@ -31,17 +31,22 @@ public class LEDIdleCommand extends CommandBase {
 	@Override
 	public void execute() {
 
-		if (this.condition.getAsBoolean()) {
-			this.redGradAnim.step();
-		} else {
-			this.blueGradAnim.step();
+		if(this.condition != null) {
+			if (this.condition.getAsBoolean()) {
+				this.redGradAnim.step();
+			} else {
+				this.blueGradAnim.step();
+			}
 		}
 
-		if (this.sidebandCondition != null) {
+		if (this.sidebandCondition != null && this.strip.getLength() > this.sidebandLength) {
 			Color sidebandColor = this.sidebandCondition.getAsBoolean() ? Color.kRed : Color.kGreen;
 			this.strip.setSubsetSolidColor(0, this.sidebandLength, sidebandColor);
-			this.strip.setSubsetSolidColor(this.strip.getLength() - sidebandLength, this.strip.getLength(),
+			this.strip.setSubsetSolidColor(this.strip.getLength() - this.sidebandLength, this.strip.getLength(),
 					sidebandColor);
+			// a buffer of one off LED between the sidebands and main color
+			this.strip.set(this.sidebandLength, Color.kBlack);
+			this.strip.set(this.strip.getLength() - this.sidebandLength - 1, Color.kBlack);
 		}
 
 		this.strip.sendData();
