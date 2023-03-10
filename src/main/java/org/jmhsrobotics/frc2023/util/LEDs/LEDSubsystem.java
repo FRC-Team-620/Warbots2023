@@ -118,13 +118,22 @@ public class LEDSubsystem extends SubsystemBase {
 			this.lights.setLength(this.buffer.getLength());
 
 			// Set the data
-			this.lights.setData(this.buffer);
+			this.sendData();
 			this.lights.start();
 		}
 
 		/**
+		 * This sends the changes that have been made to the LED strip to be rendered on
+		 * the LEDs. This should only be called ONCE per frame, and MUST be called in
+		 * order for anything to be rendered.
+		 */
+		public void sendData() {
+			this.lights.setData(this.buffer);
+		}
+
+		/**
 		 * Gets the length of the LED strip (number of LEDs).
-		 * 
+		 *
 		 * @return The number of LEDs
 		 */
 		public int getLength() {
@@ -301,7 +310,7 @@ public class LEDSubsystem extends SubsystemBase {
 		 */
 		public void set(int index, Color color) {
 			this.buffer.setLED(index, color);
-			this.lights.setData(this.buffer);
+			// this.lights.setData(this.buffer);
 		}
 
 		/**
@@ -319,7 +328,7 @@ public class LEDSubsystem extends SubsystemBase {
 			for (int i = startIndex; i < endIndex; i++) {
 				this.buffer.setLED(i, color);
 			}
-			this.lights.setData(this.buffer);
+			// this.lights.setData(this.buffer);
 		}
 
 		/**
@@ -367,8 +376,8 @@ public class LEDSubsystem extends SubsystemBase {
 			for (int i = finalGradPos; i < this.buffer.getLength(); i++)
 				this.buffer.setLED(i, finalColor);
 
-			// Setting the data
-			this.lights.setData(this.buffer);
+			// // Setting the data
+			// this.lights.setData(this.buffer);
 		}
 
 		/**
@@ -414,7 +423,7 @@ public class LEDSubsystem extends SubsystemBase {
 					this.buffer.setLED((idx + k + offset) % bufferSize, colors[i % colors.length]);
 				idx += lengths[i % lengths.length];
 			}
-			this.lights.setData(this.buffer);
+			// this.lights.setData(this.buffer);
 		}
 
 		/**

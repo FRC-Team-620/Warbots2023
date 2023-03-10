@@ -66,7 +66,7 @@ public class TelopArmOpenLoop extends CommandBase {
 		SmartDashboard.putNumber("ArmTeleop/Extension/armExtension", this.armSubsystem.getArmLength());
 		SmartDashboard.putNumber("ArmTeleop/Extension/extensionGoalPos",
 				this.armSubsystem.getExtensionPPIDGoal().position);
-		
+
 		// For the LEDs
 		this.armSubsystem.setTeleopWasEnded(this.wasEnded);
 

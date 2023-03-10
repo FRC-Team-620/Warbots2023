@@ -325,7 +325,7 @@ public class ArmSubsystem extends SubsystemBase {
 			System.out.println("to Cone");
 		}
 	}
-	
+
 	public boolean isCone() {
 		return armScore == scoringType.CONE;
 		// if (armScore == scoringType.CONE) {

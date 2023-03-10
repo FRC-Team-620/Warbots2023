@@ -53,7 +53,8 @@ public class ScoringAuto extends SequentialCommandGroup {
 						// backwards
 						new InstantCommand(() -> {
 							LEDSubsystem.LEDManager.STRIP0.strip.setSolidColor(Color.kRed);
-						}), new WaitCommand(0.5), // gets robot to pause outside of community
+							LEDSubsystem.LEDManager.STRIP0.strip.sendData();
+						}, ledSubsystem), new WaitCommand(0.5), // gets robot to pause outside of community
 						new AutoDriveDistance(drivetrain, 2), new AutoBalance(drivetrain, true, ledSubsystem));
 
 				break;
@@ -75,7 +76,8 @@ public class ScoringAuto extends SequentialCommandGroup {
 						// backwards
 						new InstantCommand(() -> {
 							LEDSubsystem.LEDManager.STRIP0.strip.setSolidColor(Color.kRed);
-						}), new WaitCommand(0.5), // gets robot to pause outside of community
+							LEDSubsystem.LEDManager.STRIP0.strip.sendData();
+						}, ledSubsystem), new WaitCommand(0.5), // gets robot to pause outside of community
 						new AutoDriveDistance(drivetrain, 2), new AutoBalance(drivetrain, true, ledSubsystem));
 
 				break;
@@ -97,7 +99,8 @@ public class ScoringAuto extends SequentialCommandGroup {
 						// backwards
 						new InstantCommand(() -> {
 							LEDSubsystem.LEDManager.STRIP0.strip.setSolidColor(Color.kRed);
-						}), new WaitCommand(0.5), // gets robot to pause outside of community
+							LEDSubsystem.LEDManager.STRIP0.strip.sendData();
+						}, ledSubsystem), new WaitCommand(0.5), // gets robot to pause outside of community
 						new AutoDriveDistance(drivetrain, 2), new AutoBalance(drivetrain, true, ledSubsystem));
 
 				break;

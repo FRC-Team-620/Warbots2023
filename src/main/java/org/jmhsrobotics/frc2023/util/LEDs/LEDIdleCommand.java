@@ -37,10 +37,13 @@ public class LEDIdleCommand extends CommandBase {
 			this.blueGradAnim.step();
 		}
 
-		if(this.sidebandCondition != null) {
+		if (this.sidebandCondition != null) {
 			Color sidebandColor = this.sidebandCondition.getAsBoolean() ? Color.kRed : Color.kGreen;
 			this.strip.setSubsetSolidColor(0, this.sidebandLength, sidebandColor);
-			this.strip.setSubsetSolidColor(this.strip.getLength() - sidebandLength, this.strip.getLength(), sidebandColor);
+			this.strip.setSubsetSolidColor(this.strip.getLength() - sidebandLength, this.strip.getLength(),
+					sidebandColor);
 		}
+
+		this.strip.sendData();
 	}
 }

@@ -250,6 +250,8 @@ public class AutoBalance extends CommandBase {
 			}
 		}
 
+		this.strip.sendData();
+
 	}
 
 	// private double getRelativeDistance(Pose2d position) {
