@@ -8,6 +8,7 @@ import org.jmhsrobotics.frc2023.Constants.ArmConstants;
 import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 import org.jmhsrobotics.frc2023.commands.CommandArm;
 import org.jmhsrobotics.frc2023.commands.CommandArmExtension;
+import org.jmhsrobotics.frc2023.commands.CommandArmPitch;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
 import org.jmhsrobotics.frc2023.commands.TelopArmOpenLoop;
@@ -156,18 +157,29 @@ public class RobotContainer {
 								controlBoard.overrideTeleopArm())),
 				armSubsystem::isCone));
 
-		controlBoard.armPresetFloor()
-				.onTrue(new ConditionalCommand(new CommandArm(armSubsystem, 214, 56, controlBoard.overrideTeleopArm()),
-						new CommandArm(armSubsystem, 214, 56, controlBoard.overrideTeleopArm()), armSubsystem::isCone));
+		controlBoard.armPresetFloor().onTrue(new ConditionalCommand(
+				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 33, controlBoard.overrideTeleopArm()),
+						new CommandArmExtension(armSubsystem, ArmConstants.maxExtensionLengthMillims,
+								controlBoard.overrideTeleopArm())),
+				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 33, controlBoard.overrideTeleopArm()),
+						new CommandArmExtension(armSubsystem, ArmConstants.maxExtensionLengthMillims,
+								controlBoard.overrideTeleopArm())),
+				armSubsystem::isCone));
+
+		// new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 55,
+		// controlBoard.overrideTeleopArm()),
+		// new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 55,
+		// controlBoard.overrideTeleopArm()),
+		// armSubsystem::isCone));
 
 		controlBoard.armPresetFloor().whileTrue(new InstantCommand(() -> grabberMotorSubsystem.setGrabberMotor(-1)));
 		controlBoard.armPresetFloor().onFalse(new InstantCommand(() -> grabberMotorSubsystem.setGrabberMotor(0)));
 
 		controlBoard.armPresetMid()
 				.onTrue(new ConditionalCommand(
-						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 115,
-								controlBoard.overrideTeleopArm()),
 						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 95,
+								controlBoard.overrideTeleopArm()),
+						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 80,
 								controlBoard.overrideTeleopArm()),
 						armSubsystem::isCone));
 
