@@ -52,7 +52,7 @@ public class AutoBalance extends CommandBase {
 				Constants.driveports.getBalancingPID().ki, Constants.driveports.getBalancingPID().kd);
 
 		this.pidController.setTolerance(0.02, 0.01);
-		// this.pitchPIDController = new PIDController(0.008, 0.0002, 0.0);
+		this.pitchPIDController = new PIDController(0.008, 0.0002, 0.0);
 		addRequirements(drivetrain, ledSubsystem);
 	}
 
@@ -97,7 +97,7 @@ public class AutoBalance extends CommandBase {
 		// (there is a high threshold for level in this code as we don't want the robot
 		// moving while it is in motion)
 		//
-		// If it reaches level, it should activate a PID to hold that position, unless
+		// If it reaches level, it should activate++ a PID to hold that position, unless
 		// it stops being level.
 		//
 		// If it reaches a a limit, it should hold its position until it either needs to
@@ -134,7 +134,7 @@ public class AutoBalance extends CommandBase {
 			// over!)
 			// TODO: tune this on the field (determines how sensitive the robot is to
 			// tipping) higher value -> LESS sensitive
-			if (Math.abs(pitchAngVel) > 15) {
+			if (Math.abs(pitchAngVel) > 65) {
 
 				if (!this.isTipping) {
 					this.hasTipped = true;
@@ -213,7 +213,7 @@ public class AutoBalance extends CommandBase {
 
 					// TODO: tune this (important) how fast the robot creeps up the charge station at the start
                     this.drivetrain.setCurvatureDrive(
-                        -0.075, 
+                        -0.25, 
                         0, 
                         false
                     );

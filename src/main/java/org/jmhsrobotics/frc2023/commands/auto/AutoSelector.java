@@ -18,9 +18,9 @@ public class AutoSelector {
 
 	public AutoSelector(RobotContainer container) {
 		// Add auto Options
-		autoSelector.setDefaultOption("StartingDistanceAuto", new StartingDistanceAuto(container.getDrivetrain()));
-		autoSelector.addOption("CenterChargeStationAuto",
+		autoSelector.setDefaultOption("CenterChargeStationAuto",
 				new CenterChargeStationAuto(container.getDrivetrain(), container.getLEDSubsystem()));
+		autoSelector.addOption("StartingDistanceAuto", new StartingDistanceAuto(container.getDrivetrain()));
 		autoSelector.addOption("ScoringAutoLeft",
 				new ScoringAuto(container.drivetrain, container.armSubsystem, container.grabberMotorSubsystem,
 						container.grabberSolenoidSubsystem, container.ledSubsystem, StartingPosition.LEFT,

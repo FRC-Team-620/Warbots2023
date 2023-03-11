@@ -53,6 +53,15 @@ public class ArmSubsystem extends SubsystemBase {
 	private double openLoopExtensionSpeed;
 	private double openLoopPitchSpeed;
 	private boolean teleopWasEnded = false; // for LEDs
+
+	// extension error checking
+	/**
+	 * whether there's a mismatch between the current setpoint error and encoder
+	 * delta
+	 */
+	private boolean discrepancyDetected = false;
+	private double previousExtensionSetpointError;
+
 	public static enum scoringType {
 		CONE, CUBE;
 	}
@@ -103,6 +112,9 @@ public class ArmSubsystem extends SubsystemBase {
 
 		this.profiledAnglePID.setGoal(this.getArmPitch());
 		this.profiledExtensionPID.setGoal(this.getArmLength());
+
+		// doesn't matter where it starts since this is used for a delta
+		this.previousExtensionSetpointError = 0.0;
 	}
 
 	public void init2d() {
@@ -147,6 +159,15 @@ public class ArmSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("ArmSubsystem/Extension/currentSetpointVelocity",
 				this.profiledExtensionPID.getSetpoint().velocity);
 
+		double currExtensionSetpointError = Math.abs(this.profiledExtensionPID.getPositionError());
+		double deltaSetpointError = currExtensionSetpointError - this.previousExtensionSetpointError;
+		this.previousExtensionSetpointError = currExtensionSetpointError;
+
+		SmartDashboard.putNumber("ArmSubsystem/ERROR/deltaEncoder", deltaSetpointError);
+		SmartDashboard.putNumber("ArmSubsystem/ERROR/setpointError", profiledExtensionPID.getPositionError());
+		this.discrepancyDetected = deltaSetpointError > 0;
+		SmartDashboard.putNumber("ArmSubsystem/ERROR/discrepancy", discrepancyDetected ? 1 : -1);
+
 		// Update Mech2d Display
 		m_wrist.setAngle(pitchAbsoluteEncoder.getPosition() - 90);
 		m_elevator.setLength(extensionEncoder.getPosition());
@@ -187,6 +208,10 @@ public class ArmSubsystem extends SubsystemBase {
 		// SmartDashboard.putNumber("Wristpid/output", pitchMotor.get());
 		// SmartDashboard.putNumber("lengthpid/setpoint",
 		// profiledExtensionPID.getSetpoint().position);
+	}
+
+	public scoringType getScoringType() {
+		return this.armScore;
 	}
 
 	public void setTeleopWasEnded(boolean wasEnded) {

@@ -25,7 +25,7 @@ public class BabybotDrivePorts implements IDrivePorts {
 	public final double maxAcceleration = 2;
 
 	public ProfiledPIDConfig autoDistanceProfiledPID = new ProfiledPIDConfig(2, 0.2, 0.0,
-			new Constraints(maxVelocity, maxAcceleration));
+			new Constraints(maxVelocity / 3, maxAcceleration));
 
 	// spotless:off
 	public PIDConfig keepHeadingPID = new PIDConfig(0.018, 0.019, 0);

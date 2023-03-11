@@ -31,10 +31,12 @@ public class LEDIdleCommand extends CommandBase {
 	@Override
 	public void execute() {
 
-		if (this.condition.getAsBoolean()) {
-			this.redGradAnim.step();
-		} else {
-			this.blueGradAnim.step();
+		if (this.condition != null) {
+			if (this.condition.getAsBoolean()) {
+				this.redGradAnim.step();
+			} else {
+				this.blueGradAnim.step();
+			}
 		}
 
 		if (this.sidebandCondition != null) {
@@ -42,6 +44,8 @@ public class LEDIdleCommand extends CommandBase {
 			this.strip.setSubsetSolidColor(0, this.sidebandLength, sidebandColor);
 			this.strip.setSubsetSolidColor(this.strip.getLength() - sidebandLength, this.strip.getLength(),
 					sidebandColor);
+			this.strip.set(this.sidebandLength, Color.kBlack);
+			this.strip.set(this.strip.getLength() - this.sidebandLength - 1, Color.kBlack);
 		}
 
 		this.strip.sendData();
