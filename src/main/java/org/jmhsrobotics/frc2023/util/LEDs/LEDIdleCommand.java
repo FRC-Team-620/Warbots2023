@@ -39,7 +39,7 @@ public class LEDIdleCommand extends CommandBase {
 			}
 		}
 
-		if (this.sidebandCondition != null && this.strip.getLength() > this.sidebandLength) {
+		if (this.sidebandCondition != null) {
 
 			// determine the color of the bands based off the supplier
 			Color sidebandColor = this.sidebandCondition.getAsBoolean() ? Color.kRed : Color.kGreen;
@@ -50,6 +50,12 @@ public class LEDIdleCommand extends CommandBase {
 			// top
 			this.strip.setSubsetSolidColor(this.strip.getLength() - this.sidebandLength, this.strip.getLength(),
 					sidebandColor);
+
+			// a buffer of one off LED between the main gradient and the sidebands
+			// bottom
+			this.strip.set(this.sidebandLength, Color.kBlack);
+			// top
+			this.strip.set(this.strip.getLength() - this.sidebandLength - 1, Color.kBlack);
 		}
 
 		this.strip.sendData();

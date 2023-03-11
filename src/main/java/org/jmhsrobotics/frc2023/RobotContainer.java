@@ -11,6 +11,7 @@ import org.jmhsrobotics.frc2023.commands.CommandArmExtension;
 import org.jmhsrobotics.frc2023.commands.CommandArmPitch;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
+import org.jmhsrobotics.frc2023.commands.TeleopGrabberMotorOpenLoop;
 import org.jmhsrobotics.frc2023.commands.TelopArmOpenLoop;
 import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
@@ -32,7 +33,6 @@ import org.jmhsrobotics.frc2023.subsystems.TelemetrySubsystem;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDIdleCommand;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -103,14 +103,26 @@ public class RobotContainer {
 		// }, grabberMotorSubsystem));
 
 		// TODO: make this not hellish (plz)
-		grabberMotorSubsystem.setDefaultCommand(new InstantCommand(() -> {
-			grabberMotorSubsystem.setGrabberMotor(MathUtil.clamp(
-					((armSubsystem.getScoringType() == ArmSubsystem.scoringType.CUBE && controlBoard.intakeWheels() > 0)
-							? 0.4
-							: 1.0) * controlBoard.intakeWheels()
-							+ (grabberSolenoidSubsystem.getGrabberPitchState() ? 0.05 : 0.0),
-					-1, 1));
-		}, grabberMotorSubsystem));
+		// grabberMotorSubsystem.setDefaultCommand(new InstantCommand(() -> {
+		// grabberMotorSubsystem.setGrabberMotor(MathUtil.clamp(
+		// ((armSubsystem.getScoringType() == ArmSubsystem.scoringType.CUBE &&
+		// controlBoard.intakeWheels() > 0)
+		// ? 0.4
+		// : 1.0) * controlBoard.intakeWheels()
+		// + (grabberSolenoidSubsystem.getGrabberPitchState() ? 0.05 : 0.0),
+		// -1, 1));
+		// }, grabberMotorSubsystem));
+
+		// spotless:off
+		grabberMotorSubsystem.setDefaultCommand(new TeleopGrabberMotorOpenLoop(
+			grabberMotorSubsystem, 
+			controlBoard::intakeWheels, 
+			/* when the base speed of 0.05 should be added */
+			grabberSolenoidSubsystem::getGrabberPitchState, 
+			/* when it should reduce its speed (cubes pop out when intaking) */
+			() -> (armSubsystem.getScoringType() == ArmSubsystem.ScoringType.CUBE && controlBoard.intakeWheels() > 0)
+		));
+		// spotless:on
 
 		// grabberMotorSubsystem.setGrabberMotor(controlBoard.intakeWheels()),
 		// grabberMotor));
@@ -122,11 +134,10 @@ public class RobotContainer {
 
 		// spotless:off
 		ledSubsystem.setDefaultCommand(new LEDIdleCommand(
-				ledSubsystem, 
-				armSubsystem::isCone,
-				armSubsystem::getTeleopWasEnded
-			)
-		);
+			ledSubsystem, 
+			armSubsystem::isCone,
+			armSubsystem::getTeleopWasEnded
+		));
 		// spotless:on
 
 		autoSelector = new AutoSelector(this);

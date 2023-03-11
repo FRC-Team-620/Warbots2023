@@ -62,10 +62,10 @@ public class ArmSubsystem extends SubsystemBase {
 	private boolean discrepancyDetected = false;
 	private double previousExtensionSetpointError;
 
-	public static enum scoringType {
+	public static enum ScoringType {
 		CONE, CUBE;
 	}
-	public scoringType armScore = scoringType.CONE;
+	public ScoringType armScore = ScoringType.CONE;
 
 	public enum ControlMode {
 		STOPPED, OPEN_LOOP, CLOSED_LOOP;
@@ -210,7 +210,7 @@ public class ArmSubsystem extends SubsystemBase {
 		// profiledExtensionPID.getSetpoint().position);
 	}
 
-	public scoringType getScoringType() {
+	public ScoringType getScoringType() {
 		return this.armScore;
 	}
 
@@ -342,17 +342,17 @@ public class ArmSubsystem extends SubsystemBase {
 
 	public void setScoringType() {
 		System.out.println("Switched Scoring Type");
-		if (armScore == scoringType.CONE) {
-			armScore = scoringType.CUBE;
+		if (armScore == ScoringType.CONE) {
+			armScore = ScoringType.CUBE;
 			System.out.println("to Cube");
 		} else {
-			armScore = scoringType.CONE;
+			armScore = ScoringType.CONE;
 			System.out.println("to Cone");
 		}
 	}
 
 	public boolean isCone() {
-		return armScore == scoringType.CONE;
+		return armScore == ScoringType.CONE;
 		// if (armScore == scoringType.CONE) {
 		// //System.out.print("TRUE");
 		// return true;
