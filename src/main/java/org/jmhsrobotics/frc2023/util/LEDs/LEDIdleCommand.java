@@ -33,19 +33,23 @@ public class LEDIdleCommand extends CommandBase {
 
 		if (this.condition != null) {
 			if (this.condition.getAsBoolean()) {
-				this.redGradAnim.step();
+				this.redGradAnim.step(); // RED if true
 			} else {
-				this.blueGradAnim.step();
+				this.blueGradAnim.step(); // BLUE if false
 			}
 		}
 
-		if (this.sidebandCondition != null) {
+		if (this.sidebandCondition != null && this.strip.getLength() > this.sidebandLength) {
+
+			// determine the color of the bands based off the supplier
 			Color sidebandColor = this.sidebandCondition.getAsBoolean() ? Color.kRed : Color.kGreen;
+
+			// set the color of the bands
+			// bottom
 			this.strip.setSubsetSolidColor(0, this.sidebandLength, sidebandColor);
-			this.strip.setSubsetSolidColor(this.strip.getLength() - sidebandLength, this.strip.getLength(),
+			// top
+			this.strip.setSubsetSolidColor(this.strip.getLength() - this.sidebandLength, this.strip.getLength(),
 					sidebandColor);
-			this.strip.set(this.sidebandLength, Color.kBlack);
-			this.strip.set(this.strip.getLength() - this.sidebandLength - 1, Color.kBlack);
 		}
 
 		this.strip.sendData();
