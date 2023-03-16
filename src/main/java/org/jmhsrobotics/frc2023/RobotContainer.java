@@ -220,6 +220,15 @@ public class RobotContainer {
 								controlBoard.overrideTeleopArm())),
 				armSubsystem::isCone));
 
+		controlBoard.armPresetHigh().onTrue(new ConditionalCommand(
+				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 247, controlBoard.overrideTeleopArm()),
+						new CommandArmExtension(armSubsystem, ArmConstants.maxExtensionLengthMillims,
+								controlBoard.overrideTeleopArm())),
+				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 247, controlBoard.overrideTeleopArm()),
+						new CommandArmExtension(armSubsystem, ArmConstants.maxExtensionLengthMillims,
+								controlBoard.overrideTeleopArm())),
+				armSubsystem::isCone));
+
 		// controlBoard.armPresetHigh()
 		// .onTrue(new ConditionalCommand(
 		// new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 247,
