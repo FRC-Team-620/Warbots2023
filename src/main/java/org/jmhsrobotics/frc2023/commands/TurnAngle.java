@@ -48,6 +48,10 @@ public class TurnAngle extends CommandBase {
 		addRequirements(drivetrain);
 	}
 
+	public TurnAngle(Drivetrain drivetrain, double angle) {
+		this(drivetrain, () -> angle);
+	}
+
 	// Called when the command is initially scheduled.
 	@Override
 	public void initialize() {

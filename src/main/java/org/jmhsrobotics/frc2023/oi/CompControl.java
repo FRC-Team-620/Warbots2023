@@ -55,7 +55,7 @@ public class CompControl implements ControlBoard {
 	@Override
 	public boolean isDriveFast() {
 		// TODO Auto-generated method stub
-		return driverController.rightBumper().getAsBoolean();
+		return driverController.a().getAsBoolean();
 	}
 
 	// Operator Controller
@@ -138,5 +138,10 @@ public class CompControl implements ControlBoard {
 	public Trigger toggleHeadingLock() {
 		return operatorController.back();
 	}
+
+	// TODO: delete (WAS TEMPORARY)
+	// public CommandXboxController getDriver() {
+	// return driverController;
+	// }
 
 }

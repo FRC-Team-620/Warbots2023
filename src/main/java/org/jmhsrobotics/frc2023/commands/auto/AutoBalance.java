@@ -15,6 +15,7 @@ import org.jmhsrobotics.frc2023.RobotMath;
 import org.jmhsrobotics.frc2023.Constants.AutoConstants;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
+import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.LEDAnimation;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.LEDManager;
 
 public class AutoBalance extends CommandBase {
@@ -41,6 +42,11 @@ public class AutoBalance extends CommandBase {
 	// private boolean hasReachedBalancedSetpoint = false;
 
 	LEDSubsystem.LEDStrip strip = LEDManager.STRIP0.strip;
+
+	private LEDAnimation blinkingAnim = strip.blinkingAnimation(0.125, Color.kRed, Color.kOrange, Color.kYellow,
+			Color.kGreen, Color.kBlue, Color.kPurple);
+
+	private LEDAnimation redBlueAnim = strip.fadeTwoAnimation(1, 20, Color.kRed, Color.kBlue);
 
 	public AutoBalance(Drivetrain drivetrain, boolean backwards, LEDSubsystem ledSubsystem) {
 		this.backwards = backwards;
@@ -111,7 +117,8 @@ public class AutoBalance extends CommandBase {
 		// IF THE ROBOT HAS NOT BEEN ON THE CHARGE STATION YET
 		if (!this.hasBeenOnChargeStation) {
 
-			strip.setSolidColor(Color.kWhite);
+			// strip.setSolidColor(Color.kWhite);
+			this.blinkingAnim.step();
 
 			// spotless:off
             this.drivetrain.setCurvatureDrive(
@@ -145,7 +152,8 @@ public class AutoBalance extends CommandBase {
 					// this.pidController.setSetpoint(0);
 				}
 
-				strip.setSolidColor(Color.kBlue);
+				// strip.setSolidColor(Color.kBlue);
+				this.redBlueAnim.step();
 
 				// this.drivetrain.stop();
 

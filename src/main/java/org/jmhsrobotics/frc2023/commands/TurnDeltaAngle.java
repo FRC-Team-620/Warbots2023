@@ -10,6 +10,10 @@ public class TurnDeltaAngle extends TurnAngle {
 	public TurnDeltaAngle(Drivetrain drivetrain, Supplier<Double> deltaAngleSupplier) {
 		super(drivetrain, () -> RobotMath.shiftAngle(drivetrain.getAngleSetpoint(), deltaAngleSupplier.get()));
 	}
+
+	public TurnDeltaAngle(Drivetrain drivetrain, double deltaAngle) {
+		super(drivetrain, () -> RobotMath.shiftAngle(drivetrain.getAngleSetpoint(), deltaAngle));
+	}
 }
 
 // spotless:off

@@ -15,6 +15,7 @@ public class GrabberMotorSubsystem extends SubsystemBase {
 	public GrabberMotorSubsystem() {
 		grabberMotor.setSmartCurrentLimit(25);
 		grabberMotor.setIdleMode(IdleMode.kBrake);
+		// grabberMotor.setInverted(true);
 	}
 
 	public void setGrabberMotor(double speed) {

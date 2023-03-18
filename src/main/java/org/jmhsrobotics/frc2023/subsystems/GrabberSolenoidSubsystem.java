@@ -13,6 +13,14 @@ public class GrabberSolenoidSubsystem extends SubsystemBase {
 
 	}
 
+	public void toggleIntake() {
+		grabberIntakePiston.set(!grabberIntakePiston.get());
+	}
+
+	public void togglePitch() {
+		grabberPitchPiston.set(!grabberPitchPiston.get());
+	}
+
 	public void setGrabberIntakeState(boolean state) {
 		grabberIntakePiston.set(state);
 	}

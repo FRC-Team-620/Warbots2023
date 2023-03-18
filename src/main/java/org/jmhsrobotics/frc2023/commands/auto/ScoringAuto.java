@@ -3,18 +3,16 @@ package org.jmhsrobotics.frc2023.commands.auto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import org.jmhsrobotics.frc2023.Constants.ArmConstants;
-import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
 import org.jmhsrobotics.frc2023.commands.CommandArm;
 import org.jmhsrobotics.frc2023.commands.CommandArmExtension;
 import org.jmhsrobotics.frc2023.commands.CommandArmPitch;
-import org.jmhsrobotics.frc2023.commands.TurnAngle;
 import org.jmhsrobotics.frc2023.oi.ControlBoard;
 import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
@@ -36,18 +34,17 @@ public class ScoringAuto extends SequentialCommandGroup {
 		this.drivetrain = drivetrain;
 		this.startingPos = startingPos;
 
-		addCommands(new InstantCommand(() -> {
+		SequentialCommandGroup scoringAutoBody = new SequentialCommandGroup();
+
+		scoringAutoBody.addCommands(new InstantCommand(() -> {
 			drivetrain.resetOdometry(
 					new Pose2d(Units.inchesToMeters(54.42), Units.inchesToMeters(42.079), Rotation2d.fromDegrees(0)));
-		}), new AutoDriveDistance(drivetrain, -0.35), new InstantCommand(
-				() -> grabberSolenoidSubsystem.setGrabberPitchState(!grabberSolenoidSubsystem.getGrabberPitchState())),
-				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 95, controls.overrideTeleopArm()),
-						new CommandArmExtension(
-								armSubsystem, ArmConstants.maxExtensionLengthMillims, controls.overrideTeleopArm())),
-				new AutoDriveDistance(drivetrain, 0.35),
-				new InstantCommand(() -> grabberSolenoidSubsystem.setGrabberIntakeState(
-						!grabberSolenoidSubsystem.getGrabberIntakeState()), grabberSolenoidSubsystem),
-				new WaitCommand(0.2),
+		}), new InstantCommand(grabberSolenoidSubsystem::togglePitch, grabberSolenoidSubsystem),
+				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 85, controls.overrideTeleopArm()),
+						new CommandArmExtension(armSubsystem, ArmConstants.maxExtensionLengthMillims,
+								controls.overrideTeleopArm())),
+				new InstantCommand(grabberSolenoidSubsystem::toggleIntake, grabberSolenoidSubsystem),
+				new WaitCommand(1),
 				new SequentialCommandGroup(new ParallelCommandGroup(new CommandArmExtension(armSubsystem,
 						ArmConstants.minExtensionLengthMillims, controls.overrideTeleopArm()),
 						new InstantCommand(() -> {
@@ -57,14 +54,13 @@ public class ScoringAuto extends SequentialCommandGroup {
 						new CommandArm(armSubsystem, ArmConstants.minExtensionLengthMillims, ArmConstants.stowedDegrees,
 								controls.overrideTeleopArm())),
 
-				new AutoDriveDistance(drivetrain, -3.3),
-				// Gets the robot out the comunity area (Over the charge station) by driving
-				// backwards
-				new InstantCommand(() -> {
-					LEDSubsystem.LEDManager.STRIP0.strip.setSolidColor(Color.kRed);
-					LEDSubsystem.LEDManager.STRIP0.strip.sendData();
-				}, ledSubsystem), new TurnAngle(drivetrain, () -> 180.0), // gets robot to pause outside of community
-				new AutoDriveDistance(drivetrain, -1), new AutoBalance(drivetrain, true, ledSubsystem));
+				new AutoBalance(drivetrain, true, ledSubsystem));
+
+		CommandBase grabberIn = new InstantCommand(() -> {
+			grabberMotorSubsystem.setGrabberMotor(0.4);
+		}, grabberMotorSubsystem);
+
+		this.addCommands(new ParallelCommandGroup(scoringAutoBody, grabberIn));
 		// switch (this.startingPos) {
 
 		// case LEFT :

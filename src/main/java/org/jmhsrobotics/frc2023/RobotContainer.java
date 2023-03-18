@@ -108,7 +108,7 @@ public class RobotContainer {
 					((armSubsystem.getScoringType() == ArmSubsystem.scoringType.CUBE && controlBoard.intakeWheels() > 0)
 							? 0.4
 							: 1.0) * controlBoard.intakeWheels()
-							+ (grabberSolenoidSubsystem.getGrabberPitchState() ? 0.05 : 0.0),
+							+ (grabberSolenoidSubsystem.getGrabberPitchState() ? 0.1 : 0.0),
 					-1, 1));
 		}, grabberMotorSubsystem));
 
@@ -182,7 +182,7 @@ public class RobotContainer {
 
 		controlBoard.armPresetFloor().onTrue(new ConditionalCommand(
 
-				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 35, controlBoard.overrideTeleopArm()),
+				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 32, controlBoard.overrideTeleopArm()),
 						new ParallelCommandGroup(new CommandArmExtension(armSubsystem,
 								ArmConstants.maxExtensionLengthMillims, controlBoard.overrideTeleopArm()),
 								new InstantCommand(() -> {
@@ -190,7 +190,7 @@ public class RobotContainer {
 									grabberSolenoidSubsystem.setGrabberPitchState(true);
 								}, grabberSolenoidSubsystem))),
 
-				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 35, controlBoard.overrideTeleopArm()),
+				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 32, controlBoard.overrideTeleopArm()),
 						new ParallelCommandGroup(new CommandArmExtension(armSubsystem,
 								ArmConstants.maxExtensionLengthMillims, controlBoard.overrideTeleopArm()),
 								new InstantCommand(() -> {
@@ -215,7 +215,7 @@ public class RobotContainer {
 				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 95, controlBoard.overrideTeleopArm()),
 						new CommandArmExtension(armSubsystem, ArmConstants.maxExtensionLengthMillims,
 								controlBoard.overrideTeleopArm())),
-				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 80, controlBoard.overrideTeleopArm()),
+				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 72, controlBoard.overrideTeleopArm()),
 						new CommandArmExtension(armSubsystem, ArmConstants.maxExtensionLengthMillims,
 								controlBoard.overrideTeleopArm())),
 				armSubsystem::isCone));
@@ -239,10 +239,16 @@ public class RobotContainer {
 
 		controlBoard.armPresetPickup()
 				.onTrue(new ConditionalCommand(
-						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 90,
-								controlBoard.overrideTeleopArm()),
-						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 90,
-								controlBoard.overrideTeleopArm()),
+						new ParallelCommandGroup(new CommandArm(armSubsystem, ArmConstants.minExtensionLengthMillims,
+								62.0, controlBoard.overrideTeleopArm()), new InstantCommand(() -> {
+									grabberSolenoidSubsystem.setGrabberIntakeState(false);
+									grabberSolenoidSubsystem.setGrabberPitchState(true);
+								}, grabberSolenoidSubsystem)),
+						new ParallelCommandGroup(new CommandArm(armSubsystem, ArmConstants.minExtensionLengthMillims,
+								62.0, controlBoard.overrideTeleopArm()), new InstantCommand(() -> {
+									grabberSolenoidSubsystem.setGrabberIntakeState(true);
+									grabberSolenoidSubsystem.setGrabberPitchState(true);
+								}, grabberSolenoidSubsystem)),
 						armSubsystem::isCone));
 
 		controlBoard.closeGrabber().onTrue(new InstantCommand(() -> this.grabberSolenoidSubsystem
@@ -255,6 +261,10 @@ public class RobotContainer {
 
 		controlBoard.toggleHeadingLock().onTrue(
 				new InstantCommand(() -> this.drivetrain.setHeadingLock(!this.getDrivetrain().getShouldHeadingLock())));
+
+		// controlBoard.getDriver().a().onTrue(new TurnAngle(drivetrain, 180.0));
+
+		// controlBoard.getDriver().x().onTrue(new TurnDeltaAngle(drivetrain, 90.0));
 
 		// driver.povLeft().onTrue(new CommandArm(armSubsystem, .5, 0));
 		// driver.povUp().onTrue(new CommandArm(armSubsystem, 1, 45));

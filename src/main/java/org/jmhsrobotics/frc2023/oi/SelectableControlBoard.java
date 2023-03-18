@@ -133,4 +133,10 @@ public class SelectableControlBoard implements ControlBoard {
 		return selector.getSelected().toggleHeadingLock();
 	}
 
+	// TODO: remove
+	// @Override
+	// public CommandXboxController getDriver() {
+	// return selector.getSelected().getDriver();
+	// }
+
 }
