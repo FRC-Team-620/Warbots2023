@@ -9,5 +9,6 @@ public interface IIMUWrapper {
 	public double getRoll();
 	public Rotation2d getRotation2d();
 	public double getAngle();
+	public void resetYaw();
 
 }

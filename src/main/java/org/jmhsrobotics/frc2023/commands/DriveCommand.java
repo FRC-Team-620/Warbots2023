@@ -90,7 +90,7 @@ public class DriveCommand extends CommandBase {
 			rotationInput *= 0.7;
 		} else {
 			speed *= 0.5;
-			rotationInput *= 0.6;
+			rotationInput *= 0.45;
 		}
 		// Pass the speed, rotation input, and the quickTurn in that order into
 		// setCurvatureDrive

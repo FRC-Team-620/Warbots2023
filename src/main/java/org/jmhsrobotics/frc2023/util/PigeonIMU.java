@@ -56,6 +56,11 @@ public class PigeonIMU implements IIMUWrapper {
 		return getYaw();
 	}
 
+	@Override
+	public void resetYaw() {
+		pigeon.setYaw(0);
+	}
+
 	private static double pigeonConstrain180(double angle) {
 		return -MathUtil.inputModulus(angle, -180, 180);
 	}

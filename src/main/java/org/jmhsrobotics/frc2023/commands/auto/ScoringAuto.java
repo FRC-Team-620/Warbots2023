@@ -14,7 +14,7 @@ import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
 import org.jmhsrobotics.frc2023.commands.CommandArm;
 import org.jmhsrobotics.frc2023.commands.CommandArmExtension;
 import org.jmhsrobotics.frc2023.commands.CommandArmPitch;
-import org.jmhsrobotics.frc2023.commands.TurnDeltaAngle;
+import org.jmhsrobotics.frc2023.commands.TurnAngle;
 import org.jmhsrobotics.frc2023.oi.ControlBoard;
 import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
@@ -63,7 +63,7 @@ public class ScoringAuto extends SequentialCommandGroup {
 				new InstantCommand(() -> {
 					LEDSubsystem.LEDManager.STRIP0.strip.setSolidColor(Color.kRed);
 					LEDSubsystem.LEDManager.STRIP0.strip.sendData();
-				}, ledSubsystem), new TurnDeltaAngle(drivetrain, 180), // gets robot to pause outside of community
+				}, ledSubsystem), new TurnAngle(drivetrain, () -> 180.0), // gets robot to pause outside of community
 				new AutoDriveDistance(drivetrain, -1), new AutoBalance(drivetrain, true, ledSubsystem));
 		// switch (this.startingPos) {
 

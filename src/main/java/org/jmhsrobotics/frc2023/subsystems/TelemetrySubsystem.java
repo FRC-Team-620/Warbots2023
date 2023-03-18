@@ -99,6 +99,10 @@ public class TelemetrySubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("Telemetry/rollVelocity", this.imuState.rollVelocity);
 	}
 
+	public void resetIMUYaw() {
+		this.imu.resetYaw();
+	}
+
 	public IMUState getIMUState() {
 		return new IMUState(this.imuState);
 	}

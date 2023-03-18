@@ -46,6 +46,7 @@ public class Robot extends TimedRobot {
 		// autonomous chooser on the dashboard.
 		m_robotContainer = new RobotContainer();
 		m_robotContainer.getDrivetrain().setBrake(false);
+		RobotContainer.getTelemetry().resetIMUYaw();
 
 		// Enables network table logging for data
 		DataLogManager.logNetworkTables(true);
@@ -107,6 +108,11 @@ public class Robot extends TimedRobot {
 			m_autonomousCommand.schedule();
 		}
 		m_robotContainer.getDrivetrain().setBrake(true);
+		// probably shouldn't do this in teleopInit too since that would mess up the
+		// calibration
+		// during competitions once it transfers from auto to teleop, making it no
+		// longer zeroed to the field
+		RobotContainer.getTelemetry().resetIMUYaw();
 		this.lastAutonomous = true;
 	}
 

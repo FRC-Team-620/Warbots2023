@@ -42,4 +42,9 @@ public class NavxIMU implements IIMUWrapper {
 		return navx.getAngle();
 	}
 
+	@Override
+	public void resetYaw() {
+		navx.zeroYaw();
+	}
+
 }

@@ -2,45 +2,33 @@ package org.jmhsrobotics.frc2023.commands;
 
 import java.util.function.Supplier;
 
-import org.jmhsrobotics.frc2023.RobotMath;
-import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
-
-public class TurnDeltaAngle extends TurnAngle {
-
-	public TurnDeltaAngle(Drivetrain drivetrain, Supplier<Double> deltaAngleSupplier) {
-		super(drivetrain, () -> RobotMath.shiftAngle(drivetrain.getAngleSetpoint(), deltaAngleSupplier.get()));
-	}
-}
-
-// spotless:off
-/*
 import org.jmhsrobotics.frc2023.Constants;
 import org.jmhsrobotics.frc2023.RobotContainer;
-import org.jmhsrobotics.frc2023.RobotMath;
 import org.jmhsrobotics.frc2023.Constants.TurnAngleCommandConstants;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
-// A DriveCommand command that uses the Drivetrain subsystem.
-public class TurnDeltaAngle extends InstantCommand {
+/** A DriveCommand command that uses the Drivetrain subsystem. */
+public class TurnAngle extends CommandBase {
 
 	// public TurnDeltaAngle(Drivetrain drivetrain, double relativeAngle) {
 	// super(() -> drivetrain.turnRelativeAngle(relativeAngle));
 	// }
 
 	private Drivetrain drivetrain;
-	private double deltaAngle;
+	private Supplier<Double> angleSupplier;
 
 	private ProfiledPIDController profiledAnglePID;
 
-	public TurnDeltaAngle(Drivetrain drivetrain, double deltaAngle) {
+	public TurnAngle(Drivetrain drivetrain, Supplier<Double> angleSupplier) {
 
 		this.drivetrain = drivetrain;
-		this.deltaAngle = RobotMath.constrain180(deltaAngle);
+		this.angleSupplier = angleSupplier;
+		// this.angle = RobotMath.constrain180(angle);
 
 		// spotless:off
 		this.profiledAnglePID = new ProfiledPIDController(
@@ -52,7 +40,7 @@ public class TurnDeltaAngle extends InstantCommand {
         		TurnAngleCommandConstants.maxAngularAcceleration
 			)
     	);
-    	// spotless:o // TODO: Should be "...on" once this code is uncommented
+    	// spotless:on
 
 		this.profiledAnglePID.enableContinuousInput(-180, 180);
 		this.profiledAnglePID.setTolerance(2, TurnAngleCommandConstants.maxAngularVelocity);
@@ -64,10 +52,8 @@ public class TurnDeltaAngle extends InstantCommand {
 	@Override
 	public void initialize() {
 
-		double finalAngle = RobotMath.shiftAngle(this.drivetrain.getAngleSetpoint(), this.deltaAngle);
-
 		this.profiledAnglePID.reset(RobotContainer.getTelemetry().getYaw());
-		this.profiledAnglePID.setGoal(finalAngle);
+		this.profiledAnglePID.setGoal(this.angleSupplier.get());
 
 		this.drivetrain.resetHeadingLockPID();
 		this.drivetrain.disableHeadingLock();
@@ -106,5 +92,3 @@ public class TurnDeltaAngle extends InstantCommand {
 		return this.profiledAnglePID.atGoal();
 	}
 }
-*/
-// spotless:on
