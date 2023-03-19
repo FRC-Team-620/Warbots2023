@@ -44,7 +44,7 @@ public class ScoringAuto extends SequentialCommandGroup {
 						new CommandArmExtension(armSubsystem, ArmConstants.maxExtensionLengthMillims,
 								controls.overrideTeleopArm())),
 				new InstantCommand(grabberSolenoidSubsystem::toggleIntake, grabberSolenoidSubsystem),
-				new WaitCommand(1),
+				new WaitCommand(2.5),
 				new SequentialCommandGroup(new ParallelCommandGroup(new CommandArmExtension(armSubsystem,
 						ArmConstants.minExtensionLengthMillims, controls.overrideTeleopArm()),
 						new InstantCommand(() -> {

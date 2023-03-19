@@ -13,9 +13,9 @@ public class GrabberMotorSubsystem extends SubsystemBase {
 	private CANSparkMax grabberMotor = new CANSparkMax(Constants.driveports.getIntakeCANId(), MotorType.kBrushless);
 
 	public GrabberMotorSubsystem() {
-		grabberMotor.setSmartCurrentLimit(25);
+		grabberMotor.setSmartCurrentLimit(20);
 		grabberMotor.setIdleMode(IdleMode.kBrake);
-		// grabberMotor.setInverted(true);
+		grabberMotor.setInverted(true);
 	}
 
 	public void setGrabberMotor(double speed) {
