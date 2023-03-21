@@ -14,6 +14,7 @@ import org.jmhsrobotics.frc2023.RobotContainer;
 import org.jmhsrobotics.frc2023.RobotMath;
 import org.jmhsrobotics.frc2023.Constants.AutoConstants;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
+import org.jmhsrobotics.frc2023.util.LEDs.LEDStrip;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.LEDManager;
 
@@ -40,7 +41,7 @@ public class AutoBalance extends CommandBase {
 	private boolean hasBeenOnChargeStation = false;
 	// private boolean hasReachedBalancedSetpoint = false;
 
-	LEDSubsystem.LEDStrip strip = LEDManager.STRIP0.strip;
+	LEDStrip strip = LEDManager.STRIP0.strip;
 
 	public AutoBalance(Drivetrain drivetrain, boolean backwards, LEDSubsystem ledSubsystem) {
 		this.backwards = backwards;

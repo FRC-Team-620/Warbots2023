@@ -5,12 +5,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import java.util.function.BooleanSupplier;
 
-import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.LEDAnimation;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.LEDManager;
 
 public class LEDIdleCommand extends CommandBase {
 
-	LEDSubsystem.LEDStrip strip = LEDManager.STRIP0.strip;
+	LEDStrip strip = LEDManager.STRIP0.strip;
 	BooleanSupplier condition, sidebandCondition;
 
 	private final int sidebandLength = 10;
