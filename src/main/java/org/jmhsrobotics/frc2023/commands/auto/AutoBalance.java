@@ -42,7 +42,7 @@ public class AutoBalance extends CommandBase {
 	private boolean hasBeenOnChargeStation = false;
 	// private boolean hasReachedBalancedSetpoint = false;
 
-	LEDBuffer strip0 = LEDManager.STRIP0.buffer;
+	LEDBuffer strip0 = LEDManager.BODY.buffer;
 
 	public AutoBalance(Drivetrain drivetrain, boolean backwards, LEDSubsystem ledSubsystem) {
 		this.backwards = backwards;

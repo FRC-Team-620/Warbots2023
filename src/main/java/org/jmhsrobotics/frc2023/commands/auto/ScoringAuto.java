@@ -64,7 +64,7 @@ public class ScoringAuto extends SequentialCommandGroup {
 				// Gets the robot out the comunity area (Over the charge station) by driving
 				// backwards
 				new InstantCommand(() -> {
-					LEDManager.STRIP0.buffer.setSolidColor(Color.kRed);
+					LEDManager.BODY.buffer.setSolidColor(Color.kRed);
 					this.ledSubsystem.sendData();
 				}, ledSubsystem), new TurnAngle(drivetrain, () -> 180.0), // gets robot to pause outside of community
 				new AutoDriveDistance(drivetrain, -1), new AutoBalance(drivetrain, true, ledSubsystem));

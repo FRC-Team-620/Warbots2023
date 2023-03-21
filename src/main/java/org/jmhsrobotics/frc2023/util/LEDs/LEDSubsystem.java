@@ -9,7 +9,8 @@ public class LEDSubsystem extends SubsystemBase {
 	public static enum LEDManager {
 
 		/* ***** ADD NEW LED SECTIONS HERE ***** */
-		STRIP0(65); // 65 lights
+		LOWBAND(10), // 10 lights
+		BODY(45), HIGHBAND(10);
 
 		public LEDBuffer buffer;
 

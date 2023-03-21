@@ -12,15 +12,15 @@ import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.LEDManager;
 public class LEDIdleCommand extends CommandBase {
 
 	// LEDSection strip = LEDManager.STRIP0.strip;
-	LEDBuffer strip0 = LEDManager.STRIP0.buffer;
+	LEDBuffer midBuffer = LEDManager.BODY.buffer;
 	BooleanSupplier condition, sidebandCondition;
 
 	private final int sidebandLength = 10;
 
-	private LEDAnimation fadeAnim = this.strip0.fadeAnimation(1, 30, Color.kYellow, Color.kWhite);
-	private LEDAnimation redGradAnim = this.strip0.gradientAnimation(1, Color.kRed, Color.kOrangeRed, Color.kYellow);
-	private LEDAnimation blueGradAnim = this.strip0.gradientAnimation(1, Color.kBlue, Color.kBlueViolet, Color.kPurple);
-	private LEDAnimation solidAnim = this.strip0.solidColorAnimation(Color.kBlue);
+	private LEDAnimation fadeAnim = midBuffer.fadeAnimation(1, 30, Color.kYellow, Color.kWhite);
+	private LEDAnimation redGradAnim = midBuffer.gradientAnimation(1, Color.kRed, Color.kOrangeRed, Color.kYellow);
+	private LEDAnimation blueGradAnim = midBuffer.gradientAnimation(1, Color.kBlue, Color.kBlueViolet, Color.kPurple);
+	private LEDAnimation solidAnim = midBuffer.solidColorAnimation(Color.kBlue);
 
 	LEDSubsystem ledSubsystem;
 
@@ -31,7 +31,7 @@ public class LEDIdleCommand extends CommandBase {
 		this.condition = condition;
 		this.sidebandCondition = sidebandCondition;
 
-		addRequirements(this.ledSubsystem);
+		this.addRequirements(this.ledSubsystem);
 	}
 
 	@Override
@@ -45,17 +45,16 @@ public class LEDIdleCommand extends CommandBase {
 			}
 		}
 
-		if (this.sidebandCondition != null && this.strip0.getLength() > this.sidebandLength) {
+		if (this.sidebandCondition != null) {
 
 			// determine the color of the bands based off the supplier
 			Color sidebandColor = this.sidebandCondition.getAsBoolean() ? Color.kRed : Color.kGreen;
 
 			// set the color of the bands
 			// bottom
-			this.strip0.setSubsetSolidColor(0, this.sidebandLength, sidebandColor);
+			LEDManager.LOWBAND.buffer.setSolidColor(sidebandColor);
 			// top
-			this.strip0.setSubsetSolidColor(this.strip0.getLength() - this.sidebandLength, this.strip0.getLength(),
-					sidebandColor);
+			LEDManager.HIGHBAND.buffer.setSolidColor(sidebandColor);
 		}
 
 		// this.strip.sendData();
