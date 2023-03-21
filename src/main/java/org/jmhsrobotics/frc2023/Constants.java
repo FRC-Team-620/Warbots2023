@@ -54,6 +54,10 @@ public final class Constants {
 		public static final int operatorControllerPort = 1;
 	}
 
+	public static class LEDConstants {
+		public static final int LEDPWMPort = 9;
+	}
+
 	public static class RobotMathConstants {
 		public static final double comparisonThreshhold = 0.005;
 	}

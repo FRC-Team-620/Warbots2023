@@ -1,14 +1,97 @@
 package org.jmhsrobotics.frc2023.util.LEDs;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
 
-public class LEDBuffer extends AddressableLEDBuffer {
+public class LEDBuffer {
+
+	private byte[] buffer;
 
 	public LEDBuffer(int numLights) {
-		super(numLights);
+		buffer = new byte[numLights * 4];
 	}
+
+	/**
+	 * *** Taken from wpilib 'AddressableLEDBuffer' ***
+	 *
+	 * <p>
+	 * Sets a specific led in the buffer.
+	 *
+	 * @param index
+	 *            the index to write
+	 * @param r
+	 *            the r value [0-255]
+	 * @param g
+	 *            the g value [0-255]
+	 * @param b
+	 *            the b value [0-255]
+	 */
+	public void setRGB(int index, int r, int g, int b) {
+		this.buffer[index * 4] = (byte) b;
+		this.buffer[(index * 4) + 1] = (byte) g;
+		this.buffer[(index * 4) + 2] = (byte) r;
+		this.buffer[(index * 4) + 3] = 0;
+	}
+
+	/**
+	 * *** Taken from wpilib 'AddressableLEDBuffer' ***
+	 *
+	 * <p>
+	 * Sets a specific LED in the buffer.
+	 *
+	 * @param index
+	 *            The index to write
+	 * @param color
+	 *            The color of the LED
+	 */
+	public void setLED(int index, Color color) {
+		this.setRGB(index, (int) (color.red * 255), (int) (color.green * 255), (int) (color.blue * 255));
+	}
+
+	/**
+	 * *** Taken from wpilib 'AddressableLEDBuffer' ***
+	 *
+	 * <p>
+	 * Gets the color at the specified index.
+	 *
+	 * @param index
+	 *            the index to get
+	 * @return the LED color at the specified index
+	 */
+	public Color getLED(int index) {
+		return new Color((this.buffer[index * 4 + 2] & 0xFF) / 255.0, (this.buffer[index * 4 + 1] & 0xFF) / 255.0,
+				(this.buffer[index * 4] & 0xFF) / 255.0);
+	}
+
+	/**
+	 * *** Taken from wpilib 'AddressableLEDBuffer' ***
+	 *
+	 * <p>
+	 * Gets the buffer length.
+	 *
+	 * @return the buffer length
+	 */
+	public int getLength() {
+		return this.buffer.length / 4;
+	}
+
+	public void copyFrom(LEDBuffer other, int targetStartIndex, int sourceStartIndex, int numLights) {
+		System.arraycopy(other.buffer, sourceStartIndex * 4, this.buffer, targetStartIndex * 4, numLights * 4);
+	}
+
+	public void copyAllFrom(LEDBuffer other, int targetStartIndex) {
+		this.copyFrom(other, targetStartIndex, 0, other.buffer.length);
+	}
+
+	public void fillFrom(LEDBuffer other, int sourceStartIndex) {
+		this.copyFrom(other, 0, sourceStartIndex * 4, this.buffer.length);
+	}
+
+	public byte[] getBufferData() {
+		return this.buffer;
+	}
+
+	// ************* STATIC COLOR UTIL METHODS *************
 
 	/**
 	 * Given two colors, this returns a color that is a combination of the two, with

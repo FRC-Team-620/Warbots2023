@@ -1,32 +1,36 @@
-package org.jmhsrobotics.frc2023.util.LEDs;
+// spotless:off
 
-public class LEDStripGroup extends LEDBuffer {
+// package org.jmhsrobotics.frc2023.util.LEDs;
 
-	private LEDStrip[] strips;
+// public class LEDStripGroup extends LEDBuffer {
 
-	public LEDStripGroup(LEDStrip... strips) {
+// 	private LEDSection[] strips;
 
-		super(LEDStripGroup.totalBufferSize(strips));
+// 	public LEDStripGroup(LEDSection... strips) {
 
-		this.strips = strips;
-	}
+// 		super(LEDStripGroup.totalBufferSize(strips));
 
-	private static int totalBufferSize(LEDStrip... strips) {
-		int size = 0;
-		for (LEDStrip s : strips)
-			size += s.getLength();
-		return size;
-	}
+// 		this.strips = strips;
+// 	}
 
-	public void sendGroupData() {
-		int acc = 0;
-		for (LEDStrip s : this.strips) {
-			for (int i = 0; i < s.getLength(); i++) {
-				s.setLED(i, this.getLED(acc + i));
-			}
-			acc += s.getLength();
-			s.sendData();
-		}
-	}
+// 	private static int totalBufferSize(LEDSection... strips) {
+// 		int size = 0;
+// 		for (LEDSection s : strips)
+// 			size += s.getLength();
+// 		return size;
+// 	}
 
-}
+// 	public void sendGroupData() {
+// 		int acc = 0;
+// 		for (LEDSection s : this.strips) {
+// 			for (int i = 0; i < s.getLength(); i++) {
+// 				s.setLED(i, this.getLED(acc + i));
+// 			}
+// 			acc += s.getLength();
+// 			s.sendData();
+// 		}
+// 	}
+
+// }
+
+// spotless:on

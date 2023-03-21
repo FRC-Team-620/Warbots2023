@@ -14,13 +14,14 @@ import org.jmhsrobotics.frc2023.RobotContainer;
 import org.jmhsrobotics.frc2023.RobotMath;
 import org.jmhsrobotics.frc2023.Constants.AutoConstants;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
-import org.jmhsrobotics.frc2023.util.LEDs.LEDStrip;
+import org.jmhsrobotics.frc2023.util.LEDs.LEDBuffer;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.LEDManager;
 
 public class AutoBalance extends CommandBase {
 
 	private Drivetrain drivetrain;
+	private LEDSubsystem ledSubsystem;
 
 	private Timer timeoutTimer;
 
@@ -41,11 +42,12 @@ public class AutoBalance extends CommandBase {
 	private boolean hasBeenOnChargeStation = false;
 	// private boolean hasReachedBalancedSetpoint = false;
 
-	LEDStrip strip = LEDManager.STRIP0.strip;
+	LEDBuffer strip0 = LEDManager.STRIP0.buffer;
 
 	public AutoBalance(Drivetrain drivetrain, boolean backwards, LEDSubsystem ledSubsystem) {
 		this.backwards = backwards;
 		this.drivetrain = drivetrain;
+		this.ledSubsystem = ledSubsystem;
 		this.timeoutTimer = new Timer();
 		// this.robotPitchHandler = new DiminishingAverageHandler(0.5);
 		// robotPitchAngVelHandler = new DiminishingAverageHandler(0.5);
@@ -112,7 +114,7 @@ public class AutoBalance extends CommandBase {
 		// IF THE ROBOT HAS NOT BEEN ON THE CHARGE STATION YET
 		if (!this.hasBeenOnChargeStation) {
 
-			strip.setSolidColor(Color.kWhite);
+			strip0.setSolidColor(Color.kWhite);
 
 			// spotless:off
             this.drivetrain.setCurvatureDrive(
@@ -146,7 +148,7 @@ public class AutoBalance extends CommandBase {
 					// this.pidController.setSetpoint(0);
 				}
 
-				strip.setSolidColor(Color.kBlue);
+				strip0.setSolidColor(Color.kBlue);
 
 				// this.drivetrain.stop();
 
@@ -161,7 +163,7 @@ public class AutoBalance extends CommandBase {
 				// IS BALANCING
 				if (RobotMath.approximatelyZero(pitch, AutoConstants.balancedAngle)) {
 					this.drivetrain.stop();
-					this.strip.setSolidColor(Color.kGreen);
+					this.strip0.setSolidColor(Color.kGreen);
 					this.isBalancing = true;
 					return;
 				}
@@ -190,7 +192,7 @@ public class AutoBalance extends CommandBase {
                         pitch
                     );
 
-                    this.strip.setSolidColor(Color.kOrange);
+                    this.strip0.setSolidColor(Color.kOrange);
 
                     // } else {
                     //  pidSpeedOutput = this.pidController.calculate(
@@ -253,7 +255,7 @@ public class AutoBalance extends CommandBase {
 			}
 		}
 
-		this.strip.sendData();
+		this.ledSubsystem.sendData();
 
 	}
 
