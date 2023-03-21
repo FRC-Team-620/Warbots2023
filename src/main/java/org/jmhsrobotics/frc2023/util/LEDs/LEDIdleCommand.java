@@ -7,20 +7,23 @@ import java.util.function.BooleanSupplier;
 
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.LEDManager;
 
-// import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.LEDManager;
-
 public class LEDIdleCommand extends CommandBase {
 
-	// LEDSection strip = LEDManager.STRIP0.strip;
-	LEDBuffer midBuffer = LEDManager.BODY.buffer;
 	BooleanSupplier condition, sidebandCondition;
 
-	private final int sidebandLength = 10;
+	private LEDAnimation yellowGradAnim = LEDManager.BODY.buffer.gradientAnimation(1, Color.kYellow, Color.kOrangeRed);
+	private LEDAnimation blueGradAnim = LEDManager.BODY.buffer.gradientAnimation(1, Color.kBlue, Color.kBlueViolet,
+			Color.kPurple);
 
-	private LEDAnimation fadeAnim = midBuffer.fadeAnimation(1, 30, Color.kYellow, Color.kWhite);
-	private LEDAnimation redGradAnim = midBuffer.gradientAnimation(1, Color.kRed, Color.kOrangeRed, Color.kYellow);
-	private LEDAnimation blueGradAnim = midBuffer.gradientAnimation(1, Color.kBlue, Color.kBlueViolet, Color.kPurple);
-	private LEDAnimation solidAnim = midBuffer.solidColorAnimation(Color.kBlue);
+	private LEDAnimation highGreenBlock = LEDManager.HIGHBAND.buffer.colorBlockAnimation(0.2, new int[]{5, 5},
+			Color.kGreen, Color.kGreenYellow);
+	private LEDAnimation highRedBlock = LEDManager.HIGHBAND.buffer.colorBlockAnimation(0.2, new int[]{5, 5}, Color.kRed,
+			Color.kMediumVioletRed);
+
+	private LEDAnimation lowGreenBlock = LEDManager.LOWBAND.buffer.colorBlockAnimation(0.2, new int[]{5, 5},
+			Color.kGreen, Color.kGreenYellow);
+	private LEDAnimation lowRedBlock = LEDManager.LOWBAND.buffer.colorBlockAnimation(0.2, new int[]{5, 5}, Color.kRed,
+			Color.kMediumVioletRed);
 
 	LEDSubsystem ledSubsystem;
 
@@ -39,22 +42,33 @@ public class LEDIdleCommand extends CommandBase {
 
 		if (this.condition != null) {
 			if (this.condition.getAsBoolean()) {
-				this.redGradAnim.step(); // RED if true
+				this.yellowGradAnim.step(); // RED if true
 			} else {
 				this.blueGradAnim.step(); // BLUE if false
 			}
+			LEDManager.BODY.buffer.setSubsetSolidColor(0, 2, Color.kBlack);
+			LEDManager.BODY.buffer.setSubsetSolidColor(43, 45, Color.kBlack);
 		}
 
 		if (this.sidebandCondition != null) {
 
 			// determine the color of the bands based off the supplier
-			Color sidebandColor = this.sidebandCondition.getAsBoolean() ? Color.kRed : Color.kGreen;
+			// Color sidebandColor = this.sidebandCondition.getAsBoolean() ? Color.kRed :
+			// Color.kGreen;
 
-			// set the color of the bands
-			// bottom
-			LEDManager.LOWBAND.buffer.setSolidColor(sidebandColor);
-			// top
-			LEDManager.HIGHBAND.buffer.setSolidColor(sidebandColor);
+			if (this.sidebandCondition.getAsBoolean()) {
+				this.highRedBlock.step();
+				this.lowRedBlock.step();
+			} else {
+				this.highGreenBlock.step();
+				this.lowGreenBlock.step();
+			}
+
+			// // set the color of the bands
+			// // bottom
+			// LEDManager.LOWBAND.buffer.setSolidColor(sidebandColor);
+			// // top
+			// LEDManager.HIGHBAND.buffer.setSolidColor(sidebandColor);
 		}
 
 		// this.strip.sendData();

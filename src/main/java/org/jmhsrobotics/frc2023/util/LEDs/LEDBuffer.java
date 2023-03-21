@@ -80,11 +80,11 @@ public class LEDBuffer {
 	}
 
 	public void copyAllFrom(LEDBuffer other, int targetStartIndex) {
-		this.copyFrom(other, targetStartIndex, 0, other.buffer.length);
+		this.copyFrom(other, targetStartIndex, 0, other.getLength());
 	}
 
 	public void fillFrom(LEDBuffer other, int sourceStartIndex) {
-		this.copyFrom(other, 0, sourceStartIndex * 4, this.buffer.length);
+		this.copyFrom(other, 0, sourceStartIndex, this.getLength());
 	}
 
 	public byte[] getBufferData() {
