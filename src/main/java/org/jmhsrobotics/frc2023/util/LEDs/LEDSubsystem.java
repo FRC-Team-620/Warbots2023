@@ -17,9 +17,16 @@ public class LEDSubsystem extends SubsystemBase {
 			this.buffer = new LEDBuffer(numLights);
 		}
 
+		public static int totalBufferLength(SectionManager... sections) {
+			int size = 0;
+			for (var s : sections)
+				size += s.buffer.getLength();
+			return size;
+		}
 	}
 
 	private final int pwmPort = Constants.LEDConstants.LEDPWMPort;
+	public final int driverBufferLength = SectionManager.totalBufferLength(SectionManager.values());
 
 	private BufferableAddressableLED driver;
 	private LEDBuffer driverBuffer;
@@ -28,13 +35,9 @@ public class LEDSubsystem extends SubsystemBase {
 
 		this.driver = new BufferableAddressableLED(this.pwmPort);
 
-		int totalBufferSize = 0;
-		for (var s : SectionManager.values())
-			totalBufferSize += s.buffer.getLength();
+		this.driverBuffer = new LEDBuffer(this.driverBufferLength);
 
-		this.driverBuffer = new LEDBuffer(totalBufferSize);
-
-		this.driver.setLength(this.driverBuffer.getLength());
+		this.driver.setLength(this.driverBufferLength);
 		this.driver.start();
 	}
 

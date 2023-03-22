@@ -16,15 +16,32 @@ public class LEDIdleCommand extends CommandBase {
 	private LEDAnimation blueGradAnim = SectionManager.BODY.buffer.gradientAnimation(1, Color.kBlue, Color.kBlueViolet,
 			Color.kPurple);
 
-	private LEDAnimation highGreenBlock = SectionManager.HIGHBAND.buffer.colorBlockAnimation(0.2, new int[]{5, 5},
-			Color.kGreen, Color.kGreenYellow);
-	private LEDAnimation highRedBlock = SectionManager.HIGHBAND.buffer.colorBlockAnimation(0.2, new int[]{5, 5},
-			Color.kRed, Color.kMediumVioletRed);
+	// spotless:off
+	private LEDSectionGroup sidebarGroup = new LEDSectionGroup(
+		SectionManager.LOWBAND,
+		SectionManager.HIGHBAND
+	);
+	// spotless:on
 
-	private LEDAnimation lowGreenBlock = SectionManager.LOWBAND.buffer.colorBlockAnimation(0.2, new int[]{5, 5},
-			Color.kGreen, Color.kGreenYellow);
-	private LEDAnimation lowRedBlock = SectionManager.LOWBAND.buffer.colorBlockAnimation(0.2, new int[]{5, 5},
-			Color.kRed, Color.kMediumVioletRed);
+	private LEDAnimation sidebarGreenBlock = sidebarGroup.colorBlockAnimation(0.2, new int[]{5, 5}, Color.kGreen,
+			Color.kGreenYellow);
+
+	private LEDAnimation sidebarRedBlock = sidebarGroup.colorBlockAnimation(0.2, new int[]{5, 5}, Color.kRed,
+			Color.kMediumVioletRed);
+
+	// private LEDAnimation highGreenBlock =
+	// SectionManager.HIGHBAND.buffer.colorBlockAnimation(0.2, new int[]{5, 5},
+	// Color.kGreen, Color.kGreenYellow);
+	// private LEDAnimation highRedBlock =
+	// SectionManager.HIGHBAND.buffer.colorBlockAnimation(0.2, new int[]{5, 5},
+	// Color.kRed, Color.kMediumVioletRed);
+
+	// private LEDAnimation lowGreenBlock =
+	// SectionManager.LOWBAND.buffer.colorBlockAnimation(0.2, new int[]{5, 5},
+	// Color.kGreen, Color.kGreenYellow);
+	// private LEDAnimation lowRedBlock =
+	// SectionManager.LOWBAND.buffer.colorBlockAnimation(0.2, new int[]{5, 5},
+	// Color.kRed, Color.kMediumVioletRed);
 
 	LEDSubsystem ledSubsystem;
 
@@ -52,24 +69,12 @@ public class LEDIdleCommand extends CommandBase {
 		}
 
 		if (this.sidebandCondition != null) {
-
-			// determine the color of the bands based off the supplier
-			// Color sidebandColor = this.sidebandCondition.getAsBoolean() ? Color.kRed :
-			// Color.kGreen;
-
 			if (this.sidebandCondition.getAsBoolean()) {
-				this.highRedBlock.step();
-				this.lowRedBlock.step();
+				this.sidebarRedBlock.step();
 			} else {
-				this.highGreenBlock.step();
-				this.lowGreenBlock.step();
+				this.sidebarGreenBlock.step();
 			}
-
-			// // set the color of the bands
-			// // bottom
-			// LEDManager.LOWBAND.buffer.setSolidColor(sidebandColor);
-			// // top
-			// LEDManager.HIGHBAND.buffer.setSolidColor(sidebandColor);
+			this.sidebarGroup.writeToSections();
 		}
 
 		// this.strip.sendData();
