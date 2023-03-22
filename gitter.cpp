@@ -67,6 +67,7 @@ int main(int argc, char** argv) {
     
     system("git add .");
     system(concat_cstr("git commit -m \"", buffer, "\"").c_str());
+    std::cout << "\n";
     system(concat_cstr("git push origin ", push_to).c_str());
     // std::cout << "SYSTEM\t" << "git add .\n";
     // std::cout << "SYSTEM\t" << concat_cstr("git commit -m \"", buffer, "\"").c_str() << "\n";
