@@ -163,28 +163,28 @@ public class RobotContainer {
 		// controlBoard.alignPeg().onTrue(new AlignPeg(drivetrain));
 		controlBoard.changeScoringType().onTrue(new InstantCommand(() -> armSubsystem.setScoringType()));
 		controlBoard.armPresetStowed().onTrue(new ConditionalCommand(new SequentialCommandGroup(
-				new ParallelCommandGroup(new CommandArmExtension(armSubsystem, ArmConstants.minExtensionLengthMillims,
+				new ParallelCommandGroup(new CommandArmExtension(armSubsystem, ArmConstants.minExtensionLengthEncCounts,
 						controlBoard.overrideTeleopArm()), new InstantCommand(() -> {
 							grabberSolenoidSubsystem.setGrabberIntakeState(false);
 							grabberSolenoidSubsystem.setGrabberPitchState(false);
 						}, grabberSolenoidSubsystem)),
-				new CommandArm(armSubsystem, ArmConstants.minExtensionLengthMillims, ArmConstants.stowedDegrees,
+				new CommandArm(armSubsystem, ArmConstants.minExtensionLengthEncCounts, ArmConstants.stowedDegrees,
 						controlBoard.overrideTeleopArm())),
 				new SequentialCommandGroup(new ParallelCommandGroup(new CommandArmExtension(armSubsystem,
-						ArmConstants.minExtensionLengthMillims, controlBoard.overrideTeleopArm()),
+						ArmConstants.minExtensionLengthEncCounts, controlBoard.overrideTeleopArm()),
 						new InstantCommand(() -> {
 							grabberSolenoidSubsystem.setGrabberIntakeState(true);
 							grabberSolenoidSubsystem.setGrabberPitchState(false);
 						}, grabberSolenoidSubsystem)),
-						new CommandArm(armSubsystem, ArmConstants.minExtensionLengthMillims, ArmConstants.stowedDegrees,
-								controlBoard.overrideTeleopArm())),
+						new CommandArm(armSubsystem, ArmConstants.minExtensionLengthEncCounts,
+								ArmConstants.stowedDegrees, controlBoard.overrideTeleopArm())),
 				armSubsystem::isCone));
 
 		controlBoard.armPresetFloor().onTrue(new ConditionalCommand(
 
 				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 35, controlBoard.overrideTeleopArm()),
 						new ParallelCommandGroup(new CommandArmExtension(armSubsystem,
-								ArmConstants.maxExtensionLengthMillims, controlBoard.overrideTeleopArm()),
+								ArmConstants.maxExtensionLengthEncCounts, controlBoard.overrideTeleopArm()),
 								new InstantCommand(() -> {
 									grabberSolenoidSubsystem.setGrabberIntakeState(false);
 									grabberSolenoidSubsystem.setGrabberPitchState(true);
@@ -192,7 +192,7 @@ public class RobotContainer {
 
 				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 35, controlBoard.overrideTeleopArm()),
 						new ParallelCommandGroup(new CommandArmExtension(armSubsystem,
-								ArmConstants.maxExtensionLengthMillims, controlBoard.overrideTeleopArm()),
+								ArmConstants.maxExtensionLengthEncCounts, controlBoard.overrideTeleopArm()),
 								new InstantCommand(() -> {
 									grabberSolenoidSubsystem.setGrabberIntakeState(true);
 									grabberSolenoidSubsystem.setGrabberPitchState(true);
@@ -213,19 +213,19 @@ public class RobotContainer {
 
 		controlBoard.armPresetMid().onTrue(new ConditionalCommand(
 				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 95, controlBoard.overrideTeleopArm()),
-						new CommandArmExtension(armSubsystem, ArmConstants.maxExtensionLengthMillims,
+						new CommandArmExtension(armSubsystem, ArmConstants.maxExtensionLengthEncCounts,
 								controlBoard.overrideTeleopArm())),
 				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 80, controlBoard.overrideTeleopArm()),
-						new CommandArmExtension(armSubsystem, ArmConstants.maxExtensionLengthMillims,
+						new CommandArmExtension(armSubsystem, ArmConstants.maxExtensionLengthEncCounts,
 								controlBoard.overrideTeleopArm())),
 				armSubsystem::isCone));
 
 		controlBoard.armPresetHigh().onTrue(new ConditionalCommand(
 				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 247, controlBoard.overrideTeleopArm()),
-						new CommandArmExtension(armSubsystem, ArmConstants.maxExtensionLengthMillims,
+						new CommandArmExtension(armSubsystem, ArmConstants.maxExtensionLengthEncCounts,
 								controlBoard.overrideTeleopArm())),
 				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 247, controlBoard.overrideTeleopArm()),
-						new CommandArmExtension(armSubsystem, ArmConstants.maxExtensionLengthMillims,
+						new CommandArmExtension(armSubsystem, ArmConstants.maxExtensionLengthEncCounts,
 								controlBoard.overrideTeleopArm())),
 				armSubsystem::isCone));
 
@@ -239,9 +239,9 @@ public class RobotContainer {
 
 		controlBoard.armPresetPickup()
 				.onTrue(new ConditionalCommand(
-						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 90,
+						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthEncCounts, 90,
 								controlBoard.overrideTeleopArm()),
-						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 90,
+						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthEncCounts, 90,
 								controlBoard.overrideTeleopArm()),
 						armSubsystem::isCone));
 

@@ -81,18 +81,28 @@ public class TelopArmOpenLoop extends CommandBase {
 		// If closed-loop control is starting up again after having been interrupted
 		if (this.wasEnded) {
 			this.wasEnded = false;
+			boolean armTooLow = this.armSubsystem.getArmPitch() < ArmConstants.minArmAngleDegrees;
+			boolean extensionTooLow = this.armSubsystem.getArmLength() < ArmConstants.minExtensionLengthEncCounts;
 			// resetting the arm to a given min pitch (resetting relative encoder) if below
 			// range
-			if (this.armSubsystem.getArmPitch() < ArmConstants.minArmAngleDegrees) {
-				this.armSubsystem.resetPitchEncoder();
+			if (armTooLow || extensionTooLow) {
+				if (armTooLow)
+					this.armSubsystem.resetPitchEncoder();
+				if (extensionTooLow)
+					this.armSubsystem.resetExtensionEncoder();
+
 				this.resetDesiredStateToCurrent();
+
 				// vvvvv YOU NEED TO DO THIS vvvvvv
 				// RESETTING THE PITCH ENCODER ALONE IS NOT FAST ENOUGH
 				// THE HARDWARE IS BAD AND IT DOES NOT REGISTER IN TIME (caused massive jiggle
 				// w/o)
 				// this killed me
-				this.armSubsystem.resetAnglePPIDToValue(ArmConstants.stowedDegrees);
-			} else { // NORMALLY CALLED
+				if (armTooLow)
+					this.armSubsystem.resetAnglePPIDToValue(ArmConstants.stowedDegrees);
+				if (extensionTooLow)
+					this.armSubsystem.resetExtensionPPIDToValue(0.0);
+			} else {
 				this.resetDesiredStateToCurrent();
 			}
 		}
@@ -108,8 +118,8 @@ public class TelopArmOpenLoop extends CommandBase {
 		double deltaExtension = extensionFactor * linearSpeed.get();
 		this.desiredExtension = MathUtil.clamp(
 			this.desiredExtension + deltaExtension, 
-			ArmConstants.minExtensionLengthMillims, 
-			ArmConstants.maxExtensionLengthMillims
+			ArmConstants.minExtensionLengthEncCounts, 
+			ArmConstants.maxExtensionLengthEncCounts
 		);
 		// spotless:on
 

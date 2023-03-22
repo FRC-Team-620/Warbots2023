@@ -46,19 +46,19 @@ public class ScoringAuto extends SequentialCommandGroup {
 				() -> grabberSolenoidSubsystem.setGrabberPitchState(!grabberSolenoidSubsystem.getGrabberPitchState())),
 				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 95, controls.overrideTeleopArm()),
 						new CommandArmExtension(
-								armSubsystem, ArmConstants.maxExtensionLengthMillims, controls.overrideTeleopArm())),
+								armSubsystem, ArmConstants.maxExtensionLengthEncCounts, controls.overrideTeleopArm())),
 				new AutoDriveDistance(drivetrain, 0.35),
 				new InstantCommand(() -> grabberSolenoidSubsystem.setGrabberIntakeState(
 						!grabberSolenoidSubsystem.getGrabberIntakeState()), grabberSolenoidSubsystem),
 				new WaitCommand(0.2),
 				new SequentialCommandGroup(new ParallelCommandGroup(new CommandArmExtension(armSubsystem,
-						ArmConstants.minExtensionLengthMillims, controls.overrideTeleopArm()),
+						ArmConstants.minExtensionLengthEncCounts, controls.overrideTeleopArm()),
 						new InstantCommand(() -> {
 							grabberSolenoidSubsystem.setGrabberIntakeState(false);
 							grabberSolenoidSubsystem.setGrabberPitchState(false);
 						}, grabberSolenoidSubsystem)),
-						new CommandArm(armSubsystem, ArmConstants.minExtensionLengthMillims, ArmConstants.stowedDegrees,
-								controls.overrideTeleopArm())),
+						new CommandArm(armSubsystem, ArmConstants.minExtensionLengthEncCounts,
+								ArmConstants.stowedDegrees, controls.overrideTeleopArm())),
 
 				new AutoDriveDistance(drivetrain, -3.3),
 				// Gets the robot out the comunity area (Over the charge station) by driving
