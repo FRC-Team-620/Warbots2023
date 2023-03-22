@@ -59,15 +59,20 @@ public class LEDBuffer {
 	 * @return the LED color at the specified index
 	 */
 	public Color getLED(int index) {
-		return new Color((this.buffer[index * 4 + 2] & 0xFF) / 255.0, (this.buffer[index * 4 + 1] & 0xFF) / 255.0,
-				(this.buffer[index * 4] & 0xFF) / 255.0);
+		// spotless:off
+		return new Color(
+			(this.buffer[index * 4 + 2] & 0xFF) / 255.0, 
+			(this.buffer[index * 4 + 1] & 0xFF) / 255.0,
+			(this.buffer[index * 4] & 0xFF) / 255.0
+		);
+		// spotless:on
 	}
 
 	/**
 	 * *** Taken from wpilib 'AddressableLEDBuffer' ***
 	 *
 	 * <p>
-	 * Gets the buffer length.
+	 * Gets the buffer length (the LED count).
 	 *
 	 * @return the buffer length
 	 */
@@ -112,10 +117,10 @@ public class LEDBuffer {
 		proportion = MathUtil.clamp(proportion, 0, 1);
 		// spotless:off
         return new Color(
-                proportion * (color2.red - color1.red) + color1.red,
-                proportion * (color2.green - color1.green) + color1.green,
-                proportion * (color2.blue - color1.blue) + color1.blue
-            );
+            proportion * (color2.red - color1.red) + color1.red,
+            proportion * (color2.green - color1.green) + color1.green,
+            proportion * (color2.blue - color1.blue) + color1.blue
+        );
         // spotless:on
 	}
 
