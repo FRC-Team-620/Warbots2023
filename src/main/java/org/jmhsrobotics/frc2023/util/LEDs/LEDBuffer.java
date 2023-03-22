@@ -406,7 +406,7 @@ public class LEDBuffer {
 		LEDAnimation[] fades = new LEDAnimation[colors.length];
 		for (int i = 0; i < colors.length; i++)
 			fades[i] = this.fadeTwoAnimation(speed, stepsPer, false, colors[i], colors[(i + 1) % colors.length]);
-		return LEDAnimation.concatenate(0.5 * speed / stepsPer, fades);
+		return LEDAnimation.concatenate(speed / stepsPer, fades);
 	}
 
 }
