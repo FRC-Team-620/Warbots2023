@@ -23,11 +23,11 @@ public class LEDIdleCommand extends CommandBase {
 	);
 	// spotless:on
 
-	private LEDAnimation sidebarGreenBlock = sidebarGroup.colorBlockAnimation(0.2, new int[]{5, 5}, Color.kGreen,
+	private LEDAnimation sidebarGreenBlock = sidebarGroup.colorBlockAnimation(0.2, new int[]{15, 5}, Color.kGreen,
 			Color.kGreenYellow);
 
-	private LEDAnimation sidebarRedBlock = sidebarGroup.colorBlockAnimation(0.2, new int[]{5, 5}, Color.kRed,
-			Color.kMediumVioletRed);
+	private LEDAnimation sidebarRedBlock = sidebarGroup.colorBlockAnimation(0.2, new int[]{15, 5}, Color.kRed,
+			Color.kFirebrick);
 
 	// private LEDAnimation highGreenBlock =
 	// SectionManager.HIGHBAND.buffer.colorBlockAnimation(0.2, new int[]{5, 5},
