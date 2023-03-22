@@ -21,7 +21,7 @@ import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 import org.jmhsrobotics.frc2023.subsystems.GrabberMotorSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.GrabberSolenoidSubsystem;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
-import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.LEDManager;
+import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.SectionManager;
 
 public class ScoringAuto extends SequentialCommandGroup {
 
@@ -64,8 +64,8 @@ public class ScoringAuto extends SequentialCommandGroup {
 				// Gets the robot out the comunity area (Over the charge station) by driving
 				// backwards
 				new InstantCommand(() -> {
-					LEDManager.BODY.buffer.setSolidColor(Color.kRed);
-					this.ledSubsystem.sendData();
+					SectionManager.BODY.buffer.setSolidColor(Color.kRed);
+					this.ledSubsystem.sendSectionData();
 				}, ledSubsystem), new TurnAngle(drivetrain, () -> 180.0), // gets robot to pause outside of community
 				new AutoDriveDistance(drivetrain, -1), new AutoBalance(drivetrain, true, ledSubsystem));
 		// switch (this.startingPos) {

@@ -6,14 +6,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LEDSubsystem extends SubsystemBase {
 
-	public static enum LEDManager {
+	public static enum SectionManager {
 
 		/* ***** ADD NEW LED SECTIONS HERE ***** */
 		LOWBAND(10), BODY(45), HIGHBAND(10);
 
 		public LEDBuffer buffer;
 
-		private LEDManager(int numLights) {
+		private SectionManager(int numLights) {
 			this.buffer = new LEDBuffer(numLights);
 		}
 
@@ -29,7 +29,7 @@ public class LEDSubsystem extends SubsystemBase {
 		this.driver = new BufferableAddressableLED(this.pwmPort);
 
 		int totalBufferSize = 0;
-		for (var s : LEDManager.values())
+		for (var s : SectionManager.values())
 			totalBufferSize += s.buffer.getLength();
 
 		this.driverBuffer = new LEDBuffer(totalBufferSize);
@@ -38,16 +38,20 @@ public class LEDSubsystem extends SubsystemBase {
 		this.driver.start();
 	}
 
+	public void writeSectionsToDriverBuffer() {
+		int acc = 0;
+		for (var s : SectionManager.values()) {
+			this.driverBuffer.copyAllFrom(s.buffer, acc);
+			acc += s.buffer.getLength();
+		}
+	}
+
 	public void sendDriverBufferData() {
 		this.driver.setData(this.driverBuffer);
 	}
 
-	public void sendData() {
-		int acc = 0;
-		for (var s : LEDManager.values()) {
-			this.driverBuffer.copyAllFrom(s.buffer, acc);
-			acc += s.buffer.getLength();
-		}
+	public void sendSectionData() {
+		this.writeSectionsToDriverBuffer();
 		this.sendDriverBufferData();
 	}
 

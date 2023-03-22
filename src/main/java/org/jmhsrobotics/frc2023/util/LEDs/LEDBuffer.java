@@ -357,11 +357,7 @@ public class LEDBuffer {
             n %= (bidirectional ? 2 * steps : steps);
             int i = bidirectional ? -Math.abs(n - steps) + steps : n;
             double proportion = (double) i / steps;
-            this.setSolidColor(new Color(
-                proportion * (c2.red - c1.red) + c1.red,
-                proportion * (c2.green - c1.green) + c1.green, 
-                proportion * (c2.blue - c1.blue) + c1.blue
-            ));
+            this.setSolidColor(LEDBuffer.colorInterpolation(proportion, c1, c2));
         });
         // spotless:on
 	}
@@ -410,7 +406,7 @@ public class LEDBuffer {
 		LEDAnimation[] fades = new LEDAnimation[colors.length];
 		for (int i = 0; i < colors.length; i++)
 			fades[i] = this.fadeTwoAnimation(speed, stepsPer, false, colors[i], colors[(i + 1) % colors.length]);
-		return LEDAnimation.concatenate(speed / stepsPer, fades);
+		return LEDAnimation.concatenate(0.5 * speed / stepsPer, fades);
 	}
 
 }

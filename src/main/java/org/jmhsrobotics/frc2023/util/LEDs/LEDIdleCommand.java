@@ -5,25 +5,26 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import java.util.function.BooleanSupplier;
 
-import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.LEDManager;
+import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.SectionManager;
 
 public class LEDIdleCommand extends CommandBase {
 
 	BooleanSupplier condition, sidebandCondition;
 
-	private LEDAnimation yellowGradAnim = LEDManager.BODY.buffer.gradientAnimation(1, Color.kYellow, Color.kOrangeRed);
-	private LEDAnimation blueGradAnim = LEDManager.BODY.buffer.gradientAnimation(1, Color.kBlue, Color.kBlueViolet,
+	private LEDAnimation yellowGradAnim = SectionManager.BODY.buffer.gradientAnimation(1, Color.kYellow,
+			Color.kOrangeRed);
+	private LEDAnimation blueGradAnim = SectionManager.BODY.buffer.gradientAnimation(1, Color.kBlue, Color.kBlueViolet,
 			Color.kPurple);
 
-	private LEDAnimation highGreenBlock = LEDManager.HIGHBAND.buffer.colorBlockAnimation(0.2, new int[]{5, 5},
+	private LEDAnimation highGreenBlock = SectionManager.HIGHBAND.buffer.colorBlockAnimation(0.2, new int[]{5, 5},
 			Color.kGreen, Color.kGreenYellow);
-	private LEDAnimation highRedBlock = LEDManager.HIGHBAND.buffer.colorBlockAnimation(0.2, new int[]{5, 5}, Color.kRed,
-			Color.kMediumVioletRed);
+	private LEDAnimation highRedBlock = SectionManager.HIGHBAND.buffer.colorBlockAnimation(0.2, new int[]{5, 5},
+			Color.kRed, Color.kMediumVioletRed);
 
-	private LEDAnimation lowGreenBlock = LEDManager.LOWBAND.buffer.colorBlockAnimation(0.2, new int[]{5, 5},
+	private LEDAnimation lowGreenBlock = SectionManager.LOWBAND.buffer.colorBlockAnimation(0.2, new int[]{5, 5},
 			Color.kGreen, Color.kGreenYellow);
-	private LEDAnimation lowRedBlock = LEDManager.LOWBAND.buffer.colorBlockAnimation(0.2, new int[]{5, 5}, Color.kRed,
-			Color.kMediumVioletRed);
+	private LEDAnimation lowRedBlock = SectionManager.LOWBAND.buffer.colorBlockAnimation(0.2, new int[]{5, 5},
+			Color.kRed, Color.kMediumVioletRed);
 
 	LEDSubsystem ledSubsystem;
 
@@ -46,8 +47,8 @@ public class LEDIdleCommand extends CommandBase {
 			} else {
 				this.blueGradAnim.step(); // BLUE if false
 			}
-			LEDManager.BODY.buffer.setSubsetSolidColor(0, 2, Color.kBlack);
-			LEDManager.BODY.buffer.setSubsetSolidColor(43, 45, Color.kBlack);
+			SectionManager.BODY.buffer.setSubsetSolidColor(0, 2, Color.kBlack);
+			SectionManager.BODY.buffer.setSubsetSolidColor(43, 45, Color.kBlack);
 		}
 
 		if (this.sidebandCondition != null) {
@@ -72,6 +73,6 @@ public class LEDIdleCommand extends CommandBase {
 		}
 
 		// this.strip.sendData();
-		this.ledSubsystem.sendData();
+		this.ledSubsystem.sendSectionData();
 	}
 }

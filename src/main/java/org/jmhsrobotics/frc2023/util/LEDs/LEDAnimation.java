@@ -41,6 +41,13 @@ public class LEDAnimation {
 	}
 
 	/**
+	 * Resets the accumulation, thus resetting the animation to the start
+	 */
+	public void reset() {
+		this.accumulation = 0;
+	}
+
+	/**
 	 * This static method combines any number of LEDAnimations and returns the
 	 * animation that represents a concatenation of these animations. This new
 	 * animation will play each animation for a number of frames dictated by the
