@@ -86,12 +86,12 @@ public class ArmSubsystem extends SubsystemBase {
 
 		profiledAnglePID.setTolerance(1.5, 4);
 
-		extensionPPIDConstraints = new Constraints(400, 700);
+		extensionPPIDConstraints = new Constraints(80, 300);
 		profiledExtensionPID = new ProfiledPIDController(
-			0.014, 0.0, 0.0, extensionPPIDConstraints
+			0.18, 0.0, 0.0, extensionPPIDConstraints
 		);
 
-		profiledExtensionPID.setTolerance(20, 60);
+		profiledExtensionPID.setTolerance(0.3, 2);
 
 		laser.setRangingMode(RangingMode.Short, 25);
 		// spotless:on
@@ -122,9 +122,9 @@ public class ArmSubsystem extends SubsystemBase {
 		MechanismRoot2d root = mech.getRoot("climber", 1.5 + ArmConstants.armDistanceToCenterMeters, 0);
 		var m_support = root.append(
 				new MechanismLigament2d("support", ArmConstants.armHeightMeters, 90, 6, new Color8Bit(Color.kRed)));
-		m_wrist = m_support.append(new MechanismLigament2d("wrist", ArmConstants.minExtensionLengthMillims, 0, 6,
+		m_wrist = m_support.append(new MechanismLigament2d("wrist", ArmConstants.minExtensionLengthEncCounts, 0, 6,
 				new Color8Bit(Color.kPurple)));
-		m_elevator = m_wrist.append(new MechanismLigament2d("elevator", ArmConstants.minExtensionLengthMillims, 0, 6,
+		m_elevator = m_wrist.append(new MechanismLigament2d("elevator", ArmConstants.minExtensionLengthEncCounts, 0, 6,
 				new Color8Bit(Color.kGray)));
 		SmartDashboard.putData("arm_info", mech);
 	}
@@ -141,7 +141,7 @@ public class ArmSubsystem extends SubsystemBase {
 		// extensionEncoder.getPosition());
 		SmartDashboard.putNumber("ArmSubsystem/laser sensor", this.laser.getRange());
 		SmartDashboard.putNumber("ArmSubsystem/RelativeEncoderExtension", telescopeMotor.getEncoder().getPosition());
-		SmartDashboard.putNumber("ArmSubsystem/MaxLength", ArmConstants.maxExtensionLengthMillims);
+		SmartDashboard.putNumber("ArmSubsystem/MaxLength", ArmConstants.maxExtensionLengthEncCounts);
 
 		// Pitch logging
 		SmartDashboard.putNumber("ArmSubsystem/Pitch/currentPitch", this.getArmPitch());
@@ -234,6 +234,10 @@ public class ArmSubsystem extends SubsystemBase {
 		this.profiledAnglePID.reset(this.getArmPitch());
 	}
 
+	public void resetExtensionPPIDToValue(double value) {
+		this.profiledExtensionPID.reset(value);
+	}
+
 	public void resetExtensionPPIDToCurrent() {
 		this.profiledExtensionPID.reset(this.getArmLength());
 	}
@@ -256,6 +260,10 @@ public class ArmSubsystem extends SubsystemBase {
 
 	public void resetPitchEncoder() {
 		this.pitchEncoder.setPosition(0.0);
+	}
+
+	public void resetExtensionEncoder() {
+		this.extensionEncoder.setPosition(0.0);
 	}
 
 	// public void resetExtensionEncoder() {
@@ -323,8 +331,8 @@ public class ArmSubsystem extends SubsystemBase {
 		// targetDistanceMeters = MathUtil.clamp(targetDistanceMeters, 0,
 		// ArmConstants.maxExtensionLengthMeters -
 		// ArmConstants.minExtensionLengthMeters);.
-		targetDistanceMillims = MathUtil.clamp(targetDistanceMillims, ArmConstants.minExtensionLengthMillims,
-				ArmConstants.maxExtensionLengthMillims);
+		targetDistanceMillims = MathUtil.clamp(targetDistanceMillims, ArmConstants.minExtensionLengthEncCounts,
+				ArmConstants.maxExtensionLengthEncCounts);
 		profiledExtensionPID.reset(this.getArmLength());
 		// TODO: not using meters using encoder counts so switch to meters
 		profiledExtensionPID.setGoal(targetDistanceMillims); // TODO: Potential Bug because we reset the
@@ -374,8 +382,8 @@ public class ArmSubsystem extends SubsystemBase {
 	 * Returns the arm extention length in millimeters
 	 */
 	public double getArmLength() {
-		// return extensionEncoder.getPosition();
-		return laser.getRange();
+		return extensionEncoder.getPosition();
+		// return laser.getRange();
 	}
 
 	public boolean atPitchGoal() {
@@ -410,12 +418,12 @@ public class ArmSubsystem extends SubsystemBase {
 
 	private void initSim() {
 		// Constants.ArmConstants.minExtensionLengthMeters
-		double moi = SingleJointedArmSim.estimateMOI(ArmConstants.minExtensionLengthMillims, ArmConstants.armMasskg);
+		double moi = SingleJointedArmSim.estimateMOI(ArmConstants.minExtensionLengthEncCounts, ArmConstants.armMasskg);
 		armsim = new SingleJointedArmSim(DCMotor.getNEO(1), ArmConstants.armPitchGearRatio, moi,
-				ArmConstants.maxExtensionLengthMillims, Units.degreesToRadians(ArmConstants.minArmAngleDegrees),
+				ArmConstants.maxExtensionLengthEncCounts, Units.degreesToRadians(ArmConstants.minArmAngleDegrees),
 				Units.degreesToRadians(ArmConstants.maxArmAngleDegrees), true);
 		prismaticSim = new ElevatorSim(DCMotor.getNeo550(1), 10, 10, Units.inchesToMeters(3),
-				ArmConstants.minExtensionLengthMillims, ArmConstants.maxExtensionLengthMillims, false);
+				ArmConstants.minExtensionLengthEncCounts, ArmConstants.maxExtensionLengthEncCounts, false);
 		pitchencsim = new SparkMaxAnalogSensorSimWrapper(pitchAbsoluteEncoder);
 		// extensionencsim = new SparkMaxAnalogSensorSimWrapper(extensionEncoder);
 	}
@@ -441,7 +449,7 @@ public class ArmSubsystem extends SubsystemBase {
 																								// in rpm?
 
 		extensionencsim
-				.setPosition((float) (prismaticSim.getPositionMeters() - ArmConstants.minExtensionLengthMillims));
+				.setPosition((float) (prismaticSim.getPositionMeters() - ArmConstants.minExtensionLengthEncCounts));
 		extensionencsim.setVelocity((float) prismaticSim.getVelocityMetersPerSecond()); // TODO should this be in rpm?
 
 	}
