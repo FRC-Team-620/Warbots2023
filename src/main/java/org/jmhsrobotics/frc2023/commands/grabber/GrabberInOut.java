@@ -1,4 +1,4 @@
-package org.jmhsrobotics.frc2023.commands;
+package org.jmhsrobotics.frc2023.commands.grabber;
 
 import java.util.function.BooleanSupplier;
 

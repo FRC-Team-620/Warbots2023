@@ -19,11 +19,17 @@ public class GrabberSolenoidSubsystem extends SubsystemBase {
 	public boolean getGrabberIntakeState() {
 		return grabberIntakePiston.get();
 	}
+	public void toggleIntake() {
+		this.setGrabberIntakeState(!this.getGrabberIntakeState());
+	}
 
 	public void setGrabberPitchState(boolean state) {
 		grabberPitchPiston.set(state);
 	}
 	public boolean getGrabberPitchState() {
 		return grabberPitchPiston.get();
+	}
+	public void togglePitch() {
+		this.setGrabberPitchState(!this.getGrabberPitchState());
 	}
 }

@@ -1,4 +1,4 @@
-package org.jmhsrobotics.frc2023.commands;
+package org.jmhsrobotics.frc2023.commands.grabber;
 
 import org.jmhsrobotics.frc2023.subsystems.GrabberMotorSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.GrabberSolenoidSubsystem;

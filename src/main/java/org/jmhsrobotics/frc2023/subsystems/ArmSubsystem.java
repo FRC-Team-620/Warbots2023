@@ -326,6 +326,15 @@ public class ArmSubsystem extends SubsystemBase {
 		controlMode = ControlMode.CLOSED_LOOP;
 	}
 
+	public void setExtensionProportion(double extensionProportion) {
+		// spotless:off
+		this.setExtension(
+			extensionProportion * (ArmConstants.maxExtensionLengthEncCounts - ArmConstants.minExtensionLengthEncCounts)
+				+ ArmConstants.minExtensionLengthEncCounts
+		);
+		// spotless:on
+	}
+
 	// Sets the motor controlling arm length
 	public void setExtension(double targetDistanceMillims) { // TODO: Add back distance clamps for arm extention oops
 		// targetDistanceMeters = MathUtil.clamp(targetDistanceMeters, 0,

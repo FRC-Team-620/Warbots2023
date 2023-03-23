@@ -6,15 +6,19 @@ package org.jmhsrobotics.frc2023;
 
 import org.jmhsrobotics.frc2023.Constants.ArmConstants;
 import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
-import org.jmhsrobotics.frc2023.commands.CommandArm;
-import org.jmhsrobotics.frc2023.commands.CommandArmExtension;
-import org.jmhsrobotics.frc2023.commands.CommandArmPitch;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
 import org.jmhsrobotics.frc2023.commands.TelopArmOpenLoop;
+import org.jmhsrobotics.frc2023.commands.arm.CommandArmExtension;
+import org.jmhsrobotics.frc2023.commands.arm.CommandArmPitch;
+import org.jmhsrobotics.frc2023.commands.arm.CommandArmExtensionThenPitch;
+import org.jmhsrobotics.frc2023.commands.arm.CommandArmPitchThenExtension;
 import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
+import org.jmhsrobotics.frc2023.commands.grabber.CommandGrabberSolenoids;
+import org.jmhsrobotics.frc2023.commands.grabber.ToggleGrabberIntake;
+import org.jmhsrobotics.frc2023.commands.grabber.ToggleGrabberPitch;
 import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
 import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
@@ -162,41 +166,43 @@ public class RobotContainer {
 		// operator.b().onTrue(new CommandArm(armSubsystem, 0, 180));
 		// controlBoard.alignPeg().onTrue(new AlignPeg(drivetrain));
 		controlBoard.changeScoringType().onTrue(new InstantCommand(() -> armSubsystem.setScoringType()));
-		controlBoard.armPresetStowed().onTrue(new ConditionalCommand(new SequentialCommandGroup(
-				new ParallelCommandGroup(new CommandArmExtension(armSubsystem, ArmConstants.minExtensionLengthEncCounts,
-						controlBoard.overrideTeleopArm()), new InstantCommand(() -> {
-							grabberSolenoidSubsystem.setGrabberIntakeState(false);
-							grabberSolenoidSubsystem.setGrabberPitchState(false);
-						}, grabberSolenoidSubsystem)),
-				new CommandArm(armSubsystem, ArmConstants.minExtensionLengthEncCounts, ArmConstants.stowedDegrees,
-						controlBoard.overrideTeleopArm())),
-				new SequentialCommandGroup(new ParallelCommandGroup(new CommandArmExtension(armSubsystem,
-						ArmConstants.minExtensionLengthEncCounts, controlBoard.overrideTeleopArm()),
-						new InstantCommand(() -> {
-							grabberSolenoidSubsystem.setGrabberIntakeState(true);
-							grabberSolenoidSubsystem.setGrabberPitchState(false);
-						}, grabberSolenoidSubsystem)),
-						new CommandArm(armSubsystem, ArmConstants.minExtensionLengthEncCounts,
-								ArmConstants.stowedDegrees, controlBoard.overrideTeleopArm())),
+		controlBoard.armPresetStowed().onTrue(new ConditionalCommand(
+				new ParallelCommandGroup(
+						new CommandArmExtensionThenPitch(armSubsystem, 0.0, ArmConstants.stowedDegrees,
+								controlBoard.overrideTeleopArm()),
+						new CommandGrabberSolenoids(grabberSolenoidSubsystem, false, false)),
+				new ParallelCommandGroup(
+						new CommandArmExtensionThenPitch(armSubsystem, 0.0, ArmConstants.stowedDegrees,
+								controlBoard.overrideTeleopArm()),
+						new CommandGrabberSolenoids(grabberSolenoidSubsystem, true, false)),
 				armSubsystem::isCone));
+		// new SequentialCommandGroup(new ParallelCommandGroup(
+		// new CommandArmExtension(armSubsystem, 0.0, controlBoard.overrideTeleopArm()),
+		// new InstantCommand(() -> {
+		// grabberSolenoidSubsystem.setGrabberIntakeState(false);
+		// grabberSolenoidSubsystem.setGrabberPitchState(false);
+		// }, grabberSolenoidSubsystem)),
+		// new CommandArm(armSubsystem, 0.0, ArmConstants.stowedDegrees,
+		// controlBoard.overrideTeleopArm())),
+		// new SequentialCommandGroup(new ParallelCommandGroup(
+		// new CommandArmExtension(armSubsystem, 0.0, controlBoard.overrideTeleopArm()),
+		// new InstantCommand(() -> {
+		// grabberSolenoidSubsystem.setGrabberIntakeState(true);
+		// grabberSolenoidSubsystem.setGrabberPitchState(false);
+		// }, grabberSolenoidSubsystem)), new CommandArm(armSubsystem, 0.0,
+		// ArmConstants.stowedDegrees, controlBoard.overrideTeleopArm())),
 
 		controlBoard.armPresetFloor().onTrue(new ConditionalCommand(
 
 				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 35, controlBoard.overrideTeleopArm()),
-						new ParallelCommandGroup(new CommandArmExtension(armSubsystem,
-								ArmConstants.maxExtensionLengthEncCounts, controlBoard.overrideTeleopArm()),
-								new InstantCommand(() -> {
-									grabberSolenoidSubsystem.setGrabberIntakeState(false);
-									grabberSolenoidSubsystem.setGrabberPitchState(true);
-								}, grabberSolenoidSubsystem))),
+						new ParallelCommandGroup(
+								new CommandArmExtension(armSubsystem, 0.8, controlBoard.overrideTeleopArm()),
+								new CommandGrabberSolenoids(grabberSolenoidSubsystem, false, true))),
 
 				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 35, controlBoard.overrideTeleopArm()),
-						new ParallelCommandGroup(new CommandArmExtension(armSubsystem,
-								ArmConstants.maxExtensionLengthEncCounts, controlBoard.overrideTeleopArm()),
-								new InstantCommand(() -> {
-									grabberSolenoidSubsystem.setGrabberIntakeState(true);
-									grabberSolenoidSubsystem.setGrabberPitchState(true);
-								}, grabberSolenoidSubsystem))),
+						new ParallelCommandGroup(
+								new CommandArmExtension(armSubsystem, 0.8, controlBoard.overrideTeleopArm()),
+								new CommandGrabberSolenoids(grabberSolenoidSubsystem, true, true))),
 
 				armSubsystem::isCone));
 
@@ -211,23 +217,33 @@ public class RobotContainer {
 		// controlBoard.armPresetFloor().onFalse(new InstantCommand(() ->
 		// grabberMotorSubsystem.setGrabberMotor(0), armSubsystem));
 
-		controlBoard.armPresetMid().onTrue(new ConditionalCommand(
-				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 95, controlBoard.overrideTeleopArm()),
-						new CommandArmExtension(armSubsystem, ArmConstants.maxExtensionLengthEncCounts,
-								controlBoard.overrideTeleopArm())),
-				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 80, controlBoard.overrideTeleopArm()),
-						new CommandArmExtension(armSubsystem, ArmConstants.maxExtensionLengthEncCounts,
-								controlBoard.overrideTeleopArm())),
-				armSubsystem::isCone));
+		controlBoard.armPresetMid()
+				.onTrue(new ConditionalCommand(
+						new CommandArmPitchThenExtension(armSubsystem, 1.0, 95, controlBoard.overrideTeleopArm()),
+						new CommandArmPitchThenExtension(armSubsystem, 1.0, 80, controlBoard.overrideTeleopArm()),
+						// new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 95,
+						// controlBoard.overrideTeleopArm()),
+						// new CommandArmExtension(armSubsystem, 1.0,
+						// controlBoard.overrideTeleopArm())),
+						// new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 80,
+						// controlBoard.overrideTeleopArm()),
+						// new CommandArmExtension(armSubsystem, 1.0,
+						// controlBoard.overrideTeleopArm())),
+						armSubsystem::isCone));
 
-		controlBoard.armPresetHigh().onTrue(new ConditionalCommand(
-				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 247, controlBoard.overrideTeleopArm()),
-						new CommandArmExtension(armSubsystem, ArmConstants.maxExtensionLengthEncCounts,
-								controlBoard.overrideTeleopArm())),
-				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 247, controlBoard.overrideTeleopArm()),
-						new CommandArmExtension(armSubsystem, ArmConstants.maxExtensionLengthEncCounts,
-								controlBoard.overrideTeleopArm())),
-				armSubsystem::isCone));
+		controlBoard.armPresetHigh()
+				.onTrue(new ConditionalCommand(
+						new CommandArmPitchThenExtension(armSubsystem, 1.0, 247, controlBoard.overrideTeleopArm()),
+						new CommandArmPitchThenExtension(armSubsystem, 1.0, 247, controlBoard.overrideTeleopArm()),
+						// new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 247,
+						// controlBoard.overrideTeleopArm()),
+						// new CommandArmExtension(armSubsystem, 1.0,
+						// controlBoard.overrideTeleopArm())),
+						// new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 247,
+						// controlBoard.overrideTeleopArm()),
+						// new CommandArmExtension(armSubsystem, 1.0,
+						// controlBoard.overrideTeleopArm())),
+						armSubsystem::isCone));
 
 		// controlBoard.armPresetHigh()
 		// .onTrue(new ConditionalCommand(
@@ -239,17 +255,19 @@ public class RobotContainer {
 
 		controlBoard.armPresetPickup()
 				.onTrue(new ConditionalCommand(
-						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthEncCounts, 90,
-								controlBoard.overrideTeleopArm()),
-						new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthEncCounts, 90,
-								controlBoard.overrideTeleopArm()),
+						new ParallelCommandGroup(
+								new CommandArmExtensionThenPitch(armSubsystem, 0.0, 67,
+										controlBoard.overrideTeleopArm()),
+								new CommandGrabberSolenoids(grabberSolenoidSubsystem, false, true)),
+						new ParallelCommandGroup(
+								new CommandArmExtensionThenPitch(armSubsystem, 0.0, 67,
+										controlBoard.overrideTeleopArm()),
+								new CommandGrabberSolenoids(grabberSolenoidSubsystem, true, true)),
 						armSubsystem::isCone));
 
-		controlBoard.closeGrabber().onTrue(new InstantCommand(() -> this.grabberSolenoidSubsystem
-				.setGrabberIntakeState(!this.grabberSolenoidSubsystem.getGrabberIntakeState())));
+		controlBoard.closeGrabber().onTrue(new ToggleGrabberIntake(grabberSolenoidSubsystem));
 
-		controlBoard.armWrist().onTrue(new InstantCommand(() -> this.grabberSolenoidSubsystem
-				.setGrabberPitchState(!this.grabberSolenoidSubsystem.getGrabberPitchState())));
+		controlBoard.armWrist().onTrue(new ToggleGrabberPitch(grabberSolenoidSubsystem));
 
 		controlBoard.autoBalance().onTrue(new AutoBalance(drivetrain, false, ledSubsystem));
 
