@@ -47,7 +47,7 @@ public class WristSubsystem extends SubsystemBase {
             this.wristPPIDConstraints
         );
         // spotless:on
-		this.wristPPID.setTolerance(1, 4);
+		this.wristPPID.setTolerance(1, 20);
 
 		this.wristPPID.setGoal(this.getWristPitch());
 	}
@@ -69,6 +69,7 @@ public class WristSubsystem extends SubsystemBase {
 
 		switch (this.getControlMode()) {
 			case STOPPED :
+				this.openLoopPitchSpeed = 0.0;
 				this.stopWristMotor();
 				return; // STOPPED STATE STOPS HERE
 			case OPEN_LOOP : // manual/duty cycle control

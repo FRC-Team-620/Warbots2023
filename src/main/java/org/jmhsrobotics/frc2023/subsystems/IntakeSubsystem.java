@@ -58,5 +58,4 @@ public class IntakeSubsystem extends SubsystemBase {
 	public void toggleIntakePistonState() {
 		this.setIntakePistonState(!this.getIntakePistonState());
 	}
-
 }
