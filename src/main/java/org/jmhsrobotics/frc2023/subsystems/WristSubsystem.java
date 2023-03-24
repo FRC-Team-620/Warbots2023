@@ -12,8 +12,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -21,9 +20,9 @@ public class WristSubsystem extends SubsystemBase {
 
 	// wrist hardware
 	private CANSparkMax wristMotor = new CANSparkMax(Constants.driveports.getWristCANId(), MotorType.kBrushless);
-	private TalonSRX wristAbsoluteEncoderConduit = new TalonSRX(9);
+	private TalonSRX wristAbsoluteEncoderConduit = new TalonSRX(Constants.driveports.getWristAbsoluteEncoderCANId());
 
-	private Constraints wristPPIDConstraints;
+	private TrapezoidProfile.Constraints wristPPIDConstraints;
 	private ProfiledPIDController wristPPID;
 
 	private double wristAbsolutePosition;
@@ -41,10 +40,10 @@ public class WristSubsystem extends SubsystemBase {
 		this.updateStoredWristPosition();
 
 		// all in degrees
-		this.wristPPIDConstraints = new Constraints(110, 200);
+		this.wristPPIDConstraints = new TrapezoidProfile.Constraints(110, 200);
 		// spotless:off
         this.wristPPID = new ProfiledPIDController(
-            0.1, 0, 0, 
+            0.0/*0.1*/, 0, 0, 
             this.wristPPIDConstraints
         );
         // spotless:on
@@ -71,13 +70,18 @@ public class WristSubsystem extends SubsystemBase {
 		switch (this.getControlMode()) {
 			case STOPPED :
 				this.stopWristMotor();
-				return;
+				return; // STOPPED STATE STOPS HERE
 			case OPEN_LOOP : // manual/duty cycle control
 				this.setWristMotor(this.openLoopPitchSpeed);
-				return;
+				return; // OPEN LOOP STOPS HERE
 			case CLOSED_LOOP :
 				break; // continue with periodic
 		}
+
+		// CLOSED LOOP
+
+		// make sure there's nothing stored between two bouts of open loop control
+		this.openLoopPitchSpeed = 0.0;
 
 		// PPID control
 		this.setWristMotor(this.wristPPID.calculate(this.getWristPitch()));
@@ -116,7 +120,7 @@ public class WristSubsystem extends SubsystemBase {
 	}
 
 	public void stop() {
-		this.controlMode = ControlMode.STOPPED;
+		this.setControlMode(ControlMode.STOPPED);
 	}
 
 	public double getWristPitch() {
@@ -144,11 +148,11 @@ public class WristSubsystem extends SubsystemBase {
 		this.wristPPID.reset(this.getWristPitch());
 	}
 
-	public Constraints getWristPPIDConstraints() {
+	public TrapezoidProfile.Constraints getWristPPIDConstraints() {
 		return this.wristPPIDConstraints;
 	}
 
-	public State getWristPPIDGoal() {
+	public TrapezoidProfile.State getWristPPIDGoal() {
 		return this.wristPPID.getGoal();
 	}
 }

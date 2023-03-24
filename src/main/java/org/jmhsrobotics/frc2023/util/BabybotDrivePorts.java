@@ -14,6 +14,7 @@ public class BabybotDrivePorts implements IDrivePorts {
 	public final int pitchMotorCANId = 5;
 	public final int grabberMotorCANId = 7;
 	public final int wristMotorCANId = 8;
+	public final int wristAbsoluteEncoderCANId = 9;
 
 	public final boolean rightFrontMotorInversion = false;
 	public final boolean leftFrontMotorInversion = true;
@@ -99,6 +100,11 @@ public class BabybotDrivePorts implements IDrivePorts {
 	@Override
 	public int getWristCANId() {
 		return this.wristMotorCANId;
+	}
+
+	@Override
+	public int getWristAbsoluteEncoderCANId() {
+		return this.wristAbsoluteEncoderCANId;
 	}
 
 	@Override

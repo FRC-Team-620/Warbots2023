@@ -12,6 +12,8 @@ public interface IDrivePorts {
 	public int getArmExtensionCANId();
 	public int getIntakeCANId();
 	public int getWristCANId();
+	public int getWristAbsoluteEncoderCANId();
+
 	public int getGrabberIntakeSolenoidId();
 
 	public boolean getRightFrontMotorInversion();
