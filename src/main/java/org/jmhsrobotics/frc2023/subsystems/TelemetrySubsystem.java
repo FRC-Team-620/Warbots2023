@@ -77,17 +77,17 @@ public class TelemetrySubsystem extends SubsystemBase {
 		// spotless:off
         relativeChange = RobotMath.relativeAngle(previousState.yaw, this.imuState.yaw);
 		this.imuState.yawVelocity = this.yawAngularVelocityHandler.feed(
-            relativeChange / Constants.RobotConstants.secondsPerTick
+            relativeChange * Constants.RobotConstants.ticksPerSecond
         );
 
         relativeChange = RobotMath.relativeAngle(previousState.pitch, this.imuState.pitch);
 		this.imuState.pitchVelocity = this.pitchAngularVelocityHandler.feed(
-            relativeChange / Constants.RobotConstants.secondsPerTick
+            relativeChange * Constants.RobotConstants.ticksPerSecond
         );
 
         relativeChange = RobotMath.relativeAngle(previousState.roll, this.imuState.roll);
 		this.imuState.rollVelocity = this.rollAngularVelocityHandler.feed(
-            relativeChange / Constants.RobotConstants.secondsPerTick
+            relativeChange * Constants.RobotConstants.ticksPerSecond
         );
         // spotless:on
 

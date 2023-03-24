@@ -21,7 +21,10 @@ import org.jmhsrobotics.frc2023.util.IDrivePorts;
 public final class Constants {
 
 	public static class RobotConstants {
+		// IF YOU CHANGE EITHER OF THESE, YOU MUST CHANGE THE OTHER
 		public static final double secondsPerTick = 0.02;
+		// I just manually put 50.0 to avoid any floating-point errors
+		public static final double ticksPerSecond = 50.0; // = 1.0 / 0.02
 	}
 
 	public static class DriveConstants {
@@ -39,7 +42,7 @@ public final class Constants {
 
 		public static final double angleSetBufferSeconds = 0.25;
 		public static final double angleSetBufferTicks = DriveConstants.angleSetBufferSeconds
-				/ RobotConstants.secondsPerTick;
+				* RobotConstants.ticksPerSecond;
 	}
 
 	public static class TurnAngleCommandConstants {
