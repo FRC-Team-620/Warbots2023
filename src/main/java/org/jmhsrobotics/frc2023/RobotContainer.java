@@ -112,7 +112,7 @@ public class RobotContainer {
 					((armSubsystem.getScoringType() == ArmSubsystem.scoringType.CUBE && controlBoard.intakeWheels() > 0)
 							? 0.4
 							: 1.0) * controlBoard.intakeWheels()
-							+ (grabberSolenoidSubsystem.getGrabberPitchState() ? 0.05 : 0.0),
+							+ (grabberSolenoidSubsystem.getGrabberPitchState() ? 0.1 : 0.0),
 					-1, 1));
 		}, grabberMotorSubsystem));
 
@@ -194,12 +194,12 @@ public class RobotContainer {
 
 		controlBoard.armPresetFloor().onTrue(new ConditionalCommand(
 
-				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 35, controlBoard.overrideTeleopArm()),
+				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 32, controlBoard.overrideTeleopArm()),
 						new ParallelCommandGroup(
 								new CommandArmExtension(armSubsystem, 0.8, controlBoard.overrideTeleopArm()),
 								new CommandGrabberSolenoids(grabberSolenoidSubsystem, false, true))),
 
-				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 35, controlBoard.overrideTeleopArm()),
+				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 32, controlBoard.overrideTeleopArm()),
 						new ParallelCommandGroup(
 								new CommandArmExtension(armSubsystem, 0.8, controlBoard.overrideTeleopArm()),
 								new CommandGrabberSolenoids(grabberSolenoidSubsystem, true, true))),
@@ -256,11 +256,11 @@ public class RobotContainer {
 		controlBoard.armPresetPickup()
 				.onTrue(new ConditionalCommand(
 						new ParallelCommandGroup(
-								new CommandArmExtensionThenPitch(armSubsystem, 0.0, 67,
+								new CommandArmExtensionThenPitch(armSubsystem, 0.0, 62,
 										controlBoard.overrideTeleopArm()),
 								new CommandGrabberSolenoids(grabberSolenoidSubsystem, false, true)),
 						new ParallelCommandGroup(
-								new CommandArmExtensionThenPitch(armSubsystem, 0.0, 67,
+								new CommandArmExtensionThenPitch(armSubsystem, 0.0, 62,
 										controlBoard.overrideTeleopArm()),
 								new CommandGrabberSolenoids(grabberSolenoidSubsystem, true, true)),
 						armSubsystem::isCone));
