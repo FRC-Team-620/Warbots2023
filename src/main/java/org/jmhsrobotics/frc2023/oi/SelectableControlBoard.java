@@ -1,5 +1,7 @@
 package org.jmhsrobotics.frc2023.oi;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -44,6 +46,11 @@ public class SelectableControlBoard implements ControlBoard {
 	@Override
 	public double armPitch() {
 		return selector.getSelected().armPitch();
+	}
+
+	@Override
+	public double wristPitch() {
+		return selector.getSelected().wristPitch();
 	}
 
 	@Override
@@ -104,8 +111,13 @@ public class SelectableControlBoard implements ControlBoard {
 	}
 
 	@Override
-	public Trigger overrideTeleopArm() {
-		return selector.getSelected().overrideTeleopArm();
+	public Trigger override() {
+		return selector.getSelected().override();
+	}
+
+	@Override
+	public Trigger wristControlModifier() {
+		return selector.getSelected().wristControlModifier();
 	}
 
 	@Override
@@ -131,6 +143,16 @@ public class SelectableControlBoard implements ControlBoard {
 	@Override
 	public Trigger toggleHeadingLock() {
 		return selector.getSelected().toggleHeadingLock();
+	}
+
+	@Override
+	public BooleanSupplier overrideTeleopArm() {
+		return () -> this.override().getAsBoolean() && !this.wristControlModifier().getAsBoolean();
+	}
+
+	@Override
+	public BooleanSupplier overrideTeleopWrist() {
+		return () -> this.override().getAsBoolean() && this.wristControlModifier().getAsBoolean();
 	}
 
 }

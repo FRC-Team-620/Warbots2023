@@ -13,6 +13,7 @@ public class BabybotDrivePorts implements IDrivePorts {
 	public final int winchMotorCANId = 6;
 	public final int pitchMotorCANId = 5;
 	public final int grabberMotorCANId = 7;
+	public final int wristMotorCANId = 8;
 
 	public final boolean rightFrontMotorInversion = false;
 	public final boolean leftFrontMotorInversion = true;
@@ -93,6 +94,11 @@ public class BabybotDrivePorts implements IDrivePorts {
 	@Override
 	public int getIntakeCANId() {
 		return 7;
+	}
+
+	@Override
+	public int getWristCANId() {
+		return this.wristMotorCANId;
 	}
 
 	@Override

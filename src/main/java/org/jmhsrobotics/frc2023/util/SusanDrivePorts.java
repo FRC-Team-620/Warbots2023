@@ -79,6 +79,11 @@ public class SusanDrivePorts implements IDrivePorts {
 	}
 
 	@Override
+	public int getWristCANId() {
+		return 8;
+	}
+
+	@Override
 	public int getGrabberIntakeSolenoidId() {
 		return 2;
 	}

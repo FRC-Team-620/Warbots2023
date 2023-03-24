@@ -1,5 +1,7 @@
 package org.jmhsrobotics.frc2023.oi;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -60,9 +62,18 @@ public class CompControl implements ControlBoard {
 
 	// Operator Controller
 
+	private double operatorLeftY() {
+		return MathUtil.applyDeadband(operatorController.getLeftY(), deadband);
+	}
+
 	@Override
 	public double armPitch() {
-		return MathUtil.applyDeadband(operatorController.getLeftY(), deadband);
+		return !this.wristControlModifier().getAsBoolean() ? operatorLeftY() : 0.0;
+	}
+
+	@Override
+	public double wristPitch() {
+		return this.wristControlModifier().getAsBoolean() ? operatorLeftY() : 0.0;
 	}
 
 	@Override
@@ -99,12 +110,16 @@ public class CompControl implements ControlBoard {
 	}
 
 	@Override
-	public Trigger overrideTeleopArm() {
+	public Trigger override() {
 		return operatorController.start();
 	}
 
 	@Override
+	public Trigger wristControlModifier() {
+		return operatorController.leftBumper();
+	}
 
+	@Override
 	public Trigger Intake() {
 		return null;
 	}
@@ -139,4 +154,13 @@ public class CompControl implements ControlBoard {
 		return operatorController.back();
 	}
 
+	@Override
+	public BooleanSupplier overrideTeleopArm() {
+		return () -> this.override().getAsBoolean() && !this.wristControlModifier().getAsBoolean();
+	}
+
+	@Override
+	public BooleanSupplier overrideTeleopWrist() {
+		return () -> this.override().getAsBoolean() && this.wristControlModifier().getAsBoolean();
+	}
 }

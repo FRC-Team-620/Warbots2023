@@ -2,6 +2,7 @@ package org.jmhsrobotics.frc2023.subsystems;
 
 import org.jmhsrobotics.frc2023.Constants;
 import org.jmhsrobotics.frc2023.Constants.ArmConstants;
+import org.jmhsrobotics.frc2023.Constants.ControlMode;
 
 import com.playingwithfusion.TimeOfFlight;
 import com.playingwithfusion.TimeOfFlight.RangingMode;
@@ -66,10 +67,6 @@ public class ArmSubsystem extends SubsystemBase {
 		CONE, CUBE;
 	}
 	public scoringType armScore = scoringType.CONE;
-
-	public enum ControlMode {
-		STOPPED, OPEN_LOOP, CLOSED_LOOP;
-	}
 
 	private ControlMode controlMode = ControlMode.CLOSED_LOOP;
 

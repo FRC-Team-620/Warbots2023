@@ -66,6 +66,10 @@ public final class Constants {
 		BABY_BOT, SUSAN, BOT_2020, UNKNOWN
 	}
 
+	public enum ControlMode {
+		STOPPED, OPEN_LOOP, CLOSED_LOOP;
+	}
+
 	public enum VisionPipeline {
 		REFECTIVE_TAPE(0), APRIL_TAGS(1);
 
@@ -146,6 +150,13 @@ public final class Constants {
 		public static final double maxArmAngleDegrees = 290;
 		public static final double armDistanceToCenterMeters = Units.inchesToMeters(-8);
 
+	}
+
+	public static class WristConstants {
+		public static final double degreesPerEncoderTick = 1.0;
+		public static final double encoderTicksAtZeroDegrees = 0.0;
+		public static final double minPitchDegrees = -130.0;
+		public static final double maxPitchDegrees = 130.0;
 	}
 
 	public static double kSimUpdateTime = 0.02;

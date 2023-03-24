@@ -1,37 +1,33 @@
 package org.jmhsrobotics.frc2023.commands.grabber;
 
-import org.jmhsrobotics.frc2023.subsystems.GrabberMotorSubsystem;
-import org.jmhsrobotics.frc2023.subsystems.GrabberSolenoidSubsystem;
+import org.jmhsrobotics.frc2023.subsystems.IntakeSubsystem;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class GrabberInOutAuto extends CommandBase {
+	IntakeSubsystem intakeSubsystem;
 	boolean intakeIn;
 	private double speed;
 	private boolean state;
 	Timer time = new Timer();
-	GrabberMotorSubsystem grabberMotorSubsystem;
-	GrabberSolenoidSubsystem grabberSolenoidSubsystem;
 
-	public GrabberInOutAuto(GrabberMotorSubsystem grabberMotorSubsystem,
-			GrabberSolenoidSubsystem grabberSolenoidSubsystem, boolean intakeIn, double speed) {
+	public GrabberInOutAuto(IntakeSubsystem intakeSubsystem, boolean intakeIn, double speed) {
+		this.intakeSubsystem = intakeSubsystem;
 		this.intakeIn = intakeIn;
 		this.speed = speed;
-		this.grabberMotorSubsystem = grabberMotorSubsystem;
-		this.grabberSolenoidSubsystem = grabberSolenoidSubsystem;
 	}
 
 	@Override
 	public void initialize() {
-		grabberMotorSubsystem.setGrabberMotor(speed * (intakeIn ? -1 : 1));
-		grabberSolenoidSubsystem.setGrabberIntakeState(state);
+		this.intakeSubsystem.setIntakeMotor(speed * (intakeIn ? -1 : 1));
+		this.intakeSubsystem.setIntakePistonState(state);
 
 	}
 	@Override
 	public void end(boolean interrupted) {
 		if (interrupted) {
-			grabberMotorSubsystem.setGrabberMotor(0);
+			this.intakeSubsystem.stopIntakeMotor();;
 		}
 	}
 

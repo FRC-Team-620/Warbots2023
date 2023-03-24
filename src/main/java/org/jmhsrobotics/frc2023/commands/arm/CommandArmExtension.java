@@ -2,6 +2,7 @@ package org.jmhsrobotics.frc2023.commands.arm;
 
 import java.util.function.BooleanSupplier;
 
+import org.jmhsrobotics.frc2023.Constants.ControlMode;
 import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -23,7 +24,7 @@ public class CommandArmExtension extends CommandBase {
 	// execute
 	@Override
 	public void initialize() {
-		this.armSubsystem.setControlMode(ArmSubsystem.ControlMode.CLOSED_LOOP);
+		this.armSubsystem.setControlMode(ControlMode.CLOSED_LOOP);
 		armSubsystem.setExtensionProportion(distanceProportion);
 	}
 

@@ -14,13 +14,15 @@ import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
 import org.jmhsrobotics.frc2023.commands.TurnAngle;
 import org.jmhsrobotics.frc2023.commands.arm.CommandArmExtensionThenPitch;
 import org.jmhsrobotics.frc2023.commands.arm.CommandArmPitchThenExtension;
-import org.jmhsrobotics.frc2023.commands.grabber.ToggleGrabberIntake;
-import org.jmhsrobotics.frc2023.commands.grabber.ToggleGrabberPitch;
+import org.jmhsrobotics.frc2023.commands.grabber.CommandIntakeSolenoid;
+import org.jmhsrobotics.frc2023.commands.grabber.ToggleIntakePiston;
+// import org.jmhsrobotics.frc2023.commands.grabber.ToggleGrabberPitch;
 import org.jmhsrobotics.frc2023.oi.ControlBoard;
 import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
-import org.jmhsrobotics.frc2023.subsystems.GrabberMotorSubsystem;
-import org.jmhsrobotics.frc2023.subsystems.GrabberSolenoidSubsystem;
+import org.jmhsrobotics.frc2023.subsystems.IntakeSubsystem;
+// import org.jmhsrobotics.frc2023.subsystems.GrabberMotorSubsystem;
+// import org.jmhsrobotics.frc2023.subsystems.GrabberSolenoidSubsystem;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.SectionManager;
 
@@ -33,9 +35,8 @@ public class ScoringAuto extends SequentialCommandGroup {
 	}
 	private StartingPosition startingPos;
 	// Constructor
-	public ScoringAuto(Drivetrain drivetrain, ArmSubsystem armSubsystem, GrabberMotorSubsystem grabberMotorSubsystem,
-			GrabberSolenoidSubsystem grabberSolenoidSubsystem, LEDSubsystem ledSubsystem, StartingPosition startingPos,
-			ControlBoard controls) {
+	public ScoringAuto(Drivetrain drivetrain, ArmSubsystem armSubsystem, IntakeSubsystem intakeSubsystem,
+			LEDSubsystem ledSubsystem, StartingPosition startingPos, ControlBoard controls) {
 		this.drivetrain = drivetrain;
 		this.ledSubsystem = ledSubsystem;
 		this.startingPos = startingPos;
@@ -43,17 +44,21 @@ public class ScoringAuto extends SequentialCommandGroup {
 		addCommands(new InstantCommand(() -> {
 			drivetrain.resetOdometry(
 					new Pose2d(Units.inchesToMeters(54.42), Units.inchesToMeters(42.079), Rotation2d.fromDegrees(0)));
-		}), new AutoDriveDistance(drivetrain, -0.35), new ToggleGrabberPitch(grabberSolenoidSubsystem),
-				new CommandArmPitchThenExtension(armSubsystem, 1.0, 95, controls.overrideTeleopArm()),
+		}), new AutoDriveDistance(drivetrain, -0.35), /* new ToggleGrabberPitch(grabberSolenoidSubsystem), */
+				new CommandArmPitchThenExtension(armSubsystem, 1.0, 95, controls.override()),
 				// new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 95,
 				// controls.overrideTeleopArm()),
 				// new CommandArmExtension(armSubsystem, 1.0, controls.overrideTeleopArm())),
-				new AutoDriveDistance(drivetrain, 0.35), new ToggleGrabberIntake(grabberSolenoidSubsystem),
-				new WaitCommand(0.2), new ParallelCommandGroup(new CommandArmExtensionThenPitch(armSubsystem, 0.0,
-						ArmConstants.stowedDegrees, controls.overrideTeleopArm()), new InstantCommand(() -> {
-							grabberSolenoidSubsystem.setGrabberIntakeState(false);
-							grabberSolenoidSubsystem.setGrabberPitchState(false);
-						}, grabberSolenoidSubsystem)),
+				new AutoDriveDistance(drivetrain, 0.35), new ToggleIntakePiston(intakeSubsystem), new WaitCommand(0.2),
+				new ParallelCommandGroup(
+						new CommandArmExtensionThenPitch(armSubsystem, 0.0, ArmConstants.stowedDegrees,
+								controls.override()), /*
+														 * new InstantCommand(() -> {
+														 * grabberSolenoidSubsystem.setGrabberIntakeState(false);
+														 * grabberSolenoidSubsystem.setGrabberPitchState(false); },
+														 * grabberSolenoidSubsystem)
+														 */
+						new CommandIntakeSolenoid(intakeSubsystem, false)),
 				new AutoDriveDistance(drivetrain, -3.3),
 				// Gets the robot out the comunity area (Over the charge station) by driving
 				// backwards

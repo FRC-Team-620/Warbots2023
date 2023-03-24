@@ -8,6 +8,7 @@ import org.jmhsrobotics.frc2023.Constants.ArmConstants;
 import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
+import org.jmhsrobotics.frc2023.commands.TeleopWristOpenLoop;
 import org.jmhsrobotics.frc2023.commands.TelopArmOpenLoop;
 import org.jmhsrobotics.frc2023.commands.arm.CommandArmExtension;
 import org.jmhsrobotics.frc2023.commands.arm.CommandArmPitch;
@@ -16,9 +17,9 @@ import org.jmhsrobotics.frc2023.commands.arm.CommandArmPitchThenExtension;
 import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
-import org.jmhsrobotics.frc2023.commands.grabber.CommandGrabberSolenoids;
-import org.jmhsrobotics.frc2023.commands.grabber.ToggleGrabberIntake;
-import org.jmhsrobotics.frc2023.commands.grabber.ToggleGrabberPitch;
+import org.jmhsrobotics.frc2023.commands.grabber.CommandIntakeSolenoid;
+import org.jmhsrobotics.frc2023.commands.grabber.ToggleIntakePiston;
+// import org.jmhsrobotics.frc2023.commands.grabber.ToggleGrabberPitch;
 import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
 import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
@@ -30,9 +31,11 @@ import org.jmhsrobotics.frc2023.oi.SelectableControlBoard;
 import org.jmhsrobotics.frc2023.oi.SingleControl;
 // import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
-import org.jmhsrobotics.frc2023.subsystems.GrabberMotorSubsystem;
-import org.jmhsrobotics.frc2023.subsystems.GrabberSolenoidSubsystem;
+import org.jmhsrobotics.frc2023.subsystems.IntakeSubsystem;
+// import org.jmhsrobotics.frc2023.subsystems.GrabberMotorSubsystem;
+// import org.jmhsrobotics.frc2023.subsystems.GrabberSolenoidSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.TelemetrySubsystem;
+import org.jmhsrobotics.frc2023.subsystems.WristSubsystem;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDIdleCommand;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
 
@@ -66,9 +69,13 @@ public class RobotContainer {
 
 	public final Drivetrain drivetrain = new Drivetrain();
 	public final LEDSubsystem ledSubsystem = new LEDSubsystem();
-	public final GrabberSolenoidSubsystem grabberSolenoidSubsystem = new GrabberSolenoidSubsystem();
-	public final GrabberMotorSubsystem grabberMotorSubsystem = new GrabberMotorSubsystem();
+	// public final GrabberSolenoidSubsystem grabberSolenoidSubsystem = new
+	// GrabberSolenoidSubsystem();
+	// public final GrabberMotorSubsystem grabberMotorSubsystem = new
+	// GrabberMotorSubsystem();
+	public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 	public final ArmSubsystem armSubsystem = new ArmSubsystem();
+	public final WristSubsystem wristSubsystem = new WristSubsystem();
 	// private final ArmSubsystem armSubsystem = new ArmSubsystem();
 	// private final GrabberSubsystem grabberSubsystem=new GrabberSubsystem();
 	// private final VisionPlaceholder visionPlaceholder = new
@@ -99,6 +106,14 @@ public class RobotContainer {
 		));
 		// spotless:on
 
+		// spotless:off
+		wristSubsystem.setDefaultCommand(new TeleopWristOpenLoop(
+			wristSubsystem, 
+			armSubsystem::getArmPitch, 
+			controlBoard::wristPitch, 
+			controlBoard.overrideTeleopWrist()));
+		// spotless:on
+
 		// grabberMotorSubsystem.setDefaultCommand(new InstantCommand(() -> {
 		// grabberMotorSubsystem.setGrabberMotor(MathUtil.clamp(
 		// controlBoard.intakeWheels() +
@@ -107,14 +122,14 @@ public class RobotContainer {
 		// }, grabberMotorSubsystem));
 
 		// TODO: make this not hellish (plz)
-		grabberMotorSubsystem.setDefaultCommand(new InstantCommand(() -> {
-			grabberMotorSubsystem.setGrabberMotor(MathUtil.clamp(
+		intakeSubsystem.setDefaultCommand(new InstantCommand(() -> {
+			intakeSubsystem.setIntakeMotor(MathUtil.clamp(
 					((armSubsystem.getScoringType() == ArmSubsystem.scoringType.CUBE && controlBoard.intakeWheels() > 0)
 							? 0.4
 							: 1.0) * controlBoard.intakeWheels()
-							+ (grabberSolenoidSubsystem.getGrabberPitchState() ? 0.05 : 0.0),
+							+ (intakeSubsystem.getIntakePistonState() ? 0.05 : 0.0),
 					-1, 1));
-		}, grabberMotorSubsystem));
+		}, intakeSubsystem));
 
 		// grabberMotorSubsystem.setGrabberMotor(controlBoard.intakeWheels()),
 		// grabberMotor));
@@ -166,16 +181,19 @@ public class RobotContainer {
 		// operator.b().onTrue(new CommandArm(armSubsystem, 0, 180));
 		// controlBoard.alignPeg().onTrue(new AlignPeg(drivetrain));
 		controlBoard.changeScoringType().onTrue(new InstantCommand(() -> armSubsystem.setScoringType()));
-		controlBoard.armPresetStowed().onTrue(new ConditionalCommand(
-				new ParallelCommandGroup(
-						new CommandArmExtensionThenPitch(armSubsystem, 0.0, ArmConstants.stowedDegrees,
-								controlBoard.overrideTeleopArm()),
-						new CommandGrabberSolenoids(grabberSolenoidSubsystem, false, false)),
-				new ParallelCommandGroup(
-						new CommandArmExtensionThenPitch(armSubsystem, 0.0, ArmConstants.stowedDegrees,
-								controlBoard.overrideTeleopArm()),
-						new CommandGrabberSolenoids(grabberSolenoidSubsystem, true, false)),
-				armSubsystem::isCone));
+		controlBoard.armPresetStowed()
+				.onTrue(new ConditionalCommand(
+						new ParallelCommandGroup(
+								new CommandArmExtensionThenPitch(armSubsystem, 0.0, ArmConstants.stowedDegrees,
+										controlBoard.override()),
+								/* new CommandIntakeSolenoid(grabberSolenoidSubsystem, false, false) */
+								new CommandIntakeSolenoid(intakeSubsystem, false)),
+						new ParallelCommandGroup(
+								new CommandArmExtensionThenPitch(armSubsystem, 0.0, ArmConstants.stowedDegrees,
+										controlBoard.override()),
+								/* new CommandIntakeSolenoid(grabberSolenoidSubsystem, true, false) */
+								new CommandIntakeSolenoid(intakeSubsystem, true)),
+						armSubsystem::isCone));
 		// new SequentialCommandGroup(new ParallelCommandGroup(
 		// new CommandArmExtension(armSubsystem, 0.0, controlBoard.overrideTeleopArm()),
 		// new InstantCommand(() -> {
@@ -194,15 +212,15 @@ public class RobotContainer {
 
 		controlBoard.armPresetFloor().onTrue(new ConditionalCommand(
 
-				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 35, controlBoard.overrideTeleopArm()),
-						new ParallelCommandGroup(
-								new CommandArmExtension(armSubsystem, 0.8, controlBoard.overrideTeleopArm()),
-								new CommandGrabberSolenoids(grabberSolenoidSubsystem, false, true))),
+				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 35, controlBoard.override()),
+						new ParallelCommandGroup(new CommandArmExtension(armSubsystem, 0.8, controlBoard.override()),
+								/* new CommandIntakeSolenoid(grabberSolenoidSubsystem, false, true) */
+								new CommandIntakeSolenoid(intakeSubsystem, false))),
 
-				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 35, controlBoard.overrideTeleopArm()),
-						new ParallelCommandGroup(
-								new CommandArmExtension(armSubsystem, 0.8, controlBoard.overrideTeleopArm()),
-								new CommandGrabberSolenoids(grabberSolenoidSubsystem, true, true))),
+				new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 35, controlBoard.override()),
+						new ParallelCommandGroup(new CommandArmExtension(armSubsystem, 0.8, controlBoard.override()),
+								/* new CommandIntakeSolenoid(grabberSolenoidSubsystem, true, true) */
+								new CommandIntakeSolenoid(intakeSubsystem, true))),
 
 				armSubsystem::isCone));
 
@@ -219,8 +237,8 @@ public class RobotContainer {
 
 		controlBoard.armPresetMid()
 				.onTrue(new ConditionalCommand(
-						new CommandArmPitchThenExtension(armSubsystem, 1.0, 95, controlBoard.overrideTeleopArm()),
-						new CommandArmPitchThenExtension(armSubsystem, 1.0, 80, controlBoard.overrideTeleopArm()),
+						new CommandArmPitchThenExtension(armSubsystem, 1.0, 95, controlBoard.override()),
+						new CommandArmPitchThenExtension(armSubsystem, 1.0, 80, controlBoard.override()),
 						// new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 95,
 						// controlBoard.overrideTeleopArm()),
 						// new CommandArmExtension(armSubsystem, 1.0,
@@ -233,8 +251,8 @@ public class RobotContainer {
 
 		controlBoard.armPresetHigh()
 				.onTrue(new ConditionalCommand(
-						new CommandArmPitchThenExtension(armSubsystem, 1.0, 247, controlBoard.overrideTeleopArm()),
-						new CommandArmPitchThenExtension(armSubsystem, 1.0, 247, controlBoard.overrideTeleopArm()),
+						new CommandArmPitchThenExtension(armSubsystem, 1.0, 247, controlBoard.override()),
+						new CommandArmPitchThenExtension(armSubsystem, 1.0, 247, controlBoard.override()),
 						// new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 247,
 						// controlBoard.overrideTeleopArm()),
 						// new CommandArmExtension(armSubsystem, 1.0,
@@ -253,21 +271,25 @@ public class RobotContainer {
 		// controlBoard.overrideTeleopArm()),
 		// armSubsystem::isCone));/
 
-		controlBoard.armPresetPickup()
-				.onTrue(new ConditionalCommand(
-						new ParallelCommandGroup(
-								new CommandArmExtensionThenPitch(armSubsystem, 0.0, 67,
-										controlBoard.overrideTeleopArm()),
-								new CommandGrabberSolenoids(grabberSolenoidSubsystem, false, true)),
-						new ParallelCommandGroup(
-								new CommandArmExtensionThenPitch(armSubsystem, 0.0, 67,
-										controlBoard.overrideTeleopArm()),
-								new CommandGrabberSolenoids(grabberSolenoidSubsystem, true, true)),
-						armSubsystem::isCone));
+		controlBoard
+				.armPresetPickup().onTrue(
+						new ConditionalCommand(
+								new ParallelCommandGroup(
+										new CommandArmExtensionThenPitch(armSubsystem, 0.0, 67,
+												controlBoard.override()),
+										/* new CommandIntakeSolenoid(grabberSolenoidSubsystem, false, true) */
+										new CommandIntakeSolenoid(intakeSubsystem, false)),
+								new ParallelCommandGroup(
+										new CommandArmExtensionThenPitch(armSubsystem, 0.0, 67,
+												controlBoard.override()),
+										/* new CommandIntakeSolenoid(grabberSolenoidSubsystem, true, true) */
+										new CommandIntakeSolenoid(intakeSubsystem, true)),
+								armSubsystem::isCone));
 
-		controlBoard.closeGrabber().onTrue(new ToggleGrabberIntake(grabberSolenoidSubsystem));
+		controlBoard.closeGrabber().onTrue(new ToggleIntakePiston(intakeSubsystem));
 
-		controlBoard.armWrist().onTrue(new ToggleGrabberPitch(grabberSolenoidSubsystem));
+		// controlBoard.armWrist().onTrue(new
+		// ToggleGrabberPitch(grabberSolenoidSubsystem));
 
 		controlBoard.autoBalance().onTrue(new AutoBalance(drivetrain, false, ledSubsystem));
 
