@@ -88,10 +88,10 @@ public class ArmSubsystem extends SubsystemBase {
 
 		extensionPPIDConstraints = new Constraints(80, 300);
 		profiledExtensionPID = new ProfiledPIDController(
-			0.18, 0.0, 0.0, extensionPPIDConstraints
+			0.2, 0.0, 0.0, extensionPPIDConstraints
 		);
 
-		profiledExtensionPID.setTolerance(0.3, 2);
+		profiledExtensionPID.setTolerance(0.6, 2);
 
 		laser.setRangingMode(RangingMode.Short, 25);
 		// spotless:on

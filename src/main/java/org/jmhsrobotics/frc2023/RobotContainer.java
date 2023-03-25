@@ -111,7 +111,7 @@ public class RobotContainer {
 			grabberMotorSubsystem.setGrabberMotor(MathUtil.clamp(
 					((armSubsystem.getScoringType() == ArmSubsystem.scoringType.CUBE && controlBoard.intakeWheels() > 0)
 							? 0.4
-							: 1.0) * controlBoard.intakeWheels()
+							: 0.75) * controlBoard.intakeWheels()
 							+ (grabberSolenoidSubsystem.getGrabberPitchState() ? 0.1 : 0.0),
 					-1, 1));
 		}, grabberMotorSubsystem));
