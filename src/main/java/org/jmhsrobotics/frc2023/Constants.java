@@ -156,7 +156,7 @@ public final class Constants {
 	}
 
 	public static class WristConstants {
-		public static final double degreesPerEncoderTick = 1.0;
+		public static final double degreesPerEncoderTick = -0.020088837;
 		public static final double encoderTicksAtZeroDegrees = 0.0;
 		public static final double minPitchDegrees = -130.0;
 		public static final double maxPitchDegrees = 130.0;
