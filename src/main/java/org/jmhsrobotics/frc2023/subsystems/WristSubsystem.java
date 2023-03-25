@@ -7,6 +7,7 @@ import org.jmhsrobotics.frc2023.Constants.WristConstants;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -67,6 +68,7 @@ public class WristSubsystem extends SubsystemBase {
 		// (so that the encoder is not polled more than once per tick)
 		this.updateStoredWristPosition(); // a private method
 
+		// handling different control modes
 		switch (this.getControlMode()) {
 			case STOPPED :
 				this.openLoopPitchSpeed = 0.0;
@@ -106,6 +108,11 @@ public class WristSubsystem extends SubsystemBase {
 		return this.wristAbsolutePosition;
 	}
 
+	public double getWristPitch() {
+		return (this.getWristPosition() - WristConstants.encoderTicksAtZeroDegrees)
+				* WristConstants.degreesPerEncoderTick;
+	}
+
 	private void updateStoredWristPosition() {
 		this.wristAbsolutePosition = this.wristAbsoluteEncoderConduit.getSelectedSensorPosition();
 	}
@@ -122,11 +129,6 @@ public class WristSubsystem extends SubsystemBase {
 
 	public void stop() {
 		this.setControlMode(ControlMode.STOPPED);
-	}
-
-	public double getWristPitch() {
-		return (this.getWristPosition() - WristConstants.encoderTicksAtZeroDegrees)
-				* WristConstants.degreesPerEncoderTick;
 	}
 
 	public void setDutyCycle(double pitchSpeed) {
