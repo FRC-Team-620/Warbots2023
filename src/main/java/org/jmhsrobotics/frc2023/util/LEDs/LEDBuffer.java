@@ -3,10 +3,19 @@ package org.jmhsrobotics.frc2023.util.LEDs;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.util.Color;
 
+/**
+ * Manages the data corresponding to a number of LEDs in an LED strip.
+ */
 public class LEDBuffer {
 
-	private byte[] buffer;
+	/** The LED data. Each LED requires 4 bytes of data corresponding to it. */
+	public byte[] buffer;
 
+	/**
+	 * Creates an LEDBuffer object representing the given number of LEDs.
+	 * 
+	 * @param numLights The number of LEDs represented
+	 */
 	public LEDBuffer(int numLights) {
 		buffer = new byte[numLights * 4];
 	}
@@ -69,31 +78,62 @@ public class LEDBuffer {
 	}
 
 	/**
-	 * *** Taken from wpilib 'AddressableLEDBuffer' ***
+	 * Gets the length of the buffer (i.e. the number of LEDs whose data is stored
+	 * in the buffer)
 	 *
-	 * <p>
-	 * Gets the buffer length (the LED count).
-	 *
-	 * @return the buffer length
+	 * @return the length of the buffer
 	 */
 	public int getLength() {
-		return this.buffer.length / 4;
+		return this.buffer.length / 4; // 4 bytes for each LED being represented
 	}
 
-	public void copyFrom(LEDBuffer other, int targetStartIndex, int sourceStartIndex, int numLights) {
-		System.arraycopy(other.buffer, sourceStartIndex * 4, this.buffer, targetStartIndex * 4, numLights * 4);
+	/**
+	 * Copies values from a given LEDBuffer object starting from a given source
+	 * index and over a given LED count to this LEDBuffer starting at a given target
+	 * index.
+	 *
+	 * @param other
+	 *            The LEDBuffer object to be copied from
+	 * @param sourceStartIndex
+	 *            The index in the LEDBuffer being copied from that the copy will
+	 *            start from.
+	 * @param targetStartIndex
+	 *            The index in this LEDBuffer that the copied values will start to
+	 *            be copied to.
+	 * @param numLights
+	 *            The number of LEDs whose information will be copied to this
+	 *            LEDBuffer object
+	 */
+	public void copyFrom(LEDBuffer other, int sourceStartIndex, int targetStartIndex, int numLights) {
+		System.arraycopy(other.buffer, 4 * sourceStartIndex, this.buffer, 4 * targetStartIndex, 4 * numLights);
 	}
 
+	/**
+	 * Copies the entirety of a given LEDBuffer object into this LEDBuffer starting
+	 * at a given target index.
+	 *
+	 * @param other
+	 *            The LEDBuffer object to be copied from
+	 * @param targetStartIndex
+	 *            The index in this LEDBuffer that the copied values will start to
+	 *            be copied to.
+	 */
 	public void copyAllFrom(LEDBuffer other, int targetStartIndex) {
-		this.copyFrom(other, targetStartIndex, 0, other.getLength());
+		this.copyFrom(other, 0, targetStartIndex, other.getLength());
 	}
 
+	/**
+	 * Fills this LEDBuffer by copying the requisite number of values from a given
+	 * LEDBuffer starting at a given source index.
+	 *
+	 * @param other
+	 *            The LEDBuffer object to be copied from
+	 * @param sourceStartIndex
+	 *            The index in the LEDBuffer being copied from that the copy will
+	 *            start from.
+	 */
 	public void fillFrom(LEDBuffer other, int sourceStartIndex) {
-		this.copyFrom(other, 0, sourceStartIndex, this.getLength());
-	}
-
-	public byte[] getBufferData() {
-		return this.buffer;
+		this.copyFrom(other, sourceStartIndex, 0, this.getLength());
 	}
 
 	// ************* STATIC COLOR UTIL METHODS *************

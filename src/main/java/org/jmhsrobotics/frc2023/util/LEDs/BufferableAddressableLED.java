@@ -6,7 +6,7 @@ import edu.wpi.first.hal.HAL;
 import edu.wpi.first.hal.PWMJNI;
 
 /**
- * *** Mostly taken from wpilib 'AddressableLED' ***
+ * *** Adapted from wpilib 'AddressableLED' ***
  *
  * <p>
  * A class for driving addressable LEDs, such as WS2812s and NeoPixels.
@@ -74,7 +74,7 @@ public class BufferableAddressableLED implements AutoCloseable {
 	 *            the buffer to write
 	 */
 	public void setData(LEDBuffer buffer) {
-		AddressableLEDJNI.setData(this.handle, buffer.getBufferData());
+		AddressableLEDJNI.setData(this.handle, buffer.buffer);
 	}
 
 	/**

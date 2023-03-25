@@ -1,6 +1,10 @@
 package org.jmhsrobotics.frc2023;
 
 import edu.wpi.first.math.MathUtil;
+
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
+
 import org.jmhsrobotics.frc2023.Constants.RobotMathConstants;
 
 public class RobotMath {
@@ -76,6 +80,50 @@ public class RobotMath {
 	 */
 	public static double constrain180(double angle) {
 		return MathUtil.inputModulus(angle, -180, 180);
+	}
+
+	/**
+	 * Takes an array of objects of generic type T and a function which converts
+	 * such objects into a double value, and returns the sum of doing this
+	 * conversion for each element in the array.
+	 *
+	 * @param <T>
+	 *            The type being iterated over
+	 * @param values
+	 *            The values being iterated over and being given a corresponding
+	 *            double value
+	 * @param doubleConversion
+	 *            The function that converts an object of type T into a double
+	 * @return The sum of the result of applying 'doubleConversion' to all T objects
+	 *         in 'values'
+	 */
+	public static <T> double sumForEach(T[] values, ToDoubleFunction<T> doubleConversion) {
+		double sum = 0.0;
+		for (T t : values)
+			sum += doubleConversion.applyAsDouble(t);
+		return sum;
+	}
+
+	/**
+	 * Takes an array of objects of generic type T and a function which converts
+	 * such objects into an int value, and returns the sum of doing this conversion
+	 * for each element in the array.
+	 *
+	 * @param <T>
+	 *            The type being iterated over
+	 * @param values
+	 *            The values being iterated over and being given a corresponding int
+	 *            value
+	 * @param intConversion
+	 *            The function that converts an object of type T into an int
+	 * @return The sum of the result of applying 'intConversion' to all T objects in
+	 *         'values'
+	 */
+	public static <T> int sumForEach(T[] values, ToIntFunction<T> intConversion) {
+		int sum = 0;
+		for (T t : values)
+			sum += intConversion.applyAsInt(t);
+		return sum;
 	}
 
 	/**
