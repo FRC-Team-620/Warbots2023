@@ -18,11 +18,11 @@ public class LEDBuffer {
 	 *            The number of LEDs represented
 	 */
 	public LEDBuffer(int numLights) {
-		buffer = new byte[numLights * 4];
+		buffer = new byte[numLights << 2];
 	}
 
 	/**
-	 * *** Taken from wpilib 'AddressableLEDBuffer' ***
+	 * *** Adapted from wpilib 'AddressableLEDBuffer' ***
 	 *
 	 * <p>
 	 * Sets a specific led in the buffer.
@@ -37,10 +37,10 @@ public class LEDBuffer {
 	 *            the b value [0-255]
 	 */
 	public void setRGB(int index, int r, int g, int b) {
-		this.buffer[index * 4] = (byte) b;
-		this.buffer[(index * 4) + 1] = (byte) g;
-		this.buffer[(index * 4) + 2] = (byte) r;
-		this.buffer[(index * 4) + 3] = 0;
+		this.buffer[index << 2] = (byte) b;
+		this.buffer[(index << 2) + 1] = (byte) g;
+		this.buffer[(index << 2) + 2] = (byte) r;
+		this.buffer[(index << 2) + 3] = 0;
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class LEDBuffer {
 	}
 
 	/**
-	 * *** Taken from wpilib 'AddressableLEDBuffer' ***
+	 * *** Adapted from wpilib 'AddressableLEDBuffer' ***
 	 *
 	 * <p>
 	 * Gets the color at the specified index.
@@ -71,9 +71,9 @@ public class LEDBuffer {
 	public Color getLED(int index) {
 		// spotless:off
 		return new Color(
-			(this.buffer[index * 4 + 2] & 0xFF) / 255.0, 
-			(this.buffer[index * 4 + 1] & 0xFF) / 255.0,
-			(this.buffer[index * 4] & 0xFF) / 255.0
+			(this.buffer[(index << 2) + 2] & 0xFF) / 255.0, 
+			(this.buffer[(index << 2) + 1] & 0xFF) / 255.0,
+			(this.buffer[index << 2] & 0xFF) / 255.0
 		);
 		// spotless:on
 	}
@@ -85,7 +85,8 @@ public class LEDBuffer {
 	 * @return the length of the buffer
 	 */
 	public int getLength() {
-		return this.buffer.length / 4; // 4 bytes for each LED being represented
+		// 4 bytes for each LED being represented
+		return this.buffer.length >> 2; // = len / 4
 	}
 
 	/**
@@ -106,7 +107,7 @@ public class LEDBuffer {
 	 *            LEDBuffer object
 	 */
 	public void copyFrom(LEDBuffer other, int sourceStartIndex, int targetStartIndex, int numLights) {
-		System.arraycopy(other.buffer, 4 * sourceStartIndex, this.buffer, 4 * targetStartIndex, 4 * numLights);
+		System.arraycopy(other.buffer, sourceStartIndex << 2, this.buffer, targetStartIndex << 2, numLights << 2);
 	}
 
 	/**
@@ -121,6 +122,17 @@ public class LEDBuffer {
 	 */
 	public void copyAllFrom(LEDBuffer other, int targetStartIndex) {
 		this.copyFrom(other, 0, targetStartIndex, other.getLength());
+	}
+
+	public void wrappedCopyAllFrom(LEDBuffer other, int targetStartIndex) {
+		int end = targetStartIndex + other.getLength();
+		if (end <= this.getLength()) {
+			this.copyAllFrom(other, targetStartIndex);
+			return;
+		}
+		int contained = this.getLength() - targetStartIndex;
+		this.copyFrom(other, 0, targetStartIndex, contained);
+		this.copyFrom(other, contained, 0, end - this.getLength());
 	}
 
 	/**
@@ -146,15 +158,15 @@ public class LEDBuffer {
 	 *
 	 * @param proportion
 	 *            How much of color1 (0 - 1) to use in the
-	 *            combination/interpolation, i.e. how much weight to give to color1
-	 *            as opposed to color 2.
+	 *            combination/interpolation, i.e. how much weight to give to
+	 *            'color1' as opposed to 'color2'.
 	 * @param color1
 	 *            The first color to be combined.
 	 * @param color2
 	 *            The second color to be combined.
 	 * @return The weighted combination of the two colors.
 	 */
-	public static Color colorInterpolation(double proportion, Color color1, Color color2) {
+	public static Color intermediate(double proportion, Color color1, Color color2) {
 		proportion = MathUtil.clamp(proportion, 0, 1);
 		// spotless:off
         return new Color(
@@ -166,25 +178,24 @@ public class LEDBuffer {
 	}
 
 	/**
-	 * Creates an array of RGB colors representing a gradient between two given
-	 * colors over a number of steps.
+	 * Creates an LEDBuffer object representing a gradient between two given colors
+	 * over a number of steps (the length of the new LEDBuffer).
 	 *
+	 * @param steps
+	 *            The number of steps/individual colors in the gradient, i.e. the
+	 *            smoothness/length of the gradient.
 	 * @param startColor
 	 *            The color to start the gradient at.
 	 * @param endColor
 	 *            The color to end the gradient at.
-	 * @param steps
-	 *            The number of steps/individual colors in the gradient, i.e. the
-	 *            smoothness/length of the gradient.
-	 * @return An array of RGB colors representing a gradient between the two given
-	 *         colors.
+	 * @return An LEDBuffer that contains the specified gradient in its buffer.
 	 */
-	private static Color[] colorGradient(Color startColor, Color endColor, int steps) {
-		Color gradient[] = new Color[steps]; // the colors in the gradient
+	private static LEDBuffer gradient(int steps, Color startColor, Color endColor) {
+		LEDBuffer gradient = new LEDBuffer(steps); // the colors in the gradient
 		double proportion;
-		for (int i = 0; i < gradient.length; i++) {
-			proportion = (double) i / (gradient.length - 1); // how far along in the gradient
-			gradient[i] = LEDBuffer.colorInterpolation(proportion, startColor, endColor);
+		for (int i = 0; i < steps; i++) {
+			proportion = (double) i / (steps - 1); // how far along in the gradient
+			gradient.setLED(i, LEDBuffer.intermediate(proportion, startColor, endColor));
 		}
 		return gradient;
 	}
@@ -200,21 +211,23 @@ public class LEDBuffer {
 	 *            The colors that make up the gradient.
 	 */
 	public void setGradient(int offset, Color... colors) {
-		Color grad[];
-		int lightsPerGrad = this.getLength() / colors.length;
+		LEDBuffer grad;
+		int lightsPerGrad = (int) (this.getLength() / colors.length);
+		// the final position of the gradient post-integer-division
 		int finalGradPos = lightsPerGrad * colors.length - 1;
 		for (int i = 0; i < colors.length; i++) {
-			grad = LEDBuffer.colorGradient(colors[i], colors[(i + 1) % colors.length], lightsPerGrad);
-			for (int k = 0; k < lightsPerGrad; k++) {
-				int lightIdx = i * lightsPerGrad + k;
-				this.setLED((lightIdx + offset) % (finalGradPos + 1), grad[k]);
-			}
+			grad = LEDBuffer.gradient(lightsPerGrad, colors[i], colors[(i + 1) % colors.length]);
+			this.wrappedCopyAllFrom(grad, (i * lightsPerGrad + offset) % (finalGradPos + 1));
+			// for (int k = 0; k < lightsPerGrad; k++) {
+			// int lightIdx = i * lightsPerGrad + k;
+			// this.setLED((lightIdx + offset) % (finalGradPos + 1), grad[k]);
+			// }
 		}
-
 		// Correcting error resulting from integer division
-		Color finalColor = this.getLED(finalGradPos);
-		for (int i = finalGradPos; i < this.getLength(); i++)
-			this.setLED(i, finalColor);
+		this.setSubsetSolidColor(finalGradPos, this.getLength(), this.getLED(finalGradPos));
+		// Color finalColor = this.getLED(finalGradPos);
+		// for (int i = finalGradPos; i < this.getLength(); i++)
+		// this.setLED(i, finalColor);
 	}
 
 	/**
@@ -228,7 +241,7 @@ public class LEDBuffer {
 	}
 
 	/**
-	 * Sets the LEDs in the range [startIndex, endIndex) to the given color. Does
+	 * Sets the LEDs in the domain [startIndex, endIndex) to the given color. Does
 	 * not touch other LEDs.
 	 *
 	 * @param startIndex
@@ -239,9 +252,46 @@ public class LEDBuffer {
 	 *            The color to set the LEDs to.
 	 */
 	public void setSubsetSolidColor(int startIndex, int endIndex, Color color) {
-		for (int i = startIndex; i < endIndex; i++) {
-			this.setLED(i, color);
+		if (startIndex >= endIndex)
+			return;
+		// copying larger and larger blocks of the color data (fast)
+		// doubles how much is being copied each time, copying everything that was
+		// already written
+		this.setLED(startIndex, color);
+		for (int data_size = 4, s = startIndex << 2, len = (endIndex << 2) - s; data_size < len; data_size <<= 1) {
+			// spotless:off
+			System.arraycopy(
+				this.buffer, s, this.buffer, s + data_size,
+				(data_size << 1) > len ? len - data_size : data_size
+			);
+			// spotless:on
 		}
+	}
+
+	/**
+	 * Sets the LEDs in the domain [startIndex, endIndex) to the given color. Does
+	 * not touch other LEDs. If 'startIndex' is greater than 'endIndex', the funcion
+	 * does not quit as 'setSubsetSolidColor' would, but rather the set of LEDs
+	 * being set by the funciton wraps around the ends of the strip.
+	 *
+	 * <p>
+	 * Note: If 'startIndex' == 'endIndex', then the whole strip will be set to
+	 * 'color'.
+	 *
+	 * @param startIndex
+	 *            The index of the first LED in the range (inclusive).
+	 * @param endIndex
+	 *            The index of the last LED in the range (exclusive).
+	 * @param color
+	 *            The color to set the LEDs to.
+	 */
+	public void setWrappingSubsetSolidColor(int startIndex, int endIndex, Color color) {
+		if (startIndex < endIndex) {
+			this.setSubsetSolidColor(startIndex, endIndex, color);
+			return;
+		}
+		this.setSubsetSolidColor(startIndex, this.getLength(), color);
+		this.setSubsetSolidColor(0, endIndex, color);
 	}
 
 	/**
@@ -272,11 +322,16 @@ public class LEDBuffer {
 	 *            pattern. This pattern is repeated along the LED strip.
 	 */
 	public void setColorBlocks(int offset, int[] lengths, Color... colors) {
-		int idx = 0, bufferSize = this.getLength();
-		for (int i = 0; idx < bufferSize; i++) {
-			for (int k = 0; k < lengths[i % lengths.length] && idx + k < bufferSize; k++)
-				this.setLED((idx + k + offset) % bufferSize, colors[i % colors.length]);
-			idx += lengths[i % lengths.length];
+		int acc = 0, bufferSize = this.getLength();
+		for (int i = 0; acc < bufferSize; i++) {
+			// spotless:off
+			this.setWrappingSubsetSolidColor(
+				(acc + offset) % bufferSize,
+				(Math.min(acc + lengths[i % lengths.length], bufferSize) + offset) % bufferSize,
+				colors[i % colors.length]
+			);
+			// spotless:on
+			acc += lengths[i % lengths.length];
 		}
 	}
 
@@ -395,10 +450,10 @@ public class LEDBuffer {
 	public LEDAnimation fadeTwoAnimation(double speed, int steps, boolean bidirectional, Color c1, Color c2) {
 		// spotless:off
         return new LEDAnimation(speed, n -> {
-            n %= (bidirectional ? 2 * steps : steps);
+            n %= (bidirectional ? (steps << 1) : steps);
             int i = bidirectional ? -Math.abs(n - steps) + steps : n;
             double proportion = (double) i / steps;
-            this.setSolidColor(LEDBuffer.colorInterpolation(proportion, c1, c2));
+            this.setSolidColor(LEDBuffer.intermediate(proportion, c1, c2));
         });
         // spotless:on
 	}
