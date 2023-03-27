@@ -13,8 +13,9 @@ public class LEDBuffer {
 
 	/**
 	 * Creates an LEDBuffer object representing the given number of LEDs.
-	 * 
-	 * @param numLights The number of LEDs represented
+	 *
+	 * @param numLights
+	 *            The number of LEDs represented
 	 */
 	public LEDBuffer(int numLights) {
 		buffer = new byte[numLights * 4];
