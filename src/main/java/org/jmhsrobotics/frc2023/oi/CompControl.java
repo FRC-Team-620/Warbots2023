@@ -73,7 +73,7 @@ public class CompControl implements ControlBoard {
 
 	@Override
 	public double wristPitch() {
-		return this.wristControlModifier().getAsBoolean() ? operatorLeftY() : 0.0;
+		return this.wristControlModifier().getAsBoolean() ? -operatorLeftY() : 0.0;
 	}
 
 	@Override

@@ -40,14 +40,14 @@ public class WristSubsystem extends SubsystemBase {
 		this.updateStoredWristPosition();
 
 		// all in degrees
-		this.wristPPIDConstraints = new TrapezoidProfile.Constraints(110, 200);
+		this.wristPPIDConstraints = new TrapezoidProfile.Constraints(220, 300);
 		// spotless:off
         this.wristPPID = new ProfiledPIDController(
-            0.0/*0.1*/, 0, 0, 
+            0.03/*0.1*/, 0, 0, 
             this.wristPPIDConstraints
         );
         // spotless:on
-		this.wristPPID.setTolerance(1, 20);
+		this.wristPPID.setTolerance(0.75, 20);
 
 		this.wristPPID.setGoal(this.getWristPitch());
 	}

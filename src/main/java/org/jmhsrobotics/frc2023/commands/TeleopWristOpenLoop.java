@@ -21,10 +21,10 @@ public class TeleopWristOpenLoop extends CommandBase {
 	double desiredPitch;
 	double pitchFactor;
 
-	// spotless:off
-	public TeleopWristOpenLoop(WristSubsystem wristSubsystem, Supplier<Double> armAngle, Supplier<Double> pitchSpeed, BooleanSupplier overrideLimits) {
+	public TeleopWristOpenLoop(WristSubsystem wristSubsystem, Supplier<Double> armAngle, Supplier<Double> pitchSpeed,
+			BooleanSupplier overrideLimits) {
 
-        this.wristSubsystem = wristSubsystem;
+		this.wristSubsystem = wristSubsystem;
 		this.armAngle = armAngle;
 		this.pitchSpeed = pitchSpeed;
 		this.overrideLimits = overrideLimits;
@@ -33,23 +33,25 @@ public class TeleopWristOpenLoop extends CommandBase {
 
 		addRequirements(wristSubsystem);
 	}
-	// spotless:on
 
 	private void resetDesiredStateToCurrent() {
-		this.desiredPitch = this.wristSubsystem.getWristPitch();
+		this.desiredPitch = this.wristSubsystem.getWristPitch() + this.armAngle.get();
 		this.wristSubsystem.resetWristPPIDToCurrent();
 	}
 
 	@Override
 	public void initialize() {
 		this.resetDesiredStateToCurrent();
+		this.desiredPitch = this.wristSubsystem.getWristPitch() + this.armAngle.get();
 	}
 
 	@Override
 	public void execute() {
 
 		SmartDashboard.putNumber("TeleopWrist/desired pitch", this.desiredPitch);
+		SmartDashboard.putNumber("TeleopWrist/arm angle", this.armAngle.get());
 		SmartDashboard.putNumber("TeleopWrist/wrist pitch", this.wristSubsystem.getWristPitch());
+		SmartDashboard.putNumber("TeleopWrist/overridden", this.overrideLimits.getAsBoolean() ? 1 : -1);
 
 		// spotless:off
 		if(this.overrideLimits.getAsBoolean()) {
@@ -65,16 +67,17 @@ public class TeleopWristOpenLoop extends CommandBase {
 			this.resetDesiredStateToCurrent();
 		}
 
-		// spotless:off
-		double deltaPitch = pitchFactor * pitchSpeed.get();
-		this.desiredPitch = MathUtil.clamp(
-			this.desiredPitch + deltaPitch, 
-			WristConstants.minPitchDegrees,
-			WristConstants.maxPitchDegrees
-		);
-		// spotless:on
+		// // spotless:off
+		// double deltaPitch = pitchFactor * pitchSpeed.get();
+		// this.desiredPitch = MathUtil.clamp(
+		// 	this.desiredPitch + deltaPitch, 
+		// 	WristConstants.minPitchDegrees,
+		// 	WristConstants.maxPitchDegrees
+		// );
+		// // spotless:on
 
-		this.wristSubsystem.setPitch(this.desiredPitch);
+		this.wristSubsystem.setPitch(MathUtil.clamp(this.desiredPitch - this.armAngle.get(),
+				WristConstants.minPitchDegrees, WristConstants.maxPitchDegrees));
 	}
 
 	@Override

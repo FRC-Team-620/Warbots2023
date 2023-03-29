@@ -84,17 +84,17 @@ public class BabybotDrivePorts implements IDrivePorts {
 
 	@Override
 	public int getArmAngleCANId() {
-		return 5;
+		return this.pitchMotorCANId;
 	}
 
 	@Override
 	public int getArmExtensionCANId() {
-		return 6;
+		return this.winchMotorCANId;
 	}
 
 	@Override
 	public int getIntakeCANId() {
-		return 7;
+		return this.grabberMotorCANId;
 	}
 
 	@Override
