@@ -7,10 +7,13 @@ package org.jmhsrobotics.frc2023;
 import org.jmhsrobotics.frc2023.Constants.ArmConstants;
 import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 import org.jmhsrobotics.frc2023.Constants.WristConstants;
+import org.jmhsrobotics.frc2023.commands.ArmSetpointCommand;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
 import org.jmhsrobotics.frc2023.commands.TeleopWristOpenLoop;
 import org.jmhsrobotics.frc2023.commands.TelopArmOpenLoop;
+import org.jmhsrobotics.frc2023.commands.ArmSetpointCommand.GripperType;
+import org.jmhsrobotics.frc2023.commands.ArmSetpointCommand.Setpoints;
 import org.jmhsrobotics.frc2023.commands.arm.CommandAThenEW;
 import org.jmhsrobotics.frc2023.commands.arm.CommandAWThenE;
 import org.jmhsrobotics.frc2023.commands.arm.CommandArmPitchThenExtension;
@@ -64,7 +67,7 @@ public class RobotContainer {
 	private static final TelemetrySubsystem telemetry = new TelemetrySubsystem();
 
 	// The robot's subsystems and commands are defined here...
-	private final ControlBoard controlBoard;
+	public final ControlBoard controlBoard;
 	private final CommandXboxController driver = new CommandXboxController(OperatorConstants.driverControllerPort);
 	private final CommandXboxController operator = new CommandXboxController(OperatorConstants.operatorControllerPort);
 
@@ -183,14 +186,7 @@ public class RobotContainer {
 		// controlBoard.alignPeg().onTrue(new AlignPeg(drivetrain));
 		controlBoard.changeScoringType().onTrue(new InstantCommand(() -> armSubsystem.setScoringType()));
 		controlBoard.armPresetStowed()
-				.onTrue(new ConditionalCommand(
-						new ParallelCommandGroup(new CommandIntakeSolenoid(intakeSubsystem, false),
-								new CommandEWThenA(armSubsystem, wristSubsystem, 0.0, ArmConstants.stowedDegrees,
-										WristConstants.stowedPositionAbsolute, controlBoard.override())),
-						new ParallelCommandGroup(new CommandIntakeSolenoid(intakeSubsystem, true),
-								new CommandEWThenA(armSubsystem, wristSubsystem, 0.0, ArmConstants.stowedDegrees,
-										WristConstants.stowedPositionAbsolute, controlBoard.override())),
-						armSubsystem::isCone));
+				.onTrue(new ArmSetpointCommand(Setpoints.STOWED, GripperType.SOLENOID, this));
 		// new SequentialCommandGroup(new ParallelCommandGroup(
 		// new CommandArmExtension(armSubsystem, 0.0, controlBoard.overrideTeleopArm()),
 		// new InstantCommand(() -> {
@@ -208,12 +204,7 @@ public class RobotContainer {
 		// ArmConstants.stowedDegrees, controlBoard.overrideTeleopArm())),
 
 		controlBoard.armPresetFloor()
-				.onTrue(new ConditionalCommand(
-						new ParallelCommandGroup(new CommandIntakeSolenoid(intakeSubsystem, false),
-								new CommandAWThenE(armSubsystem, wristSubsystem, 0.8, 35, 90, controlBoard.override())),
-						new ParallelCommandGroup(new CommandIntakeSolenoid(intakeSubsystem, true),
-								new CommandAWThenE(armSubsystem, wristSubsystem, 0.8, 35, 90, controlBoard.override())),
-						armSubsystem::isCone));
+				.onTrue(new ArmSetpointCommand(Setpoints.FLOOR, GripperType.SOLENOID, this));
 
 		// new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 55,
 		// controlBoard.overrideTeleopArm()),
@@ -227,20 +218,14 @@ public class RobotContainer {
 		// grabberMotorSubsystem.setGrabberMotor(0), armSubsystem));
 
 		controlBoard.armPresetMid()
-				.onTrue(new ConditionalCommand(
-						new CommandAThenEW(armSubsystem, wristSubsystem, 1.0, 95, 90, controlBoard.override()),
-						new CommandAThenEW(armSubsystem, wristSubsystem, 1.0, 80, 90, controlBoard.override()),
-						armSubsystem::isCone));
+				.onTrue(new ArmSetpointCommand(Setpoints.MID, GripperType.SOLENOID, this));
 
 		// controlBoard.armPresetMid().onTrue(
 		// new CommandWristAbsolute(wristSubsystem, 90.0, armSubsystem::getArmPitch,
 		// controlBoard.override()));
 
 		controlBoard.armPresetHigh()
-				.onTrue(new ConditionalCommand(
-						new CommandArmPitchThenExtension(armSubsystem, 1.0, 247, controlBoard.override()),
-						new CommandArmPitchThenExtension(armSubsystem, 1.0, 247, controlBoard.override()),
-						armSubsystem::isCone));
+				.onTrue(new ArmSetpointCommand(Setpoints.HIGH, GripperType.SOLENOID, this));
 
 		// controlBoard.armPresetHigh()
 		// .onTrue(new ConditionalCommand(
@@ -252,16 +237,7 @@ public class RobotContainer {
 
 		controlBoard
 				.armPresetPickup().onTrue(
-						new ConditionalCommand(
-								new ParallelCommandGroup(
-										new CommandEThenAW(armSubsystem, wristSubsystem, 0.0, 67, 120,
-												controlBoard.override()),
-										new CommandIntakeSolenoid(intakeSubsystem, false)),
-								new ParallelCommandGroup(
-										new CommandEThenAW(armSubsystem, wristSubsystem, 0.0, 67, 120,
-												controlBoard.override()),
-										new CommandIntakeSolenoid(intakeSubsystem, true)),
-								armSubsystem::isCone));
+					new ArmSetpointCommand(Setpoints.PICKUP, GripperType.SOLENOID, this));
 
 		controlBoard.closeGrabber().onTrue(new ToggleIntakePiston(intakeSubsystem));
 
