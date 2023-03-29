@@ -160,6 +160,9 @@ public final class Constants {
 		public static final double encoderTicksAtZeroDegrees = 3400.0; // yes, exactly this
 		public static final double minPitchDegrees = -165.0;
 		public static final double maxPitchDegrees = 130.0;
+		public static final double stowedPositionRelative = WristConstants.maxPitchDegrees;
+		public static final double stowedPositionAbsolute = WristConstants.stowedPositionRelative
+				+ ArmConstants.stowedDegrees;
 	}
 
 	public static double kSimUpdateTime = 0.02;

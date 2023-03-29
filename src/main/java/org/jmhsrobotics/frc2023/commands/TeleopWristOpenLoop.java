@@ -3,7 +3,6 @@ package org.jmhsrobotics.frc2023.commands;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
-import org.jmhsrobotics.frc2023.Constants.RobotConstants;
 import org.jmhsrobotics.frc2023.subsystems.WristSubsystem;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,7 +27,7 @@ public class TeleopWristOpenLoop extends CommandBase {
 		this.pitchSpeed = pitchSpeed;
 		this.overrideLimits = overrideLimits;
 
-		this.pitchFactor = this.wristSubsystem.getWristPPIDConstraints().maxVelocity * RobotConstants.secondsPerTick;
+		this.pitchFactor = 30;
 
 		addRequirements(wristSubsystem);
 	}

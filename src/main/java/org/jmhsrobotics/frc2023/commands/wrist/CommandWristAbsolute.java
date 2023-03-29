@@ -14,6 +14,6 @@ public class CommandWristAbsolute extends CommandWristRelative {
 
 	public CommandWristAbsolute(WristSubsystem wristSubsystem, double absoluteAngle, Supplier<Double> armPitch,
 			BooleanSupplier interrupt) {
-		this(wristSubsystem, () -> absoluteAngle - armPitch.get(), armPitch, interrupt);
+		this(wristSubsystem, () -> absoluteAngle, armPitch, interrupt);
 	}
 }

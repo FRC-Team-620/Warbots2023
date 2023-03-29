@@ -81,7 +81,7 @@ public class ArmSubsystem extends SubsystemBase {
 			0.10, 0.0, 0.0, anglePPIDConstraints
 		);
 
-		profiledAnglePID.setTolerance(1.5, 4);
+		profiledAnglePID.setTolerance(0.7, 4);
 
 		extensionPPIDConstraints = new Constraints(80, 300);
 		profiledExtensionPID = new ProfiledPIDController(
