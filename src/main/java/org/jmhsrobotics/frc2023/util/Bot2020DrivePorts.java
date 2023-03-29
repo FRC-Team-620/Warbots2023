@@ -107,7 +107,7 @@ public class Bot2020DrivePorts implements IDrivePorts {
 	}
 
 	@Override
-	public int getWristAbsoluteEncoderCANId() {
+	public int getWristAbsEncoderCANId() {
 		return 9;
 	}
 

@@ -4,10 +4,8 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import org.jmhsrobotics.frc2023.Constants.RobotConstants;
-import org.jmhsrobotics.frc2023.Constants.WristConstants;
 import org.jmhsrobotics.frc2023.subsystems.WristSubsystem;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -18,6 +16,7 @@ public class TeleopWristOpenLoop extends CommandBase {
 	BooleanSupplier overrideLimits;
 
 	boolean wasEnded = false;
+	/** The desired ABSOLUTE angle of the wrist, NOT relative to the arm angle */
 	double desiredPitch;
 	double pitchFactor;
 
@@ -42,20 +41,23 @@ public class TeleopWristOpenLoop extends CommandBase {
 	@Override
 	public void initialize() {
 		this.resetDesiredStateToCurrent();
-		this.desiredPitch = this.wristSubsystem.getWristPitch() + this.armAngle.get();
 	}
 
 	@Override
 	public void execute() {
 
+		double currentInput = this.pitchSpeed.get();
+		double currentArmPitch = this.armAngle.get();
+		double currentWristPitch = this.wristSubsystem.getWristPitch();
+
 		SmartDashboard.putNumber("TeleopWrist/desired pitch", this.desiredPitch);
-		SmartDashboard.putNumber("TeleopWrist/arm angle", this.armAngle.get());
-		SmartDashboard.putNumber("TeleopWrist/wrist pitch", this.wristSubsystem.getWristPitch());
+		SmartDashboard.putNumber("TeleopWrist/arm angle", currentArmPitch);
+		SmartDashboard.putNumber("TeleopWrist/wrist pitch", currentWristPitch);
 		SmartDashboard.putNumber("TeleopWrist/overridden", this.overrideLimits.getAsBoolean() ? 1 : -1);
 
 		// spotless:off
 		if(this.overrideLimits.getAsBoolean()) {
-			this.wristSubsystem.setDutyCycle(this.pitchSpeed.get());
+			this.wristSubsystem.setDutyCycle(currentInput);
 			this.wasEnded = true;
 			return;
 		}
@@ -67,17 +69,17 @@ public class TeleopWristOpenLoop extends CommandBase {
 			this.resetDesiredStateToCurrent();
 		}
 
-		// // spotless:off
-		// double deltaPitch = pitchFactor * pitchSpeed.get();
-		// this.desiredPitch = MathUtil.clamp(
-		// 	this.desiredPitch + deltaPitch, 
-		// 	WristConstants.minPitchDegrees,
-		// 	WristConstants.maxPitchDegrees
-		// );
-		// // spotless:on
+		// inverse kinematics, kinda
+		double gotoPitch = this.desiredPitch - currentArmPitch;
 
-		this.wristSubsystem.setPitch(MathUtil.clamp(this.desiredPitch - this.armAngle.get(),
-				WristConstants.minPitchDegrees, WristConstants.maxPitchDegrees));
+		// will be exactly zero if the wrist-control-modifier button is not pressed
+		if (currentInput != 0.0) {
+			double deltaPitch = this.pitchFactor * currentInput;
+			this.desiredPitch = WristSubsystem.clampWristPitch(currentWristPitch + deltaPitch) + currentArmPitch;
+		}
+
+		// automatically clamps it
+		this.wristSubsystem.setPitch(gotoPitch);
 	}
 
 	@Override

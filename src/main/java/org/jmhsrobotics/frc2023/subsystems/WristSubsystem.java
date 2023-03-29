@@ -3,9 +3,8 @@ package org.jmhsrobotics.frc2023.subsystems;
 import org.jmhsrobotics.frc2023.Constants;
 import org.jmhsrobotics.frc2023.Constants.ControlMode;
 import org.jmhsrobotics.frc2023.Constants.WristConstants;
+import org.jmhsrobotics.frc2023.util.TalonSRXAbsEncoder;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -20,7 +19,7 @@ public class WristSubsystem extends SubsystemBase {
 
 	// wrist hardware
 	private CANSparkMax wristMotor = new CANSparkMax(Constants.driveports.getWristCANId(), MotorType.kBrushless);
-	private TalonSRX wristAbsoluteEncoderConduit = new TalonSRX(Constants.driveports.getWristAbsoluteEncoderCANId());
+	private TalonSRXAbsEncoder wristAbsEncoder = new TalonSRXAbsEncoder(Constants.driveports.getWristAbsEncoderCANId());
 
 	private TrapezoidProfile.Constraints wristPPIDConstraints;
 	private ProfiledPIDController wristPPID;
@@ -36,14 +35,13 @@ public class WristSubsystem extends SubsystemBase {
 		this.wristMotor.setIdleMode(IdleMode.kBrake);
 		// this.wristMotor.setInverted(true);
 
-		this.wristAbsoluteEncoderConduit.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
 		this.updateStoredWristPosition();
 
 		// all in degrees
 		this.wristPPIDConstraints = new TrapezoidProfile.Constraints(220, 300);
 		// spotless:off
         this.wristPPID = new ProfiledPIDController(
-            0.03/*0.1*/, 0, 0, 
+            0.03, 0, 0, 
             this.wristPPIDConstraints
         );
         // spotless:on
@@ -89,6 +87,18 @@ public class WristSubsystem extends SubsystemBase {
 		this.setWristMotor(this.wristPPID.calculate(this.getWristPitch()));
 	}
 
+	// ****** UTIL ******
+
+	public static double clampWristPitch(double pitch) {
+		// spotless:off
+		return MathUtil.clamp(
+			pitch,
+			WristConstants.minPitchDegrees,
+			WristConstants.maxPitchDegrees
+		);
+		// spotless:on
+	}
+
 	// ****** WRIST MOTOR ******
 
 	public void setWristMotor(double speed) {
@@ -113,7 +123,7 @@ public class WristSubsystem extends SubsystemBase {
 	}
 
 	private void updateStoredWristPosition() {
-		this.wristAbsolutePosition = this.wristAbsoluteEncoderConduit.getSelectedSensorPosition();
+		this.wristAbsolutePosition = this.wristAbsEncoder.getPosition();
 	}
 
 	// ****** WRIST CONTROL ******
@@ -140,10 +150,14 @@ public class WristSubsystem extends SubsystemBase {
 		if (this.getControlMode() != ControlMode.CLOSED_LOOP)
 			this.resetWristPPIDToCurrent();
 
-		pitchGoal = MathUtil.clamp(pitchGoal, WristConstants.minPitchDegrees, WristConstants.maxPitchDegrees);
+		pitchGoal = WristSubsystem.clampWristPitch(pitchGoal);
 		this.wristPPID.setGoal(pitchGoal);
 
 		this.controlMode = ControlMode.CLOSED_LOOP;
+	}
+
+	public boolean atPitchGoal() {
+		return this.wristPPID.atGoal();
 	}
 
 	public void resetWristPPIDToCurrent() {

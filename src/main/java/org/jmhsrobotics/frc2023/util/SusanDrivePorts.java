@@ -84,7 +84,7 @@ public class SusanDrivePorts implements IDrivePorts {
 	}
 
 	@Override
-	public int getWristAbsoluteEncoderCANId() {
+	public int getWristAbsEncoderCANId() {
 		return 9;
 	}
 

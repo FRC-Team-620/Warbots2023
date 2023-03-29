@@ -103,7 +103,7 @@ public class BabybotDrivePorts implements IDrivePorts {
 	}
 
 	@Override
-	public int getWristAbsoluteEncoderCANId() {
+	public int getWristAbsEncoderCANId() {
 		return this.wristAbsoluteEncoderCANId;
 	}
 
