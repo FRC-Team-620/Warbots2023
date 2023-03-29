@@ -82,6 +82,10 @@ public class RobotMath {
 		return MathUtil.inputModulus(angle, -180, 180);
 	}
 
+	public static boolean isPow2(int n) {
+		return (n & n - 1) == 0 && n != 0;
+	}
+
 	/**
 	 * Takes an array of objects of generic type T and a function which converts
 	 * such objects into a double value, and returns the sum of doing this

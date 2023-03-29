@@ -218,16 +218,9 @@ public class LEDBuffer {
 		for (int i = 0; i < colors.length; i++) {
 			grad = LEDBuffer.gradient(lightsPerGrad, colors[i], colors[(i + 1) % colors.length]);
 			this.wrappedCopyAllFrom(grad, (i * lightsPerGrad + offset) % (finalGradPos + 1));
-			// for (int k = 0; k < lightsPerGrad; k++) {
-			// int lightIdx = i * lightsPerGrad + k;
-			// this.setLED((lightIdx + offset) % (finalGradPos + 1), grad[k]);
-			// }
 		}
 		// Correcting error resulting from integer division
 		this.setSubsetSolidColor(finalGradPos, this.getLength(), this.getLED(finalGradPos));
-		// Color finalColor = this.getLED(finalGradPos);
-		// for (int i = finalGradPos; i < this.getLength(); i++)
-		// this.setLED(i, finalColor);
 	}
 
 	/**
