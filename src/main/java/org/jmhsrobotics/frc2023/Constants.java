@@ -157,7 +157,7 @@ public final class Constants {
 
 	public static class WristConstants {
 		public static final double degreesPerEncoderTick = -0.041246563;
-		public static final double encoderTicksAtZeroDegrees = 3400.0; // yes, exactly this
+		public static final double encoderTicksAtZeroDegrees = 2275.0; // yes, exactly this
 		public static final double minPitchDegrees = -165.0;
 		public static final double maxPitchDegrees = 130.0;
 		public static final double stowedPositionRelative = WristConstants.maxPitchDegrees;

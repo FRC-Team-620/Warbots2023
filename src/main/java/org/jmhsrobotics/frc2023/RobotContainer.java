@@ -4,9 +4,7 @@
 
 package org.jmhsrobotics.frc2023;
 
-import org.jmhsrobotics.frc2023.Constants.ArmConstants;
 import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
-import org.jmhsrobotics.frc2023.Constants.WristConstants;
 import org.jmhsrobotics.frc2023.commands.ArmSetpointCommand;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
@@ -14,15 +12,9 @@ import org.jmhsrobotics.frc2023.commands.TeleopWristOpenLoop;
 import org.jmhsrobotics.frc2023.commands.TelopArmOpenLoop;
 import org.jmhsrobotics.frc2023.commands.ArmSetpointCommand.GripperType;
 import org.jmhsrobotics.frc2023.commands.ArmSetpointCommand.Setpoints;
-import org.jmhsrobotics.frc2023.commands.arm.CommandAThenEW;
-import org.jmhsrobotics.frc2023.commands.arm.CommandAWThenE;
-import org.jmhsrobotics.frc2023.commands.arm.CommandArmPitchThenExtension;
-import org.jmhsrobotics.frc2023.commands.arm.CommandEThenAW;
-import org.jmhsrobotics.frc2023.commands.arm.CommandEWThenA;
 import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
-import org.jmhsrobotics.frc2023.commands.grabber.CommandIntakeSolenoid;
 import org.jmhsrobotics.frc2023.commands.grabber.ToggleIntakePiston;
 // import org.jmhsrobotics.frc2023.commands.grabber.ToggleGrabberPitch;
 import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
@@ -49,9 +41,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -185,59 +175,16 @@ public class RobotContainer {
 		// operator.b().onTrue(new CommandArm(armSubsystem, 0, 180));
 		// controlBoard.alignPeg().onTrue(new AlignPeg(drivetrain));
 		controlBoard.changeScoringType().onTrue(new InstantCommand(() -> armSubsystem.setScoringType()));
-		controlBoard.armPresetStowed()
-				.onTrue(new ArmSetpointCommand(Setpoints.STOWED, GripperType.SOLENOID, this));
-		// new SequentialCommandGroup(new ParallelCommandGroup(
-		// new CommandArmExtension(armSubsystem, 0.0, controlBoard.overrideTeleopArm()),
-		// new InstantCommand(() -> {
-		// grabberSolenoidSubsystem.setGrabberIntakeState(false);
-		// grabberSolenoidSubsystem.setGrabberPitchState(false);
-		// }, grabberSolenoidSubsystem)),
-		// new CommandArm(armSubsystem, 0.0, ArmConstants.stowedDegrees,
-		// controlBoard.overrideTeleopArm())),
-		// new SequentialCommandGroup(new ParallelCommandGroup(
-		// new CommandArmExtension(armSubsystem, 0.0, controlBoard.overrideTeleopArm()),
-		// new InstantCommand(() -> {
-		// grabberSolenoidSubsystem.setGrabberIntakeState(true);
-		// grabberSolenoidSubsystem.setGrabberPitchState(false);
-		// }, grabberSolenoidSubsystem)), new CommandArm(armSubsystem, 0.0,
-		// ArmConstants.stowedDegrees, controlBoard.overrideTeleopArm())),
+		GripperType gripperType = GripperType.MOTOR;
+		controlBoard.armPresetStowed().onTrue(new ArmSetpointCommand(Setpoints.STOWED, gripperType, this));
 
-		controlBoard.armPresetFloor()
-				.onTrue(new ArmSetpointCommand(Setpoints.FLOOR, GripperType.SOLENOID, this));
+		controlBoard.armPresetFloor().onTrue(new ArmSetpointCommand(Setpoints.FLOOR, gripperType, this));
 
-		// new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 55,
-		// controlBoard.overrideTeleopArm()),
-		// new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 55,
-		// controlBoard.overrideTeleopArm()),
-		// armSubsystem::isCone));
+		controlBoard.armPresetMid().onTrue(new ArmSetpointCommand(Setpoints.MID, gripperType, this));
 
-		// controlBoard.armPresetFloor().whileTrue(new InstantCommand(() ->
-		// grabberMotorSubsystem.setGrabberMotor(-1), armSubsystem));
-		// controlBoard.armPresetFloor().onFalse(new InstantCommand(() ->
-		// grabberMotorSubsystem.setGrabberMotor(0), armSubsystem));
+		controlBoard.armPresetHigh().onTrue(new ArmSetpointCommand(Setpoints.HIGH, gripperType, this));
 
-		controlBoard.armPresetMid()
-				.onTrue(new ArmSetpointCommand(Setpoints.MID, GripperType.SOLENOID, this));
-
-		// controlBoard.armPresetMid().onTrue(
-		// new CommandWristAbsolute(wristSubsystem, 90.0, armSubsystem::getArmPitch,
-		// controlBoard.override()));
-
-		controlBoard.armPresetHigh()
-				.onTrue(new ArmSetpointCommand(Setpoints.HIGH, GripperType.SOLENOID, this));
-
-		// controlBoard.armPresetHigh()
-		// .onTrue(new ConditionalCommand(
-		// new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 247,
-		// controlBoard.overrideTeleopArm()),
-		// new CommandArm(armSubsystem, ArmConstants.maxExtensionLengthMillims, 247,
-		// controlBoard.overrideTeleopArm()),
-		// armSubsystem::isCone));/
-
-		controlBoard
-				.armPresetPickup().onTrue(
-					new ArmSetpointCommand(Setpoints.PICKUP, GripperType.SOLENOID, this));
+		controlBoard.armPresetPickup().onTrue(new ArmSetpointCommand(Setpoints.PICKUP, gripperType, this));
 
 		controlBoard.closeGrabber().onTrue(new ToggleIntakePiston(intakeSubsystem));
 
