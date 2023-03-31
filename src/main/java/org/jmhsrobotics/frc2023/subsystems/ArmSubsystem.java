@@ -3,6 +3,7 @@ package org.jmhsrobotics.frc2023.subsystems;
 import org.jmhsrobotics.frc2023.Constants;
 import org.jmhsrobotics.frc2023.Constants.ArmConstants;
 import org.jmhsrobotics.frc2023.Constants.ControlMode;
+import org.jmhsrobotics.frc2023.Constants.ScoringType;
 
 import com.playingwithfusion.TimeOfFlight;
 import com.playingwithfusion.TimeOfFlight.RangingMode;
@@ -63,10 +64,7 @@ public class ArmSubsystem extends SubsystemBase {
 	private boolean discrepancyDetected = false;
 	private double previousExtensionSetpointError;
 
-	public static enum scoringType {
-		CONE, CUBE;
-	}
-	public scoringType armScore = scoringType.CONE;
+	public ScoringType armScore = ScoringType.CONE;
 
 	private ControlMode controlMode = ControlMode.CLOSED_LOOP;
 
@@ -207,7 +205,7 @@ public class ArmSubsystem extends SubsystemBase {
 		// profiledExtensionPID.getSetpoint().position);
 	}
 
-	public scoringType getScoringType() {
+	public ScoringType getScoringType() {
 		return this.armScore;
 	}
 
@@ -356,17 +354,17 @@ public class ArmSubsystem extends SubsystemBase {
 
 	public void setScoringType() {
 		System.out.println("Switched Scoring Type");
-		if (armScore == scoringType.CONE) {
-			armScore = scoringType.CUBE;
+		if (armScore == ScoringType.CONE) {
+			armScore = ScoringType.CUBE;
 			System.out.println("to Cube");
 		} else {
-			armScore = scoringType.CONE;
+			armScore = ScoringType.CONE;
 			System.out.println("to Cone");
 		}
 	}
 
 	public boolean isCone() {
-		return armScore == scoringType.CONE;
+		return armScore == ScoringType.CONE;
 		// if (armScore == scoringType.CONE) {
 		// //System.out.print("TRUE");
 		// return true;

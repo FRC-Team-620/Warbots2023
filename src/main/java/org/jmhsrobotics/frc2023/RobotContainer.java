@@ -10,12 +10,11 @@ import org.jmhsrobotics.frc2023.commands.ArmSetpointCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
 import org.jmhsrobotics.frc2023.commands.TeleopWristOpenLoop;
 import org.jmhsrobotics.frc2023.commands.TelopArmOpenLoop;
-import org.jmhsrobotics.frc2023.commands.ArmSetpointCommand.GripperType;
-import org.jmhsrobotics.frc2023.commands.ArmSetpointCommand.Setpoints;
 import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
-import org.jmhsrobotics.frc2023.commands.grabber.ToggleIntakePiston;
+import org.jmhsrobotics.frc2023.commands.gripper.TeleopIntakeOpenLoop;
+import org.jmhsrobotics.frc2023.commands.gripper.ToggleIntakePiston;
 // import org.jmhsrobotics.frc2023.commands.grabber.ToggleGrabberPitch;
 import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
 import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
@@ -36,7 +35,6 @@ import org.jmhsrobotics.frc2023.subsystems.WristSubsystem;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDIdleCommand;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -116,14 +114,17 @@ public class RobotContainer {
 		// }, grabberMotorSubsystem));
 
 		// TODO: make this not hellish (plz)
-		intakeSubsystem.setDefaultCommand(new InstantCommand(() -> {
-			intakeSubsystem.setIntakeMotor(MathUtil.clamp(
-					((armSubsystem.getScoringType() == ArmSubsystem.scoringType.CUBE && controlBoard.intakeWheels() > 0)
-							? 0.4
-							: 1.0) * controlBoard.intakeWheels()
-							+ (intakeSubsystem.getIntakePistonState() ? 0.05 : 0.0),
-					-1, 1));
-		}, intakeSubsystem));
+
+		// spotless:off
+		intakeSubsystem.setDefaultCommand(
+			new TeleopIntakeOpenLoop(
+				intakeSubsystem, 
+				Constants.kGripperType, 
+				controlBoard::intakeWheels, 
+				armSubsystem::getScoringType
+			)
+		);
+		// spotless:on
 
 		// grabberMotorSubsystem.setGrabberMotor(controlBoard.intakeWheels()),
 		// grabberMotor));
@@ -175,16 +176,21 @@ public class RobotContainer {
 		// operator.b().onTrue(new CommandArm(armSubsystem, 0, 180));
 		// controlBoard.alignPeg().onTrue(new AlignPeg(drivetrain));
 		controlBoard.changeScoringType().onTrue(new InstantCommand(() -> armSubsystem.setScoringType()));
-		GripperType gripperType = GripperType.MOTOR;
-		controlBoard.armPresetStowed().onTrue(new ArmSetpointCommand(Setpoints.STOWED, gripperType, this));
 
-		controlBoard.armPresetFloor().onTrue(new ArmSetpointCommand(Setpoints.FLOOR, gripperType, this));
+		controlBoard.armPresetStowed()
+				.onTrue(new ArmSetpointCommand(Constants.Setpoints.STOWED, Constants.kGripperType, this));
 
-		controlBoard.armPresetMid().onTrue(new ArmSetpointCommand(Setpoints.MID, gripperType, this));
+		controlBoard.armPresetFloor()
+				.onTrue(new ArmSetpointCommand(Constants.Setpoints.FLOOR, Constants.kGripperType, this));
 
-		controlBoard.armPresetHigh().onTrue(new ArmSetpointCommand(Setpoints.HIGH, gripperType, this));
+		controlBoard.armPresetMid()
+				.onTrue(new ArmSetpointCommand(Constants.Setpoints.MID, Constants.kGripperType, this));
 
-		controlBoard.armPresetPickup().onTrue(new ArmSetpointCommand(Setpoints.PICKUP, gripperType, this));
+		controlBoard.armPresetHigh()
+				.onTrue(new ArmSetpointCommand(Constants.Setpoints.HIGH, Constants.kGripperType, this));
+
+		controlBoard.armPresetPickup()
+				.onTrue(new ArmSetpointCommand(Constants.Setpoints.PICKUP, Constants.kGripperType, this));
 
 		controlBoard.closeGrabber().onTrue(new ToggleIntakePiston(intakeSubsystem));
 
@@ -244,7 +250,7 @@ public class RobotContainer {
 		return RobotContainer.telemetry;
 	}
 
-    public ControlBoard getControlBoard() {
-        return null;
-    }
+	public ControlBoard getControlBoard() {
+		return controlBoard;
+	}
 }

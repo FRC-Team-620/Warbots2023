@@ -84,7 +84,7 @@ public class CompControl implements ControlBoard {
 	public double intakeWheels() {
 		return operatorController.getRightTriggerAxis() > operatorController.getLeftTriggerAxis()
 				? operatorController.getRightTriggerAxis()
-				: -operatorController.getLeftTriggerAxis() * 0.5;
+				: -operatorController.getLeftTriggerAxis();
 
 	}
 
