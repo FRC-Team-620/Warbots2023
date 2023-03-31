@@ -77,7 +77,7 @@ public class Robot extends TimedRobot {
 		// robot's periodic
 		// block in order for anything in the Command-based framework to work.
 		CommandScheduler.getInstance().run(); // TODO: delete
-		field.setRobotPose(m_robotContainer.drivetrain.getPose());
+		field.setRobotPose(m_robotContainer.getDrivetrain().getPose());
 	}
 
 	/** This function is called once each time the robot enters Disabled mode. */

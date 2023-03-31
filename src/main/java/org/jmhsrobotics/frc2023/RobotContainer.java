@@ -57,24 +57,24 @@ public class RobotContainer {
 	private static final TelemetrySubsystem telemetry = new TelemetrySubsystem();
 
 	// The robot's subsystems and commands are defined here...
-	public final ControlBoard controlBoard;
+	private final ControlBoard controlBoard;
 	private final CommandXboxController driver = new CommandXboxController(OperatorConstants.driverControllerPort);
 	private final CommandXboxController operator = new CommandXboxController(OperatorConstants.operatorControllerPort);
 
-	public final Drivetrain drivetrain = new Drivetrain();
-	public final LEDSubsystem ledSubsystem = new LEDSubsystem();
+	private final Drivetrain drivetrain = new Drivetrain();
+	private final LEDSubsystem ledSubsystem = new LEDSubsystem();
 	// public final GrabberSolenoidSubsystem grabberSolenoidSubsystem = new
 	// GrabberSolenoidSubsystem();
 	// public final GrabberMotorSubsystem grabberMotorSubsystem = new
 	// GrabberMotorSubsystem();
-	public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-	public final ArmSubsystem armSubsystem = new ArmSubsystem();
-	public final WristSubsystem wristSubsystem = new WristSubsystem();
+	private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+	private final ArmSubsystem armSubsystem = new ArmSubsystem();
+	private final WristSubsystem wristSubsystem = new WristSubsystem();
 	// private final ArmSubsystem armSubsystem = new ArmSubsystem();
 	// private final GrabberSubsystem grabberSubsystem=new GrabberSubsystem();
 	// private final VisionPlaceholder visionPlaceholder = new
 	// VisionPlaceholder(drivetrain);
-	public AutoSelector autoSelector;
+	private AutoSelector autoSelector;
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -224,7 +224,27 @@ public class RobotContainer {
 		return this.controlBoard;
 	}
 
+	public IntakeSubsystem getIntakeSubsystem() {
+		return intakeSubsystem;
+	}
+
+	public ArmSubsystem getArmSubsystem() {
+		return armSubsystem;
+	}
+
+	public WristSubsystem getWristSubsystem() {
+		return wristSubsystem;
+	}
+
+	public AutoSelector getAutoSelector() {
+		return autoSelector;
+	}
+
 	public static TelemetrySubsystem getTelemetry() {
 		return RobotContainer.telemetry;
 	}
+
+    public ControlBoard getControlBoard() {
+        return null;
+    }
 }
