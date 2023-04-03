@@ -13,7 +13,7 @@ import org.jmhsrobotics.frc2023.Constants.ArmConstants;
 import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
 import org.jmhsrobotics.frc2023.commands.TurnAngle;
 import org.jmhsrobotics.frc2023.commands.arm.CommandEThenA;
-import org.jmhsrobotics.frc2023.commands.arm.CommandAthenE;
+import org.jmhsrobotics.frc2023.commands.arm.CommandAThenE;
 import org.jmhsrobotics.frc2023.commands.grabber.CommandIntakeSolenoid;
 import org.jmhsrobotics.frc2023.commands.grabber.ToggleIntakePiston;
 // import org.jmhsrobotics.frc2023.commands.grabber.ToggleGrabberPitch;
@@ -45,7 +45,7 @@ public class ScoringAuto extends SequentialCommandGroup {
 			drivetrain.resetOdometry(
 					new Pose2d(Units.inchesToMeters(54.42), Units.inchesToMeters(42.079), Rotation2d.fromDegrees(0)));
 		}), new AutoDriveDistance(drivetrain, -0.35), /* new ToggleGrabberPitch(grabberSolenoidSubsystem), */
-				new CommandAthenE(armSubsystem, 1.0, 95, controls.override()),
+				new CommandAThenE(armSubsystem, 1.0, 95, controls.override()),
 				// new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 95,
 				// controls.overrideTeleopArm()),
 				// new CommandArmExtension(armSubsystem, 1.0, controls.overrideTeleopArm())),

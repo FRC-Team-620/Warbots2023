@@ -7,10 +7,10 @@ import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /** Command the Arm pitch and then command the Extension */
-public class CommandAthenE extends SequentialCommandGroup {
+public class CommandAThenE extends SequentialCommandGroup {
 
 	/** Command the Arm pitch and then command the Extension */
-	public CommandAthenE(ArmSubsystem armSubsystem, double extensionProportion, double angle,
+	public CommandAThenE(ArmSubsystem armSubsystem, double extensionProportion, double angle,
 			BooleanSupplier interrupt) {
 
 		// spotless:off
