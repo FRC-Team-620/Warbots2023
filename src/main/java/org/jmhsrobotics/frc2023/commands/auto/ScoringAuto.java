@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import org.jmhsrobotics.frc2023.Constants.ArmConstants;
 import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
 import org.jmhsrobotics.frc2023.commands.TurnAngle;
-import org.jmhsrobotics.frc2023.commands.arm.CommandArmExtensionThenPitch;
-import org.jmhsrobotics.frc2023.commands.arm.CommandArmPitchThenExtension;
+import org.jmhsrobotics.frc2023.commands.arm.CommandEThenA;
+import org.jmhsrobotics.frc2023.commands.arm.CommandAthenE;
 import org.jmhsrobotics.frc2023.commands.grabber.CommandIntakeSolenoid;
 import org.jmhsrobotics.frc2023.commands.grabber.ToggleIntakePiston;
 // import org.jmhsrobotics.frc2023.commands.grabber.ToggleGrabberPitch;
@@ -45,19 +45,18 @@ public class ScoringAuto extends SequentialCommandGroup {
 			drivetrain.resetOdometry(
 					new Pose2d(Units.inchesToMeters(54.42), Units.inchesToMeters(42.079), Rotation2d.fromDegrees(0)));
 		}), new AutoDriveDistance(drivetrain, -0.35), /* new ToggleGrabberPitch(grabberSolenoidSubsystem), */
-				new CommandArmPitchThenExtension(armSubsystem, 1.0, 95, controls.override()),
+				new CommandAthenE(armSubsystem, 1.0, 95, controls.override()),
 				// new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 95,
 				// controls.overrideTeleopArm()),
 				// new CommandArmExtension(armSubsystem, 1.0, controls.overrideTeleopArm())),
 				new AutoDriveDistance(drivetrain, 0.35), new ToggleIntakePiston(intakeSubsystem), new WaitCommand(0.2),
-				new ParallelCommandGroup(
-						new CommandArmExtensionThenPitch(armSubsystem, 0.0, ArmConstants.stowedDegrees,
-								controls.override()), /*
-														 * new InstantCommand(() -> {
-														 * grabberSolenoidSubsystem.setGrabberIntakeState(false);
-														 * grabberSolenoidSubsystem.setGrabberPitchState(false); },
-														 * grabberSolenoidSubsystem)
-														 */
+				new ParallelCommandGroup(new CommandEThenA(armSubsystem, 0.0, ArmConstants.stowedDegrees,
+						controls.override()), /*
+												 * new InstantCommand(() -> {
+												 * grabberSolenoidSubsystem.setGrabberIntakeState(false);
+												 * grabberSolenoidSubsystem.setGrabberPitchState(false); },
+												 * grabberSolenoidSubsystem)
+												 */
 						new CommandIntakeSolenoid(intakeSubsystem, false)),
 				new AutoDriveDistance(drivetrain, -3.3),
 				// Gets the robot out the comunity area (Over the charge station) by driving

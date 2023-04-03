@@ -13,7 +13,7 @@ import org.jmhsrobotics.frc2023.commands.TeleopWristOpenLoop;
 import org.jmhsrobotics.frc2023.commands.TelopArmOpenLoop;
 import org.jmhsrobotics.frc2023.commands.arm.CommandAThenEW;
 import org.jmhsrobotics.frc2023.commands.arm.CommandAWThenE;
-import org.jmhsrobotics.frc2023.commands.arm.CommandArmPitchThenExtension;
+import org.jmhsrobotics.frc2023.commands.arm.CommandAthenE;
 import org.jmhsrobotics.frc2023.commands.arm.CommandEThenAW;
 import org.jmhsrobotics.frc2023.commands.arm.CommandEWThenA;
 import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
@@ -237,10 +237,8 @@ public class RobotContainer {
 		// controlBoard.override()));
 
 		controlBoard.armPresetHigh()
-				.onTrue(new ConditionalCommand(
-						new CommandArmPitchThenExtension(armSubsystem, 1.0, 247, controlBoard.override()),
-						new CommandArmPitchThenExtension(armSubsystem, 1.0, 247, controlBoard.override()),
-						armSubsystem::isCone));
+				.onTrue(new ConditionalCommand(new CommandAthenE(armSubsystem, 1.0, 247, controlBoard.override()),
+						new CommandAthenE(armSubsystem, 1.0, 247, controlBoard.override()), armSubsystem::isCone));
 
 		// controlBoard.armPresetHigh()
 		// .onTrue(new ConditionalCommand(

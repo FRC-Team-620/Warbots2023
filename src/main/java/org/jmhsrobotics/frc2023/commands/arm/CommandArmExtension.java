@@ -5,6 +5,7 @@ import java.util.function.BooleanSupplier;
 import org.jmhsrobotics.frc2023.Constants.ControlMode;
 import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class CommandArmExtension extends CommandBase {
@@ -16,7 +17,7 @@ public class CommandArmExtension extends CommandBase {
 	// Constructor
 	public CommandArmExtension(ArmSubsystem armSubsystem, double distanceProportion, BooleanSupplier interrupt) {
 		this.armSubsystem = armSubsystem;
-		this.distanceProportion = distanceProportion;
+		this.distanceProportion = MathUtil.clamp(distanceProportion, 0.0, 1.0);;
 		this.interrupt = interrupt;
 		addRequirements(armSubsystem);
 	}
