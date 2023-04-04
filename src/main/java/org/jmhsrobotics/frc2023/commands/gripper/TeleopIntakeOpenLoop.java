@@ -68,7 +68,7 @@ public class TeleopIntakeOpenLoop extends CommandBase {
 
 				int modeFactor = currentMode == ScoringType.CONE ? -1 : 1;
 
-				baseSpeed = currentMode == ScoringType.CONE ? modeFactor * 0.1 : 0;
+				baseSpeed = currentMode == ScoringType.CONE ? modeFactor * 0.05 : 0;
 
 				if (currentMode == ScoringType.CONE)
 					currentSpeed *= 0.6;

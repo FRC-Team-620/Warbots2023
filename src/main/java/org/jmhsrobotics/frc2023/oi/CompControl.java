@@ -57,7 +57,7 @@ public class CompControl implements ControlBoard {
 	@Override
 	public boolean isDriveFast() {
 		// TODO Auto-generated method stub
-		return driverController.rightBumper().getAsBoolean();
+		return driverController.rightBumper().getAsBoolean() || driverController.a().getAsBoolean();
 	}
 
 	// Operator Controller

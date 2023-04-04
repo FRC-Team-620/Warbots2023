@@ -9,6 +9,7 @@ import org.jmhsrobotics.frc2023.commands.arm.CommandAThenEW;
 import org.jmhsrobotics.frc2023.commands.arm.CommandAWThenE;
 import org.jmhsrobotics.frc2023.commands.arm.CommandArmPitchThenExtension;
 import org.jmhsrobotics.frc2023.commands.arm.CommandEThenAW;
+import org.jmhsrobotics.frc2023.commands.arm.CommandEWThenA;
 import org.jmhsrobotics.frc2023.commands.gripper.CommandIntakeSolenoid;
 
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -50,9 +51,9 @@ public class ArmSetpointCommand extends SequentialCommandGroup {
 					case MID :
 						addCommands(new ConditionalCommand(
 								new CommandAThenEW(robotContainer.getArmSubsystem(), robotContainer.getWristSubsystem(),
-										1.0, 95, 90, robotContainer.getControlBoard().override()),
+										0.8, 95, 90, robotContainer.getControlBoard().override()),
 								new CommandAThenEW(robotContainer.getArmSubsystem(), robotContainer.getWristSubsystem(),
-										1.0, 80, 90, robotContainer.getControlBoard().override()),
+										0.8, 80, 90, robotContainer.getControlBoard().override()),
 								robotContainer.getArmSubsystem()::isCone));
 						break;
 					case HIGH :
@@ -108,15 +109,24 @@ public class ArmSetpointCommand extends SequentialCommandGroup {
 					case MID :
 						addCommands(new ConditionalCommand(
 								new CommandAThenEW(robotContainer.getArmSubsystem(), robotContainer.getWristSubsystem(),
-										1.0, 95, 90, robotContainer.getControlBoard().override()),
+										0.2, 95, 90, robotContainer.getControlBoard().override()),
 								new CommandAThenEW(robotContainer.getArmSubsystem(), robotContainer.getWristSubsystem(),
-										1.0, 80, 90, robotContainer.getControlBoard().override()),
+										0.2, 80, 90, robotContainer.getControlBoard().override()),
 								robotContainer.getArmSubsystem()::isCone));
 						break;
 					case HIGH :
-						addCommands(new ConditionalCommand(
-								new CommandAWThenE(robotContainer.getArmSubsystem(), robotContainer.getWristSubsystem(),
-										1.0, 110, 138, robotContainer.getControlBoard().override()),
+						addCommands(new ConditionalCommand(new ConditionalCommand(
+								new CommandEWThenA(robotContainer.getArmSubsystem(), robotContainer.getWristSubsystem(),
+										1.0, 110, 115, robotContainer.getControlBoard().override()),
+								new SequentialCommandGroup(
+										new CommandAWThenE(robotContainer.getArmSubsystem(),
+												robotContainer.getWristSubsystem(), 1.0, 48, 138,
+												robotContainer.getControlBoard().override()),
+										new CommandAWThenE(robotContainer.getArmSubsystem(),
+												robotContainer.getWristSubsystem(), 1.0, 110, 115,
+												robotContainer.getControlBoard().override()))
+
+								, robotContainer.getArmSubsystem()::isHigherThen),
 								new CommandAWThenE(robotContainer.getArmSubsystem(), robotContainer.getWristSubsystem(),
 										1.0, 110, 138, robotContainer.getControlBoard().override()),
 

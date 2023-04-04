@@ -373,6 +373,9 @@ public class ArmSubsystem extends SubsystemBase {
 		// return false;
 		// }
 	}
+	public boolean isHigherThen() {
+		return this.getArmPitch() > 43;
+	}
 
 	/*
 	 * Returns the angle of the arm in degrees. Zero degrees being parallel to the
