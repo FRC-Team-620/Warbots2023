@@ -44,6 +44,7 @@ public class ArmSubsystem extends SubsystemBase {
 	private SparkMaxAnalogSensor pitchAbsoluteEncoder = pitchMotor.getAnalog(Mode.kAbsolute);
 	// private RelativeEncoder pitchEncoder = pitchMotor.getEncoder();
 	private TalonSRXAbsEncoder pitchAbsEncoder = new TalonSRXAbsEncoder(10);
+	private RelativeEncoder pitchRelativeEncoder = pitchMotor.getEncoder();
 	private RelativeEncoder extensionEncoder = telescopeMotor.getEncoder();
 	// private SparkMaxAnalogSensor extensionEncoder =
 	// telescopeMotor.getAnalog(Mode.kAbsolute);
@@ -102,6 +103,12 @@ public class ArmSubsystem extends SubsystemBase {
 		telescopeMotor.setSmartCurrentLimit(40);
 
 		// pitchEncoder.setPosition(0);
+		// spotless:off
+		this.pitchRelativeEncoder.setPosition(
+			ArmConstants.relativeTicksPerAbsTick * 
+				(this.pitchAbsEncoder.getPosition() - ArmConstants.absoluteTicksAtReferenceAngle)
+		);
+		// spotless:on
 
 		telescopeMotor.setIdleMode(IdleMode.kBrake);
 		// extensionEncoder.setPositionConversionFactor(ArmConstants.extensionMetersPerEncoderTick);
@@ -244,6 +251,10 @@ public class ArmSubsystem extends SubsystemBase {
 		return this.pitchAbsEncoder.getPosition();
 	}
 
+	public double getPitchRelativeEncoderPosition() {
+		return this.pitchRelativeEncoder.getPosition();
+	}
+
 	public double getExtensionRelativeEncoderPosition() {
 		return this.extensionEncoder.getPosition();
 	}
@@ -289,13 +300,13 @@ public class ArmSubsystem extends SubsystemBase {
 	public double getArmPitch() {
 		// return ArmConstants.pitchDegreesPerEncoderTick *
 		// this.pitchEncoder.getPosition() + ArmConstants.stowedDegrees;
-		return ArmConstants.pitchDegreesPerEncoderTick
-				* (this.getPitchAbsEncoderPosition() - ArmConstants.encoderTicksAtReferenceAngle)
-				+ ArmConstants.pitchReferenceAngleDegrees;
+		return ArmConstants.pitchDegreesPerEncoderTick * this.getPitchRelativeEncoderPosition()
+			+ ArmConstants.pitchReferenceAngleDegrees;
 	}
 
 	public static double pitchEncoderPositionFromDegrees(double angle) {
-		return (angle - ArmConstants.stowedDegrees) / ArmConstants.pitchDegreesPerEncoderTick;
+		// return (angle - ArmConstants.stowedDegrees) / ArmConstants.pitchDegreesPerEncoderTick;
+		return (angle - ArmConstants.pitchReferenceAngleDegrees) / ArmConstants.pitchDegreesPerEncoderTick;
 	}
 
 	/**

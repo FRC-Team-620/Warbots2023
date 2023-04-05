@@ -115,7 +115,7 @@ public class TelopArmOpenLoop extends CommandBase {
 		// );
 		// spotless:on
 
-		armSubsystem.updatePitchGoal(this.desiredPitch);
+		armSubsystem.setPitch(this.desiredPitch);
 		// armSubsystem.setPitch(this.desiredPitch);
 		armSubsystem.setExtension(this.desiredExtension);
 	}

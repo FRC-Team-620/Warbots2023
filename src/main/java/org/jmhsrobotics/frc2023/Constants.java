@@ -163,9 +163,10 @@ public final class Constants {
 		public static final double armMasskg = 7;
 		public static final double stowedDegrees = 20;
 		// going from encoder counts to degrees
+		public static final double relativeTicksPerAbsTick = -0.078; // TODO: change
 		public static final double pitchReferenceAngleDegrees = 90.0;
-		public static final double encoderTicksAtReferenceAngle = 3168.0;
-		public static final double pitchDegreesPerEncoderTick = 0.089596814; // TODO: change
+		public static final double absoluteTicksAtReferenceAngle = 3177.0; // TODO: tune this
+		public static final double pitchDegreesPerEncoderTick = -1.166; // TODO: change
 		public static final double minArmAngleDegrees = ArmConstants.stowedDegrees;
 		public static final double maxArmAngleDegrees = 290;
 		public static final double armDistanceToCenterMeters = Units.inchesToMeters(-8);
