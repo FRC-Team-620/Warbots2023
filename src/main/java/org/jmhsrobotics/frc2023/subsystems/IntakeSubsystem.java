@@ -45,6 +45,10 @@ public class IntakeSubsystem extends SubsystemBase {
 		this.intakeMotor.set(0.0);
 	}
 
+	public void intakeOut() {
+		setIntakeMotor(-1);
+	}
+
 	// ****** INTAKE PISTON ******
 
 	public void setIntakePistonState(boolean state) {

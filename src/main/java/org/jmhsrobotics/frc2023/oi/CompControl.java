@@ -156,12 +156,12 @@ public class CompControl implements ControlBoard {
 
 	@Override
 	public BooleanSupplier overrideTeleopArm() {
-		return operatorController.start();
+		return () -> this.override().getAsBoolean() && !this.wristControlModifier().getAsBoolean();
 	}
 
 	@Override
 	public BooleanSupplier overrideTeleopWrist() {
-		return operatorController.start();
+		return () -> this.override().getAsBoolean() && this.wristControlModifier().getAsBoolean();
 	}
 
 }

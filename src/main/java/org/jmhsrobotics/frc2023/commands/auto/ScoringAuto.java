@@ -48,9 +48,12 @@ public class ScoringAuto extends SequentialCommandGroup {
 			drivetrain.resetOdometry(
 					new Pose2d(Units.inchesToMeters(54.42), Units.inchesToMeters(42.079), Rotation2d.fromDegrees(0)));
 		}),
-				new CommandAThenEW(armSubsystem, wristSubsystem, 1, 85, 10, controls.overrideTeleopArm()),
+			new CommandAThenEW(armSubsystem, wristSubsystem,
+		0.2, 95, 90, controls.override()),
 				//new InstantCommand(grabberSolenoidSubsystem::toggleIntake, grabberSolenoidSubsystem),
+				new InstantCommand(intakeSubsystem::intakeOut, intakeSubsystem),
 				new WaitCommand(2.5),
+				new InstantCommand(intakeSubsystem::stopIntakeMotor, intakeSubsystem),
 				// new SequentialCommandGroup(new ParallelCommandGroup(new CommandArmExtension(armSubsystem,
 				// 		ArmConstants.minExtensionLengthMillims, controls.overrideTeleopArm()),
 				// 		new InstantCommand(() -> {
@@ -59,7 +62,7 @@ public class ScoringAuto extends SequentialCommandGroup {
 				// 		}, grabberSolenoidSubsystem)),
 				// 		new CommandArm(armSubsystem, ArmConstants.minExtensionLengthMillims, ArmConstants.stowedDegrees,
 				// 				controls.overrideTeleopArm())),
-				new CommandAThenEW(armSubsystem, wristSubsystem, 1, 85, 10, controls.overrideTeleopArm()),//stow
+				new CommandAThenEW(armSubsystem, wristSubsystem, 0, 20, 150, controls.overrideTeleopArm()),//stow
 
 				new AutoBalance(drivetrain, true, ledSubsystem));
 
