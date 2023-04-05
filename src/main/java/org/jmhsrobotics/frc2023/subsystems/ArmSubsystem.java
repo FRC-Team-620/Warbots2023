@@ -79,7 +79,7 @@ public class ArmSubsystem extends SubsystemBase {
 		// spotless:off
 		anglePPIDConstraints = new Constraints(110, 150);
 		profiledAnglePID = new ProfiledPIDController(
-			0.05, 0.0, 0.0, anglePPIDConstraints
+			0.1, 0.0, 0.0, anglePPIDConstraints
 		);
 
 		profiledAnglePID.setTolerance(0.7, 4);
