@@ -44,10 +44,12 @@ public class AutoBalance extends CommandBase {
 
 	// LEDSubsystem.LEDStrip strip = LEDManager.STRIP0.strip;
 
-	// private LEDAnimation blinkingAnim = strip.blinkingAnimation(0.125, Color.kRed, Color.kOrange, Color.kYellow,
-	// 		Color.kGreen, Color.kBlue, Color.kPurple);
+	// private LEDAnimation blinkingAnim = strip.blinkingAnimation(0.125,
+	// Color.kRed, Color.kOrange, Color.kYellow,
+	// Color.kGreen, Color.kBlue, Color.kPurple);
 
-	// private LEDAnimation redBlueAnim = strip.fadeTwoAnimation(1, 20, Color.kRed, Color.kBlue);
+	// private LEDAnimation redBlueAnim = strip.fadeTwoAnimation(1, 20, Color.kRed,
+	// Color.kBlue);
 
 	public AutoBalance(Drivetrain drivetrain, boolean backwards, LEDSubsystem ledSubsystem) {
 		this.backwards = backwards;

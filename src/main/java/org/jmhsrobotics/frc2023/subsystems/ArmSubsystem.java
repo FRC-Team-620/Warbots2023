@@ -4,6 +4,7 @@ import org.jmhsrobotics.frc2023.Constants;
 import org.jmhsrobotics.frc2023.Constants.ArmConstants;
 import org.jmhsrobotics.frc2023.Constants.ControlMode;
 import org.jmhsrobotics.frc2023.Constants.ScoringType;
+import org.jmhsrobotics.frc2023.util.TalonSRXAbsEncoder;
 
 import com.playingwithfusion.TimeOfFlight;
 import com.playingwithfusion.TimeOfFlight.RangingMode;
@@ -41,7 +42,8 @@ public class ArmSubsystem extends SubsystemBase {
 	private CANSparkMax telescopeMotor = new CANSparkMax(Constants.driveports.getArmExtensionCANId(),
 			MotorType.kBrushless);
 	private SparkMaxAnalogSensor pitchAbsoluteEncoder = pitchMotor.getAnalog(Mode.kAbsolute);
-	private RelativeEncoder pitchEncoder = pitchMotor.getEncoder();
+	// private RelativeEncoder pitchEncoder = pitchMotor.getEncoder();
+	private TalonSRXAbsEncoder pitchAbsEncoder = new TalonSRXAbsEncoder(10);
 	private RelativeEncoder extensionEncoder = telescopeMotor.getEncoder();
 	// private SparkMaxAnalogSensor extensionEncoder =
 	// telescopeMotor.getAnalog(Mode.kAbsolute);
@@ -76,7 +78,7 @@ public class ArmSubsystem extends SubsystemBase {
 		// spotless:off
 		anglePPIDConstraints = new Constraints(110, 150);
 		profiledAnglePID = new ProfiledPIDController(
-			0.10, 0.0, 0.0, anglePPIDConstraints
+			0.05, 0.0, 0.0, anglePPIDConstraints
 		);
 
 		profiledAnglePID.setTolerance(0.7, 4);
@@ -99,7 +101,7 @@ public class ArmSubsystem extends SubsystemBase {
 		pitchMotor.setSmartCurrentLimit(40);
 		telescopeMotor.setSmartCurrentLimit(40);
 
-		pitchEncoder.setPosition(0);
+		// pitchEncoder.setPosition(0);
 
 		telescopeMotor.setIdleMode(IdleMode.kBrake);
 		// extensionEncoder.setPositionConversionFactor(ArmConstants.extensionMetersPerEncoderTick);
@@ -130,7 +132,7 @@ public class ArmSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("ArmSubsystem/armPitch", this.getArmPitch());
 		SmartDashboard.putNumber("ArmSubsystem/LaserDistance", laser.getRange());
 		SmartDashboard.putString("arm/controlMode", getControlMode().toString());
-		SmartDashboard.putNumber("ArmSubsystem/pitchMotorRelativeEncoder", pitchEncoder.getPosition() * -1.7379 + 30);
+		SmartDashboard.putNumber("ArmSubsystem/pitchMotorRelativeEncoder", this.getPitchAbsEncoderPosition());
 		SmartDashboard.putNumber("ArmSubsystem/PitchAbsoluteEncoderPosition", pitchAbsoluteEncoder.getPosition());
 		// SmartDashboard.putNumber("ArmSubsystem/StringPotPosition",
 		// extensionEncoder.getPosition());
@@ -182,7 +184,8 @@ public class ArmSubsystem extends SubsystemBase {
 		// profiledAnglePID.calculate(pitchEncoder.getPosition()))
 		// / 12); // TODO fix janky volts hack
 
-		pitchMotor.set(-profiledAnglePID.calculate(this.getArmPitch()));
+		pitchMotor.set(-profiledAnglePID.calculate(this.getArmPitch()));// + -0.05 *
+																		// Math.sin(Math.toRadians(this.getArmPitch())));
 		telescopeMotor.set(profiledExtensionPID.calculate(this.getArmLength()));
 		// armExtension.set(profiledExtensionPID.getGoal().position);
 		SmartDashboard.putNumber("ArmSubsystem/pitch_angle", this.getArmPitch());
@@ -237,8 +240,8 @@ public class ArmSubsystem extends SubsystemBase {
 		this.profiledExtensionPID.reset(this.getArmLength());
 	}
 
-	public double getPitchRelativeEncoderPosition() {
-		return this.pitchEncoder.getPosition();
+	public double getPitchAbsEncoderPosition() {
+		return this.pitchAbsEncoder.getPosition();
 	}
 
 	public double getExtensionRelativeEncoderPosition() {
@@ -253,9 +256,9 @@ public class ArmSubsystem extends SubsystemBase {
 		return this.profiledExtensionPID.getGoal();
 	}
 
-	public void resetPitchEncoder() {
-		this.pitchEncoder.setPosition(0.0);
-	}
+	// public void resetPitchEncoder() {
+	// this.pitchEncoder.setPosition(0.0);
+	// }
 
 	public void resetExtensionEncoder() {
 		this.extensionEncoder.setPosition(0.0);
@@ -284,7 +287,11 @@ public class ArmSubsystem extends SubsystemBase {
 	}
 
 	public double getArmPitch() {
-		return ArmConstants.pitchDegreesPerEncoderTick * this.pitchEncoder.getPosition() + ArmConstants.stowedDegrees;
+		// return ArmConstants.pitchDegreesPerEncoderTick *
+		// this.pitchEncoder.getPosition() + ArmConstants.stowedDegrees;
+		return ArmConstants.pitchDegreesPerEncoderTick
+				* (this.getPitchAbsEncoderPosition() - ArmConstants.encoderTicksAtReferenceAngle)
+				+ ArmConstants.pitchReferenceAngleDegrees;
 	}
 
 	public static double pitchEncoderPositionFromDegrees(double angle) {
@@ -308,17 +315,36 @@ public class ArmSubsystem extends SubsystemBase {
 
 	// Sets the motor controlling arm height
 	public void setPitch(double targetAngleDeg) {
-		targetAngleDeg = MathUtil.clamp(targetAngleDeg, ArmConstants.minArmAngleDegrees,
-				ArmConstants.maxArmAngleDegrees);
-		profiledAnglePID.reset(this.getArmPitch());
-		profiledAnglePID.setGoal(new State(targetAngleDeg, 0));
-		SmartDashboard.putNumber("Wristpid/targetAngleDeg", targetAngleDeg);
+		// spotless:off
+		// targetAngleDeg = MathUtil.clamp(targetAngleDeg, ArmConstants.minArmAngleDegrees,
+		// 		ArmConstants.maxArmAngleDegrees);
+		// profiledAnglePID.reset(this.getArmPitch());
+		// profiledAnglePID.setGoal(new State(targetAngleDeg, 0));
+		// SmartDashboard.putNumber("Wristpid/targetAngleDeg", targetAngleDeg);
 
-		if (controlMode != ControlMode.CLOSED_LOOP) {
-			profiledAnglePID.setGoal(new State(this.getArmPitch(), 0));
-			profiledAnglePID.reset(this.getArmPitch());
-		}
-		controlMode = ControlMode.CLOSED_LOOP;
+		// if (controlMode != ControlMode.CLOSED_LOOP) {
+		// 	profiledAnglePID.setGoal(new State(this.getArmPitch(), 0));
+		// 	profiledAnglePID.reset(this.getArmPitch());
+		// }
+		// controlMode = ControlMode.CLOSED_LOOP;
+		// spotless:on
+		if (this.getControlMode() != ControlMode.CLOSED_LOOP)
+			this.resetAnglePPIDToCurrent();
+
+		targetAngleDeg = ArmSubsystem.clampArmPitch(targetAngleDeg);
+		this.profiledAnglePID.setGoal(targetAngleDeg);
+
+		this.controlMode = ControlMode.CLOSED_LOOP;
+	}
+
+	public static double clampArmPitch(double pitch) {
+		// spotless:off
+		return MathUtil.clamp(
+			pitch,
+			ArmConstants.minArmAngleDegrees,
+			ArmConstants.maxArmAngleDegrees
+		);
+		// spotless:on
 	}
 
 	public void setExtensionProportion(double extensionProportion) {
@@ -332,24 +358,51 @@ public class ArmSubsystem extends SubsystemBase {
 
 	// Sets the motor controlling arm length
 	public void setExtension(double targetDistanceMillims) { // TODO: Add back distance clamps for arm extention oops
-		// targetDistanceMeters = MathUtil.clamp(targetDistanceMeters, 0,
-		// ArmConstants.maxExtensionLengthMeters -
-		// ArmConstants.minExtensionLengthMeters);.
-		targetDistanceMillims = MathUtil.clamp(targetDistanceMillims, ArmConstants.minExtensionLengthMillims,
-				ArmConstants.maxExtensionLengthMillims);
-		profiledExtensionPID.reset(this.getArmLength());
-		// TODO: not using meters using encoder counts so switch to meters
-		profiledExtensionPID.setGoal(targetDistanceMillims); // TODO: Potential Bug because we reset the
-																// goal we set here when switching into
-																// closed loop control
-		SmartDashboard.putNumber("ArmSubsystem/lengthpid/targetLength", profiledExtensionPID.getGoal().position);
+		// spotless:off
+		// // targetDistanceMeters = MathUtil.clamp(targetDistanceMeters, 0,
+		// // ArmConstants.maxExtensionLengthMeters -
+		// // ArmConstants.minExtensionLengthMeters);.
+		// targetDistanceMillims = MathUtil.clamp(targetDistanceMillims, ArmConstants.minExtensionLengthMillims,
+		// 		ArmConstants.maxExtensionLengthMillims);
+		// profiledExtensionPID.reset(this.getArmLength());
+		// // TODO: not using meters using encoder counts so switch to meters
+		// profiledExtensionPID.setGoal(targetDistanceMillims); // TODO: Potential Bug because we reset the
+		// 														// goal we set here when switching into
+		// 														// closed loop control
+		// SmartDashboard.putNumber("ArmSubsystem/lengthpid/targetLength", profiledExtensionPID.getGoal().position);
 
-		if (controlMode != ControlMode.CLOSED_LOOP) {
-			profiledExtensionPID.setGoal(new State(this.getArmLength(), 0));
-			profiledExtensionPID.reset(this.getArmLength());
-		}
-		SmartDashboard.putNumber("ArmSubsystem/lengthpid/targetLength__2", profiledExtensionPID.getGoal().position);
-		controlMode = ControlMode.CLOSED_LOOP;
+		// if (controlMode != ControlMode.CLOSED_LOOP) {
+		// 	profiledExtensionPID.setGoal(new State(this.getArmLength(), 0));
+		// 	profiledExtensionPID.reset(this.getArmLength());
+		// }
+		// SmartDashboard.putNumber("ArmSubsystem/lengthpid/targetLength__2", profiledExtensionPID.getGoal().position);
+		// controlMode = ControlMode.CLOSED_LOOP;
+		// spotless:on
+		if (this.getControlMode() != ControlMode.CLOSED_LOOP)
+			this.resetExtensionPPIDToCurrent();
+
+		targetDistanceMillims = ArmSubsystem.clampExtensionCount(targetDistanceMillims);
+		this.profiledExtensionPID.setGoal(targetDistanceMillims);
+
+		this.controlMode = ControlMode.CLOSED_LOOP;
+	}
+
+	public static double clampExtensionCount(double extensionCount) {
+		// spotless:off
+		return MathUtil.clamp(
+			extensionCount,
+			ArmConstants.minExtensionLengthMillims,
+			ArmConstants.maxExtensionLengthMillims
+		);
+		// spotless:on
+	}
+
+	public static double clampExtensionProportion(double extensionProportion) {
+		// spotless:off
+		return MathUtil.clamp(
+			extensionProportion, 0.0, 1.0
+		);
+		// spotless:on
 	}
 
 	public void setScoringType() {

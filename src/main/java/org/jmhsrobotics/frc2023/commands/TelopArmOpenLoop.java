@@ -7,7 +7,6 @@ import org.jmhsrobotics.frc2023.Constants.ArmConstants;
 import org.jmhsrobotics.frc2023.Constants.RobotConstants;
 import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -55,7 +54,7 @@ public class TelopArmOpenLoop extends CommandBase {
 	@Override
 	public void execute() {
 
-		SmartDashboard.putNumber("ArmTeleop/Pitch/pitchEncoder", this.armSubsystem.getPitchRelativeEncoderPosition());
+		SmartDashboard.putNumber("ArmTeleop/Pitch/pitchEncoder", this.armSubsystem.getPitchAbsEncoderPosition());
 		SmartDashboard.putNumber("ArmTeleop/Pitch/pitchInput", this.pitchSpeed.get());
 		SmartDashboard.putNumber("ArmTeleop/Pitch/desiredPitch", this.desiredPitch);
 		SmartDashboard.putNumber("ArmTeleop/Pitch/armPitch", this.armSubsystem.getArmPitch());
@@ -81,27 +80,18 @@ public class TelopArmOpenLoop extends CommandBase {
 		// If closed-loop control is starting up again after having been interrupted
 		if (this.wasEnded) {
 			this.wasEnded = false;
-			boolean armTooLow = this.armSubsystem.getArmPitch() < ArmConstants.minArmAngleDegrees;
 			boolean extensionTooLow = this.armSubsystem.getArmLength() < ArmConstants.minExtensionLengthMillims;
 			// resetting the arm to a given min pitch (resetting relative encoder) if below
 			// range
-			if (armTooLow || extensionTooLow) {
-				if (armTooLow)
-					this.armSubsystem.resetPitchEncoder();
-				if (extensionTooLow)
-					this.armSubsystem.resetExtensionEncoder();
-
+			if (extensionTooLow) {
+				this.armSubsystem.resetExtensionEncoder();
 				this.resetDesiredStateToCurrent();
-
 				// vvvvv YOU NEED TO DO THIS vvvvvv
 				// RESETTING THE PITCH ENCODER ALONE IS NOT FAST ENOUGH
 				// THE HARDWARE IS BAD AND IT DOES NOT REGISTER IN TIME (caused massive jiggle
 				// w/o)
 				// this killed me
-				if (armTooLow)
-					this.armSubsystem.resetAnglePPIDToValue(ArmConstants.stowedDegrees);
-				if (extensionTooLow)
-					this.armSubsystem.resetExtensionPPIDToValue(0.0);
+				this.armSubsystem.resetExtensionPPIDToValue(0.0);
 			} else {
 				this.resetDesiredStateToCurrent();
 			}
@@ -109,22 +99,25 @@ public class TelopArmOpenLoop extends CommandBase {
 
 		// spotless:off
 		double deltaPitch = pitchFactor * pitchSpeed.get();
-		this.desiredPitch = MathUtil.clamp(
-			this.desiredPitch + deltaPitch, 
-			ArmConstants.minArmAngleDegrees,
-			ArmConstants.maxArmAngleDegrees
-		);
+		this.desiredPitch = ArmSubsystem.clampArmPitch(this.desiredPitch + deltaPitch);
+		// this.desiredPitch = MathUtil.clamp(
+		// 	this.desiredPitch + deltaPitch, 
+		// 	ArmConstants.minArmAngleDegrees,
+		// 	ArmConstants.maxArmAngleDegrees
+		// );
 
 		double deltaExtension = extensionFactor * linearSpeed.get();
-		this.desiredExtension = MathUtil.clamp(
-			this.desiredExtension + deltaExtension, 
-			ArmConstants.minExtensionLengthMillims, 
-			ArmConstants.maxExtensionLengthMillims
-		);
+		this.desiredExtension = ArmSubsystem.clampExtensionCount(this.desiredExtension + deltaExtension);
+		// this.desiredExtension = MathUtil.clamp(
+		// 	this.desiredExtension + deltaExtension, 
+		// 	ArmConstants.minExtensionLengthMillims, 
+		// 	ArmConstants.maxExtensionLengthMillims
+		// );
 		// spotless:on
 
 		armSubsystem.updatePitchGoal(this.desiredPitch);
-		armSubsystem.updateExtensionGoal(this.desiredExtension);
+		// armSubsystem.setPitch(this.desiredPitch);
+		armSubsystem.setExtension(this.desiredExtension);
 	}
 
 	@Override
