@@ -155,14 +155,14 @@ public final class Constants {
 	public static class ArmConstants {
 		public static final double armHeightMeters = Units.inchesToMeters(27.5);
 		// public static final double maxEncoderCounts = 62.5;
-		public static final double minExtensionLengthEncCounts = 0;
-		public static final double maxExtensionLengthEncCounts = 45;// 45
+		public static final double minExtensionLengthMillims = 0;//77
+		public static final double maxExtensionLengthMillims = 45;//180
 		// public static final double extensionMetersPerEncoderTick =
 		// maxExtensionLengthMeters / maxEncoderCounts;
 		public static final double armPitchGearRatio = 270;
 		public static final double armMasskg = 7;
 		public static final double pitchDegreesPerEncoderTick = -1.166;
-		public static final double stowedDegrees = 23.33;
+		public static final double stowedDegrees = 20;
 		public static final double minArmAngleDegrees = ArmConstants.stowedDegrees;
 		public static final double maxArmAngleDegrees = 290;
 		public static final double armDistanceToCenterMeters = Units.inchesToMeters(-8);

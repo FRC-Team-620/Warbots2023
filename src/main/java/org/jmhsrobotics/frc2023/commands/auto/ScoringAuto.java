@@ -3,7 +3,7 @@ package org.jmhsrobotics.frc2023.commands.auto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -11,16 +11,17 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import org.jmhsrobotics.frc2023.Constants.ArmConstants;
 import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
+// import org.jmhsrobotics.frc2023.commands.CommandArm;
+// import org.jmhsrobotics.frc2023.commands.CommandArmExtension;
+// import org.jmhsrobotics.frc2023.commands.CommandArmPitch;
 import org.jmhsrobotics.frc2023.commands.TurnAngle;
-import org.jmhsrobotics.frc2023.commands.arm.CommandArmExtensionThenPitch;
+import org.jmhsrobotics.frc2023.commands.arm.CommandAThenEW;
 import org.jmhsrobotics.frc2023.commands.arm.CommandArmPitchThenExtension;
-import org.jmhsrobotics.frc2023.commands.gripper.CommandIntakeSolenoid;
-import org.jmhsrobotics.frc2023.commands.gripper.ToggleIntakePiston;
-// import org.jmhsrobotics.frc2023.commands.grabber.ToggleGrabberPitch;
 import org.jmhsrobotics.frc2023.oi.ControlBoard;
 import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 import org.jmhsrobotics.frc2023.subsystems.IntakeSubsystem;
+import org.jmhsrobotics.frc2023.subsystems.WristSubsystem;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberMotorSubsystem;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSolenoidSubsystem;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
@@ -35,38 +36,38 @@ public class ScoringAuto extends SequentialCommandGroup {
 	}
 	private StartingPosition startingPos;
 	// Constructor
-	public ScoringAuto(Drivetrain drivetrain, ArmSubsystem armSubsystem, IntakeSubsystem intakeSubsystem,
+	public ScoringAuto(Drivetrain drivetrain, WristSubsystem wristSubsystem, ArmSubsystem armSubsystem, IntakeSubsystem intakeSubsystem,
 			LEDSubsystem ledSubsystem, StartingPosition startingPos, ControlBoard controls) {
 		this.drivetrain = drivetrain;
 		this.ledSubsystem = ledSubsystem;
 		this.startingPos = startingPos;
 
-		addCommands(new InstantCommand(() -> {
+		SequentialCommandGroup scoringAutoBody = new SequentialCommandGroup();
+// new InstantCommand(intakeSubsystem::togglePitch, intakeSubsystem),
+		scoringAutoBody.addCommands(new InstantCommand(() -> {
 			drivetrain.resetOdometry(
 					new Pose2d(Units.inchesToMeters(54.42), Units.inchesToMeters(42.079), Rotation2d.fromDegrees(0)));
-		}), new AutoDriveDistance(drivetrain, -0.35), /* new ToggleGrabberPitch(grabberSolenoidSubsystem), */
-				new CommandArmPitchThenExtension(armSubsystem, 1.0, 95, controls.override()),
-				// new SequentialCommandGroup(new CommandArmPitch(armSubsystem, 95,
-				// controls.overrideTeleopArm()),
-				// new CommandArmExtension(armSubsystem, 1.0, controls.overrideTeleopArm())),
-				new AutoDriveDistance(drivetrain, 0.35), new ToggleIntakePiston(intakeSubsystem), new WaitCommand(0.2),
-				new ParallelCommandGroup(
-						new CommandArmExtensionThenPitch(armSubsystem, 0.0, ArmConstants.stowedDegrees,
-								controls.override()), /*
-														 * new InstantCommand(() -> {
-														 * grabberSolenoidSubsystem.setGrabberIntakeState(false);
-														 * grabberSolenoidSubsystem.setGrabberPitchState(false); },
-														 * grabberSolenoidSubsystem)
-														 */
-						new CommandIntakeSolenoid(intakeSubsystem, false)),
-				new AutoDriveDistance(drivetrain, -3.3),
-				// Gets the robot out the comunity area (Over the charge station) by driving
-				// backwards
-				new InstantCommand(() -> {
-					SectionManager.BODY.buffer.setSolidColor(Color.kRed);
-					this.ledSubsystem.sendSectionData();
-				}, ledSubsystem), new TurnAngle(drivetrain, () -> 180.0), // gets robot to pause outside of community
-				new AutoDriveDistance(drivetrain, -1), new AutoBalance(drivetrain, true, ledSubsystem));
+		}),
+				new CommandAThenEW(armSubsystem, wristSubsystem, 1, 85, 10, controls.overrideTeleopArm()),
+				//new InstantCommand(grabberSolenoidSubsystem::toggleIntake, grabberSolenoidSubsystem),
+				new WaitCommand(2.5),
+				// new SequentialCommandGroup(new ParallelCommandGroup(new CommandArmExtension(armSubsystem,
+				// 		ArmConstants.minExtensionLengthMillims, controls.overrideTeleopArm()),
+				// 		new InstantCommand(() -> {
+				// 			grabberSolenoidSubsystem.setGrabberIntakeState(false);
+				// 			grabberSolenoidSubsystem.setGrabberPitchState(false);
+				// 		}, grabberSolenoidSubsystem)),
+				// 		new CommandArm(armSubsystem, ArmConstants.minExtensionLengthMillims, ArmConstants.stowedDegrees,
+				// 				controls.overrideTeleopArm())),
+				new CommandAThenEW(armSubsystem, wristSubsystem, 1, 85, 10, controls.overrideTeleopArm()),//stow
+
+				new AutoBalance(drivetrain, true, ledSubsystem));
+
+		// CommandBase grabberIn = new InstantCommand(() -> {
+		// 	grabberMotorSubsystem.setGrabberMotor(0.4);
+		// }, grabberMotorSubsystem);
+
+		// this.addCommands(new ParallelCommandGroup(scoringAutoBody, grabberIn));
 		// switch (this.startingPos) {
 
 		// case LEFT :

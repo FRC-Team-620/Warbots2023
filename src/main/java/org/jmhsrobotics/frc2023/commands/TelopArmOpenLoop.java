@@ -82,7 +82,7 @@ public class TelopArmOpenLoop extends CommandBase {
 		if (this.wasEnded) {
 			this.wasEnded = false;
 			boolean armTooLow = this.armSubsystem.getArmPitch() < ArmConstants.minArmAngleDegrees;
-			boolean extensionTooLow = this.armSubsystem.getArmLength() < ArmConstants.minExtensionLengthEncCounts;
+			boolean extensionTooLow = this.armSubsystem.getArmLength() < ArmConstants.minExtensionLengthMillims;
 			// resetting the arm to a given min pitch (resetting relative encoder) if below
 			// range
 			if (armTooLow || extensionTooLow) {
@@ -118,8 +118,8 @@ public class TelopArmOpenLoop extends CommandBase {
 		double deltaExtension = extensionFactor * linearSpeed.get();
 		this.desiredExtension = MathUtil.clamp(
 			this.desiredExtension + deltaExtension, 
-			ArmConstants.minExtensionLengthEncCounts, 
-			ArmConstants.maxExtensionLengthEncCounts
+			ArmConstants.minExtensionLengthMillims, 
+			ArmConstants.maxExtensionLengthMillims
 		);
 		// spotless:on
 
