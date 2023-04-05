@@ -218,6 +218,10 @@ public class RobotContainer {
 		return autoSelector.getCommand();
 	}
 
+	public double getAbsoluteStow() {
+		return getArmSubsystem().getArmPitch() + 130;
+	}
+
 	public Drivetrain getDrivetrain() {
 		return this.drivetrain;
 	}

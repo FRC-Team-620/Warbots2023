@@ -110,26 +110,50 @@ public class ArmSetpointCommand extends SequentialCommandGroup {
 						addCommands(new ConditionalCommand(
 								new CommandAThenEW(robotContainer.getArmSubsystem(), robotContainer.getWristSubsystem(),
 										0.2, 95, 90, robotContainer.getControlBoard().override()),
-								new CommandAThenEW(robotContainer.getArmSubsystem(), robotContainer.getWristSubsystem(),
-										0.2, 80, 90, robotContainer.getControlBoard().override()),
+								new CommandAThenEW(robotContainer.getArmSubsystem(), robotContainer.getWristSubsystem(),//If it gets stuck replace second command with commented out code
+										0.75, 84, 90, robotContainer.getControlBoard().override()),
+								// new ConditionalCommand(
+								// 	new CommandAThenEW(robotContainer.getArmSubsystem(), robotContainer.getWristSubsystem(), 
+								// 		0.75, 84, 90, robotContainer.getControlBoard().override()),
+								// 	new SequentialCommandGroup(
+								// 			new CommandAWThenE(robotContainer.getArmSubsystem(),
+								// 					robotContainer.getWristSubsystem(), 1.0, 48, 58,
+								// 					robotContainer.getControlBoard().override()),
+								//			new CommandAThenEW(robotContainer.getArmSubsystem(), robotContainer.getWristSubsystem(), 
+								// 					0.75, 84, 90, robotContainer.getControlBoard().override()),
+	
+								// 	, robotContainer.getArmSubsystem()::isHigherThen),
+
 								robotContainer.getArmSubsystem()::isCone));
 						break;
 					case HIGH :
-						addCommands(new ConditionalCommand(new ConditionalCommand(
+						addCommands(//Cones
+								new ConditionalCommand(new SequentialCommandGroup(
+									new CommandAWThenE(robotContainer.getArmSubsystem(),
+											robotContainer.getWristSubsystem(), 0.0, robotContainer.getArmSubsystem()::getArmPitch, 
+											robotContainer::getAbsoluteStow,
+											robotContainer.getControlBoard().override()),
+
+									new CommandAThenEW(robotContainer.getArmSubsystem(),
+											robotContainer.getWristSubsystem(), 1.0, 240, 290,//If arm angle is too shallow for arm to come out make the arm angle lower
+											robotContainer.getControlBoard().override()),
+											
+									new CommandAThenEW(robotContainer.getArmSubsystem(),
+											robotContainer.getWristSubsystem(), 1.0, 221, 271,
+											robotContainer.getControlBoard().override())),
+								//Cubes
+								new ConditionalCommand(
 								new CommandEWThenA(robotContainer.getArmSubsystem(), robotContainer.getWristSubsystem(),
-										1.0, 110, 115, robotContainer.getControlBoard().override()),
+										1.0, 103, 271, robotContainer.getControlBoard().override()),
 								new SequentialCommandGroup(
 										new CommandAWThenE(robotContainer.getArmSubsystem(),
-												robotContainer.getWristSubsystem(), 1.0, 48, 138,
+												robotContainer.getWristSubsystem(), 1.0, 48, 58,
 												robotContainer.getControlBoard().override()),
 										new CommandAWThenE(robotContainer.getArmSubsystem(),
-												robotContainer.getWristSubsystem(), 1.0, 110, 115,
+												robotContainer.getWristSubsystem(), 1.0, 103, 113,
 												robotContainer.getControlBoard().override()))
 
 								, robotContainer.getArmSubsystem()::isHigherThen),
-								new CommandAWThenE(robotContainer.getArmSubsystem(), robotContainer.getWristSubsystem(),
-										1.0, 110, 138, robotContainer.getControlBoard().override()),
-
 								// new CommandArmPitchThenExtension(robotContainer.armSubsystem, 1.0, 247,
 								// robotContainer.controlBoard.override()),
 								// new CommandArmPitchThenExtension(robotContainer.armSubsystem, 1.0, 247,

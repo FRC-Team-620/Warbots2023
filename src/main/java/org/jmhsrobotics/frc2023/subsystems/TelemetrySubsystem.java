@@ -5,6 +5,7 @@ import org.jmhsrobotics.frc2023.RobotMath;
 import org.jmhsrobotics.frc2023.RobotMath.DiminishingAverageHandler;
 import org.jmhsrobotics.frc2023.util.IIMUWrapper;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -44,7 +45,6 @@ public class TelemetrySubsystem extends SubsystemBase {
 			this.rollVelocity = other.rollVelocity;
 		}
 	}
-
 	private Compressor compressor;
 
 	private IIMUWrapper imu;
@@ -56,6 +56,8 @@ public class TelemetrySubsystem extends SubsystemBase {
 	private DiminishingAverageHandler rollAngularVelocityHandler;
 
 	public TelemetrySubsystem() {
+		// Camera Server
+		CameraServer.startAutomaticCapture();
 
 		// Compressor
 		this.compressor = new Compressor(42, PneumaticsModuleType.REVPH);
