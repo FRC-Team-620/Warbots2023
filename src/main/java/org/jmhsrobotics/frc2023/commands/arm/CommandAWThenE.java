@@ -25,8 +25,8 @@ public class CommandAWThenE extends SequentialCommandGroup {
         );
         // spotless:on
 	}
-    public CommandAWThenE(ArmSubsystem armSubsystem, WristSubsystem wristSubsystem, double distanceProportion,
-        Supplier<Double> armAngle, Supplier<Double> wristAngle, BooleanSupplier override) {
+	public CommandAWThenE(ArmSubsystem armSubsystem, WristSubsystem wristSubsystem, double distanceProportion,
+			Supplier<Double> armAngle, Supplier<Double> wristAngle, BooleanSupplier override) {
 
 		// spotless:off
 		this.addCommands(

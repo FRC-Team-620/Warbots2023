@@ -24,6 +24,9 @@ public class TelopArmOpenLoop extends CommandBase {
 	double pitchFactor;
 	double extensionFactor;
 
+	double maxHeightProportion = 0.7;
+	// double gripperLengthProportion = 0.4;
+
 	// spotless:off
 	public TelopArmOpenLoop(ArmSubsystem armSubsystem, Supplier<Double> pitchSpeed, 
 		Supplier<Double> linearSpeed, BooleanSupplier overrideLimits) {
@@ -123,8 +126,14 @@ public class TelopArmOpenLoop extends CommandBase {
 		);
 		// spotless:on
 
+		double toExtension = this.desiredExtension;
+		double currentCoef = -Math.cos(Math.toRadians(this.armSubsystem.getArmPitch()));
+		if (this.armSubsystem.getExtensionProportion() * currentCoef > this.maxHeightProportion) {
+			toExtension = this.armSubsystem.evalExtensionProportion(this.maxHeightProportion / currentCoef);
+		}
+
 		armSubsystem.updatePitchGoal(this.desiredPitch);
-		armSubsystem.updateExtensionGoal(this.desiredExtension);
+		armSubsystem.updateExtensionGoal(toExtension);
 	}
 
 	@Override

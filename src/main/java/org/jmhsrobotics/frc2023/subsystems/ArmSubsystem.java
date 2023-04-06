@@ -321,13 +321,18 @@ public class ArmSubsystem extends SubsystemBase {
 		controlMode = ControlMode.CLOSED_LOOP;
 	}
 
+	public double evalExtensionProportion(double proportion) {
+		return proportion * (ArmConstants.maxExtensionLengthMillims - ArmConstants.minExtensionLengthMillims)
+				+ ArmConstants.minExtensionLengthMillims;
+	}
+
+	public double getExtensionProportion() {
+		return (this.getArmLength() - ArmConstants.minExtensionLengthMillims)
+				/ (ArmConstants.maxExtensionLengthMillims - ArmConstants.minExtensionLengthMillims);
+	}
+
 	public void setExtensionProportion(double extensionProportion) {
-		// spotless:off
-		this.setExtension(
-			extensionProportion * (ArmConstants.maxExtensionLengthMillims - ArmConstants.minExtensionLengthMillims)
-				+ ArmConstants.minExtensionLengthMillims
-		);
-		// spotless:on
+		this.setExtension(this.evalExtensionProportion(extensionProportion));
 	}
 
 	// Sets the motor controlling arm length
