@@ -155,8 +155,8 @@ public final class Constants {
 	public static class ArmConstants {
 		public static final double armHeightMeters = Units.inchesToMeters(27.5);
 		// public static final double maxEncoderCounts = 62.5;
-		public static final double minExtensionLengthMillims = 0;//77
-		public static final double maxExtensionLengthMillims = 45;//180
+		public static final double minExtensionLengthMillims = 0;// 77
+		public static final double maxExtensionLengthMillims = 45;// 180
 		// public static final double extensionMetersPerEncoderTick =
 		// maxExtensionLengthMeters / maxEncoderCounts;
 		public static final double armPitchGearRatio = 270;
@@ -171,8 +171,8 @@ public final class Constants {
 
 	public static class WristConstants {
 
-		public static final double degreesPerEncoderTick = -0.02275025;
-		public static final double encoderTicksAtZeroDegrees = 4628.0; // yes, exactly this 4690.0
+		public static final double degreesPerEncoderTick = 1.7108; // -0.02275025;
+		public static final double encoderTicksAtZeroDegrees = 2342; // yes, exactly this 4690.0
 		public static final double minPitchDegrees = -165.0;
 		public static final double maxPitchDegrees = 130.0;
 		public static final double stowedPositionRelative = WristConstants.maxPitchDegrees;

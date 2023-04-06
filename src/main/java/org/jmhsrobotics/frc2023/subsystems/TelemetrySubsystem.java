@@ -57,7 +57,7 @@ public class TelemetrySubsystem extends SubsystemBase {
 
 	public TelemetrySubsystem() {
 		// Camera Server
-		CameraServer.startAutomaticCapture();
+		//CameraServer.startAutomaticCapture();
 
 		// Compressor
 		this.compressor = new Compressor(42, PneumaticsModuleType.REVPH);

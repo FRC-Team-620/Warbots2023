@@ -94,7 +94,8 @@ public class RobotContainer {
 			armSubsystem, 
 			controlBoard::armPitch, 
 			controlBoard::armExtend, 
-			controlBoard.overrideTeleopArm()
+			controlBoard.wristControlModifier(),
+			controlBoard.override()
 		));
 		// spotless:on
 
@@ -103,7 +104,8 @@ public class RobotContainer {
 			wristSubsystem, 
 			armSubsystem::getArmPitch, 
 			controlBoard::wristPitch, 
-			controlBoard.overrideTeleopWrist()));
+			controlBoard.wristControlModifier(),
+			controlBoard.override()));
 		// spotless:on
 
 		// grabberMotorSubsystem.setDefaultCommand(new InstantCommand(() -> {

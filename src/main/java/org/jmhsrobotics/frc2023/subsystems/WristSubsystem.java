@@ -6,6 +6,7 @@ import org.jmhsrobotics.frc2023.Constants.WristConstants;
 import org.jmhsrobotics.frc2023.util.TalonSRXAbsEncoder;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -20,6 +21,7 @@ public class WristSubsystem extends SubsystemBase {
 	// wrist hardware
 	private CANSparkMax wristMotor = new CANSparkMax(Constants.driveports.getWristCANId(), MotorType.kBrushless);
 	private TalonSRXAbsEncoder wristAbsEncoder = new TalonSRXAbsEncoder(Constants.driveports.getWristAbsEncoderCANId());
+	private RelativeEncoder wristRelativeEncoder = wristMotor.getEncoder();
 
 	private TrapezoidProfile.Constraints wristPPIDConstraints;
 	private ProfiledPIDController wristPPID;
@@ -36,6 +38,8 @@ public class WristSubsystem extends SubsystemBase {
 		// this.wristMotor.setInverted(true);
 
 		this.updateStoredWristPosition();
+
+		this.wristRelativeEncoder.setPosition(0);
 
 		// all in degrees
 		this.wristPPIDConstraints = new TrapezoidProfile.Constraints(220, 300);
@@ -114,12 +118,16 @@ public class WristSubsystem extends SubsystemBase {
 	}
 
 	public double getWristPosition() {
-		return this.wristAbsolutePosition;
+		// return this.wristAbsolutePosition;
+		return this.wristRelativeEncoder.getPosition();
 	}
 
 	public double getWristPitch() {
-		return (this.getWristPosition() - WristConstants.encoderTicksAtZeroDegrees)
-				* WristConstants.degreesPerEncoderTick;
+		// spotless:off
+		// return (this.getWristPosition() - WristConstants.encoderTicksAtZeroDegrees)
+		// 		* WristConstants.degreesPerEncoderTick;
+		// spotless:on
+		return WristConstants.degreesPerEncoderTick * this.getWristPosition() + WristConstants.stowedPositionRelative;
 	}
 
 	private void updateStoredWristPosition() {

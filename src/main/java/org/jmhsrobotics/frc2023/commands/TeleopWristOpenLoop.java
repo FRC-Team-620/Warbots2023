@@ -12,7 +12,7 @@ public class TeleopWristOpenLoop extends CommandBase {
 
 	WristSubsystem wristSubsystem;
 	Supplier<Double> armAngle, pitchSpeed;
-	BooleanSupplier overrideLimits;
+	BooleanSupplier wristMod, overrideLimits;
 
 	boolean wasEnded = false;
 	/** The desired ABSOLUTE angle of the wrist, NOT relative to the arm angle */
@@ -20,12 +20,13 @@ public class TeleopWristOpenLoop extends CommandBase {
 	double pitchFactor;
 
 	public TeleopWristOpenLoop(WristSubsystem wristSubsystem, Supplier<Double> armAngle, Supplier<Double> pitchSpeed,
-			BooleanSupplier overrideLimits) {
+			BooleanSupplier wristMod, BooleanSupplier override) {
 
 		this.wristSubsystem = wristSubsystem;
 		this.armAngle = armAngle;
 		this.pitchSpeed = pitchSpeed;
-		this.overrideLimits = overrideLimits;
+		this.wristMod = wristMod;
+		this.overrideLimits = override;
 
 		this.pitchFactor = 30;
 
@@ -56,7 +57,8 @@ public class TeleopWristOpenLoop extends CommandBase {
 
 		// spotless:off
 		if(this.overrideLimits.getAsBoolean()) {
-			this.wristSubsystem.setDutyCycle(currentInput);
+			if(this.wristMod.getAsBoolean())
+				this.wristSubsystem.setDutyCycle(currentInput);
 			this.wasEnded = true;
 			return;
 		}

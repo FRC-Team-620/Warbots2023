@@ -15,7 +15,7 @@ public class TelopArmOpenLoop extends CommandBase {
 
 	ArmSubsystem armSubsystem;
 	Supplier<Double> pitchSpeed, linearSpeed;
-	BooleanSupplier overrideLimits;
+	BooleanSupplier wristMod, overrideLimits;
 
 	boolean wasEnded = false;
 	double desiredPitch;
@@ -26,12 +26,13 @@ public class TelopArmOpenLoop extends CommandBase {
 
 	// spotless:off
 	public TelopArmOpenLoop(ArmSubsystem armSubsystem, Supplier<Double> pitchSpeed, 
-		Supplier<Double> linearSpeed, BooleanSupplier overrideLimits) {
+		Supplier<Double> linearSpeed, BooleanSupplier wristMod, BooleanSupplier override) {
 
 		this.armSubsystem = armSubsystem;
 		this.pitchSpeed = pitchSpeed;
 		this.linearSpeed = linearSpeed;
-		this.overrideLimits = overrideLimits;
+		this.wristMod = wristMod;
+		this.overrideLimits = override;
 
 		this.pitchFactor = -1 * armSubsystem.getMaxPitchPPIDVel() * RobotConstants.secondsPerTick;
 		this.extensionFactor = armSubsystem.getMaxExtensionPPIDVel() * RobotConstants.secondsPerTick;
@@ -72,7 +73,8 @@ public class TelopArmOpenLoop extends CommandBase {
 
 		// spotless:off
 		if(this.overrideLimits.getAsBoolean()) {
-			armSubsystem.setDutyCycle(pitchSpeed.get(), linearSpeed.get());
+			if(!this.wristMod.getAsBoolean())
+				armSubsystem.setDutyCycle(pitchSpeed.get(), linearSpeed.get());
 			this.wasEnded = true;
 			return;
 		}
