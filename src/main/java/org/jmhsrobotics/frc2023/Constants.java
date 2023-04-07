@@ -85,6 +85,10 @@ public final class Constants {
 		STOWED, FLOOR, MID, HIGH, PICKUP
 	}
 
+	public enum Direction {
+		FORWARD, REVERSE, IN, OUT
+	}
+
 	public enum VisionPipeline {
 		REFECTIVE_TAPE(0), APRIL_TAGS(1);
 
@@ -164,7 +168,7 @@ public final class Constants {
 		public static final double pitchDegreesPerEncoderTick = -1.166;
 		public static final double stowedDegrees = 20;
 		public static final double minArmAngleDegrees = ArmConstants.stowedDegrees;
-		public static final double maxArmAngleDegrees = 290;
+		public static final double maxArmAngleDegrees = 200;
 		public static final double armDistanceToCenterMeters = Units.inchesToMeters(-8);
 
 	}
@@ -173,8 +177,9 @@ public final class Constants {
 
 		public static final double degreesPerEncoderTick = 1.7108; // -0.02275025;
 		public static final double encoderTicksAtZeroDegrees = 2342; // yes, exactly this 4690.0
-		public static final double minPitchDegrees = -165.0;
+		public static final double minPitchDegrees = -115.0;
 		public static final double maxPitchDegrees = 130.0;
+		public static final double relativeTicksAtMin = (minPitchDegrees - maxPitchDegrees) / degreesPerEncoderTick;
 		public static final double stowedPositionRelative = WristConstants.maxPitchDegrees;
 		public static final double stowedPositionAbsolute = WristConstants.stowedPositionRelative
 				+ ArmConstants.stowedDegrees;

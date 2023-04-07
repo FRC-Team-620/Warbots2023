@@ -74,17 +74,18 @@ public class ArmSubsystem extends SubsystemBase {
 		// TODO: MAke sure to construct profiledExtensionPID and profiledExtensionPID!!!
 
 		// spotless:off
-		anglePPIDConstraints = new Constraints(110, 150);
+		anglePPIDConstraints = new Constraints(110, 150);//130, 165
 		profiledAnglePID = new ProfiledPIDController(
 			0.10, 0.0, 0.0, anglePPIDConstraints
 		);
 
 		profiledAnglePID.setTolerance(0.7, 4);
 
-		extensionPPIDConstraints = new Constraints(80, 300);
+		extensionPPIDConstraints = new Constraints(80, 300);//100, 320
 		profiledExtensionPID = new ProfiledPIDController(
 			0.18, 0.0, 0.0, extensionPPIDConstraints
 		);
+		profiledExtensionPID.setConstraints(anglePPIDConstraints);
 
 		profiledExtensionPID.setTolerance(0.3, 2);
 
@@ -203,6 +204,14 @@ public class ArmSubsystem extends SubsystemBase {
 		// SmartDashboard.putNumber("Wristpid/output", pitchMotor.get());
 		// SmartDashboard.putNumber("lengthpid/setpoint",
 		// profiledExtensionPID.getSetpoint().position);
+	}
+
+	public void setAnglePIDConstraints(Constraints anglePPIDC) {
+		profiledAnglePID.setConstraints(anglePPIDC);
+	}
+
+	public void setExtensionPIDConstraints(Constraints extensionPPIDC) {
+		profiledExtensionPID.setConstraints(extensionPPIDC);
 	}
 
 	public ScoringType getScoringType() {
@@ -352,7 +361,7 @@ public class ArmSubsystem extends SubsystemBase {
 		controlMode = ControlMode.CLOSED_LOOP;
 	}
 
-	public void setScoringType() {
+	public void switchScoringType() {
 		System.out.println("Switched Scoring Type");
 		if (armScore == ScoringType.CONE) {
 			armScore = ScoringType.CUBE;
@@ -361,6 +370,9 @@ public class ArmSubsystem extends SubsystemBase {
 			armScore = ScoringType.CONE;
 			System.out.println("to Cone");
 		}
+	}
+	public void setScoringType(ScoringType scoringType) {
+		armScore = scoringType;
 	}
 
 	public boolean isCone() {
@@ -373,7 +385,7 @@ public class ArmSubsystem extends SubsystemBase {
 		// return false;
 		// }
 	}
-	public boolean isHigherThen() {
+	public boolean isHigherThan() {
 		return this.getArmPitch() > 43;
 	}
 

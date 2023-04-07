@@ -202,7 +202,7 @@ public class Drivetrain extends SubsystemBase {
 		// this.previousAngle = yaw;
 
 		// Check whether there is curvature input
-		boolean noCurvatureInput = RobotMath.approximatelyZero(this.commandedCurvature, 0.02);
+		boolean noCurvatureInput = RobotMath.approxZero(this.commandedCurvature, 0.02);
 
 		// If the robot is still registering itself as spinning (so it was spinning),
 		// but there is no input, and there is no angular velocity.
@@ -299,7 +299,7 @@ public class Drivetrain extends SubsystemBase {
 
 	public boolean hasYawAngularVelocity() {
 		// spotless:off
-		return !RobotMath.approximatelyZero(
+		return !RobotMath.approxZero(
 			RobotContainer.getTelemetry().getYawVelocity(), 
 			0.5
 		);

@@ -45,6 +45,7 @@ public class TelemetrySubsystem extends SubsystemBase {
 			this.rollVelocity = other.rollVelocity;
 		}
 	}
+
 	private Compressor compressor;
 
 	private IIMUWrapper imu;
@@ -56,12 +57,13 @@ public class TelemetrySubsystem extends SubsystemBase {
 	private DiminishingAverageHandler rollAngularVelocityHandler;
 
 	public TelemetrySubsystem() {
+
 		// Camera Server
-		//CameraServer.startAutomaticCapture();
+		CameraServer.startAutomaticCapture();
 
 		// Compressor
 		this.compressor = new Compressor(42, PneumaticsModuleType.REVPH);
-		this.compressor.disable(); // immediately disable (we don't use it)
+		this.compressor.disable(); // immediately disable (we don't use it) (cringe)
 
 		// IMU
 		this.imu = Constants.driveports.getIMU();

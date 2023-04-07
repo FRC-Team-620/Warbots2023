@@ -13,6 +13,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -42,7 +43,7 @@ public class WristSubsystem extends SubsystemBase {
 		this.wristRelativeEncoder.setPosition(0);
 
 		// all in degrees
-		this.wristPPIDConstraints = new TrapezoidProfile.Constraints(220, 300);
+		this.wristPPIDConstraints = new TrapezoidProfile.Constraints(220, 300);// 240, 315
 		// spotless:off
         this.wristPPID = new ProfiledPIDController(
             0.03, 0, 0, 
@@ -122,6 +123,10 @@ public class WristSubsystem extends SubsystemBase {
 		return this.wristRelativeEncoder.getPosition();
 	}
 
+	public void setWristEncoderPosition(double p) {
+		this.wristRelativeEncoder.setPosition(p);
+	}
+
 	public double getWristPitch() {
 		// spotless:off
 		// return (this.getWristPosition() - WristConstants.encoderTicksAtZeroDegrees)
@@ -156,7 +161,7 @@ public class WristSubsystem extends SubsystemBase {
 	public void setPitch(double pitchGoal) {
 
 		if (this.getControlMode() != ControlMode.CLOSED_LOOP)
-			this.resetWristPPIDToCurrent();
+			this.resetWristPPIDToCurrent(); // cringe?????? perhaps
 
 		pitchGoal = WristSubsystem.clampWristPitch(pitchGoal);
 		this.wristPPID.setGoal(pitchGoal);
@@ -178,5 +183,13 @@ public class WristSubsystem extends SubsystemBase {
 
 	public TrapezoidProfile.State getWristPPIDGoal() {
 		return this.wristPPID.getGoal();
+	}
+
+	public void setWristPIDConstraints(Constraints wristPIDC) {
+		wristPPID.setConstraints(wristPIDC);
+	}
+
+	public void resetPitchPPIDToValue(double v) {
+		this.wristPPID.reset(v);
 	}
 }

@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import org.jmhsrobotics.frc2023.RobotContainer;
+import org.jmhsrobotics.frc2023.Constants.ScoringType;
+import org.jmhsrobotics.frc2023.Constants.Setpoints;
 import org.jmhsrobotics.frc2023.commands.auto.ScoringAuto.StartingPosition;
 
 public class AutoSelector {
@@ -21,18 +23,18 @@ public class AutoSelector {
 		autoSelector.setDefaultOption("CenterChargeStationAuto",
 				new CenterChargeStationAuto(container.getDrivetrain(), container.getLEDSubsystem()));
 		autoSelector.addOption("StartingDistanceAuto", new StartingDistanceAuto(container.getDrivetrain()));
-		autoSelector.addOption("ScoringAutoLeft",
+		autoSelector.addOption("ScoringAutoMidCone",
 				new ScoringAuto(container.getDrivetrain(), container.getWristSubsystem(), container.getArmSubsystem(),
 						container.getIntakeSubsystem(), container.getLEDSubsystem(), StartingPosition.LEFT,
-						container.getControls()));
-		autoSelector.addOption("ScoringAutoCenter",
+						container.getControls(), container, ScoringType.CONE, Setpoints.MID));
+		autoSelector.addOption("ScoringAutoHighCubes",
 				new ScoringAuto(container.getDrivetrain(), container.getWristSubsystem(), container.getArmSubsystem(),
 						container.getIntakeSubsystem(), container.getLEDSubsystem(), StartingPosition.CENTER,
-						container.getControls()));
-		autoSelector.addOption("ScoringAutoRight",
+						container.getControls(), container, ScoringType.CUBE, Setpoints.HIGH));
+		autoSelector.addOption("ScoringAutoMidCubes",
 				new ScoringAuto(container.getDrivetrain(), container.getWristSubsystem(), container.getArmSubsystem(),
 						container.getIntakeSubsystem(), container.getLEDSubsystem(), StartingPosition.RIGHT,
-						container.getControls()));
+						container.getControls(), container, ScoringType.CUBE, Setpoints.MID));
 		SmartDashboard.putData("autoSelector", autoSelector);
 
 		// Add Selector for Alliance color TODO: Use DriveStation.getAlliance() to set

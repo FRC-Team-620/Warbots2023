@@ -7,10 +7,14 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
+import org.jmhsrobotics.frc2023.RobotContainer;
+import org.jmhsrobotics.frc2023.Constants.GripperType;
+import org.jmhsrobotics.frc2023.Constants.ScoringType;
+import org.jmhsrobotics.frc2023.Constants.Setpoints;
+import org.jmhsrobotics.frc2023.commands.ArmSetpointCommand;
 // import org.jmhsrobotics.frc2023.commands.CommandArm;
 // import org.jmhsrobotics.frc2023.commands.CommandArmExtension;
 // import org.jmhsrobotics.frc2023.commands.CommandArmPitch;
-import org.jmhsrobotics.frc2023.commands.arm.CommandAThenEW;
 import org.jmhsrobotics.frc2023.oi.ControlBoard;
 import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
@@ -27,11 +31,12 @@ public class ScoringAuto extends SequentialCommandGroup {
 	public static enum StartingPosition {
 		LEFT, CENTER, RIGHT;
 	}
+	private ScoringType scoringType;
 	private StartingPosition startingPos;
 	// Constructor
 	public ScoringAuto(Drivetrain drivetrain, WristSubsystem wristSubsystem, ArmSubsystem armSubsystem,
 			IntakeSubsystem intakeSubsystem, LEDSubsystem ledSubsystem, StartingPosition startingPos,
-			ControlBoard controls) {
+			ControlBoard controls, RobotContainer robotContainer, ScoringType scoringType, Setpoints setpoint) {
 		this.drivetrain = drivetrain;
 		this.ledSubsystem = ledSubsystem;
 		this.startingPos = startingPos;
@@ -41,11 +46,15 @@ public class ScoringAuto extends SequentialCommandGroup {
 		scoringAutoBody.addCommands(new InstantCommand(() -> {
 			drivetrain.resetOdometry(
 					new Pose2d(Units.inchesToMeters(54.42), Units.inchesToMeters(42.079), Rotation2d.fromDegrees(0)));
-		}), new CommandAThenEW(armSubsystem, wristSubsystem, 0.2, 95, 90, controls.override()),
+		}), new InstantCommand(() -> armSubsystem.setScoringType(scoringType), armSubsystem),
+				new ArmSetpointCommand(setpoint, GripperType.MOTOR, robotContainer),
 				// new InstantCommand(grabberSolenoidSubsystem::toggleIntake,
 				// grabberSolenoidSubsystem),
-				new InstantCommand(intakeSubsystem::intakeOut, intakeSubsystem), new WaitCommand(2.5),
-				new InstantCommand(intakeSubsystem::stopIntakeMotor, intakeSubsystem),
+				new InstantCommand(
+						() -> intakeSubsystem
+								.setIntakeMotor(armSubsystem.getScoringType() == ScoringType.CONE ? 1 : -1),
+						intakeSubsystem),
+				new WaitCommand(0.5), new InstantCommand(intakeSubsystem::stopIntakeMotor, intakeSubsystem),
 				// new SequentialCommandGroup(new ParallelCommandGroup(new
 				// CommandArmExtension(armSubsystem,
 				// ArmConstants.minExtensionLengthMillims, controls.overrideTeleopArm()),
@@ -56,15 +65,15 @@ public class ScoringAuto extends SequentialCommandGroup {
 				// new CommandArm(armSubsystem, ArmConstants.minExtensionLengthMillims,
 				// ArmConstants.stowedDegrees,
 				// controls.overrideTeleopArm())),
-				new CommandAThenEW(armSubsystem, wristSubsystem, 0, 20, 150, () -> false), // stow
+				new ArmSetpointCommand(Setpoints.STOWED, GripperType.MOTOR, robotContainer), // stow
 
 				new AutoBalance(drivetrain, true, ledSubsystem));
 
 		// CommandBase grabberIn = new InstantCommand(() -> {
-		// grabberMotorSubsystem.setGrabberMotor(0.4);
-		// }, grabberMotorSubsystem);
+		// intakeSubsystem.setIntakeMotor(0.4);
+		// });
 
-		// this.addCommands(new ParallelCommandGroup(scoringAutoBody, grabberIn));
+		this.addCommands(scoringAutoBody);
 		// switch (this.startingPos) {
 
 		// case LEFT :

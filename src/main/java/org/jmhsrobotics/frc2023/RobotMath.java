@@ -54,7 +54,7 @@ public class RobotMath {
 	 * @return True if the value approximates zero, false otherwise
 	 */
 	public static boolean approximatelyZero(double value) {
-		return RobotMath.approximatelyZero(value, RobotMathConstants.comparisonThreshhold);
+		return RobotMath.approxZero(value, RobotMathConstants.comparisonThreshhold);
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class RobotMath {
 	 *            Determines how close the value needs to be to zero to pass
 	 * @return True if the value approximates zero, false otherwise
 	 */
-	public static boolean approximatelyZero(double value, double threshhold) {
+	public static boolean approxZero(double value, double threshhold) {
 		return value > -threshhold && value < threshhold;
 	}
 

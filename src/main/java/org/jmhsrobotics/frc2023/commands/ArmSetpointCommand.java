@@ -9,7 +9,6 @@ import org.jmhsrobotics.frc2023.commands.arm.CommandAThenEW;
 import org.jmhsrobotics.frc2023.commands.arm.CommandAWThenE;
 import org.jmhsrobotics.frc2023.commands.arm.CommandArmPitchThenExtension;
 import org.jmhsrobotics.frc2023.commands.arm.CommandEThenAW;
-import org.jmhsrobotics.frc2023.commands.arm.CommandEWThenA;
 import org.jmhsrobotics.frc2023.commands.gripper.CommandIntakeSolenoid;
 
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -140,46 +139,49 @@ public class ArmSetpointCommand extends SequentialCommandGroup {
 						break;
 					case HIGH :
 						addCommands(// Cones
-								new ConditionalCommand(
-										new SequentialCommandGroup(
-												new CommandAWThenE(robotContainer.getArmSubsystem(),
-														robotContainer.getWristSubsystem(), 0.0,
-														robotContainer.getArmSubsystem()::getArmPitch,
-														robotContainer::getAbsoluteStow,
-														robotContainer.getControlBoard().override()),
+								new ConditionalCommand(new SequentialCommandGroup(
+										// new InstantCommand(() ->
+										// robotContainer.getArmSubsystem().setAnglePIDConstraints(new
+										// TrapezoidProfile.Constraints(110, 150)),
+										// robotContainer.getArmSubsystem()),
+										new CommandAWThenE(robotContainer.getArmSubsystem(),
+												robotContainer.getWristSubsystem(), 0.0,
+												robotContainer.getArmSubsystem()::getArmPitch,
+												robotContainer::getAbsoluteStow,
+												robotContainer.getControlBoard().override()),
 
-												new CommandAThenEW(robotContainer.getArmSubsystem(),
-														robotContainer.getWristSubsystem(), 1.0, 240, 290, // If arm
-																											// angle is
-																											// too
-																											// shallow
-																											// for arm
-																											// to come
-																											// out make
-																											// the arm
-																											// angle
-																											// lower
-														robotContainer.getControlBoard().override()),
+										new CommandAThenEW(robotContainer.getArmSubsystem(),
+												robotContainer.getWristSubsystem(), 1.0, 240, 290, // If arm
+																									// angle is
+																									// too
+																									// shallow
+																									// for arm
+																									// to come
+																									// out make
+																									// the arm
+																									// angle
+																									// lower
+												robotContainer.getControlBoard().override()),
 
-												new CommandAThenEW(robotContainer.getArmSubsystem(),
-														robotContainer.getWristSubsystem(), 1.0, 221, 271,
-														robotContainer.getControlBoard().override())),
+										new CommandAThenEW(robotContainer.getArmSubsystem(),
+												robotContainer.getWristSubsystem(), 1.0, 221, 271,
+												robotContainer.getControlBoard().override())),
 										// Cubes
 										new ConditionalCommand(
-												new CommandEWThenA(robotContainer.getArmSubsystem(),
-														robotContainer.getWristSubsystem(), 1.0, 103, 271,
+												new CommandAThenEW(robotContainer.getArmSubsystem(),
+														robotContainer.getWristSubsystem(), 1.0, 103, 113,
 														robotContainer.getControlBoard().override()),
 												new SequentialCommandGroup(
-														new CommandAWThenE(robotContainer.getArmSubsystem(),
-																robotContainer.getWristSubsystem(), 1.0, 48, 58,
-																robotContainer.getControlBoard().override()),
+														// new CommandAWThenE(robotContainer.getArmSubsystem(),
+														// robotContainer.getWristSubsystem(), 1.0, 48, 58,
+														// robotContainer.getControlBoard().override()),
 														new CommandAWThenE(robotContainer.getArmSubsystem(),
 																robotContainer.getWristSubsystem(), 1.0, 103, 113,
 																robotContainer.getControlBoard().override()))
 
-												, robotContainer.getArmSubsystem()::isHigherThen),
+												, robotContainer.getArmSubsystem()::isHigherThan),
 										// new CommandArmPitchThenExtension(robotContainer.armSubsystem, 1.0, 247,
-										// robotContainer.controlBoard.override()),
+										// robotContainer.controlBoard.override()),33
 										// new CommandArmPitchThenExtension(robotContainer.armSubsystem, 1.0, 247,
 										// robotContainer.controlBoard.override()),
 										robotContainer.getArmSubsystem()::isCone));
@@ -188,7 +190,7 @@ public class ArmSetpointCommand extends SequentialCommandGroup {
 					case PICKUP :
 						addCommands(new ConditionalCommand(
 								new ParallelCommandGroup(new CommandEThenAW(robotContainer.getArmSubsystem(),
-										robotContainer.getWristSubsystem(), 0.0, 50, 140,
+										robotContainer.getWristSubsystem(), 0.0, 48, 158,
 										robotContainer.getControlBoard().override())),
 								new ParallelCommandGroup(new CommandEThenAW(robotContainer.getArmSubsystem(),
 										robotContainer.getWristSubsystem(), 0.0, 67, 140,

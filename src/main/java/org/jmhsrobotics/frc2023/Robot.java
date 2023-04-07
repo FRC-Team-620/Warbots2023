@@ -4,6 +4,7 @@
 
 package org.jmhsrobotics.frc2023;
 
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -36,6 +37,7 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		// This code must be the first thing that runs otherwise the directory is not
 		// updated
+		PortForwarder.add(5800, "photonvision.local", 5800);
 		if (Robot.isSimulation()) {
 			DataLogManager.start(Filesystem.getOperatingDirectory().getAbsolutePath() + "\\logs");
 		} else {

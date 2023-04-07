@@ -8,8 +8,7 @@ import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 import org.jmhsrobotics.frc2023.commands.ArmSetpointCommand;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
-import org.jmhsrobotics.frc2023.commands.TeleopWristOpenLoop;
-import org.jmhsrobotics.frc2023.commands.TelopArmOpenLoop;
+import org.jmhsrobotics.frc2023.commands.arm.TelopArmOpenLoop;
 import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
@@ -17,6 +16,7 @@ import org.jmhsrobotics.frc2023.commands.gripper.TeleopIntakeOpenLoop;
 import org.jmhsrobotics.frc2023.commands.gripper.ToggleIntakePiston;
 // import org.jmhsrobotics.frc2023.commands.grabber.ToggleGrabberPitch;
 import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
+import org.jmhsrobotics.frc2023.commands.wrist.TeleopWristOpenLoop;
 import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
@@ -177,7 +177,7 @@ public class RobotContainer {
 		// operator.x().onTrue(new CommandArm(armSubsystem, 0.2, 0));
 		// operator.b().onTrue(new CommandArm(armSubsystem, 0, 180));
 		// controlBoard.alignPeg().onTrue(new AlignPeg(drivetrain));
-		controlBoard.changeScoringType().onTrue(new InstantCommand(() -> armSubsystem.setScoringType()));
+		controlBoard.changeScoringType().onTrue(new InstantCommand(() -> armSubsystem.switchScoringType()));
 
 		controlBoard.armPresetStowed()
 				.onTrue(new ArmSetpointCommand(Constants.Setpoints.STOWED, Constants.kGripperType, this));

@@ -1,6 +1,7 @@
 package org.jmhsrobotics.frc2023.subsystems;
 
 import org.jmhsrobotics.frc2023.Constants;
+import org.jmhsrobotics.frc2023.Constants.Direction;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -35,6 +36,19 @@ public class IntakeSubsystem extends SubsystemBase {
 
 	public void setIntakeMotor(double speed) {
 		this.intakeMotor.set(speed);
+	}
+
+	public void setIntakeMotor(Direction dir, double speed) {
+		switch (dir) {
+			case FORWARD :
+			case IN :
+				this.setIntakeMotor(-speed);
+				break;
+			case REVERSE :
+			case OUT :
+				this.setIntakeMotor(speed);
+				break;
+		}
 	}
 
 	public double getIntakeSpeed() {

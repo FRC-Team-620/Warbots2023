@@ -1,8 +1,10 @@
-package org.jmhsrobotics.frc2023.commands;
+package org.jmhsrobotics.frc2023.commands.wrist;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
+import org.jmhsrobotics.frc2023.Constants.ControlMode;
+import org.jmhsrobotics.frc2023.Constants.WristConstants;
 import org.jmhsrobotics.frc2023.subsystems.WristSubsystem;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -67,7 +69,24 @@ public class TeleopWristOpenLoop extends CommandBase {
 		// If closed-loop control is starting up again after having been interrupted
 		if (this.wasEnded) {
 			this.wasEnded = false;
-			this.resetDesiredStateToCurrent();
+
+			boolean isTooHigh = currentWristPitch > WristConstants.maxPitchDegrees;
+			boolean isTooLow = currentWristPitch < WristConstants.minPitchDegrees;
+
+			if (isTooHigh || isTooLow) {
+
+				this.wristSubsystem.setWristEncoderPosition(isTooHigh ? 0.0 : WristConstants.relativeTicksAtMin);
+
+				this.resetDesiredStateToCurrent();
+
+				this.wristSubsystem.resetPitchPPIDToValue(
+						isTooHigh ? WristConstants.maxPitchDegrees : WristConstants.minPitchDegrees);
+
+				this.wristSubsystem.setControlMode(ControlMode.CLOSED_LOOP); // importante
+
+			} else {
+				this.resetDesiredStateToCurrent();
+			}
 		}
 
 		// inverse kinematics, kinda

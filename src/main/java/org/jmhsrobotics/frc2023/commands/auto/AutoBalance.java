@@ -6,6 +6,7 @@ import edu.wpi.first.math.MathUtil;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -62,7 +63,7 @@ public class AutoBalance extends CommandBase {
 				Constants.driveports.getBalancingPID().ki, Constants.driveports.getBalancingPID().kd);
 
 		this.pidController.setTolerance(0.02, 0.01);
-		this.pitchPIDController = new PIDController(0.008, 0.0002, 0.0);
+		this.pitchPIDController = new PIDController(0.008 * 1.2, 0.0002, 0.0);
 		addRequirements(drivetrain, ledSubsystem);
 	}
 
@@ -137,7 +138,7 @@ public class AutoBalance extends CommandBase {
 			// IF THE ROBOT IS AT AN ANGLE OF > 3.0 OR < 3.0 DEGREES
 			// i.e. if the robot is angling up or down
 			// REGISTER THE ROBOT AS HAVING BEEN ON THE CHARGING STATION
-			this.hasBeenOnChargeStation = !RobotMath.approximatelyZero(pitch, 3.0);
+			this.hasBeenOnChargeStation = !RobotMath.approxZero(pitch, 3.0);
 		} else {
 
 			// IF THE ROBOT IS FALLING FORWARD OR BACKWARD (The loading station is tipping
@@ -168,7 +169,7 @@ public class AutoBalance extends CommandBase {
 				// THE CHARGING STATION IS NOT TIPPING
 
 				// IS BALANCING
-				if (RobotMath.approximatelyZero(pitch, AutoConstants.balancedAngle)) {
+				if (RobotMath.approxZero(pitch, AutoConstants.balancedAngle)) {
 					this.drivetrain.stop();
 					this.ledSubsystem.getDriverBuffer().setSolidColor(Color.kGreen);
 					this.isBalancing = true;
@@ -208,9 +209,11 @@ public class AutoBalance extends CommandBase {
                     // }
 
 					// TODO: maybe tune this (how fast the pitch PID is when recovering from tipping)
-                    double speed = MathUtil.clamp(pidSpeedOutput, -0.8, 0.8);
+                    double speed = MathUtil.clamp(pidSpeedOutput, -1.3, 1.3);
 
-                    System.out.println("SPEED: " + speed);
+					SmartDashboard.putNumber("AutoBalance/climb speed", speed);
+
+                    // System.out.println("SPEED: " + speed);
 
                     this.drivetrain.setCurvatureDrive(
                         speed,
@@ -297,6 +300,7 @@ public class AutoBalance extends CommandBase {
 	@Override
 	public boolean isFinished() {
 		// spotless:off
+		// TODO: consider removing the 'isBalancing' condition, since it does not matter (+ might balance better)
         return this.isBalancing 
 			|| this.timeoutTimer.hasElapsed(AutoConstants.autoBalanceTimeoutSeconds);
         // spotless:on

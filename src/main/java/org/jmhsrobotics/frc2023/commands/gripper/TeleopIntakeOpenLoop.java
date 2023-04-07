@@ -2,6 +2,7 @@ package org.jmhsrobotics.frc2023.commands.gripper;
 
 import java.util.function.Supplier;
 
+import org.jmhsrobotics.frc2023.Constants.Direction;
 import org.jmhsrobotics.frc2023.Constants.GripperType;
 import org.jmhsrobotics.frc2023.Constants.ScoringType;
 import org.jmhsrobotics.frc2023.subsystems.IntakeSubsystem;
@@ -38,6 +39,7 @@ public class TeleopIntakeOpenLoop extends CommandBase {
 
 		double currentSpeed = this.intakeSpeed.get();
 		ScoringType currentMode = this.scoringType.get();
+		boolean isCone = currentMode == ScoringType.CONE;
 
 		SmartDashboard.putNumber("TeleopIntake/input speed", currentSpeed);
 		SmartDashboard.putString("TeleopIntake/scoring type", currentMode.toString());
@@ -66,17 +68,18 @@ public class TeleopIntakeOpenLoop extends CommandBase {
 
 			case MOTOR :
 
-				int modeFactor = currentMode == ScoringType.CONE ? -1 : 1;
+				// int modeFactor = currentMode == ScoringType.CONE ? -1 : 1;
 
-				baseSpeed = currentMode == ScoringType.CONE ? modeFactor * 0.05 : 0;
+				baseSpeed = isCone ? 0.05 : 0;
 
-				if (currentMode == ScoringType.CONE)
+				if (isCone)
 					currentSpeed *= 0.6;
 
 				// spotless:off
-				this.intakeSubsystem.setIntakeMotor(MathUtil.clamp(
-					modeFactor * currentSpeed + baseSpeed, -1, 1
-				));
+				this.intakeSubsystem.setIntakeMotor(
+					isCone ? Direction.IN : Direction.OUT, 
+					MathUtil.clamp(currentSpeed + baseSpeed, -1, 1)
+				);
 				// spotless:on
 
 				break;
