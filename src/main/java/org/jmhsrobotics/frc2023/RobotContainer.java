@@ -94,6 +94,7 @@ public class RobotContainer {
 			armSubsystem, 
 			controlBoard::armPitch, 
 			controlBoard::armExtend, 
+			wristSubsystem::getWristPitch,
 			controlBoard.overrideTeleopArm()
 		));
 		// spotless:on

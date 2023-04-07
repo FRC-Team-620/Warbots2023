@@ -378,7 +378,7 @@ public class ArmSubsystem extends SubsystemBase {
 		// return false;
 		// }
 	}
-	public boolean isHigherThen() {
+	public boolean isHigherThan() {
 		return this.getArmPitch() > 43;
 	}
 

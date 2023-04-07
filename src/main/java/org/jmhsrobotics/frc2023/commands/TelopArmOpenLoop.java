@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class TelopArmOpenLoop extends CommandBase {
 
 	ArmSubsystem armSubsystem;
-	Supplier<Double> pitchSpeed, linearSpeed;
+	Supplier<Double> pitchSpeed, linearSpeed, wristPitch;
 	BooleanSupplier overrideLimits;
 
 	boolean wasEnded = false;
@@ -25,15 +25,16 @@ public class TelopArmOpenLoop extends CommandBase {
 	double extensionFactor;
 
 	double maxHeightProportion = 0.7;
-	// double gripperLengthProportion = 0.4;
+	double gripperLengthProportion = 0.4;
 
 	// spotless:off
 	public TelopArmOpenLoop(ArmSubsystem armSubsystem, Supplier<Double> pitchSpeed, 
-		Supplier<Double> linearSpeed, BooleanSupplier overrideLimits) {
+		Supplier<Double> linearSpeed, Supplier<Double> wristPitch, BooleanSupplier overrideLimits) {
 
 		this.armSubsystem = armSubsystem;
 		this.pitchSpeed = pitchSpeed;
 		this.linearSpeed = linearSpeed;
+		this.wristPitch = wristPitch;
 		this.overrideLimits = overrideLimits;
 
 		this.pitchFactor = -1 * armSubsystem.getMaxPitchPPIDVel() * RobotConstants.secondsPerTick;
@@ -127,9 +128,19 @@ public class TelopArmOpenLoop extends CommandBase {
 		// spotless:on
 
 		double toExtension = this.desiredExtension;
+
+		double currentGripperHeight = this.gripperLengthProportion
+				* -Math.cos(Math.toRadians(this.armSubsystem.getArmPitch() + this.wristPitch.get()));
+		currentGripperHeight = Math.max(currentGripperHeight, 0.0);
+
 		double currentCoef = -Math.cos(Math.toRadians(this.armSubsystem.getArmPitch()));
-		if (this.armSubsystem.getExtensionProportion() * currentCoef > this.maxHeightProportion) {
-			toExtension = this.armSubsystem.evalExtensionProportion(this.maxHeightProportion / currentCoef);
+		double currentHeight = this.armSubsystem.getExtensionProportion() * currentCoef + currentGripperHeight;
+		if (currentHeight > this.maxHeightProportion) {
+			// spotless:off
+			toExtension = this.armSubsystem.evalExtensionProportion(
+				(this.maxHeightProportion - currentGripperHeight) / currentCoef
+			);
+			// spotless:on
 		}
 
 		armSubsystem.updatePitchGoal(this.desiredPitch);

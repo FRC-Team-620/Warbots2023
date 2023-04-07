@@ -177,7 +177,7 @@ public class ArmSetpointCommand extends SequentialCommandGroup {
 																robotContainer.getWristSubsystem(), 1.0, 103, 113,
 																robotContainer.getControlBoard().override()))
 
-												, robotContainer.getArmSubsystem()::isHigherThen),
+												, robotContainer.getArmSubsystem()::isHigherThan),
 										// new CommandArmPitchThenExtension(robotContainer.armSubsystem, 1.0, 247,
 										// robotContainer.controlBoard.override()),
 										// new CommandArmPitchThenExtension(robotContainer.armSubsystem, 1.0, 247,
