@@ -9,11 +9,9 @@ import org.jmhsrobotics.frc2023.commands.ArmSetpointCommand;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
 import org.jmhsrobotics.frc2023.commands.arm.TelopArmOpenLoop;
-import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
 import org.jmhsrobotics.frc2023.commands.gripper.TeleopIntakeOpenLoop;
-import org.jmhsrobotics.frc2023.commands.gripper.ToggleIntakePiston;
 // import org.jmhsrobotics.frc2023.commands.grabber.ToggleGrabberPitch;
 import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
 import org.jmhsrobotics.frc2023.commands.wrist.TeleopWristOpenLoop;
@@ -39,7 +37,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -177,7 +174,8 @@ public class RobotContainer {
 		// operator.x().onTrue(new CommandArm(armSubsystem, 0.2, 0));
 		// operator.b().onTrue(new CommandArm(armSubsystem, 0, 180));
 		// controlBoard.alignPeg().onTrue(new AlignPeg(drivetrain));
-		// controlBoard.changeScoringType().onTrue(new InstantCommand(() -> armSubsystem.switchScoringType()));
+		// controlBoard.changeScoringType().onTrue(new InstantCommand(() ->
+		// armSubsystem.switchScoringType()));
 
 		controlBoard.armPresetStowed()
 				.onTrue(new ArmSetpointCommand(Constants.Setpoints.STOWED, Constants.kGripperType, this));
@@ -192,17 +190,20 @@ public class RobotContainer {
 				.onTrue(new ArmSetpointCommand(Constants.Setpoints.HIGH, Constants.kGripperType, this));
 
 		// controlBoard.armPresetPickup()
-		// 		.onTrue(new ArmSetpointCommand(Constants.Setpoints.PICKUP, Constants.kGripperType, this));
+		// .onTrue(new ArmSetpointCommand(Constants.Setpoints.PICKUP,
+		// Constants.kGripperType, this));
 
 		// controlBoard.closeGrabber().onTrue(new ToggleIntakePiston(intakeSubsystem));
 
 		// controlBoard.armWrist().onTrue(new
 		// ToggleGrabberPitch(grabberSolenoidSubsystem));
 
-		// controlBoard.autoBalance().onTrue(new AutoBalance(drivetrain, false, ledSubsystem));
+		// controlBoard.autoBalance().onTrue(new AutoBalance(drivetrain, false,
+		// ledSubsystem));
 
 		// controlBoard.toggleHeadingLock().onTrue(
-				// new InstantCommand(() -> this.drivetrain.setHeadingLock(!this.getDrivetrain().getShouldHeadingLock())));
+		// new InstantCommand(() ->
+		// this.drivetrain.setHeadingLock(!this.getDrivetrain().getShouldHeadingLock())));
 
 		// controlBoard.getDriver().a().onTrue(new TurnAngle(drivetrain, 180.0));
 
