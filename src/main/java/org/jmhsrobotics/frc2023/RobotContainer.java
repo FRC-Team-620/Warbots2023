@@ -177,7 +177,7 @@ public class RobotContainer {
 		// operator.x().onTrue(new CommandArm(armSubsystem, 0.2, 0));
 		// operator.b().onTrue(new CommandArm(armSubsystem, 0, 180));
 		// controlBoard.alignPeg().onTrue(new AlignPeg(drivetrain));
-		controlBoard.changeScoringType().onTrue(new InstantCommand(() -> armSubsystem.switchScoringType()));
+		// controlBoard.changeScoringType().onTrue(new InstantCommand(() -> armSubsystem.switchScoringType()));
 
 		controlBoard.armPresetStowed()
 				.onTrue(new ArmSetpointCommand(Constants.Setpoints.STOWED, Constants.kGripperType, this));
@@ -191,18 +191,18 @@ public class RobotContainer {
 		controlBoard.armPresetHigh()
 				.onTrue(new ArmSetpointCommand(Constants.Setpoints.HIGH, Constants.kGripperType, this));
 
-		controlBoard.armPresetPickup()
-				.onTrue(new ArmSetpointCommand(Constants.Setpoints.PICKUP, Constants.kGripperType, this));
+		// controlBoard.armPresetPickup()
+		// 		.onTrue(new ArmSetpointCommand(Constants.Setpoints.PICKUP, Constants.kGripperType, this));
 
-		controlBoard.closeGrabber().onTrue(new ToggleIntakePiston(intakeSubsystem));
+		// controlBoard.closeGrabber().onTrue(new ToggleIntakePiston(intakeSubsystem));
 
 		// controlBoard.armWrist().onTrue(new
 		// ToggleGrabberPitch(grabberSolenoidSubsystem));
 
-		controlBoard.autoBalance().onTrue(new AutoBalance(drivetrain, false, ledSubsystem));
+		// controlBoard.autoBalance().onTrue(new AutoBalance(drivetrain, false, ledSubsystem));
 
-		controlBoard.toggleHeadingLock().onTrue(
-				new InstantCommand(() -> this.drivetrain.setHeadingLock(!this.getDrivetrain().getShouldHeadingLock())));
+		// controlBoard.toggleHeadingLock().onTrue(
+				// new InstantCommand(() -> this.drivetrain.setHeadingLock(!this.getDrivetrain().getShouldHeadingLock())));
 
 		// controlBoard.getDriver().a().onTrue(new TurnAngle(drivetrain, 180.0));
 

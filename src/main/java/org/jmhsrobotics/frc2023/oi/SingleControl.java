@@ -28,7 +28,7 @@ public class SingleControl implements ControlBoard {
 
 	@Override
 	public boolean isDriveSlow() {
-		return controller.rightBumper().getAsBoolean();
+		return true;
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class SingleControl implements ControlBoard {
 
 	@Override
 	public boolean isQuickTurn() {
-		return !controller.a().getAsBoolean();
+		return true;
 	}
 
 	private double operatorLeftY() {
@@ -62,17 +62,17 @@ public class SingleControl implements ControlBoard {
 
 	@Override
 	public Trigger armPresetFloor() {
-		return controller.povDown();
+		return controller.a();
 	}
 
 	@Override
 	public Trigger armPresetMid() {
-		return controller.povLeft();
+		return controller.x();
 	}
 
 	@Override
 	public Trigger armPresetHigh() {
-		return controller.povUp();
+		return null;
 	}
 
 	@Override
@@ -87,23 +87,23 @@ public class SingleControl implements ControlBoard {
 
 	@Override
 	public Trigger armWrist() {
-		return controller.y();
+		return null;
 	}
 
 	@Override
 	public Trigger alignPeg() {
-		return controller.x();
+		return null;
 	}
 
 	@Override
 	public Trigger changeScoringType() {
-		return controller.a();
+		return null;
 	}
 
 	@Override
 	public Trigger armPresetStowed() {
 		// TODO Auto-generated method stub
-		return null;
+		return controller.b();
 	}
 
 	@Override
@@ -115,17 +115,17 @@ public class SingleControl implements ControlBoard {
 
 	@Override
 	public Trigger override() {
-		return controller.start();
+		return null;
 	}
 
 	@Override
 	public Trigger wristControlModifier() {
-		return controller.leftBumper();
+		return null;
 	}
 
 	@Override
 	public double intakeWheels() {
-		return 0;
+		return controller.rightBumper().getAsBoolean() ? 1 : controller.leftBumper().getAsBoolean() ? -1 : 0;
 
 	}
 
