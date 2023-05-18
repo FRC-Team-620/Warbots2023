@@ -76,9 +76,9 @@ public class RobotContainer {
 	 */
 	public RobotContainer() {
 		SmartDashboard.putData(CommandScheduler.getInstance());
-		SelectableControlBoard selectable = new SelectableControlBoard("competition", new CompControl());
-		selectable.addOption("single", new SingleControl());
-		controlBoard = selectable;
+		// SelectableControlBoard selectable = new SelectableControlBoard("single", new SingleControl());
+		// selectable.addOption("single", new SingleControl());
+		controlBoard = new SingleControl();
 		// Configure the trigger bindings
 		configureBindings();
 		// Setting up default command which is a command that runs every time no other
