@@ -8,7 +8,6 @@ import org.jmhsrobotics.frc2023.Constants.RobotConstants;
 import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class TelopArmOpenLoop extends CommandBase {
@@ -56,28 +55,37 @@ public class TelopArmOpenLoop extends CommandBase {
 	@Override
 	public void execute() {
 
-		SmartDashboard.putNumber("ArmTeleop/Pitch/pitchEncoder", this.armSubsystem.getPitchRelativeEncoderPosition());
-		SmartDashboard.putNumber("ArmTeleop/Pitch/pitchInput", this.pitchSpeed.get());
-		SmartDashboard.putNumber("ArmTeleop/Pitch/desiredPitch", this.desiredPitch);
-		SmartDashboard.putNumber("ArmTeleop/Pitch/armPitch", this.armSubsystem.getArmPitch());
-		SmartDashboard.putNumber("ArmTeleop/Pitch/pitchGoalPos", this.armSubsystem.getPitchPPIDGoal().position);
-
-		SmartDashboard.putNumber("ArmTeleop/Extension/extensionInput", this.linearSpeed.get());
-		SmartDashboard.putNumber("ArmTeleop/Extension/desiredExtension", this.desiredExtension);
-		SmartDashboard.putNumber("ArmTeleop/Extension/armExtension", this.armSubsystem.getArmLength());
-		SmartDashboard.putNumber("ArmTeleop/Extension/extensionGoalPos",
-				this.armSubsystem.getExtensionPPIDGoal().position);
+		/*
+		 * SmartDashboard.putNumber("ArmTeleop/Pitch/pitchEncoder",
+		 * this.armSubsystem.getPitchRelativeEncoderPosition());
+		 * SmartDashboard.putNumber("ArmTeleop/Pitch/pitchInput",
+		 * this.pitchSpeed.get());
+		 * SmartDashboard.putNumber("ArmTeleop/Pitch/desiredPitch", this.desiredPitch);
+		 * SmartDashboard.putNumber("ArmTeleop/Pitch/armPitch",
+		 * this.armSubsystem.getArmPitch());
+		 * SmartDashboard.putNumber("ArmTeleop/Pitch/pitchGoalPos",
+		 * this.armSubsystem.getPitchPPIDGoal().position);
+		 *
+		 * SmartDashboard.putNumber("ArmTeleop/Extension/extensionInput",
+		 * this.linearSpeed.get());
+		 * SmartDashboard.putNumber("ArmTeleop/Extension/desiredExtension",
+		 * this.desiredExtension);
+		 * SmartDashboard.putNumber("ArmTeleop/Extension/armExtension",
+		 * this.armSubsystem.getArmLength());
+		 * SmartDashboard.putNumber("ArmTeleop/Extension/extensionGoalPos",
+		 * this.armSubsystem.getExtensionPPIDGoal().position);
+		 */
 
 		// For the LEDs
 		this.armSubsystem.setTeleopWasEnded(this.wasEnded);
 
 		// spotless:off
-		if(this.overrideLimits.getAsBoolean()) {
+		/*if(this.overrideLimits.getAsBoolean()) {
 			if(!this.wristMod.getAsBoolean())
 				armSubsystem.setDutyCycle(pitchSpeed.get(), linearSpeed.get());
 			this.wasEnded = true;
 			return;
-		}
+		}*/
 		// spotless:on
 
 		// If closed-loop control is starting up again after having been interrupted

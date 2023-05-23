@@ -34,6 +34,8 @@ public class DriveCommand extends CommandBase {
 	// Called when the command is initially scheduled.
 	@Override
 	public void initialize() {
+		SmartDashboard.putNumber("Drivetrain/drive speed", 0.15);
+		SmartDashboard.putNumber("Drivetrain/Turning speed", 0.3);
 	}
 
 	// Called every time the scheduler runs while the command is scheduled.
@@ -86,11 +88,16 @@ public class DriveCommand extends CommandBase {
 		// }
 
 		if (control.isDriveFast()) {
+			// System.out.println("high");
 			speed *= 1;
 			rotationInput *= 0.7;
 		} else {
-			speed *= 0.5;
-			rotationInput *= 0.45;
+			// System.out.println("slow");
+			// System.out.println(SmartDashboard.getNumber("Drivetrain/drive speed", 0.15));
+			// System.out.println(SmartDashboard.getNumber("Drivetrain/drive rotation
+			// speed", 0.3));
+			speed *= SmartDashboard.getNumber("Drivetrain/drive speed", 0.15);
+			rotationInput *= SmartDashboard.getNumber("Drivetrain/drive rotation speed", 0.3);
 		}
 		// Pass the speed, rotation input, and the quickTurn in that order into
 		// setCurvatureDrive

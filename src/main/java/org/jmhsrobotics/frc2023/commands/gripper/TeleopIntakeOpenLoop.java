@@ -31,6 +31,8 @@ public class TeleopIntakeOpenLoop extends CommandBase {
 
 	@Override
 	public void initialize() {
+		SmartDashboard.putNumber("TeleopIntake/Max intake speed", 0.5);
+		SmartDashboard.putNumber("TeleopIntake/Min intake speed", -0.5);
 		SmartDashboard.putString("TeleopIntake/gripper type", this.type.toString());
 	}
 
@@ -78,7 +80,7 @@ public class TeleopIntakeOpenLoop extends CommandBase {
 				// spotless:off
 				this.intakeSubsystem.setIntakeMotor(
 					isCone ? Direction.IN : Direction.OUT, 
-					MathUtil.clamp(currentSpeed + baseSpeed, -1, 1)
+					MathUtil.clamp(currentSpeed + baseSpeed, SmartDashboard.getNumber("TeleopIntake/Min speed", -0.5), SmartDashboard.getNumber("TeleopIntake/Max speed", 0.5))
 				);
 				// spotless:on
 

@@ -33,7 +33,7 @@ public class SingleControl implements ControlBoard {
 
 	@Override
 	public double driveTurn() {
-		return MathUtil.applyDeadband(controller.getRightX(), deadband);
+		return MathUtil.applyDeadband(controller.getLeftX(), deadband);
 	}
 
 	@Override
@@ -115,12 +115,12 @@ public class SingleControl implements ControlBoard {
 
 	@Override
 	public Trigger override() {
-		return null;
+		return controller.start();
 	}
 
 	@Override
 	public Trigger wristControlModifier() {
-		return null;
+		return controller.povLeft();
 	}
 
 	@Override

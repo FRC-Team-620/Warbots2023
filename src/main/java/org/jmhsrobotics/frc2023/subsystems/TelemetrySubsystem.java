@@ -7,8 +7,6 @@ import org.jmhsrobotics.frc2023.util.IIMUWrapper;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -46,7 +44,7 @@ public class TelemetrySubsystem extends SubsystemBase {
 		}
 	}
 
-	private Compressor compressor;
+	// private Compressor compressor;
 
 	private IIMUWrapper imu;
 	private IMUState imuState;
@@ -62,8 +60,8 @@ public class TelemetrySubsystem extends SubsystemBase {
 		CameraServer.startAutomaticCapture();
 
 		// Compressor
-		this.compressor = new Compressor(42, PneumaticsModuleType.REVPH);
-		this.compressor.disable(); // immediately disable (we don't use it) (cringe)
+		// this.compressor = new Compressor(42, PneumaticsModuleType.REVPH);
+		// this.compressor.disable(); // immediately disable (we don't use it) (cringe)
 
 		// IMU
 		this.imu = Constants.driveports.getIMU();

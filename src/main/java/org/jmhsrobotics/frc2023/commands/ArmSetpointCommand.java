@@ -190,7 +190,7 @@ public class ArmSetpointCommand extends SequentialCommandGroup {
 					case PICKUP :
 						addCommands(new ConditionalCommand(
 								new ParallelCommandGroup(new CommandEThenAW(robotContainer.getArmSubsystem(),
-										robotContainer.getWristSubsystem(), 0.0, 48, 158,
+										robotContainer.getWristSubsystem(), 0.0, 47, 152,
 										robotContainer.getControlBoard().override())),
 								new ParallelCommandGroup(new CommandEThenAW(robotContainer.getArmSubsystem(),
 										robotContainer.getWristSubsystem(), 0.0, 67, 140,

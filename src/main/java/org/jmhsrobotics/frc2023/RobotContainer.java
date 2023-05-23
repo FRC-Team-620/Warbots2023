@@ -8,20 +8,16 @@ import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 import org.jmhsrobotics.frc2023.commands.ArmSetpointCommand;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
-import org.jmhsrobotics.frc2023.commands.arm.TelopArmOpenLoop;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
 import org.jmhsrobotics.frc2023.commands.gripper.TeleopIntakeOpenLoop;
 // import org.jmhsrobotics.frc2023.commands.grabber.ToggleGrabberPitch;
 import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
-import org.jmhsrobotics.frc2023.commands.wrist.TeleopWristOpenLoop;
 import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
 import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
-import org.jmhsrobotics.frc2023.oi.CompControl;
 import org.jmhsrobotics.frc2023.oi.ControlBoard;
-import org.jmhsrobotics.frc2023.oi.SelectableControlBoard;
 import org.jmhsrobotics.frc2023.oi.SingleControl;
 // import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
@@ -76,7 +72,8 @@ public class RobotContainer {
 	 */
 	public RobotContainer() {
 		SmartDashboard.putData(CommandScheduler.getInstance());
-		// SelectableControlBoard selectable = new SelectableControlBoard("single", new SingleControl());
+		// SelectableControlBoard selectable = new SelectableControlBoard("single", new
+		// SingleControl());
 		// selectable.addOption("single", new SingleControl());
 		controlBoard = new SingleControl();
 		// Configure the trigger bindings
@@ -87,22 +84,22 @@ public class RobotContainer {
 
 		// OpenLoop Control!
 		// spotless:off
-		armSubsystem.setDefaultCommand(new TelopArmOpenLoop(
+		/*armSubsystem.setDefaultCommand(new TelopArmOpenLoop(
 			armSubsystem, 
 			controlBoard::armPitch, 
 			controlBoard::armExtend, 
 			controlBoard.wristControlModifier(),
 			controlBoard.override()
-		));
+		));*/
 		// spotless:on
 
 		// spotless:off
-		wristSubsystem.setDefaultCommand(new TeleopWristOpenLoop(
+		/*wristSubsystem.setDefaultCommand(new TeleopWristOpenLoop(
 			wristSubsystem, 
 			armSubsystem::getArmPitch, 
 			controlBoard::wristPitch, 
 			controlBoard.wristControlModifier(),
-			controlBoard.override()));
+			controlBoard.override()));*/
 		// spotless:on
 
 		// grabberMotorSubsystem.setDefaultCommand(new InstantCommand(() -> {
@@ -186,8 +183,9 @@ public class RobotContainer {
 		controlBoard.armPresetMid()
 				.onTrue(new ArmSetpointCommand(Constants.Setpoints.MID, Constants.kGripperType, this));
 
-		controlBoard.armPresetHigh()
-				.onTrue(new ArmSetpointCommand(Constants.Setpoints.HIGH, Constants.kGripperType, this));
+		// controlBoard.armPresetHigh()
+		// .onTrue(new ArmSetpointCommand(Constants.Setpoints.HIGH,
+		// Constants.kGripperType, this));
 
 		// controlBoard.armPresetPickup()
 		// .onTrue(new ArmSetpointCommand(Constants.Setpoints.PICKUP,
