@@ -31,8 +31,8 @@ public class TeleopIntakeOpenLoop extends CommandBase {
 
 	@Override
 	public void initialize() {
-		SmartDashboard.putNumber("TeleopIntake/Max intake speed", 0.5);
-		SmartDashboard.putNumber("TeleopIntake/Min intake speed", -0.5);
+		SmartDashboard.putNumber("TeleopIntake/Max speed", 0.5);
+		SmartDashboard.putNumber("TeleopIntake/Min speed", -0.5);
 		SmartDashboard.putString("TeleopIntake/gripper type", this.type.toString());
 	}
 
