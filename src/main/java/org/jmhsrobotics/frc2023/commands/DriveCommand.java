@@ -96,8 +96,8 @@ public class DriveCommand extends CommandBase {
 			// System.out.println(SmartDashboard.getNumber("Drivetrain/drive speed", 0.15));
 			// System.out.println(SmartDashboard.getNumber("Drivetrain/drive rotation
 			// speed", 0.3));
-			speed *= SmartDashboard.getNumber("Drivetrain/drive speed", 0.15);
-			rotationInput *= SmartDashboard.getNumber("Drivetrain/turning speed", 0.3);
+			speed *= 0.2;
+			rotationInput *= 0.25;
 		}
 		// Pass the speed, rotation input, and the quickTurn in that order into
 		// setCurvatureDrive

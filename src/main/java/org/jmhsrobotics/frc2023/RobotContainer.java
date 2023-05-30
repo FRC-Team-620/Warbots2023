@@ -177,8 +177,9 @@ public class RobotContainer {
 		controlBoard.armPresetStowed()
 				.onTrue(new ArmSetpointCommand(Constants.Setpoints.STOWED, Constants.kGripperType, this));
 
-		controlBoard.armPresetFloor()
-				.onTrue(new ArmSetpointCommand(Constants.Setpoints.FLOOR, Constants.kGripperType, this));
+		// controlBoard.armPresetFloor()
+		// .onTrue(new ArmSetpointCommand(Constants.Setpoints.FLOOR,
+		// Constants.kGripperType, this));
 
 		controlBoard.armPresetMid()
 				.onTrue(new ArmSetpointCommand(Constants.Setpoints.MID, Constants.kGripperType, this));

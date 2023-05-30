@@ -80,8 +80,7 @@ public class TeleopIntakeOpenLoop extends CommandBase {
 				// spotless:off
 				this.intakeSubsystem.setIntakeMotor(
 					isCone ? Direction.IN : Direction.OUT, 
-					MathUtil.clamp(currentSpeed + baseSpeed, SmartDashboard.getNumber("TeleopIntake/Min speed", -0.5), SmartDashboard.getNumber("TeleopIntake/Max speed", 0.5))
-				);
+					MathUtil.clamp(currentSpeed + baseSpeed, -1, 1));
 				// spotless:on
 
 				break;
