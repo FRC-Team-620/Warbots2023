@@ -4,12 +4,15 @@
 
 package org.jmhsrobotics.frc2023;
 
+import java.io.IOException;
+import java.nio.file.Path;
+
 import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 import org.jmhsrobotics.frc2023.commands.ArmSetpointCommand;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
-import org.jmhsrobotics.frc2023.commands.DriveCommand;
 import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
+import org.jmhsrobotics.frc2023.commands.auto.TrajectoryFollowingCommand;
 import org.jmhsrobotics.frc2023.commands.gripper.TeleopIntakeOpenLoop;
 // import org.jmhsrobotics.frc2023.commands.grabber.ToggleGrabberPitch;
 import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
@@ -29,6 +32,9 @@ import org.jmhsrobotics.frc2023.subsystems.WristSubsystem;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDIdleCommand;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
 
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -61,6 +67,7 @@ public class RobotContainer {
 	private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 	private final ArmSubsystem armSubsystem = new ArmSubsystem();
 	private final WristSubsystem wristSubsystem = new WristSubsystem();
+	public Trajectory trajectory = new Trajectory();
 	// private final ArmSubsystem armSubsystem = new ArmSubsystem();
 	// private final GrabberSubsystem grabberSubsystem=new GrabberSubsystem();
 	// private final VisionPlaceholder visionPlaceholder = new
@@ -80,7 +87,15 @@ public class RobotContainer {
 		configureBindings();
 		// Setting up default command which is a command that runs every time no other
 		// command that uses that subsystem is running
-		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, controlBoard));
+		// drivetrain.setDefaultCommand(new PIDTestCommand(drivetrain));
+		Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve("test01.wpilib.json");
+		try {
+			trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+			drivetrain.setDefaultCommand(new TrajectoryFollowingCommand(drivetrain, trajectory));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// OpenLoop Control!
 		// spotless:off

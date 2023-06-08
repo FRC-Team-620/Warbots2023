@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
+import org.jmhsrobotics.frc2023.commands.auto.PIDTestCommand;
 import org.jmhsrobotics.frc2023.util.DetectRobot;
 import org.jmhsrobotics.frc2023.util.sim.BuildDataLogger;
 
@@ -83,6 +85,9 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("WristSubsystem/wrist/absolute pitch degrees",
 				m_robotContainer.getArmSubsystem().getArmPitch()
 						+ m_robotContainer.getWristSubsystem().getWristPitch());
+
+		field.getObject("path").setTrajectory(m_robotContainer.trajectory);
+		field.getRobotObject().setPose(m_robotContainer.getDrivetrain().getPose());
 	}
 
 	/** This function is called once each time the robot enters Disabled mode. */
@@ -155,6 +160,12 @@ public class Robot extends TimedRobot {
 		CommandScheduler.getInstance().cancelAll();
 		m_robotContainer.getDrivetrain().setBrake(true);
 		this.lastAutonomous = false;
+		CommandScheduler.getInstance().enable();
+		PIDTestCommand PIDTest = new PIDTestCommand(m_robotContainer.getDrivetrain());
+		PIDTest.schedule();
+		// CommandScheduler.getInstance().schedule(PIDTest);
+		SmartDashboard.putData(PIDTest);
+
 	}
 
 	/** This function is called periodically during test mode. */

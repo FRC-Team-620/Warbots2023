@@ -18,12 +18,8 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -435,42 +431,54 @@ public class ArmSubsystem extends SubsystemBase {
 	private SparkMaxAnalogSensorSimWrapper pitchencsim;
 	private SparkMaxAnalogSensorSimWrapper extensionencsim;
 
-	private void initSim() {
-		// Constants.ArmConstants.minExtensionLengthMeters
-		double moi = SingleJointedArmSim.estimateMOI(ArmConstants.minExtensionLengthMillims, ArmConstants.armMasskg);
-		armsim = new SingleJointedArmSim(DCMotor.getNEO(1), ArmConstants.armPitchGearRatio, moi,
-				ArmConstants.maxExtensionLengthMillims, Units.degreesToRadians(ArmConstants.minArmAngleDegrees),
-				Units.degreesToRadians(ArmConstants.maxArmAngleDegrees), true);
-		prismaticSim = new ElevatorSim(DCMotor.getNeo550(1), 10, 10, Units.inchesToMeters(3),
-				ArmConstants.minExtensionLengthMillims, ArmConstants.maxExtensionLengthMillims, false);
-		pitchencsim = new SparkMaxAnalogSensorSimWrapper(pitchAbsoluteEncoder);
-		// extensionencsim = new SparkMaxAnalogSensorSimWrapper(extensionEncoder);
-	}
+	// private void initSim() {
+	// // Constants.ArmConstants.minExtensionLengthMeters
+	// double moi =
+	// SingleJointedArmSim.estimateMOI(ArmConstants.minExtensionLengthMillims,
+	// ArmConstants.armMasskg);
+	// armsim = new SingleJointedArmSim(DCMotor.getNEO(1),
+	// ArmConstants.armPitchGearRatio, moi,
+	// ArmConstants.maxExtensionLengthMillims,
+	// Units.degreesToRadians(ArmConstants.minArmAngleDegrees),
+	// Units.degreesToRadians(ArmConstants.maxArmAngleDegrees), true);
+	// prismaticSim = new ElevatorSim(DCMotor.getNeo550(1), 10, 10,
+	// Units.inchesToMeters(3),
+	// ArmConstants.minExtensionLengthMillims,
+	// ArmConstants.maxExtensionLengthMillims, false);
+	// pitchencsim = new SparkMaxAnalogSensorSimWrapper(pitchAbsoluteEncoder);
+	// // extensionencsim = new SparkMaxAnalogSensorSimWrapper(extensionEncoder);
+	// }
 
-	@Override
-	public void simulationPeriodic() {
-		if (!simInit) {
-			initSim();
-			simInit = true;
-		}
-		var armvolts = pitchMotor.get() * RobotController.getInputVoltage();
-		var prismaticvolts = telescopeMotor.get() * RobotController.getInputVoltage();
-		if (RobotState.isDisabled()) {
-			armvolts = 0;
-			prismaticvolts = 0;
-		}
-		armsim.setInputVoltage(MathUtil.clamp(armvolts, -12, 12));
-		prismaticSim.setInputVoltage(MathUtil.clamp(prismaticvolts, -12, 12));
-		armsim.update(Constants.kSimUpdateTime);
-		prismaticSim.update(Constants.kSimUpdateTime);
-		pitchencsim.setPosition((float) Units.radiansToDegrees(armsim.getAngleRads()));
-		pitchencsim.setVelocity((float) Units.radiansToDegrees(armsim.getVelocityRadPerSec())); // TODO should this be
-																								// in rpm?
+	// @Override
+	// public void simulationPeriodic() {
+	// if (!simInit) {
+	// initSim();
+	// simInit = true;
+	// }
+	// var armvolts = pitchMotor.get() * RobotController.getInputVoltage();
+	// var prismaticvolts = telescopeMotor.get() *
+	// RobotController.getInputVoltage();
+	// if (RobotState.isDisabled()) {
+	// armvolts = 0;
+	// prismaticvolts = 0;
+	// }
+	// armsim.setInputVoltage(MathUtil.clamp(armvolts, -12, 12));
+	// prismaticSim.setInputVoltage(MathUtil.clamp(prismaticvolts, -12, 12));
+	// armsim.update(Constants.kSimUpdateTime);
+	// prismaticSim.update(Constants.kSimUpdateTime);
+	// pitchencsim.setPosition((float)
+	// Units.radiansToDegrees(armsim.getAngleRads()));
+	// pitchencsim.setVelocity((float)
+	// Units.radiansToDegrees(armsim.getVelocityRadPerSec())); // TODO should this
+	// be
+	// // in rpm?
 
-		extensionencsim
-				.setPosition((float) (prismaticSim.getPositionMeters() - ArmConstants.minExtensionLengthMillims));
-		extensionencsim.setVelocity((float) prismaticSim.getVelocityMetersPerSecond()); // TODO should this be in rpm?
+	// extensionencsim
+	// .setPosition((float) (prismaticSim.getPositionMeters() -
+	// ArmConstants.minExtensionLengthMillims));
+	// extensionencsim.setVelocity((float)
+	// prismaticSim.getVelocityMetersPerSecond()); // TODO should this be in rpm?
 
-	}
+	// }
 
 }

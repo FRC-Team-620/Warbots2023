@@ -233,7 +233,8 @@ public class Drivetrain extends SubsystemBase {
 		}
 
 		// Set the differentialDrive outputs
-		differentialDrive.curvatureDrive(this.commandedSpeed, rotationInput, this.commandedAllowTurnInPlace);
+		// differentialDrive.curvatureDrive(this.commandedSpeed, rotationInput,
+		// this.commandedAllowTurnInPlace);
 
 		// double rotationOutput = this.commandedZRotation;
 		SmartDashboard.putNumber("Drivetrain/RotationInputPeriodic", rotationInput);
@@ -244,6 +245,10 @@ public class Drivetrain extends SubsystemBase {
 		SmartDashboard.putNumber("Drivetrain/DriveHeadingAngle", imuState.yaw);
 		SmartDashboard.putNumber("Drivetrain/DriveAngleSetpoint", this.headingPID.getSetpoint());
 		SmartDashboard.putNumber("Drivetrain/shouldHeadingLock", this.shouldHeadingLock ? 1 : -1);
+	}
+	public void tankDrive(double left, double right) {
+		differentialDrive.tankDrive(left, right);
+
 	}
 
 	public void resetOdometry(Pose2d pose) {
@@ -396,6 +401,12 @@ public class Drivetrain extends SubsystemBase {
 
 	public double getLeftEncoderCount() { // TODO: probably remove in favor for odometry
 		return (leftFrontEncoder.getPosition() + leftRearEncoder.getPosition()) / 2.0;
+	}
+	public double getLeftEncoderSpeed() {
+		return (leftFrontEncoder.getVelocity());
+	}
+	public double getRightEncoderSpeed() {
+		return (rightFrontEncoder.getVelocity());
 	}
 
 	// Sets the differential drive using the method curvatureDrive
