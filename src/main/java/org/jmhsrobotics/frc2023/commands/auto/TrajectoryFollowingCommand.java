@@ -20,6 +20,7 @@ public class TrajectoryFollowingCommand extends CommandBase {
 	private PIDController leftSpeedController = new PIDController(0, 0, 0);
 	RamseteController ramsetController = new RamseteController();
 	private DifferentialDriveKinematics kine = new DifferentialDriveKinematics(Constants.kSimTrackwidthMeters);
+
 	public TrajectoryFollowingCommand(Drivetrain drivetran, Trajectory trajectory) {
 		this.drivetrain = drivetran;
 		this.trajectory = trajectory;
@@ -54,10 +55,13 @@ public class TrajectoryFollowingCommand extends CommandBase {
 	@Override
 	public boolean isFinished() {
 		// TODO Auto-generated method stub
-		if(timer.get() == 1){
+		if(trajectory.getTotalTimeSeconds() == timer.get()){
 			return true;
 		}
-		return false; 
+		return false;
+		// trajectory.getTotalTimeSeconds()
+		// trajectory.sample(trajectory.getTotalTimeSeconds()).poseMeters.getTranslation().getDistance(drivetrain.getPose().getTranslation())
+		
 	}
 
 	@Override
