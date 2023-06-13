@@ -54,7 +54,10 @@ public class TrajectoryFollowingCommand extends CommandBase {
 	@Override
 	public boolean isFinished() {
 		// TODO Auto-generated method stub
-		return super.isFinished();
+		if(timer.get() == 1){
+			return true;
+		}
+		return false; 
 	}
 
 	@Override
