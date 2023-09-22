@@ -29,7 +29,7 @@ public interface ControlBoard {
 	public Trigger Intake();
 	public Trigger armWrist();
 	public Trigger alignPeg();
-	public Trigger closeGrabber();
+	public Trigger switchGrabber();
 
 	public BooleanSupplier overrideTeleopArm();
 	public BooleanSupplier overrideTeleopWrist();

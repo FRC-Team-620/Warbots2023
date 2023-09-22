@@ -145,7 +145,7 @@ public class CompControl implements ControlBoard {
 	}
 
 	@Override
-	public Trigger closeGrabber() {
+	public Trigger switchGrabber() {
 		return operatorController.rightBumper();
 	}
 

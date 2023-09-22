@@ -7,16 +7,17 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSubsystem extends SubsystemBase {
 
 	// intake hardware
-	private CANSparkMax intakeMotor = new CANSparkMax(Constants.driveports.getIntakeCANId(), MotorType.kBrushless);
-	// private Solenoid intakePiston = new Solenoid(42, PneumaticsModuleType.REVPH,
-	// 0); // Constants.driveports.getIntakeSolenoidId()
-
+	private CANSparkMax intakeMotor = new CANSparkMax(Constants.driveports.getIntakeCANId(), MotorType.kBrushed);
+	private Solenoid intakePiston = new Solenoid(42, PneumaticsModuleType.REVPH, 0); // Constants.driveports.getIntakeSolenoidId()
+	private boolean pistonOpen = true;
 	public IntakeSubsystem() {
 
 		this.intakeMotor.setSmartCurrentLimit(20);
@@ -66,7 +67,13 @@ public class IntakeSubsystem extends SubsystemBase {
 	// ****** INTAKE PISTON ******
 
 	public void setIntakePistonState(boolean state) {
-		// this.intakePiston.set(state);
+		// state = button (pressed/not pressed)
+		// intake.set(true/false)
+		if (state) {
+			this.pistonOpen = !this.pistonOpen;
+		}
+		// this.pistonOpen = state ? !this.pistonOpen : this.pistonOpen;
+		this.intakePiston.set(this.pistonOpen);
 	}
 
 	public boolean getIntakePistonState() {

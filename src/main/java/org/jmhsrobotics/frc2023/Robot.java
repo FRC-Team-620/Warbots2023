@@ -80,9 +80,9 @@ public class Robot extends TimedRobot {
 		// block in order for anything in the Command-based framework to work.
 		CommandScheduler.getInstance().run(); // TODO: delete
 		field.setRobotPose(m_robotContainer.getDrivetrain().getPose());
-		SmartDashboard.putNumber("WristSubsystem/wrist/absolute pitch degrees",
-				m_robotContainer.getArmSubsystem().getArmPitch()
-						+ m_robotContainer.getWristSubsystem().getWristPitch());
+		// SmartDashboard.putNumber("WristSubsystem/wrist/absolute pitch degrees",
+		// m_robotContainer.getArmSubsystem().getArmPitch()
+		// + m_robotContainer.getWristSubsystem().getWristPitch());
 	}
 
 	/** This function is called once each time the robot enters Disabled mode. */
@@ -106,7 +106,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+		// m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
 		// schedule the autonomous command (example)
 		if (m_autonomousCommand != null) {

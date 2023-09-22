@@ -5,18 +5,12 @@
 package org.jmhsrobotics.frc2023;
 
 import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
-import org.jmhsrobotics.frc2023.commands.ArmSetpointCommand;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
-import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
-import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
 import org.jmhsrobotics.frc2023.commands.gripper.TeleopIntakeOpenLoop;
+// import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 // import org.jmhsrobotics.frc2023.commands.grabber.ToggleGrabberPitch;
-import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
-import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
-import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
-import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
-import org.jmhsrobotics.frc2023.commands.vision.AlignPeg;
+// import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 import org.jmhsrobotics.frc2023.oi.ControlBoard;
 import org.jmhsrobotics.frc2023.oi.SingleControl;
 // import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
@@ -25,14 +19,9 @@ import org.jmhsrobotics.frc2023.subsystems.IntakeSubsystem;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberMotorSubsystem;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSolenoidSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.TelemetrySubsystem;
-import org.jmhsrobotics.frc2023.subsystems.WristSubsystem;
-import org.jmhsrobotics.frc2023.util.LEDs.LEDIdleCommand;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -59,19 +48,19 @@ public class RobotContainer {
 	// public final GrabberMotorSubsystem grabberMotorSubsystem = new
 	// GrabberMotorSubsystem();
 	private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-	private final ArmSubsystem armSubsystem = new ArmSubsystem();
-	private final WristSubsystem wristSubsystem = new WristSubsystem();
+	// // private final ArmSubsystem armSubsystem = new ArmSubsystem();
+	// private final WristSubsystem wristSubsystem = new WristSubsystem();
 	// private final ArmSubsystem armSubsystem = new ArmSubsystem();
 	// private final GrabberSubsystem grabberSubsystem=new GrabberSubsystem();
 	// private final VisionPlaceholder visionPlaceholder = new
 	// VisionPlaceholder(drivetrain);
-	private AutoSelector autoSelector;
+	// private AutoSelector autoSelector;
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
 	public RobotContainer() {
-		SmartDashboard.putData(CommandScheduler.getInstance());
+		// SmartDashboard.putData(CommandScheduler.getInstance());
 		// SelectableControlBoard selectable = new SelectableControlBoard("single", new
 		// SingleControl());
 		// selectable.addOption("single", new SingleControl());
@@ -115,10 +104,8 @@ public class RobotContainer {
 		intakeSubsystem.setDefaultCommand(
 			new TeleopIntakeOpenLoop(
 				intakeSubsystem, 
-				Constants.kGripperType, 
-				controlBoard::intakeWheels, 
-				armSubsystem::getScoringType
-			)
+				controlBoard::intakeWheels,
+			this.controlBoard)
 		);
 		// spotless:on
 
@@ -131,17 +118,18 @@ public class RobotContainer {
 		// driver.getHID()));
 
 		// spotless:off
-		ledSubsystem.setDefaultCommand(new LEDIdleCommand(
-				ledSubsystem, 
-				armSubsystem::isCone,
-				armSubsystem::getTeleopWasEnded
-			)
-		);
+		// ledSubsystem.setDefaultCommand(new LEDIdleCommand(
+		// 		ledSubsystem, 
+		// 		armSubsystem::isCone,
+		// 		armSubsystem::getTeleopWasEnded
+		// 	)
+		// );
 		// spotless:on
 
-		autoSelector = new AutoSelector(this);
-		SmartDashboard.putData(new AlignPeg(drivetrain));
-		SmartDashboard.putData(new CenterChargeStationAuto(drivetrain, ledSubsystem));
+		// autoSelector = new AutoSelector(this);
+		// SmartDashboard.putData(new AlignPeg(drivetrain));
+		// SmartDashboard.putData(new CenterChargeStationAuto(drivetrain,
+		// ledSubsystem));
 	}
 
 	/**
@@ -174,15 +162,17 @@ public class RobotContainer {
 		// controlBoard.changeScoringType().onTrue(new InstantCommand(() ->
 		// armSubsystem.switchScoringType()));
 
-		controlBoard.armPresetStowed()
-				.onTrue(new ArmSetpointCommand(Constants.Setpoints.STOWED, Constants.kGripperType, this));
-
-		// controlBoard.armPresetFloor()
-		// .onTrue(new ArmSetpointCommand(Constants.Setpoints.FLOOR,
+		// controlBoard.armPresetStowed()
+		// .onTrue(new ArmSetpointCommand(Constants.Setpoints.STOWED,
 		// Constants.kGripperType, this));
 
-		controlBoard.armPresetMid()
-				.onTrue(new ArmSetpointCommand(Constants.Setpoints.MID, Constants.kGripperType, this));
+		// // controlBoard.armPresetFloor()
+		// // .onTrue(new ArmSetpointCommand(Constants.Setpoints.FLOOR,
+		// // Constants.kGripperType, this));
+
+		// controlBoard.armPresetMid()
+		// .onTrue(new ArmSetpointCommand(Constants.Setpoints.MID,
+		// Constants.kGripperType, this));
 
 		// controlBoard.armPresetHigh()
 		// .onTrue(new ArmSetpointCommand(Constants.Setpoints.HIGH,
@@ -218,15 +208,15 @@ public class RobotContainer {
 	 *
 	 * @return the command to run in autonomous
 	 */
-	public Command getAutonomousCommand() {
-		// An example command will be run in autonomous
-		// return Autos.taxi(drivetrain);
-		return autoSelector.getCommand();
-	}
+	// public Command getAutonomousCommand() {
+	// // An example command will be run in autonomous
+	// // return Autos.taxi(drivetrain);
+	// return autoSelector.getCommand();
+	// }
 
-	public double getAbsoluteStow() {
-		return getArmSubsystem().getArmPitch() + 130;
-	}
+	// public double getAbsoluteStow() {
+	// return getArmSubsystem().getArmPitch() + 130;
+	// }
 
 	public Drivetrain getDrivetrain() {
 		return this.drivetrain;
@@ -240,21 +230,21 @@ public class RobotContainer {
 		return this.controlBoard;
 	}
 
-	public IntakeSubsystem getIntakeSubsystem() {
-		return intakeSubsystem;
-	}
+	// public IntakeSubsystem getIntakeSubsystem() {
+	// return intakeSubsystem;
+	// }
 
-	public ArmSubsystem getArmSubsystem() {
-		return armSubsystem;
-	}
+	// // public ArmSubsystem getArmSubsystem() {
+	// // return armSubsystem;
+	// // }
 
-	public WristSubsystem getWristSubsystem() {
-		return wristSubsystem;
-	}
+	// public WristSubsystem getWristSubsystem() {
+	// return wristSubsystem;
+	// }
 
-	public AutoSelector getAutoSelector() {
-		return autoSelector;
-	}
+	// public AutoSelector getAutoSelector() {
+	// return autoSelector;
+	// }
 
 	public static TelemetrySubsystem getTelemetry() {
 		return RobotContainer.telemetry;

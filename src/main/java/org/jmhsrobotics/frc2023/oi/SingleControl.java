@@ -62,7 +62,7 @@ public class SingleControl implements ControlBoard {
 
 	@Override
 	public Trigger armPresetFloor() {
-		return controller.a();
+		return null;
 	}
 
 	@Override
@@ -125,13 +125,13 @@ public class SingleControl implements ControlBoard {
 
 	@Override
 	public double intakeWheels() {
-		return controller.rightBumper().getAsBoolean() ? 1 : controller.leftBumper().getAsBoolean() ? -1 : 0;
+		return controller.rightBumper().getAsBoolean() ? 0.4 : controller.leftBumper().getAsBoolean() ? -0.4 : 0;
 
 	}
 
 	@Override
-	public Trigger closeGrabber() {
-		return controller.rightBumper();
+	public Trigger switchGrabber() {
+		return controller.a();
 	}
 
 	@Override
