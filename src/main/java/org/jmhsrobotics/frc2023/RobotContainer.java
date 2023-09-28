@@ -8,6 +8,7 @@ import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
 import org.jmhsrobotics.frc2023.commands.gripper.TeleopIntakeOpenLoop;
+import org.jmhsrobotics.frc2023.commands.gripper.pistonIntakeCommand;
 // import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 // import org.jmhsrobotics.frc2023.commands.grabber.ToggleGrabberPitch;
 // import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
@@ -130,6 +131,7 @@ public class RobotContainer {
 		// SmartDashboard.putData(new AlignPeg(drivetrain));
 		// SmartDashboard.putData(new CenterChargeStationAuto(drivetrain,
 		// ledSubsystem));
+
 	}
 
 	/**
@@ -201,6 +203,7 @@ public class RobotContainer {
 		// driver.povLeft().onTrue(new CommandArm(armSubsystem, .5, 0));
 		// driver.povUp().onTrue(new CommandArm(armSubsystem, 1, 45));
 		// driver.povDown().onTrue(new CommandArm(armSubsystem, 0, -45));
+		controlBoard.switchGrabber().onTrue(new pistonIntakeCommand(this.intakeSubsystem));
 	}
 
 	/**
