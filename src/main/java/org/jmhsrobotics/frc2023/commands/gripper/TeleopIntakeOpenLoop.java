@@ -55,7 +55,7 @@ public class TeleopIntakeOpenLoop extends CommandBase {
 		// }
 		// state = control.closeGrabber().getAsBoolean() ? !state : state;
 		// control.switchGrabber().onTrue(intak.)
-		intakeSubsystem.setIntakePistonState(control.switchGrabber().getAsBoolean());
+		// intakeSubsystem.switchIntakePistonState(control.switchGrabber().getAsBoolean());
 		SmartDashboard.putNumber("TeleopIntake/input speed", currentSpeed);
 		// SmartDashboard.putString("TeleopIntake/scoring type",
 		// currentMode.toString());

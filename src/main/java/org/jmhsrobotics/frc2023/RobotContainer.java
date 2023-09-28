@@ -20,7 +20,12 @@ import org.jmhsrobotics.frc2023.subsystems.IntakeSubsystem;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberMotorSubsystem;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSolenoidSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.TelemetrySubsystem;
+import org.jmhsrobotics.frc2023.subsystems.WristSubsystem;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -50,7 +55,8 @@ public class RobotContainer {
 	// GrabberMotorSubsystem();
 	private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 	// // private final ArmSubsystem armSubsystem = new ArmSubsystem();
-	// private final WristSubsystem wristSubsystem = new WristSubsystem();
+	private final WristSubsystem wristSubsystem = new WristSubsystem();
+	private final CANSparkMax armMotor;
 	// private final ArmSubsystem armSubsystem = new ArmSubsystem();
 	// private final GrabberSubsystem grabberSubsystem=new GrabberSubsystem();
 	// private final VisionPlaceholder visionPlaceholder = new
@@ -66,6 +72,8 @@ public class RobotContainer {
 		// SingleControl());
 		// selectable.addOption("single", new SingleControl());
 		controlBoard = new SingleControl();
+		armMotor = new CANSparkMax(5, MotorType.kBrushless);
+		armMotor.setIdleMode(IdleMode.kCoast);
 		// Configure the trigger bindings
 		configureBindings();
 		// Setting up default command which is a command that runs every time no other
@@ -203,6 +211,8 @@ public class RobotContainer {
 		// driver.povLeft().onTrue(new CommandArm(armSubsystem, .5, 0));
 		// driver.povUp().onTrue(new CommandArm(armSubsystem, 1, 45));
 		// driver.povDown().onTrue(new CommandArm(armSubsystem, 0, -45));
+		// controlBoard.switchGrabber().onTrue(new
+		// pistonIntakeCommand(this.intakeSubsystem));
 		controlBoard.switchGrabber().onTrue(new pistonIntakeCommand(this.intakeSubsystem));
 	}
 

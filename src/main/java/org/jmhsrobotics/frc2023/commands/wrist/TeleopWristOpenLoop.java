@@ -37,7 +37,7 @@ public class TeleopWristOpenLoop extends CommandBase {
 
 	private void resetDesiredStateToCurrent() {
 		this.desiredPitch = this.wristSubsystem.getWristPitch() + this.armAngle.get();
-		this.wristSubsystem.resetWristPPIDToCurrent();
+		// this.wristSubsystem.resetWristPPIDToCurrent();
 	}
 
 	@Override
@@ -79,8 +79,8 @@ public class TeleopWristOpenLoop extends CommandBase {
 
 				this.resetDesiredStateToCurrent();
 
-				this.wristSubsystem.resetPitchPPIDToValue(
-						isTooHigh ? WristConstants.maxPitchDegrees : WristConstants.minPitchDegrees);
+				// this.wristSubsystem.resetPitchPPIDToValue(
+				// isTooHigh ? WristConstants.maxPitchDegrees : WristConstants.minPitchDegrees);
 
 				this.wristSubsystem.setControlMode(ControlMode.CLOSED_LOOP); // importante
 
@@ -99,7 +99,7 @@ public class TeleopWristOpenLoop extends CommandBase {
 		}
 
 		// automatically clamps it
-		this.wristSubsystem.setPitch(gotoPitch);
+		// this.wristSubsystem.setPitch(gotoPitch);
 	}
 
 	@Override

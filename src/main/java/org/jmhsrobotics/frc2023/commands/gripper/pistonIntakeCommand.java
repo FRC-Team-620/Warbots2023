@@ -2,9 +2,9 @@ package org.jmhsrobotics.frc2023.commands.gripper;
 
 import org.jmhsrobotics.frc2023.subsystems.IntakeSubsystem;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
-public class pistonIntakeCommand extends CommandBase {
+public class pistonIntakeCommand extends InstantCommand {
 	private IntakeSubsystem intake;
 	private boolean state;
 
@@ -15,8 +15,7 @@ public class pistonIntakeCommand extends CommandBase {
 	}
 
 	@Override
-	public void initialize() {
-		boolean pistonOpen = false;
-		intake.setIntakePistonState(!pistonOpen);
+	public void execute() {
+		intake.switchIntakePistonState();
 	}
 }

@@ -21,7 +21,7 @@ public class GrabberInOutAuto extends CommandBase {
 	@Override
 	public void initialize() {
 		this.intakeSubsystem.setIntakeMotor(speed * (intakeIn ? -1 : 1));
-		this.intakeSubsystem.setIntakePistonState(state);
+		// this.intakeSubsystem.switchIntakePistonState(state);
 
 	}
 	@Override

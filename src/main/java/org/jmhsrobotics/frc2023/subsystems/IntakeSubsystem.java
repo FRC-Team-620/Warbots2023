@@ -66,13 +66,14 @@ public class IntakeSubsystem extends SubsystemBase {
 
 	// ****** INTAKE PISTON ******
 
-	public void setIntakePistonState(boolean state) {
+	public void switchIntakePistonState() {
 		// state = button (pressed/not pressed)
 		// intake.set(true/false)
-		if (state) {
-			this.pistonOpen = !this.pistonOpen;
-		}
+		// if (state) {
+		// this.pistonOpen = !this.pistonOpen;
+		// }
 		// this.pistonOpen = state ? !this.pistonOpen : this.pistonOpen;
+		this.pistonOpen = !pistonOpen;
 		this.intakePiston.set(this.pistonOpen);
 	}
 
@@ -81,7 +82,7 @@ public class IntakeSubsystem extends SubsystemBase {
 		// return this.intakePiston.get();
 	}
 
-	public void toggleIntakePistonState() {
-		this.setIntakePistonState(!this.getIntakePistonState());
-	}
+	// public void toggleIntakePistonState() {
+	// this.switchIntakePistonState(!this.getIntakePistonState());
+	// }
 }

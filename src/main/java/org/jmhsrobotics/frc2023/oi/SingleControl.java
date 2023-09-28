@@ -125,7 +125,7 @@ public class SingleControl implements ControlBoard {
 
 	@Override
 	public double intakeWheels() {
-		return controller.rightBumper().getAsBoolean() ? 0.4 : controller.leftBumper().getAsBoolean() ? -0.4 : 0;
+		return controller.rightBumper().getAsBoolean() ? 1 : controller.leftBumper().getAsBoolean() ? -1 : 0;
 
 	}
 

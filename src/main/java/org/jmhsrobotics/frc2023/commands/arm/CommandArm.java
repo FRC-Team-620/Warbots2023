@@ -44,6 +44,8 @@ public class CommandArm extends CommandBase {
 	// isFinished
 	@Override
 	public boolean isFinished() {
-		return (armSubsystem.atPitchGoal() && armSubsystem.atExtensionGoal()) || this.interrupt.getAsBoolean();
+		// return (armSubsystem.atPitchGoal() && armSubsystem.atExtensionGoal()) ||
+		// this.interrupt.getAsBoolean();
+		return false;
 	}
 }

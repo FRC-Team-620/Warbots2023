@@ -38,6 +38,7 @@ public class CommandArmPitch extends CommandBase {
 	// isFinished
 	@Override
 	public boolean isFinished() {
-		return armSubsystem.atPitchGoal() || this.interrupt.getAsBoolean();
+		// return armSubsystem.atPitchGoal() || this.interrupt.getAsBoolean();
+		return false;
 	}
 }

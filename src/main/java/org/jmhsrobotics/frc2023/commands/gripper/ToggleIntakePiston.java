@@ -7,6 +7,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 public class ToggleIntakePiston extends InstantCommand {
 
 	public ToggleIntakePiston(IntakeSubsystem intakeSubsystem) {
-		super(intakeSubsystem::toggleIntakePistonState, intakeSubsystem);
+		// super(intakeSubsystem::toggleIntakePistonState, intakeSubsystem);
 	}
 }

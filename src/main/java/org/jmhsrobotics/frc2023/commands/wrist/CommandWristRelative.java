@@ -30,7 +30,7 @@ public class CommandWristRelative extends CommandBase {
 	@Override
 	public void initialize() {
 		this.wristSubsystem.setControlMode(ControlMode.CLOSED_LOOP);
-		this.wristSubsystem.setPitch(this.angle.get()); // clamps the input
+		// this.wristSubsystem.setPitch(this.angle.get()); // clamps the input
 	}
 
 	@Override
@@ -43,6 +43,7 @@ public class CommandWristRelative extends CommandBase {
 	// isFinished
 	@Override
 	public boolean isFinished() {
-		return this.wristSubsystem.atPitchGoal() || this.interrupt.getAsBoolean();
+		// return this.wristSubsystem.atPitchGoal() || this.interrupt.getAsBoolean();
+		return false;
 	}
 }

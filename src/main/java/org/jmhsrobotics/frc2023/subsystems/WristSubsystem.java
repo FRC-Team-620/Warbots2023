@@ -3,17 +3,15 @@ package org.jmhsrobotics.frc2023.subsystems;
 import org.jmhsrobotics.frc2023.Constants;
 import org.jmhsrobotics.frc2023.Constants.ControlMode;
 import org.jmhsrobotics.frc2023.Constants.WristConstants;
-import org.jmhsrobotics.frc2023.util.TalonSRXAbsEncoder;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -21,11 +19,13 @@ public class WristSubsystem extends SubsystemBase {
 
 	// wrist hardware
 	private CANSparkMax wristMotor = new CANSparkMax(Constants.driveports.getWristCANId(), MotorType.kBrushless);
-	private TalonSRXAbsEncoder wristAbsEncoder = new TalonSRXAbsEncoder(Constants.driveports.getWristAbsEncoderCANId());
+	// private TalonSRXAbsEncoder wristAbsEncoder = new
+	// TalonSRXAbsEncoder(Constants.driveports.getWristAbsEncoderCANId());
+	private AbsoluteEncoder wristEncoder = wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
 	private RelativeEncoder wristRelativeEncoder = wristMotor.getEncoder();
 
-	private TrapezoidProfile.Constraints wristPPIDConstraints;
-	private ProfiledPIDController wristPPID;
+	// private TrapezoidProfile.Constraints wristPPIDConstraints;
+	// private ProfiledPIDController wristPPID;
 
 	private double wristAbsolutePosition;
 
@@ -35,7 +35,7 @@ public class WristSubsystem extends SubsystemBase {
 	public WristSubsystem() {
 
 		this.wristMotor.setSmartCurrentLimit(20);
-		this.wristMotor.setIdleMode(IdleMode.kBrake);
+		this.wristMotor.setIdleMode(IdleMode.kCoast);
 		// this.wristMotor.setInverted(true);
 
 		this.updateStoredWristPosition();
@@ -43,28 +43,35 @@ public class WristSubsystem extends SubsystemBase {
 		this.wristRelativeEncoder.setPosition(0);
 
 		// all in degrees
-		this.wristPPIDConstraints = new TrapezoidProfile.Constraints(220, 300);// 240, 315
-		// spotless:off
-        this.wristPPID = new ProfiledPIDController(
-            0.03, 0, 0, 
-            this.wristPPIDConstraints
-        );
-        // spotless:on
-		this.wristPPID.setTolerance(0.75, 20);
+		// this.wristPPIDConstraints = new TrapezoidProfile.Constraints(220, 300);//
+		// 240, 315
+		// // spotless:off
+        // this.wristPPID = new ProfiledPIDController(
+        //     0.03, 0, 0, 
+        //     this.wristPPIDConstraints
+        // );
+        // // spotless:on
+		// this.wristPPID.setTolerance(0.75, 20);
 
-		this.wristPPID.setGoal(this.getWristPitch());
+		// this.wristPPID.setGoal(this.getWristPitch());
 	}
 
 	@Override
 	public void periodic() {
 
-		SmartDashboard.putNumber("WristSubsystem/wrist/speed", this.getWristSpeed());
-		SmartDashboard.putNumber("WristSubsystem/wrist/absolute position", this.getWristPosition());
-		SmartDashboard.putNumber("WristSubsystem/wrist/pitch degrees", this.getWristPitch());
-		SmartDashboard.putNumber("WristSubsystem/wrist/PPID/goal position", this.getWristPPIDGoal().position);
-		SmartDashboard.putNumber("WristSubsystem/wrist/PPID/setpoint position", this.wristPPID.getSetpoint().position);
-		SmartDashboard.putNumber("WristSubsystem/wrist/PPID/setpoint velocity", this.wristPPID.getSetpoint().velocity);
+		// SmartDashboard.putNumber("WristSubsystem/wrist/speed", this.getWristSpeed());
+		// SmartDashboard.putNumber("WristSubsystem/wrist/absolute position",
+		// this.getWristPosition());
+		// SmartDashboard.putNumber("WristSubsystem/wrist/pitch degrees",
+		// this.getWristPitch());
+		// SmartDashboard.putNumber("WristSubsystem/wrist/PPID/goal position",
+		// this.getWristPPIDGoal().position);
+		// SmartDashboard.putNumber("WristSubsystem/wrist/PPID/setpoint position",
+		// this.wristPPID.getSetpoint().position);
+		// SmartDashboard.putNumber("WristSubsystem/wrist/PPID/setpoint velocity",
+		// this.wristPPID.getSetpoint().velocity);
 
+		SmartDashboard.putNumber("WristSubsystem/wrist/PPID/absolute encoder", this.wristEncoder.getPosition());
 		// IMPORTANT
 		// updates the stored absolute encoder value for this tick
 		// (so that the encoder is not polled more than once per tick)
@@ -89,7 +96,7 @@ public class WristSubsystem extends SubsystemBase {
 		this.openLoopPitchSpeed = 0.0;
 
 		// PPID control
-		this.setWristMotor(this.wristPPID.calculate(this.getWristPitch()));
+		// this.setWristMotor(this.wristPPID.calculate(this.getWristPitch()));
 	}
 
 	// ****** UTIL ******
@@ -136,7 +143,7 @@ public class WristSubsystem extends SubsystemBase {
 	}
 
 	private void updateStoredWristPosition() {
-		this.wristAbsolutePosition = this.wristAbsEncoder.getPosition();
+		this.wristAbsolutePosition = this.wristEncoder.getPosition();
 	}
 
 	// ****** WRIST CONTROL ******
@@ -158,38 +165,38 @@ public class WristSubsystem extends SubsystemBase {
 		this.openLoopPitchSpeed = MathUtil.clamp(pitchSpeed, -1.0, 1.0);
 	}
 
-	public void setPitch(double pitchGoal) {
+	// public void setPitch(double pitchGoal) {
 
-		if (this.getControlMode() != ControlMode.CLOSED_LOOP)
-			this.resetWristPPIDToCurrent(); // cringe?????? perhaps
+	// if (this.getControlMode() != ControlMode.CLOSED_LOOP)
+	// this.resetWristPPIDToCurrent(); // cringe?????? perhaps
 
-		pitchGoal = WristSubsystem.clampWristPitch(pitchGoal);
-		this.wristPPID.setGoal(pitchGoal);
+	// pitchGoal = WristSubsystem.clampWristPitch(pitchGoal);
+	// this.wristPPID.setGoal(pitchGoal);
 
-		this.controlMode = ControlMode.CLOSED_LOOP;
-	}
+	// this.controlMode = ControlMode.CLOSED_LOOP;
+	// }
 
-	public boolean atPitchGoal() {
-		return this.wristPPID.atGoal();
-	}
+	// public boolean atPitchGoal() {
+	// return this.wristPPID.atGoal();
+	// }
 
-	public void resetWristPPIDToCurrent() {
-		this.wristPPID.reset(this.getWristPitch());
-	}
+	// public void resetWristPPIDToCurrent() {
+	// this.wristPPID.reset(this.getWristPitch());
+	// }
 
-	public TrapezoidProfile.Constraints getWristPPIDConstraints() {
-		return this.wristPPIDConstraints;
-	}
+	// public TrapezoidProfile.Constraints getWristPPIDConstraints() {
+	// return this.wristPPIDConstraints;
+	// }
 
-	public TrapezoidProfile.State getWristPPIDGoal() {
-		return this.wristPPID.getGoal();
-	}
+	// public TrapezoidProfile.State getWristPPIDGoal() {
+	// return this.wristPPID.getGoal();
+	// }
 
-	public void setWristPIDConstraints(Constraints wristPIDC) {
-		wristPPID.setConstraints(wristPIDC);
-	}
+	// public void setWristPIDConstraints(Constraints wristPIDC) {
+	// wristPPID.setConstraints(wristPIDC);
+	// }
 
-	public void resetPitchPPIDToValue(double v) {
-		this.wristPPID.reset(v);
-	}
+	// public void resetPitchPPIDToValue(double v) {
+	// this.wristPPID.reset(v);
+	// }
 }

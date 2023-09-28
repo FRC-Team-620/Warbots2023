@@ -7,8 +7,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 public class CommandIntakeSolenoid extends InstantCommand {
 
 	public CommandIntakeSolenoid(IntakeSubsystem intakeSubsystem, boolean intakeState) {
-		super(() -> {
-			intakeSubsystem.setIntakePistonState(intakeState);
-		}, intakeSubsystem);
+		// super(() -> {
+		// intakeSubsystem.switchIntakePistonState(intakeState);
+		// }, intakeSubsystem);
 	}
 }
