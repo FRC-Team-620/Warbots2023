@@ -92,12 +92,12 @@ public class RobotContainer {
 		// spotless:on
 
 		// spotless:off
-		/*wristSubsystem.setDefaultCommand(new TeleopWristOpenLoop(
-			wristSubsystem, 
-			armSubsystem::getArmPitch, 
-			controlBoard::wristPitch, 
-			controlBoard.wristControlModifier(),
-			controlBoard.override()));*/
+		// wristSubsystem.setDefaultCommand(new TeleopWristOpenLoop(
+		// 	wristSubsystem, 
+		// 	armSubsystem::getArmPitch, 
+		// 	controlBoard::wristPitch, 
+		// 	controlBoard.wristControlModifier(),
+		// 	controlBoard.override()));
 		// spotless:on
 
 		// grabberMotorSubsystem.setDefaultCommand(new InstantCommand(() -> {

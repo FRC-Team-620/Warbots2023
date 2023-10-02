@@ -52,7 +52,7 @@ public class SingleControl implements ControlBoard {
 
 	@Override
 	public double wristPitch() {
-		return this.wristControlModifier().getAsBoolean() ? operatorLeftY() : 0.0;
+		return this.controller.getRightY();
 	}
 
 	@Override

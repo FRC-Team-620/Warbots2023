@@ -31,6 +31,8 @@ public class IntakeSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("IntakeSubsystem/intake/speed", this.getIntakeSpeed());
 		// SmartDashboard.putNumber("IntakeSubsystem/intake/piston state",
 		// this.getIntakePistonState() ? 1 : -1);
+		SmartDashboard.putBoolean("IntakeSubsystem/inkate/piston state", intakePiston.get());
+		SmartDashboard.putNumber("IntakeSubsystem/intake/speed", this.intakeMotor.get());
 	}
 
 	// ****** INTAKE MOTOR ******

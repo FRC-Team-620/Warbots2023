@@ -22,7 +22,7 @@ public class WristSubsystem extends SubsystemBase {
 	// private TalonSRXAbsEncoder wristAbsEncoder = new
 	// TalonSRXAbsEncoder(Constants.driveports.getWristAbsEncoderCANId());
 	private AbsoluteEncoder wristEncoder = wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
-	private RelativeEncoder wristRelativeEncoder = wristMotor.getEncoder();
+	// private RelativeEncoder wristRelativeEncoder = wristMotor.getEncoder();
 
 	// private TrapezoidProfile.Constraints wristPPIDConstraints;
 	// private ProfiledPIDController wristPPID;
@@ -40,7 +40,7 @@ public class WristSubsystem extends SubsystemBase {
 
 		this.updateStoredWristPosition();
 
-		this.wristRelativeEncoder.setPosition(0);
+		// this.wristRelativeEncoder.setPosition(0);
 
 		// all in degrees
 		// this.wristPPIDConstraints = new TrapezoidProfile.Constraints(220, 300);//
@@ -125,21 +125,18 @@ public class WristSubsystem extends SubsystemBase {
 		this.wristMotor.set(0.0);
 	}
 
-	public double getWristPosition() {
-		// return this.wristAbsolutePosition;
-		return this.wristRelativeEncoder.getPosition();
-	}
+	// public double getWristPosition() {
+	// 	// return this.wristAbsolutePosition;
+	// 	return this.wristRelativeEncoder.getPosition();
+	// }
 
-	public void setWristEncoderPosition(double p) {
-		this.wristRelativeEncoder.setPosition(p);
-	}
-
+	// public void setWristEncoderPosition(double p) {
+	// 	this.wristRelativeEncoder.setPosition(p);
+	// }
+	
+	// returns current wrist pitch in degrees
 	public double getWristPitch() {
-		// spotless:off
-		// return (this.getWristPosition() - WristConstants.encoderTicksAtZeroDegrees)
-		// 		* WristConstants.degreesPerEncoderTick;
-		// spotless:on
-		return WristConstants.degreesPerEncoderTick * this.getWristPosition() + WristConstants.stowedPositionRelative;
+		return this.wristEncoder.getPosition() * Constants.WristConstants.absotluteDegreePerEncoderTick;
 	}
 
 	private void updateStoredWristPosition() {
