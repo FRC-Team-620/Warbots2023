@@ -8,7 +8,7 @@ import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
 import org.jmhsrobotics.frc2023.commands.gripper.TeleopIntakeOpenLoop;
-import org.jmhsrobotics.frc2023.commands.gripper.pistonIntakeCommand;
+import org.jmhsrobotics.frc2023.commands.wrist.CommandWristSimple;
 // import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 // import org.jmhsrobotics.frc2023.commands.grabber.ToggleGrabberPitch;
 // import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
@@ -79,6 +79,10 @@ public class RobotContainer {
 		// Setting up default command which is a command that runs every time no other
 		// command that uses that subsystem is running
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, controlBoard));
+		wristSubsystem.setDefaultCommand(new CommandWristSimple(this.wristSubsystem, 0, driver));
+
+		// wristSubsystem.setDefaultCommand(new CommandWristSimple(this.wristSubsystem,
+		// driver.getRightY()));
 
 		// OpenLoop Control!
 		// spotless:off
@@ -213,7 +217,15 @@ public class RobotContainer {
 		// driver.povDown().onTrue(new CommandArm(armSubsystem, 0, -45));
 		// controlBoard.switchGrabber().onTrue(new
 		// pistonIntakeCommand(this.intakeSubsystem));
-		controlBoard.switchGrabber().onTrue(new pistonIntakeCommand(this.intakeSubsystem));
+
+		// this.wristSubsystem.setWristMotor(driver.getLeftY());
+		// driver.getLeftY()
+		// controlBoard.wristPitch()
+		// controlBoard.switchGrabber().onTrue(new
+		// PistonIntakeCommand(this.intakeSubsystem));
+
+		// new CommandWristSimple(this.wristSubsystem, controlBoard.wristPitch());
+
 	}
 
 	/**

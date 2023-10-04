@@ -6,7 +6,6 @@ import org.jmhsrobotics.frc2023.Constants.WristConstants;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
@@ -35,7 +34,7 @@ public class WristSubsystem extends SubsystemBase {
 	public WristSubsystem() {
 
 		this.wristMotor.setSmartCurrentLimit(20);
-		this.wristMotor.setIdleMode(IdleMode.kCoast);
+		this.wristMotor.setIdleMode(IdleMode.kBrake);
 		// this.wristMotor.setInverted(true);
 
 		this.updateStoredWristPosition();
@@ -59,7 +58,7 @@ public class WristSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 
-		// SmartDashboard.putNumber("WristSubsystem/wrist/speed", this.getWristSpeed());
+		SmartDashboard.putNumber("WristSubsystem/wrist/speed", this.getWristSpeed());
 		// SmartDashboard.putNumber("WristSubsystem/wrist/absolute position",
 		// this.getWristPosition());
 		// SmartDashboard.putNumber("WristSubsystem/wrist/pitch degrees",
@@ -126,17 +125,17 @@ public class WristSubsystem extends SubsystemBase {
 	}
 
 	// public double getWristPosition() {
-	// 	// return this.wristAbsolutePosition;
-	// 	return this.wristRelativeEncoder.getPosition();
+	// // return this.wristAbsolutePosition;
+	// return this.wristRelativeEncoder.getPosition();
 	// }
 
 	// public void setWristEncoderPosition(double p) {
-	// 	this.wristRelativeEncoder.setPosition(p);
+	// this.wristRelativeEncoder.setPosition(p);
 	// }
-	
+
 	// returns current wrist pitch in degrees
 	public double getWristPitch() {
-		return this.wristEncoder.getPosition() * Constants.WristConstants.absotluteDegreePerEncoderTick;
+		return this.wristEncoder.getPosition();
 	}
 
 	private void updateStoredWristPosition() {

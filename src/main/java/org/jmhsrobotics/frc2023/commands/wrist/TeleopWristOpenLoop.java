@@ -75,7 +75,8 @@ public class TeleopWristOpenLoop extends CommandBase {
 
 			if (isTooHigh || isTooLow) {
 
-				// this.wristSubsystem.setWristEncoderPosition(isTooHigh ? 0.0 : WristConstants.relativeTicksAtMin);
+				// this.wristSubsystem.setWristEncoderPosition(isTooHigh ? 0.0 :
+				// WristConstants.relativeTicksAtMin);
 
 				this.resetDesiredStateToCurrent();
 
