@@ -27,6 +27,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -79,7 +80,8 @@ public class RobotContainer {
 		// Setting up default command which is a command that runs every time no other
 		// command that uses that subsystem is running
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, controlBoard));
-		wristSubsystem.setDefaultCommand(new CommandWristSimple(this.wristSubsystem, 0, driver));
+		wristSubsystem.setDefaultCommand(new CommandWristSimple(this.wristSubsystem, 0.6));
+		SmartDashboard.putData("MoveWristTO0.3",new CommandWristSimple(wristSubsystem, 0.3));
 
 		// wristSubsystem.setDefaultCommand(new CommandWristSimple(this.wristSubsystem,
 		// driver.getRightY()));
