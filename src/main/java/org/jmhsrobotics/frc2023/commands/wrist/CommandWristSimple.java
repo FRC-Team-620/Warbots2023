@@ -23,13 +23,13 @@ public class CommandWristSimple extends CommandBase {
 		this.wristConstraint = new Constraints(0.9, 0.8);
 		this.wristPID = new ProfiledPIDController(4, 0, 0, this.wristConstraint);
 		this.positionGoal = positionGoal;
-		SmartDashboard.putData("WristPID", this.wristPID);
+		// SmartDashboard.putData("WristPID", this.wristPID);
 		addRequirements(wristSubsystem);
 	}
 
 	@Override
 	public void initialize() {
-		this.wristPID.reset(new State(0, 0));
+		this.wristPID.reset(new State(this.positionGoal, 0));
 		// wristPID.setGoal(new State(0, 0));
 		this.wristPID.setGoal(this.positionGoal);
 	}
@@ -50,7 +50,7 @@ public class CommandWristSimple extends CommandBase {
 		// calculate motor output from pid controller
 		double motorRawOutput = this.wristPID.calculate(this.wristSubsystem.getWristPitch());
 
-		double motorOutput = MathUtil.clamp(motorRawOutput, -0.3, 0.3);
+		double motorOutput = MathUtil.clamp(motorRawOutput, -0.6, 0.6);
 
 		// pass motor output to motor in subsystem
 		this.wristSubsystem.setWristMotor(motorOutput);

@@ -26,6 +26,8 @@ import org.jmhsrobotics.frc2023.subsystems.WristSubsystem;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -67,7 +69,7 @@ public class RobotContainer {
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
 	public RobotContainer() {
-		// SmartDashboard.putData(CommandScheduler.getInstance());
+		SmartDashboard.putData(CommandScheduler.getInstance());
 		// SelectableControlBoard selectable = new SelectableControlBoard("single", new
 		// SingleControl());
 		// selectable.addOption("single", new SingleControl());
@@ -79,9 +81,12 @@ public class RobotContainer {
 		// Setting up default command which is a command that runs every time no other
 		// command that uses that subsystem is running
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, controlBoard));
-		wristSubsystem.setDefaultCommand(new CommandWristSimple(this.wristSubsystem, 0.6));
+		// wristSubsystem.setDefaultCommand(new CommandWristSimple(this.wristSubsystem,
+		// 0.6));
 		SmartDashboard.putData("MoveWristTO0.3", new CommandWristSimple(wristSubsystem, 0.3));
 		SmartDashboard.putData("ExtendArm5", new CommandArmExtensionSimple(armExtensionSubsystem, 40.0));
+		// SmartDashboard.putData(Robot.scheduler);
+
 		// wristSubsystem.setDefaultCommand(new CommandWristSimple(this.wristSubsystem,
 		// driver.getRightY()));
 
@@ -158,6 +163,12 @@ public class RobotContainer {
 	 * Flight joysticks}.
 	 */
 	private void configureBindings() {
+		driver.b().onTrue(new ParallelCommandGroup(new CommandArmExtensionSimple(armExtensionSubsystem, 20.0),
+				new CommandWristSimple(wristSubsystem, 0.2)));
+		driver.a().onTrue(new ParallelCommandGroup(new CommandArmExtensionSimple(armExtensionSubsystem, 50.0),
+				new CommandWristSimple(wristSubsystem, 0.4)));
+		driver.y().onTrue(new ParallelCommandGroup(new CommandArmExtensionSimple(armExtensionSubsystem, 85.0),
+				new CommandWristSimple(wristSubsystem, 0.6)));
 		// Triggers are a thing that we might need to use so keep that in mind
 		// driver.b().onTrue(new ArmCommand(armSubsystem, driver.getHID()));
 		// driver.leftBumper().onTrue(
