@@ -7,6 +7,7 @@ package org.jmhsrobotics.frc2023;
 import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
+import org.jmhsrobotics.frc2023.commands.arm.CommandArmExtensionSimple;
 import org.jmhsrobotics.frc2023.commands.gripper.TeleopIntakeOpenLoop;
 import org.jmhsrobotics.frc2023.commands.wrist.CommandWristSimple;
 // import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
@@ -14,6 +15,7 @@ import org.jmhsrobotics.frc2023.commands.wrist.CommandWristSimple;
 // import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 import org.jmhsrobotics.frc2023.oi.ControlBoard;
 import org.jmhsrobotics.frc2023.oi.SingleControl;
+import org.jmhsrobotics.frc2023.subsystems.ArmExtensionSubsystem;
 // import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 import org.jmhsrobotics.frc2023.subsystems.IntakeSubsystem;
@@ -22,10 +24,6 @@ import org.jmhsrobotics.frc2023.subsystems.IntakeSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.TelemetrySubsystem;
 import org.jmhsrobotics.frc2023.subsystems.WristSubsystem;
 import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
-
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
@@ -57,7 +55,8 @@ public class RobotContainer {
 	private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 	// // private final ArmSubsystem armSubsystem = new ArmSubsystem();
 	private final WristSubsystem wristSubsystem = new WristSubsystem();
-	private final CANSparkMax armMotor;
+	private final ArmExtensionSubsystem armExtensionSubsystem = new ArmExtensionSubsystem();
+	// private CANSparkMax armMotor;
 	// private final ArmSubsystem armSubsystem = new ArmSubsystem();
 	// private final GrabberSubsystem grabberSubsystem=new GrabberSubsystem();
 	// private final VisionPlaceholder visionPlaceholder = new
@@ -73,16 +72,16 @@ public class RobotContainer {
 		// SingleControl());
 		// selectable.addOption("single", new SingleControl());
 		controlBoard = new SingleControl();
-		armMotor = new CANSparkMax(5, MotorType.kBrushless);
-		armMotor.setIdleMode(IdleMode.kCoast);
+		// armMotor = new CANSparkMax(5, MotorType.kBrushless);
+		// armMotor.setIdleMode(IdleMode.kCoast);
 		// Configure the trigger bindings
 		configureBindings();
 		// Setting up default command which is a command that runs every time no other
 		// command that uses that subsystem is running
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, controlBoard));
 		wristSubsystem.setDefaultCommand(new CommandWristSimple(this.wristSubsystem, 0.6));
-		SmartDashboard.putData("MoveWristTO0.3",new CommandWristSimple(wristSubsystem, 0.3));
-
+		SmartDashboard.putData("MoveWristTO0.3", new CommandWristSimple(wristSubsystem, 0.3));
+		SmartDashboard.putData("ExtendArm5", new CommandArmExtensionSimple(armExtensionSubsystem, 40.0));
 		// wristSubsystem.setDefaultCommand(new CommandWristSimple(this.wristSubsystem,
 		// driver.getRightY()));
 
