@@ -52,7 +52,7 @@ public class CommandWristSimple extends CommandBase {
 
 		double motorOutput = MathUtil.clamp(motorRawOutput, -0.6, 0.6);
 
-		// pass motor output to motor in subsystem
+		// pass motor output to motor in subsystemw
 		this.wristSubsystem.setWristMotor(motorOutput);
 
 		SmartDashboard.putNumber("WristPID/output", motorOutput);

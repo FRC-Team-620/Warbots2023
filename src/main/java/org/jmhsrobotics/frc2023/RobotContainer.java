@@ -8,6 +8,7 @@ import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
 import org.jmhsrobotics.frc2023.commands.arm.CommandArmExtensionSimple;
+import org.jmhsrobotics.frc2023.commands.arm.CommandArmPitchSimple;
 import org.jmhsrobotics.frc2023.commands.gripper.TeleopIntakeOpenLoop;
 import org.jmhsrobotics.frc2023.commands.wrist.CommandWristSimple;
 // import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
@@ -16,6 +17,7 @@ import org.jmhsrobotics.frc2023.commands.wrist.CommandWristSimple;
 import org.jmhsrobotics.frc2023.oi.ControlBoard;
 import org.jmhsrobotics.frc2023.oi.SingleControl;
 import org.jmhsrobotics.frc2023.subsystems.ArmExtensionSubsystem;
+import org.jmhsrobotics.frc2023.subsystems.ArmPitchSubsystem;
 // import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 import org.jmhsrobotics.frc2023.subsystems.IntakeSubsystem;
@@ -58,6 +60,7 @@ public class RobotContainer {
 	// // private final ArmSubsystem armSubsystem = new ArmSubsystem();
 	private final WristSubsystem wristSubsystem = new WristSubsystem();
 	private final ArmExtensionSubsystem armExtensionSubsystem = new ArmExtensionSubsystem();
+	private final ArmPitchSubsystem armPitchSubsystem = new ArmPitchSubsystem();
 	// private CANSparkMax armMotor;
 	// private final ArmSubsystem armSubsystem = new ArmSubsystem();
 	// private final GrabberSubsystem grabberSubsystem=new GrabberSubsystem();
@@ -83,8 +86,11 @@ public class RobotContainer {
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, controlBoard));
 		// wristSubsystem.setDefaultCommand(new CommandWristSimple(this.wristSubsystem,
 		// 0.6));
-		SmartDashboard.putData("MoveWristTO0.3", new CommandWristSimple(wristSubsystem, 0.3));
-		SmartDashboard.putData("ExtendArm5", new CommandArmExtensionSimple(armExtensionSubsystem, 40.0));
+		// SmartDashboard.putData("MoveWristTO0.3", new
+		// CommandWristSimple(wristSubsystem, 0.3));
+		// SmartDashboard.putData("ExtendArm5", new
+		// CommandArmExtensionSimple(armExtensionSubsystem, 40.0));
+		SmartDashboard.putData("MoveArm", new CommandArmPitchSimple(this.armPitchSubsystem, -50));
 		// SmartDashboard.putData(Robot.scheduler);
 
 		// wristSubsystem.setDefaultCommand(new CommandWristSimple(this.wristSubsystem,
