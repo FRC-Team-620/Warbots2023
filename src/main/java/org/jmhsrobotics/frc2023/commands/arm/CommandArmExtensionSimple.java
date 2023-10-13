@@ -22,8 +22,10 @@ public class CommandArmExtensionSimple extends CommandBase {
 		this.extensionPID = new ProfiledPIDController(0.1, 0, 0, this.extensionConstraint);
 		this.positionGoal = positionGoal;
 		// SmartDashboard.putData("ExtensionPID", this.extensionPID);
-		// SmartDashboard.putNumber("ExtensionPID/maxVel", this.extensionConstraint.maxVelocity);
-		// SmartDashboard.putNumber("ExtensionPID/maxAccel", this.extensionConstraint.maxAcceleration);
+		// SmartDashboard.putNumber("ExtensionPID/maxVel",
+		// this.extensionConstraint.maxVelocity);
+		// SmartDashboard.putNumber("ExtensionPID/maxAccel",
+		// this.extensionConstraint.maxAcceleration);
 		// SmartDashboard.putNumber("ExtensionPID/powerLim", 0.8);
 		addRequirements(this.extensionSubsystem);
 	}
@@ -33,15 +35,19 @@ public class CommandArmExtensionSimple extends CommandBase {
 		this.extensionPID.reset(new State(this.positionGoal, 0));
 		// wristPID.setGoal(new State(0, 0));
 		this.extensionPID.setGoal(this.positionGoal);
-		// SmartDashboard.putNumber("ExtensionPID/setpoint", this.extensionPID.getSetpoint().position);
+		// SmartDashboard.putNumber("ExtensionPID/setpoint",
+		// this.extensionPID.getSetpoint().position);
+		this.extensionPID.setTolerance(2, 3);
 	}
 
 	@Override
 	public void execute() {
 		// calculate motor output from pid controller
 
-		// double maxVel = SmartDashboard.getNumber("ExtensionPID/maxVel", this.extensionConstraint.maxVelocity);
-		// double maxAccel = SmartDashboard.getNumber("ExtensionPID/maxAccel", this.extensionConstraint.maxAcceleration);
+		// double maxVel = SmartDashboard.getNumber("ExtensionPID/maxVel",
+		// this.extensionConstraint.maxVelocity);
+		// double maxAccel = SmartDashboard.getNumber("ExtensionPID/maxAccel",
+		// this.extensionConstraint.maxAcceleration);
 		this.extensionPID.setConstraints(new Constraints(80, 120));
 		double motorRawOutput = this.extensionPID.calculate(this.extensionSubsystem.getEncoderPostition());
 		// double powerLim = SmartDashboard.getNumber("ExtensionPID/powerLim", 0.8);
@@ -51,13 +57,17 @@ public class CommandArmExtensionSimple extends CommandBase {
 		// pass motor output to motor in subsystem
 		this.extensionSubsystem.setSpeed(motorOutput);
 		// SmartDashboard.putNumber("ExtensionPID/output", motorOutput);
-		// SmartDashboard.putNumber("ExtensionPID/setpoint", this.extensionPID.getSetpoint().position); // 85 is max
+		// SmartDashboard.putNumber("ExtensionPID/setpoint",
+		// this.extensionPID.getSetpoint().position); // 85 is max
+
+		SmartDashboard.putNumber("ExtensionPID/positionError", this.extensionPID.getPositionError());
+		SmartDashboard.putNumber("ExtensionPID/velocityError", this.extensionPID.getVelocityError());
 	}
 
 	@Override
 	public boolean isFinished() {
 		// TODO Auto-generated method stub
-		return false;
+		return this.extensionPID.atGoal();
 	}
 
 	// TODO: We should add an end method that sets the motor output to 0 when the

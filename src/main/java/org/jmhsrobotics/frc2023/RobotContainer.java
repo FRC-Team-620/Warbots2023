@@ -30,6 +30,7 @@ import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -169,15 +170,46 @@ public class RobotContainer {
 	 * Flight joysticks}.
 	 */
 	private void configureBindings() {
-		driver.b().onTrue(new ParallelCommandGroup(new CommandArmExtensionSimple(armExtensionSubsystem, 20.0),
-				new CommandWristSimple(wristSubsystem, 0.2)));
-		driver.a().onTrue(new ParallelCommandGroup(new CommandArmExtensionSimple(armExtensionSubsystem, 50.0),
-				new CommandWristSimple(wristSubsystem, 0.4)));
-		driver.y().onTrue(new ParallelCommandGroup(new CommandArmExtensionSimple(armExtensionSubsystem, 85.0),
-				new CommandWristSimple(wristSubsystem, 0.6)));
+
+		// driver.b().onTrue(new ParallelCommandGroup(new CommandArmExtensionSimple(armExtensionSubsystem, 0),
+		// 		new CommandWristSimple(wristSubsystem, 0.95), new CommandArmPitchSimple(armPitchSubsystem, 0)));
+		// // driver.b().onTrue(new SequentialCommandGroup(new
+		// // CommandArmPitchSimple(armPitchSubsystem, -14.5),
+		// // new CommandArmExtensionSimple(armExtensionSubsystem, 0),
+		// // new CommandWristSimple(wristSubsystem, .95),
+		// // new CommandArmPitchSimple(armPitchSubsystem, 0)));
+		// driver.a().onTrue(new ParallelCommandGroup(new CommandArmExtensionSimple(armExtensionSubsystem, 40.5),
+		// 		new CommandWristSimple(wristSubsystem, 0.55)));
+		// driver.y().onTrue(new ParallelCommandGroup(new CommandArmExtensionSimple(armExtensionSubsystem, 85.0),
+		// 		new CommandWristSimple(wristSubsystem, 0.38), new CommandArmPitchSimple(armPitchSubsystem, -63)));
+
+		// stow position
+		this.driver.b()
+				.onTrue(new SequentialCommandGroup(
+						new ParallelCommandGroup(new CommandArmExtensionSimple(this.armExtensionSubsystem, 0),
+								new CommandWristSimple(this.wristSubsystem, 0.95)),
+						new CommandArmPitchSimple(this.armPitchSubsystem, 0)));
+		// floor pick up position
+		this.driver.a()
+				.onTrue(new SequentialCommandGroup(new CommandArmPitchSimple(this.armPitchSubsystem, -20),
+						new ParallelCommandGroup(new CommandArmExtensionSimple(this.armExtensionSubsystem, 40.5),
+								new CommandWristSimple(this.wristSubsystem, 0.55))));
+		// mid position
+		this.driver.y()
+				.onTrue(new SequentialCommandGroup(new CommandArmPitchSimple(this.armPitchSubsystem, -0.63),
+						new ParallelCommandGroup(new CommandArmExtensionSimple(this.armExtensionSubsystem, 40.5),
+								new CommandWristSimple(this.wristSubsystem, 0.55))));
+		// if (armPitchSubsystem.getEncoderPostition() > -14.5){
+		// driver.b().onTrue(new CommandArmPitchSimple(armPitchSubsystem, -14.5));
+		// }
+		// driver.b().onTrue(new ParallelCommandGroup(new
+		// CommandArmExtensionSimple(armExtensionSubsystem, 0),
+		// new CommandWristSimple(wristSubsystem, .95),
+		// new CommandArmPitchSimple(armPitchSubsystem, 0)));
+
 		// Triggers are a thing that we might need to use so keep that in mind
 		// driver.b().onTrue(new ArmCommand(armSubsystem, driver.getHID()));
-		// driver.leftBumper().onTrue(
+		// driver.leftBumper().onTru
 		// new InstantCommand(() ->
 		// grabberSubsystem.setGrabberState(!grabberSubsystem.getGrabberState())));
 		// driver.start().onTrue(new AutoDriveDistance(drivetrain, -3));

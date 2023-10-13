@@ -22,8 +22,10 @@ public class CommandArmPitchSimple extends CommandBase {
 		this.pitchPID = new ProfiledPIDController(0.1, 0, 0, this.pitchConstraint);
 		this.positionGoal = positionGoal;
 		// SmartDashboard.putData("pitchPID", this.pitchPID);
-		// SmartDashboard.putNumber("pitchPID/maxVel", this.pitchConstraint.maxVelocity);
-		// SmartDashboard.putNumber("pitchPID/maxAccel", this.pitchConstraint.maxAcceleration);
+		// SmartDashboard.putNumber("pitchPID/maxVel",
+		// this.pitchConstraint.maxVelocity);
+		// SmartDashboard.putNumber("pitchPID/maxAccel",
+		// this.pitchConstraint.maxAcceleration);
 		// SmartDashboard.putNumber("pitchPID/powerLim", 0.8);
 		addRequirements(this.pitchSubsystem);
 	}
@@ -33,14 +35,17 @@ public class CommandArmPitchSimple extends CommandBase {
 		this.pitchPID.reset(new State(this.positionGoal, 0));
 		// wristPID.setGoal(new State(0, 0));
 		this.pitchPID.setGoal(this.positionGoal);
+		this.pitchPID.setTolerance(1.5, 3);
 	}
 
 	@Override
 	public void execute() {
 		// calculate motor output from pid controller
 		// uppper limit: -130
-		// double maxVel = SmartDashboard.getNumber("pitchPID/maxVel", this.pitchConstraint.maxVelocity);
-		// double maxAccel = SmartDashboard.getNumber("pitchPID/maxAccel", this.pitchConstraint.maxAcceleration);
+		// double maxVel = SmartDashboard.getNumber("pitchPID/maxVel",
+		// this.pitchConstraint.maxVelocity);
+		// double maxAccel = SmartDashboard.getNumber("pitchPID/maxAccel",
+		// this.pitchConstraint.maxAcceleration);
 		this.pitchPID.setConstraints(new Constraints(100, 120));
 		double motorRawOutput = this.pitchPID.calculate(this.pitchSubsystem.getEncoderPostition());
 		// double powerLim = SmartDashboard.getNumber("pitchPID/powerLim", 0.8);
@@ -50,13 +55,16 @@ public class CommandArmPitchSimple extends CommandBase {
 		// pass motor output to motor in subsystem
 		this.pitchSubsystem.setSpeed(motorOutput);
 		// SmartDashboard.putNumber("pitchPID/output", motorOutput);
-		// SmartDashboard.putNumber("pitchPID/setpoint", this.pitchPID.getSetpoint().position); // 85 is max
+		// SmartDashboard.putNumber("pitchPID/setpoint",
+		// this.pitchPID.getSetpoint().position); // 85 is max
+		SmartDashboard.putNumber("pitchPID/positionError", this.pitchPID.getPositionError());
+		SmartDashboard.putNumber("pitchPID/velocityError", this.pitchPID.getVelocityError());
 	}
 
 	@Override
 	public boolean isFinished() {
 		// TODO Auto-generated method stub
-		return false;
+		return this.pitchPID.atGoal();
 	}
 
 	// TODO: We should add an end method that sets the motor output to 0 when the

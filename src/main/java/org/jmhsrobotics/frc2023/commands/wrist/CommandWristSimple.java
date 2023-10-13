@@ -32,6 +32,7 @@ public class CommandWristSimple extends CommandBase {
 		this.wristPID.reset(new State(this.positionGoal, 0));
 		// wristPID.setGoal(new State(0, 0));
 		this.wristPID.setGoal(this.positionGoal);
+		this.wristPID.setTolerance(0.1, 0.2);
 	}
 	@Override
 	public void execute() {
@@ -55,14 +56,14 @@ public class CommandWristSimple extends CommandBase {
 		// pass motor output to motor in subsystemw
 		this.wristSubsystem.setWristMotor(motorOutput);
 
-		SmartDashboard.putNumber("WristPID/output", motorOutput);
-		SmartDashboard.putNumber("WristPID/setpoint", this.wristPID.getSetpoint().position);
+		SmartDashboard.putNumber("WristPID/positionError", this.wristPID.getPositionError());
+		SmartDashboard.putNumber("WristPID/velocityError", this.wristPID.getVelocityError());
 	}
 
 	@Override
 	public boolean isFinished() {
 		// TODO Auto-generated method stub
-		return false;
+		return this.wristPID.atGoal();
 	}
 
 }
