@@ -30,55 +30,8 @@ public class CompControl implements ControlBoard {
 	}
 
 	@Override
-	public boolean isDriveSlow() {
-		return driverController.rightBumper().getAsBoolean();
-	}
-
-	@Override
 	public double driveTurn() {
 		return MathUtil.applyDeadband(driverController.getLeftX(), deadband);
-	}
-
-	@Override
-	public boolean isQuickTurn() {
-		return !driverController.b().getAsBoolean();
-	}
-
-	@Override
-	public Trigger alignPeg() {
-		return driverController.leftBumper();
-	}
-
-	@Override
-	public Trigger autoBalance() {
-		return driverController.rightStick();
-	}
-
-	@Override
-	public boolean isDriveFast() {
-		// TODO Auto-generated method stub
-		return driverController.rightBumper().getAsBoolean() || driverController.a().getAsBoolean();
-	}
-
-	// Operator Controller
-
-	private double operatorLeftY() {
-		return MathUtil.applyDeadband(operatorController.getLeftY(), deadband);
-	}
-
-	@Override
-	public double armPitch() {
-		return !this.wristControlModifier().getAsBoolean() ? operatorLeftY() : 0.0;
-	}
-
-	@Override
-	public double wristPitch() {
-		return this.wristControlModifier().getAsBoolean() ? -operatorLeftY() : 0.0;
-	}
-
-	@Override
-	public double armExtend() {
-		return MathUtil.applyDeadband(-operatorController.getRightY(), deadband);
 	}
 
 	public double intakeWheels() {
@@ -94,13 +47,70 @@ public class CompControl implements ControlBoard {
 	}
 
 	@Override
+	public Trigger armPresetStowed() {
+		return operatorController.b();
+	}
+
+	@Override
 	public Trigger armPresetMid() {
+		return operatorController.y();
+	}
+
+	@Override
+	public Trigger switchGrabber() {
 		return operatorController.x();
 	}
 
 	@Override
+	public boolean isDriveSlow() {
+		return false;
+	}
+
+	@Override
+	public boolean isQuickTurn() {
+		return true;
+	}
+
+	@Override
+	public Trigger alignPeg() {
+		return null;
+	}
+
+	@Override
+	public Trigger autoBalance() {
+		return null;
+	}
+
+	@Override
+	public boolean isDriveFast() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	// Operator Controller
+
+	private double operatorLeftY() {
+		return 0.0;
+	}
+
+	@Override
+	public double armPitch() {
+		return 0.0;
+	}
+
+	@Override
+	public double wristPitch() {
+		return 0.0;
+	}
+
+	@Override
+	public double armExtend() {
+		return 0.0;
+	}
+
+	@Override
 	public Trigger armPresetHigh() {// Not in use right now
-		return operatorController.y();
+		return null;
 	}
 
 	@Override
@@ -111,12 +121,12 @@ public class CompControl implements ControlBoard {
 
 	@Override
 	public Trigger override() {
-		return operatorController.start();
+		return null;
 	}
 
 	@Override
 	public Trigger wristControlModifier() {
-		return operatorController.leftBumper();
+		return null;
 	}
 
 	@Override
@@ -126,32 +136,22 @@ public class CompControl implements ControlBoard {
 
 	@Override
 	public Trigger armWrist() {
-		return operatorController.povUp();
+		return null;
 	}
 
 	@Override
 	public Trigger changeScoringType() {
-		return operatorController.povRight();
-	}
-
-	@Override
-	public Trigger armPresetStowed() {
-		return operatorController.b();
+		return null;
 	}
 
 	@Override
 	public Trigger armPresetPickup() {
-		return operatorController.povDown();
-	}
-
-	@Override
-	public Trigger switchGrabber() {
-		return operatorController.rightBumper();
+		return null;
 	}
 
 	@Override
 	public Trigger toggleHeadingLock() {
-		return operatorController.back();
+		return null;
 	}
 
 	@Override

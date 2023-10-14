@@ -13,6 +13,9 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
+import org.jmhsrobotics.frc2023.commands.arm.CommandArmPitchSimpleDefault;
+import org.jmhsrobotics.frc2023.commands.wrist.CommandWristSimpleDefualt;
 import org.jmhsrobotics.frc2023.util.DetectRobot;
 import org.jmhsrobotics.frc2023.util.sim.BuildDataLogger;
 
@@ -58,6 +61,10 @@ public class Robot extends TimedRobot {
 		BuildDataLogger.LogToNetworkTables();
 		BuildDataLogger.LogToWpiLib(DataLogManager.getLog());
 		DetectRobot.identifyRobot();
+		this.m_robotContainer.getWristSubsystem()
+				.setDefaultCommand(new CommandWristSimpleDefualt(this.m_robotContainer.getWristSubsystem()));
+		this.m_robotContainer.getArmPitchSubysystem()
+				.setDefaultCommand(new CommandArmPitchSimpleDefault(this.m_robotContainer.getArmPitchSubysystem()));
 	}
 
 	/**

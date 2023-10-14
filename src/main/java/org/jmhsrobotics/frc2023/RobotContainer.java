@@ -7,15 +7,15 @@ package org.jmhsrobotics.frc2023;
 import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
-import org.jmhsrobotics.frc2023.commands.arm.CommandArmExtensionSimple;
 import org.jmhsrobotics.frc2023.commands.arm.CommandArmPitchSimple;
+import org.jmhsrobotics.frc2023.commands.gripper.PistonIntakeCommand;
 import org.jmhsrobotics.frc2023.commands.gripper.TeleopIntakeOpenLoop;
 import org.jmhsrobotics.frc2023.commands.wrist.CommandWristSimple;
+import org.jmhsrobotics.frc2023.oi.CompControl;
 // import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 // import org.jmhsrobotics.frc2023.commands.grabber.ToggleGrabberPitch;
 // import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 import org.jmhsrobotics.frc2023.oi.ControlBoard;
-import org.jmhsrobotics.frc2023.oi.SingleControl;
 import org.jmhsrobotics.frc2023.subsystems.ArmExtensionSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.ArmPitchSubsystem;
 // import org.jmhsrobotics.frc2023.subsystems.ArmSubsystem;
@@ -30,7 +30,6 @@ import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -53,96 +52,38 @@ public class RobotContainer {
 
 	private final Drivetrain drivetrain = new Drivetrain();
 	private final LEDSubsystem ledSubsystem = new LEDSubsystem();
-	// public final GrabberSolenoidSubsystem grabberSolenoidSubsystem = new
-	// GrabberSolenoidSubsystem();
-	// public final GrabberMotorSubsystem grabberMotorSubsystem = new
-	// GrabberMotorSubsystem();
 	private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-	// // private final ArmSubsystem armSubsystem = new ArmSubsystem();
 	private final WristSubsystem wristSubsystem = new WristSubsystem();
 	private final ArmExtensionSubsystem armExtensionSubsystem = new ArmExtensionSubsystem();
 	private final ArmPitchSubsystem armPitchSubsystem = new ArmPitchSubsystem();
-	// private CANSparkMax armMotor;
-	// private final ArmSubsystem armSubsystem = new ArmSubsystem();
-	// private final GrabberSubsystem grabberSubsystem=new GrabberSubsystem();
-	// private final VisionPlaceholder visionPlaceholder = new
-	// VisionPlaceholder(drivetrain);
-	// private AutoSelector autoSelector;
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
 	public RobotContainer() {
 		SmartDashboard.putData(CommandScheduler.getInstance());
-		// SelectableControlBoard selectable = new SelectableControlBoard("single", new
-		// SingleControl());
-		// selectable.addOption("single", new SingleControl());
-		controlBoard = new SingleControl();
-		// armMotor = new CANSparkMax(5, MotorType.kBrushless);
-		// armMotor.setIdleMode(IdleMode.kCoast);
-		// Configure the trigger bindings
+		controlBoard = new CompControl();
 		configureBindings();
 		// Setting up default command which is a command that runs every time no other
 		// command that uses that subsystem is running
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, controlBoard));
-		// wristSubsystem.setDefaultCommand(new CommandWristSimple(this.wristSubsystem,
-		// 0.6));
-		// SmartDashboard.putData("MoveWristTO0.3", new
-		// CommandWristSimple(wristSubsystem, 0.3));
-		// SmartDashboard.putData("ExtendArm5", new
-		// CommandArmExtensionSimple(armExtensionSubsystem, 40.0));
-		SmartDashboard.putData("MoveArm", new CommandArmPitchSimple(this.armPitchSubsystem, -50));
-		// SmartDashboard.putData(Robot.scheduler);
-
-		// wristSubsystem.setDefaultCommand(new CommandWristSimple(this.wristSubsystem,
-		// driver.getRightY()));
-
-		// OpenLoop Control!
-		// spotless:off
-		/*armSubsystem.setDefaultCommand(new TelopArmOpenLoop(
-			armSubsystem, 
-			controlBoard::armPitch, 
-			controlBoard::armExtend, 
-			controlBoard.wristControlModifier(),
-			controlBoard.override()
-		));*/
-		// spotless:on
-
-		// spotless:off
-		// wristSubsystem.setDefaultCommand(new TeleopWristOpenLoop(
-		// 	wristSubsystem, 
-		// 	armSubsystem::getArmPitch, 
-		// 	controlBoard::wristPitch, 
-		// 	controlBoard.wristControlModifier(),
-		// 	controlBoard.override()));
-		// spotless:on
-
-		// grabberMotorSubsystem.setDefaultCommand(new InstantCommand(() -> {
-		// grabberMotorSubsystem.setGrabberMotor(MathUtil.clamp(
-		// controlBoard.intakeWheels() +
-		// (grabberSolenoidSubsystem.getGrabberPitchState() ? 0.05 : 0.0), -1,
-		// 1));
-		// }, grabberMotorSubsystem));
-
+		// SmartDashboard.putData("MoveArm", new
+		// CommandArmPitchSimple(this.armPitchSubsystem, -50));
+		SmartDashboard.putData("MoveWrist", new CommandWristSimple(this.wristSubsystem, 0.3));
 		// TODO: make this not hellish (plz)
 
 		// spotless:off
-		intakeSubsystem.setDefaultCommand(
+		this.intakeSubsystem.setDefaultCommand(
 			new TeleopIntakeOpenLoop(
 				intakeSubsystem, 
 				controlBoard::intakeWheels,
 			this.controlBoard)
 		);
-		// spotless:on
 
-		// grabberMotorSubsystem.setGrabberMotor(controlBoard.intakeWheels()),
-		// grabberMotor));
-		// Closed Loop
-		// armSubsystem.setDefaultCommand(new TeleopArm(armSubsystem,
-		// operator::getLeftY, operator::getRightY));
+		controlBoard.switchGrabber().onTrue(new PistonIntakeCommand(this.intakeSubsystem));
+		
 
-		// driver.getHID()));
-
+		
 		// spotless:off
 		// ledSubsystem.setDefaultCommand(new LEDIdleCommand(
 		// 		ledSubsystem, 
@@ -151,11 +92,6 @@ public class RobotContainer {
 		// 	)
 		// );
 		// spotless:on
-
-		// autoSelector = new AutoSelector(this);
-		// SmartDashboard.putData(new AlignPeg(drivetrain));
-		// SmartDashboard.putData(new CenterChargeStationAuto(drivetrain,
-		// ledSubsystem));
 
 	}
 
@@ -171,127 +107,19 @@ public class RobotContainer {
 	 */
 	private void configureBindings() {
 
-		// driver.b().onTrue(new ParallelCommandGroup(new CommandArmExtensionSimple(armExtensionSubsystem, 0),
-		// 		new CommandWristSimple(wristSubsystem, 0.95), new CommandArmPitchSimple(armPitchSubsystem, 0)));
-		// // driver.b().onTrue(new SequentialCommandGroup(new
-		// // CommandArmPitchSimple(armPitchSubsystem, -14.5),
-		// // new CommandArmExtensionSimple(armExtensionSubsystem, 0),
-		// // new CommandWristSimple(wristSubsystem, .95),
-		// // new CommandArmPitchSimple(armPitchSubsystem, 0)));
-		// driver.a().onTrue(new ParallelCommandGroup(new CommandArmExtensionSimple(armExtensionSubsystem, 40.5),
-		// 		new CommandWristSimple(wristSubsystem, 0.55)));
-		// driver.y().onTrue(new ParallelCommandGroup(new CommandArmExtensionSimple(armExtensionSubsystem, 85.0),
-		// 		new CommandWristSimple(wristSubsystem, 0.38), new CommandArmPitchSimple(armPitchSubsystem, -63)));
-
 		// stow position
-		this.driver.b()
-				.onTrue(new SequentialCommandGroup(
-						new ParallelCommandGroup(new CommandArmExtensionSimple(this.armExtensionSubsystem, 0),
-								new CommandWristSimple(this.wristSubsystem, 0.95)),
+		this.controlBoard.armPresetStowed()
+				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, 0.805),
 						new CommandArmPitchSimple(this.armPitchSubsystem, 0)));
 		// floor pick up position
-		this.driver.a()
-				.onTrue(new SequentialCommandGroup(new CommandArmPitchSimple(this.armPitchSubsystem, -20),
-						new ParallelCommandGroup(new CommandArmExtensionSimple(this.armExtensionSubsystem, 40.5),
-								new CommandWristSimple(this.wristSubsystem, 0.55))));
+		this.controlBoard.armPresetFloor()
+				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, .455),
+						new CommandArmPitchSimple(this.armPitchSubsystem, 0)));
 		// mid position
-		this.driver.y()
-				.onTrue(new SequentialCommandGroup(new CommandArmPitchSimple(this.armPitchSubsystem, -0.63),
-						new ParallelCommandGroup(new CommandArmExtensionSimple(this.armExtensionSubsystem, 40.5),
-								new CommandWristSimple(this.wristSubsystem, 0.55))));
-		// if (armPitchSubsystem.getEncoderPostition() > -14.5){
-		// driver.b().onTrue(new CommandArmPitchSimple(armPitchSubsystem, -14.5));
-		// }
-		// driver.b().onTrue(new ParallelCommandGroup(new
-		// CommandArmExtensionSimple(armExtensionSubsystem, 0),
-		// new CommandWristSimple(wristSubsystem, .95),
-		// new CommandArmPitchSimple(armPitchSubsystem, 0)));
-
-		// Triggers are a thing that we might need to use so keep that in mind
-		// driver.b().onTrue(new ArmCommand(armSubsystem, driver.getHID()));
-		// driver.leftBumper().onTru
-		// new InstantCommand(() ->
-		// grabberSubsystem.setGrabberState(!grabberSubsystem.getGrabberState())));
-		// driver.start().onTrue(new AutoDriveDistance(drivetrain, -3));
-
-		// driver.y().onTrue(new TurnDeltaAngle(drivetrain, 90));
-		// driver.y().onTrue(new TurnDeltaAngle(drivetrain, 180));
-		// driver.a().onTrue(new CenterChargeStationAuto(drivetrain, ledSubsystem));
-		// driver.x().onTrue(new AutoBalance(drivetrain, true, ledSubsystem));
-		// driver.b().onTrue(new AlignPeg(drivetrain));
-
-		// operator.x().onTrue(new CommandArm(armSubsystem, 0.2, 0));
-		// operator.b().onTrue(new CommandArm(armSubsystem, 0, 180));
-		// controlBoard.alignPeg().onTrue(new AlignPeg(drivetrain));
-		// controlBoard.changeScoringType().onTrue(new InstantCommand(() ->
-		// armSubsystem.switchScoringType()));
-
-		// controlBoard.armPresetStowed()
-		// .onTrue(new ArmSetpointCommand(Constants.Setpoints.STOWED,
-		// Constants.kGripperType, this));
-
-		// // controlBoard.armPresetFloor()
-		// // .onTrue(new ArmSetpointCommand(Constants.Setpoints.FLOOR,
-		// // Constants.kGripperType, this));
-
-		// controlBoard.armPresetMid()
-		// .onTrue(new ArmSetpointCommand(Constants.Setpoints.MID,
-		// Constants.kGripperType, this));
-
-		// controlBoard.armPresetHigh()
-		// .onTrue(new ArmSetpointCommand(Constants.Setpoints.HIGH,
-		// Constants.kGripperType, this));
-
-		// controlBoard.armPresetPickup()
-		// .onTrue(new ArmSetpointCommand(Constants.Setpoints.PICKUP,
-		// Constants.kGripperType, this));
-
-		// controlBoard.closeGrabber().onTrue(new ToggleIntakePiston(intakeSubsystem));
-
-		// controlBoard.armWrist().onTrue(new
-		// ToggleGrabberPitch(grabberSolenoidSubsystem));
-
-		// controlBoard.autoBalance().onTrue(new AutoBalance(drivetrain, false,
-		// ledSubsystem));
-
-		// controlBoard.toggleHeadingLock().onTrue(
-		// new InstantCommand(() ->
-		// this.drivetrain.setHeadingLock(!this.getDrivetrain().getShouldHeadingLock())));
-
-		// controlBoard.getDriver().a().onTrue(new TurnAngle(drivetrain, 180.0));
-
-		// controlBoard.getDriver().x().onTrue(new TurnDeltaAngle(drivetrain, 90.0));
-
-		// driver.povLeft().onTrue(new CommandArm(armSubsystem, .5, 0));
-		// driver.povUp().onTrue(new CommandArm(armSubsystem, 1, 45));
-		// driver.povDown().onTrue(new CommandArm(armSubsystem, 0, -45));
-		// controlBoard.switchGrabber().onTrue(new
-		// pistonIntakeCommand(this.intakeSubsystem));
-
-		// this.wristSubsystem.setWristMotor(driver.getLeftY());
-		// driver.getLeftY()
-		// controlBoard.wristPitch()
-		// controlBoard.switchGrabber().onTrue(new
-		// PistonIntakeCommand(this.intakeSubsystem));
-
-		// new CommandWristSimple(this.wristSubsystem, controlBoard.wristPitch());
-
+		this.controlBoard.armPresetMid()
+				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, .365),
+						new CommandArmPitchSimple(this.armPitchSubsystem, -73)));
 	}
-
-	/**
-	 * Use this to pass the autonomous command to the main {@link Robot} class.
-	 *
-	 * @return the command to run in autonomous
-	 */
-	// public Command getAutonomousCommand() {
-	// // An example command will be run in autonomous
-	// // return Autos.taxi(drivetrain);
-	// return autoSelector.getCommand();
-	// }
-
-	// public double getAbsoluteStow() {
-	// return getArmSubsystem().getArmPitch() + 130;
-	// }
 
 	public Drivetrain getDrivetrain() {
 		return this.drivetrain;
@@ -305,27 +133,17 @@ public class RobotContainer {
 		return this.controlBoard;
 	}
 
-	// public IntakeSubsystem getIntakeSubsystem() {
-	// return intakeSubsystem;
-	// }
-
-	// // public ArmSubsystem getArmSubsystem() {
-	// // return armSubsystem;
-	// // }
-
-	// public WristSubsystem getWristSubsystem() {
-	// return wristSubsystem;
-	// }
-
-	// public AutoSelector getAutoSelector() {
-	// return autoSelector;
-	// }
-
 	public static TelemetrySubsystem getTelemetry() {
 		return RobotContainer.telemetry;
 	}
 
 	public ControlBoard getControlBoard() {
 		return controlBoard;
+	}
+	public ArmPitchSubsystem getArmPitchSubysystem() {
+		return this.armPitchSubsystem;
+	}
+	public WristSubsystem getWristSubsystem() {
+		return this.wristSubsystem;
 	}
 }

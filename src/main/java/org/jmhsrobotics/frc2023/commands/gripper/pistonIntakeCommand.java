@@ -16,6 +16,6 @@ public class PistonIntakeCommand extends InstantCommand {
 
 	@Override
 	public void execute() {
-		intake.switchIntakePistonState();
+		this.intake.switchIntakePistonState();
 	}
 }

@@ -32,8 +32,8 @@ public class ArmPitchSubsystem extends SubsystemBase {
 	public double getEncoderPostition() {
 		return this.pitchEncoder.getPosition();
 	}
-	
-	public double getSpeed(){
+
+	public double getSpeed() {
 		return this.pitchEncoder.getVelocity();
 	}
 
