@@ -8,7 +8,6 @@ import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
 import org.jmhsrobotics.frc2023.commands.arm.CommandArmPitchSimple;
-import org.jmhsrobotics.frc2023.commands.gripper.PistonIntakeCommand;
 import org.jmhsrobotics.frc2023.commands.gripper.TeleopIntakeOpenLoop;
 import org.jmhsrobotics.frc2023.commands.wrist.CommandWristSimple;
 import org.jmhsrobotics.frc2023.oi.CompControl;
@@ -33,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import org.jmhsrobotics.frc2023.commands.wrist.PistonIntakeCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
