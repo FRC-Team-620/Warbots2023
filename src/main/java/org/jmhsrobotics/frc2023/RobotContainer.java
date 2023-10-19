@@ -8,6 +8,7 @@ import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
 import org.jmhsrobotics.frc2023.commands.arm.CommandArmPitchSimple;
+import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
 import org.jmhsrobotics.frc2023.commands.gripper.TeleopIntakeOpenLoop;
 import org.jmhsrobotics.frc2023.commands.wrist.CommandWristSimple;
 import org.jmhsrobotics.frc2023.oi.CompControl;
@@ -70,6 +71,7 @@ public class RobotContainer {
 		// SmartDashboard.putData("MoveArm", new
 		// CommandArmPitchSimple(this.armPitchSubsystem, -50));
 		SmartDashboard.putData("MoveWrist", new CommandWristSimple(this.wristSubsystem, 0.3));
+		SmartDashboard.putData("AutoBalance", new AutoBalance(this.drivetrain, false));
 		// TODO: make this not hellish (plz)
 
 		// spotless:off

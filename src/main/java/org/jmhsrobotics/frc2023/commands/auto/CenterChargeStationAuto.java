@@ -14,14 +14,13 @@ public class CenterChargeStationAuto extends SequentialCommandGroup {
 	LEDSubsystem ledSubsystem;
 
 	// Constructor
-	public CenterChargeStationAuto(Drivetrain drivetrain, LEDSubsystem ledSubsystem) {
+	public CenterChargeStationAuto(Drivetrain drivetrain) {
 		this.drivetrain = drivetrain;
-		this.ledSubsystem = ledSubsystem;
 
 		addCommands(new InstantCommand(() -> { // Set starting location of the robot
 			drivetrain.resetOdometry(
 					new Pose2d(Units.inchesToMeters(54.42), Units.inchesToMeters(42.079), Rotation2d.fromDegrees(180)));
-		}), new AutoBalance(drivetrain, true, ledSubsystem));
+		}), new AutoBalance(drivetrain, true));
 
 	}
 

@@ -7,7 +7,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import org.jmhsrobotics.frc2023.Constants;
@@ -15,14 +14,14 @@ import org.jmhsrobotics.frc2023.RobotContainer;
 import org.jmhsrobotics.frc2023.RobotMath;
 import org.jmhsrobotics.frc2023.Constants.AutoConstants;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
-import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;//Fix LED Animation with new system
+//Fix LED Animation with new system
 // import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.LEDAnimation;
 // import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem.LEDManager;
 
 public class AutoBalance extends CommandBase {
 
 	private Drivetrain drivetrain;
-	private LEDSubsystem ledSubsystem;
+	// private LEDSubsystem ledSubsystem;
 
 	private Timer timeoutTimer;
 
@@ -52,10 +51,9 @@ public class AutoBalance extends CommandBase {
 	// private LEDAnimation redBlueAnim = strip.fadeTwoAnimation(1, 20, Color.kRed,
 	// Color.kBlue);
 
-	public AutoBalance(Drivetrain drivetrain, boolean backwards, LEDSubsystem ledSubsystem) {
+	public AutoBalance(Drivetrain drivetrain, boolean backwards) {
 		this.backwards = backwards;
 		this.drivetrain = drivetrain;
-		this.ledSubsystem = ledSubsystem;
 		this.timeoutTimer = new Timer();
 		// this.robotPitchHandler = new DiminishingAverageHandler(0.5);
 		// robotPitchAngVelHandler = new DiminishingAverageHandler(0.5);
@@ -64,7 +62,7 @@ public class AutoBalance extends CommandBase {
 
 		this.pidController.setTolerance(0.02, 0.01);
 		this.pitchPIDController = new PIDController(0.008 * 1.2, 0.0002, 0.0);
-		addRequirements(drivetrain, ledSubsystem);
+		addRequirements(drivetrain);
 	}
 
 	@Override
@@ -122,7 +120,7 @@ public class AutoBalance extends CommandBase {
 		// IF THE ROBOT HAS NOT BEEN ON THE CHARGE STATION YET
 		if (!this.hasBeenOnChargeStation) {
 
-			this.ledSubsystem.getDriverBuffer().setSolidColor(Color.kWhite);
+			// this.ledSubsystem.getDriverBuffer().setSolidColor(Color.kWhite);
 
 			// spotless:off
             this.drivetrain.setCurvatureDrive(
@@ -156,7 +154,7 @@ public class AutoBalance extends CommandBase {
 					// this.pidController.setSetpoint(0);
 				}
 
-				this.ledSubsystem.getDriverBuffer().setSolidColor(Color.kBlue);
+				// this.ledSubsystem.getDriverBuffer().setSolidColor(Color.kBlue);
 
 				// this.drivetrain.stop();
 
@@ -171,7 +169,7 @@ public class AutoBalance extends CommandBase {
 				// IS BALANCING
 				if (RobotMath.approxZero(pitch, AutoConstants.balancedAngle)) {
 					this.drivetrain.stop();
-					this.ledSubsystem.getDriverBuffer().setSolidColor(Color.kGreen);
+					// this.ledSubsystem.getDriverBuffer().setSolidColor(Color.kGreen);
 					this.isBalancing = true;
 					return;
 				}
@@ -200,7 +198,7 @@ public class AutoBalance extends CommandBase {
                         pitch
                     );
 
-                    this.ledSubsystem.getDriverBuffer().setSolidColor(Color.kOrange);
+                    // this.ledSubsystem.getDriverBuffer().setSolidColor(Color.kOrange);
 
                     // } else {
                     //  pidSpeedOutput = this.pidController.calculate(
@@ -265,7 +263,7 @@ public class AutoBalance extends CommandBase {
 			}
 		}
 
-		this.ledSubsystem.sendDriverBufferData();
+		// this.ledSubsystem.sendDriverBufferData();
 
 	}
 
