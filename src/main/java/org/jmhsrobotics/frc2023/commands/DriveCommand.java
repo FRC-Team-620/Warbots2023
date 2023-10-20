@@ -87,23 +87,24 @@ public class DriveCommand extends CommandBase {
 		// rotationInput /= 2;
 		// }
 
-		if (control.isDriveFast()) {
-			// System.out.println("high");
-			speed *= 1;
-			rotationInput *= 0.7;
-		} else {
-			// System.out.println("slow");
-			// System.out.println(SmartDashboard.getNumber("Drivetrain/drive speed", 0.15));
-			// System.out.println(SmartDashboard.getNumber("Drivetrain/drive rotation
-			// speed", 0.3));
-			speed *= 0.2;
-			rotationInput *= 0.25;
-		}
+		// if (control.isDriveFast()) {
+		// // System.out.println("high");
+		// speed *= 1;
+		// rotationInput *= 0.7;
+		// } else {
+		// // System.out.println("slow");
+		// // System.out.println(SmartDashboard.getNumber("Drivetrain/drive speed",
+		// 0.15));
+		// // System.out.println(SmartDashboard.getNumber("Drivetrain/drive rotation
+		// // speed", 0.3));
+		// speed *= 0.2;
+		// rotationInput *= 0.25;
+		// }
 		// Pass the speed, rotation input, and the quickTurn in that order into
 		// setCurvatureDrive
 		// This will allow for Drivetrain's DifferentalDrive to assign the motors to the
 		// correct values to make that movement
-		drivetrain.setCurvatureDrive(speed, rotationInput, quickTurn);
+		drivetrain.setCurvatureDrive(0.8 * speed, 0.7 * rotationInput, quickTurn);
 		SmartDashboard.putNumber("right motor encoder", drivetrain.getRightEncoderCount());
 		SmartDashboard.putNumber("left motor encoder", drivetrain.getLeftEncoderCount());
 	}
