@@ -68,7 +68,6 @@ public class Robot extends TimedRobot {
 		this.m_robotContainer.getArmPitchSubysystem()
 				.setDefaultCommand(new CommandArmPitchSimpleDefault(this.m_robotContainer.getArmPitchSubysystem()));
 
-
 		this.autoSelector = new AutoSelector(this.m_robotContainer);
 	}
 
@@ -120,7 +119,8 @@ public class Robot extends TimedRobot {
 	public void autonomousInit() {
 		// m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-		m_autonomousCommand = autoSelector.getCommand(); // Run Command Selected From Smart Dashboard. (Default is balance PRob should change to baseline)
+		m_autonomousCommand = autoSelector.getCommand(); // Run Command Selected From Smart Dashboard. (Default is
+															// balance PRob should change to baseline)
 		// schedule the autonomous command (example)
 		if (m_autonomousCommand != null) {
 			System.out.println("Running Auto Command: " + m_autonomousCommand.getName());

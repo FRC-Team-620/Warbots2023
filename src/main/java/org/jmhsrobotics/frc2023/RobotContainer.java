@@ -111,15 +111,15 @@ public class RobotContainer {
 
 		// stow position
 		this.controlBoard.armPresetStowed()
-				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, 0.805),
+				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, 0.95),
 						new CommandArmPitchSimple(this.armPitchSubsystem, 0)));
 		// floor pick up position
 		this.controlBoard.armPresetFloor()
-				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, .455),
+				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, .60),
 						new CommandArmPitchSimple(this.armPitchSubsystem, 0)));
 		// mid position
 		this.controlBoard.armPresetMid()
-				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, .365),
+				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, .55),
 						new CommandArmPitchSimple(this.armPitchSubsystem, -73)));
 	}
 

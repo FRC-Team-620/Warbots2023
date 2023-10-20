@@ -24,7 +24,7 @@ public class AutoSelector {
 				new CenterChargeStationAuto(container.getDrivetrain()));
 
 		autoSelector.addOption("StartingDistanceAuto", new StartingDistanceAuto(container.getDrivetrain()));
-        autoSelector.addOption("DoNothing", new InstantCommand());
+		autoSelector.addOption("DoNothing", new InstantCommand());
 		// autoSelector.addOption("ScoringAutoMidCone",
 		// new ScoringAuto(container.getDrivetrain(), container.getWristSubsystem(),
 		// container.getArmSubsystem(),

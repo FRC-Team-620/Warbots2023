@@ -34,7 +34,7 @@ public class WristSubsystem extends SubsystemBase {
 	public WristSubsystem() {
 
 		this.wristMotor.setSmartCurrentLimit(20);
-		this.wristMotor.setIdleMode(IdleMode.kBrake);
+		this.wristMotor.setIdleMode(IdleMode.kCoast);
 		// this.wristMotor.setInverted(true);
 
 		this.updateStoredWristPosition();
