@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import org.jmhsrobotics.frc2023.commands.arm.CommandArmPitchSimpleDefault;
+import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 import org.jmhsrobotics.frc2023.commands.wrist.CommandWristSimpleDefualt;
 import org.jmhsrobotics.frc2023.util.DetectRobot;
 import org.jmhsrobotics.frc2023.util.sim.BuildDataLogger;
@@ -29,6 +30,7 @@ import org.jmhsrobotics.frc2023.util.sim.BuildDataLogger;
 public class Robot extends TimedRobot {
 	private Command m_autonomousCommand;
 	private Field2d field = new Field2d();
+	private AutoSelector autoSelector;
 
 	private RobotContainer m_robotContainer;
 	private boolean lastAutonomous = false;
@@ -65,6 +67,9 @@ public class Robot extends TimedRobot {
 				.setDefaultCommand(new CommandWristSimpleDefualt(this.m_robotContainer.getWristSubsystem()));
 		this.m_robotContainer.getArmPitchSubysystem()
 				.setDefaultCommand(new CommandArmPitchSimpleDefault(this.m_robotContainer.getArmPitchSubysystem()));
+
+
+		this.autoSelector = new AutoSelector(this.m_robotContainer);
 	}
 
 	/**
@@ -115,11 +120,14 @@ public class Robot extends TimedRobot {
 	public void autonomousInit() {
 		// m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
+		m_autonomousCommand = autoSelector.getCommand(); // Run Command Selected From Smart Dashboard. (Default is balance PRob should change to baseline)
 		// schedule the autonomous command (example)
 		if (m_autonomousCommand != null) {
+			System.out.println("Running Auto Command: " + m_autonomousCommand.getName());
 			m_autonomousCommand.schedule();
 		}
 		m_robotContainer.getDrivetrain().setBrake(true);
+
 		// probably shouldn't do this in teleopInit too since that would mess up the
 		// calibration
 		// during competitions once it transfers from auto to teleop, making it no
