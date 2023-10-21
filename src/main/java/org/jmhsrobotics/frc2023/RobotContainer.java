@@ -11,6 +11,7 @@ import org.jmhsrobotics.frc2023.commands.arm.CommandArmPitchSimple;
 import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
 import org.jmhsrobotics.frc2023.commands.gripper.TeleopIntakeOpenLoop;
 import org.jmhsrobotics.frc2023.commands.wrist.CommandWristSimple;
+import org.jmhsrobotics.frc2023.commands.wrist.PistonIntakeCommand;
 import org.jmhsrobotics.frc2023.oi.CompControl;
 // import org.jmhsrobotics.frc2023.commands.auto.AutoSelector;
 // import org.jmhsrobotics.frc2023.commands.grabber.ToggleGrabberPitch;
@@ -33,7 +34,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import org.jmhsrobotics.frc2023.commands.wrist.PistonIntakeCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -111,15 +111,15 @@ public class RobotContainer {
 
 		// stow position
 		this.controlBoard.armPresetStowed()
-				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, 0.95),
+				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, 0.82),
 						new CommandArmPitchSimple(this.armPitchSubsystem, 0)));
 		// floor pick up position
 		this.controlBoard.armPresetFloor()
-				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, .60),
+				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, .44),
 						new CommandArmPitchSimple(this.armPitchSubsystem, 0)));
 		// mid position
 		this.controlBoard.armPresetMid()
-				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, .55),
+				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, 0.365),
 						new CommandArmPitchSimple(this.armPitchSubsystem, -73)));
 	}
 
