@@ -100,6 +100,11 @@ public class SingleControl implements ControlBoard {
 		return null;
 	}
 
+	public Trigger armPresetSlide() {
+		// TODO Auto-generated method stub
+		return controller.povDown();
+	}
+
 	@Override
 	public Trigger armPresetStowed() {
 		// TODO Auto-generated method stub

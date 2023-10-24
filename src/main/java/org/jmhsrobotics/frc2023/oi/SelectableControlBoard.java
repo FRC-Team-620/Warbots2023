@@ -105,6 +105,12 @@ public class SelectableControlBoard implements ControlBoard {
 	}
 
 	@Override
+	public Trigger armPresetSlide() {
+		// TODO Auto-generated method stub
+		return selector.getSelected().armPresetSlide();
+	}
+
+	@Override
 	public Trigger armPresetPickup() {
 		// TODO Auto-generated method stub
 		return selector.getSelected().armPresetPickup();

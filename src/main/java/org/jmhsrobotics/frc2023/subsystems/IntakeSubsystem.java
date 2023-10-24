@@ -40,6 +40,9 @@ public class IntakeSubsystem extends SubsystemBase {
 	// ****** INTAKE MOTOR ******
 
 	public void setIntakeMotor(double speed) {
+		if (speed > -.1 && speed <= .1) {
+			speed = -.1;
+		}
 		this.intakeMotor.set(speed);
 	}
 
@@ -61,7 +64,7 @@ public class IntakeSubsystem extends SubsystemBase {
 	}
 
 	public void stopIntakeMotor() {
-		this.intakeMotor.set(0.0);
+		this.intakeMotor.set(0.1);
 	}
 
 	public void intakeOut() {

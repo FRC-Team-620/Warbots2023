@@ -121,6 +121,10 @@ public class RobotContainer {
 		this.controlBoard.armPresetMid()
 				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, 0.365),
 						new CommandArmPitchSimple(this.armPitchSubsystem, -73)));
+
+		this.controlBoard.armPresetSlide()
+				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, .55),
+						new CommandArmPitchSimple(this.armPitchSubsystem, -73)));
 	}
 
 	public Drivetrain getDrivetrain() {

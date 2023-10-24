@@ -42,6 +42,11 @@ public class CompControl implements ControlBoard {
 	}
 
 	@Override
+	public Trigger armPresetSlide() {
+		return operatorController.povDown();
+	}
+
+	@Override
 	public Trigger armPresetFloor() {
 		return operatorController.a();
 	}
