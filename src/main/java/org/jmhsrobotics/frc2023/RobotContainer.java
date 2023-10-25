@@ -8,8 +8,9 @@ import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
 import org.jmhsrobotics.frc2023.commands.arm.CommandArmPitchSimple;
-import org.jmhsrobotics.frc2023.commands.auto.AutoBalance;
+import org.jmhsrobotics.frc2023.commands.auto.AutoScoreAndBalance;
 import org.jmhsrobotics.frc2023.commands.gripper.TeleopIntakeOpenLoop;
+import org.jmhsrobotics.frc2023.commands.wrist.CommandSetGripperOpen;
 import org.jmhsrobotics.frc2023.commands.wrist.CommandWristSimple;
 import org.jmhsrobotics.frc2023.commands.wrist.PistonIntakeCommand;
 import org.jmhsrobotics.frc2023.oi.CompControl;
@@ -71,27 +72,28 @@ public class RobotContainer {
 		// SmartDashboard.putData("MoveArm", new
 		// CommandArmPitchSimple(this.armPitchSubsystem, -50));
 		SmartDashboard.putData("MoveWrist", new CommandWristSimple(this.wristSubsystem, 0.3));
-		SmartDashboard.putData("AutoBalance", new AutoBalance(this.drivetrain, false));
+		// SmartDashboard.putData("AutoBalance", new AutoBalance(this.drivetrain,
+		// false));
+		SmartDashboard.putData("scoreing auto", new AutoScoreAndBalance(this.drivetrain, this.wristSubsystem,
+				this.intakeSubsystem, this.armPitchSubsystem));
+		SmartDashboard.putData("openIntakePiston", new CommandSetGripperOpen(this.intakeSubsystem, true));
 		// TODO: make this not hellish (plz)
 
 		// spotless:off
 		this.intakeSubsystem.setDefaultCommand(
-			new TeleopIntakeOpenLoop(
-				intakeSubsystem, 
-				controlBoard::intakeWheels,
-			this.controlBoard)
-		);
+				new TeleopIntakeOpenLoop(
+						intakeSubsystem,
+						controlBoard::intakeWheels,
+						this.controlBoard));
 
 		controlBoard.switchGrabber().onTrue(new PistonIntakeCommand(this.intakeSubsystem));
-		
 
-		
 		// spotless:off
 		// ledSubsystem.setDefaultCommand(new LEDIdleCommand(
-		// 		ledSubsystem, 
-		// 		armSubsystem::isCone,
-		// 		armSubsystem::getTeleopWasEnded
-		// 	)
+		// ledSubsystem,
+		// armSubsystem::isCone,
+		// armSubsystem::getTeleopWasEnded
+		// )
 		// );
 		// spotless:on
 
@@ -120,11 +122,17 @@ public class RobotContainer {
 		// mid position
 		this.controlBoard.armPresetMid()
 				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, 0.365),
+
 						new CommandArmPitchSimple(this.armPitchSubsystem, -73)));
 
+		// station pickup setpoint
 		this.controlBoard.armPresetSlide()
-				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, .55),
-						new CommandArmPitchSimple(this.armPitchSubsystem, -73)));
+				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, .231),
+						new CommandArmPitchSimple(this.armPitchSubsystem, -80)));
+
+		// cube pickupo setpoints
+		this.controlBoard.cubePickUp().onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, .46),
+				new CommandArmPitchSimple(this.armPitchSubsystem, 0)));
 	}
 
 	public Drivetrain getDrivetrain() {
@@ -146,10 +154,16 @@ public class RobotContainer {
 	public ControlBoard getControlBoard() {
 		return controlBoard;
 	}
+
 	public ArmPitchSubsystem getArmPitchSubysystem() {
 		return this.armPitchSubsystem;
 	}
+
 	public WristSubsystem getWristSubsystem() {
 		return this.wristSubsystem;
+	}
+
+	public IntakeSubsystem getIntakeSubsystem() {
+		return this.intakeSubsystem;
 	}
 }

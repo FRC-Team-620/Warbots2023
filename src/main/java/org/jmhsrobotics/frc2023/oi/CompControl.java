@@ -67,6 +67,10 @@ public class CompControl implements ControlBoard {
 	}
 
 	@Override
+	public Trigger cubePickUp() {
+		return operatorController.povUp();
+	}
+	@Override
 	public boolean isDriveSlow() {
 		return false;
 	}

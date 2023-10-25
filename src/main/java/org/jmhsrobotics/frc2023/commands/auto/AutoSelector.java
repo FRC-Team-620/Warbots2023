@@ -25,6 +25,8 @@ public class AutoSelector {
 
 		autoSelector.addOption("StartingDistanceAuto", new StartingDistanceAuto(container.getDrivetrain()));
 		autoSelector.addOption("DoNothing", new InstantCommand());
+		autoSelector.addOption("1+balance", new AutoScoreAndBalance(container.getDrivetrain(),
+				container.getWristSubsystem(), container.getIntakeSubsystem(), container.getArmPitchSubysystem()));
 		// autoSelector.addOption("ScoringAutoMidCone",
 		// new ScoringAuto(container.getDrivetrain(), container.getWristSubsystem(),
 		// container.getArmSubsystem(),

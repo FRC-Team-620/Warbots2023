@@ -42,6 +42,8 @@ public class IntakeSubsystem extends SubsystemBase {
 	public void setIntakeMotor(double speed) {
 		if (speed > -.1 && speed <= .1) {
 			speed = -.1;
+		} else if (pistonOpen) {
+			speed *= 0.3;
 		}
 		this.intakeMotor.set(speed);
 	}
@@ -88,7 +90,11 @@ public class IntakeSubsystem extends SubsystemBase {
 		return false;
 		// return this.intakePiston.get();
 	}
-
+	public void setIntakePistonState(boolean open) {
+		System.out.println("TEST");
+		this.pistonOpen = open;
+		this.intakePiston.set(this.pistonOpen);
+	}
 	// public void toggleIntakePistonState() {
 	// this.switchIntakePistonState(!this.getIntakePistonState());
 	// }

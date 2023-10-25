@@ -161,4 +161,10 @@ public class SelectableControlBoard implements ControlBoard {
 		return () -> this.override().getAsBoolean() && this.wristControlModifier().getAsBoolean();
 	}
 
+	@Override
+	public Trigger cubePickUp() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
