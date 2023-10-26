@@ -5,6 +5,7 @@
 package org.jmhsrobotics.frc2023;
 
 import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
+import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
 // import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
 import org.jmhsrobotics.frc2023.commands.arm.CommandArmPitchSimple;
@@ -77,6 +78,7 @@ public class RobotContainer {
 		SmartDashboard.putData("scoreing auto", new AutoScoreAndBalance(this.drivetrain, this.wristSubsystem,
 				this.intakeSubsystem, this.armPitchSubsystem));
 		SmartDashboard.putData("openIntakePiston", new CommandSetGripperOpen(this.intakeSubsystem, true));
+		SmartDashboard.putData("auto drive", new AutoDriveDistance(this.drivetrain, 30));
 		// TODO: make this not hellish (plz)
 
 		// spotless:off
