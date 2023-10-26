@@ -29,36 +29,20 @@ public class IntakeSubsystem extends SubsystemBase {
 	public void periodic() {
 
 		SmartDashboard.putNumber("IntakeSubsystem/intake/speed", this.getIntakeSpeed());
-		// SmartDashboard.putNumber("IntakeSubsystem/intake/piston state",
-		// this.getIntakePistonState() ? 1 : -1);
-		// SmartDashboard.putBoolean("IntakeSubsystem/inkate/piston state",
-		// intakePiston.get());
-		// SmartDashboard.putNumber("IntakeSubsystem/intake/speed",
-		// this.intakeMotor.get());
 	}
 
 	// ****** INTAKE MOTOR ******
 
 	public void setIntakeMotor(double speed) {
+		// dumb way to check if any of the triggers are pressed
 		if (speed > -.1 && speed <= .1) {
+			// if no triggers are pressed, spein the intake motor at 10% its full speed
 			speed = -.1;
 		} else if (pistonOpen) {
+			// triggers are pressed and piston is open, run intake wheels in 30% of its full speed
 			speed *= 0.3;
 		}
 		this.intakeMotor.set(speed);
-	}
-
-	public void setIntakeMotor(Direction dir, double speed) {
-		switch (dir) {
-			case FORWARD :
-			case IN :
-				this.setIntakeMotor(-speed);
-				break;
-			case REVERSE :
-			case OUT :
-				this.setIntakeMotor(speed);
-				break;
-		}
 	}
 
 	public double getIntakeSpeed() {
@@ -76,26 +60,16 @@ public class IntakeSubsystem extends SubsystemBase {
 	// ****** INTAKE PISTON ******
 
 	public void switchIntakePistonState() {
-		// state = button (pressed/not pressed)
-		// intake.set(true/false)
-		// if (state) {
-		// this.pistonOpen = !this.pistonOpen;
-		// }
-		// this.pistonOpen = state ? !this.pistonOpen : this.pistonOpen;
 		this.pistonOpen = !pistonOpen;
 		this.intakePiston.set(this.pistonOpen);
 	}
 
 	public boolean getIntakePistonState() {
-		return false;
-		// return this.intakePiston.get();
+		return this.intakePiston.get();
 	}
 	public void setIntakePistonState(boolean open) {
 		System.out.println("TEST");
 		this.pistonOpen = open;
 		this.intakePiston.set(this.pistonOpen);
 	}
-	// public void toggleIntakePistonState() {
-	// this.switchIntakePistonState(!this.getIntakePistonState());
-	// }
 }

@@ -46,59 +46,8 @@ public class TeleopIntakeOpenLoop extends CommandBase {
 	public void execute() {
 
 		double currentSpeed = this.intakeSpeed.get();
-		// ScoringType currentMode = this.scoringType.get();
-		// boolean isCone = currentMode == ScoringType.CONE;
 		intakeSubsystem.setIntakeMotor(currentSpeed);
-		// boolean state = true;
-		// if (control.closeGrabber().getAsBoolean()) {
-		// state = !state;
-		// }
-		// state = control.closeGrabber().getAsBoolean() ? !state : state;
-		// control.switchGrabber().onTrue(intak.)
-		// intakeSubsystem.switchIntakePistonState(control.switchGrabber().getAsBoolean());
 		SmartDashboard.putNumber("TeleopIntake/input speed", currentSpeed);
-		// SmartDashboard.putString("TeleopIntake/scoring type",
-		// currentMode.toString());
-
-		// double baseSpeed;
-
-		// switch (this.type) {
-
-		// case SOLENOID :
-
-		// baseSpeed = 0.05;
-
-		// // if (currentMode == ScoringType.CONE && currentSpeed > 0.0)
-		// // currentSpeed *= 0.4;
-
-		// if (!this.intakeSubsystem.getIntakePistonState())
-		// baseSpeed = 0.0;
-
-		// // spotless:off
-		// 		this.intakeSubsystem.setIntakeMotor(MathUtil.clamp(
-		// 			currentSpeed + baseSpeed, -1, 1
-		// 		));
-		// 		// spotless:on
-
-		// break;
-
-		// case MOTOR :
-
-		// // int modeFactor = currentMode == ScoringType.CONE ? -1 : 1;
-
-		// // baseSpeed = isCone ? 0.05 : 0;
-
-		// // if (isCone)
-		// // currentSpeed *= 0.6;
-
-		// // // spotless:off
-		// 		// this.intakeSubsystem.setIntakeMotor(
-		// 		// 	isCone ? Direction.IN : Direction.OUT, 
-		// 		// 	MathUtil.clamp(currentSpeed + baseSpeed, -1, 1));
-		// 		// // spotless:on
-
-		// break;
-		// }
 	}
 
 	@Override

@@ -18,12 +18,9 @@ public class CommandWristSimple extends CommandBase {
 
 	public CommandWristSimple(WristSubsystem wristSubsystem, double positionGoal) {
 		this.wristSubsystem = wristSubsystem;
-		// this.speed = speed;
-		// this.driver = driver;
 		this.wristConstraint = new Constraints(0.9, 0.8);
 		this.wristPID = new ProfiledPIDController(4, 0, 0, this.wristConstraint);
 		this.positionGoal = positionGoal;
-		// SmartDashboard.putData("WristPID", this.wristPID);
 		addRequirements(wristSubsystem);
 	}
 
@@ -36,17 +33,6 @@ public class CommandWristSimple extends CommandBase {
 	}
 	@Override
 	public void execute() {
-		// if ((wristSubsystem.getWristPitch() < 0.8 && wristSubsystem.getWristPitch() >
-		// 0.1)) {
-		// //
-		// this.wristSubsystem.setWristMotor(MathUtil.applyDeadband(driver.getRightY(),
-		// 0.1));
-		// // System.out.println("mark");
-
-		// } else {
-		// this.wristSubsystem.setWristMotor(0);
-		// }
-		// this.wristSubsystem.setPitch(this.angle.get()); // clamps the input
 
 		// calculate motor output from pid controller
 		double motorRawOutput = this.wristPID.calculate(this.wristSubsystem.getWristPitch());

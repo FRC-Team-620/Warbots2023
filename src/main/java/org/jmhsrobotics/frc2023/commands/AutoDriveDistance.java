@@ -82,27 +82,12 @@ public class AutoDriveDistance extends CommandBase {
 	// // Returns true when the command should end.
 	@Override
 	public boolean isFinished() {
-		// System.out.println("POS: " + (Math.abs(distancePID.getPositionError()) <
-		// distancePID.getPositionTolerance()));
-		// System.out.println("VEL: " + (Math.abs(distancePID.getVelocityError()) <
-		// distancePID.getVelocityTolerance()));
-		// System.out.println("GOL: " + distancePID.atSetpoint());
-		// System.out.println("STA: " +
-		// (distancePID.getGoal().equals(distancePID.getSetpoint())));
-		// // return this.distancePID.atGoal() || i > 200;
-
-		// System.out.println("HAS ERROR: " + hasError());
-		// System.out.println("FINAL GOAL: " + atGoalSetpoint());
 		return atGoalSetpoint();
 	}
 
 	@Override
 	public void end(boolean interrupt) {
-		// this.distancePID.reset(new State(0, 0));
-		// this.distancePID.setGoal(0);
-		// i = 0;
 		drivetrain.setCurvatureDrive(0, 0, false);
 		drivetrain.setBrake(true);
-		// System.out.println("DONEDONEDONEDONEDONE\n");
 	}
 }

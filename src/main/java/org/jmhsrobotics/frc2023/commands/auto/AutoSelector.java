@@ -25,40 +25,10 @@ public class AutoSelector {
 
 		autoSelector.addOption("StartingDistanceAuto", new StartingDistanceAuto(container.getDrivetrain()));
 		autoSelector.addOption("DoNothing", new InstantCommand());
-		autoSelector.addOption("1+balance", new AutoScoreAndBalance(container.getDrivetrain(),
+		// scoring + auto balance auto
+		autoSelector.addOption("score+balance", new AutoScoreAndBalance(container.getDrivetrain(),
 				container.getWristSubsystem(), container.getIntakeSubsystem(), container.getArmPitchSubysystem()));
-		// autoSelector.addOption("ScoringAutoMidCone",
-		// new ScoringAuto(container.getDrivetrain(), container.getWristSubsystem(),
-		// container.getArmSubsystem(),
-		// container.getIntakeSubsystem(), container.getLEDSubsystem(),
-		// StartingPosition.LEFT,
-		// container.getControls(), container, ScoringType.CONE, Setpoints.MID));
-		// autoSelector.addOption("ScoringAutoHighCubes",
-		// new ScoringAuto(container.getDrivetrain(), container.getWristSubsystem(),
-		// container.getArmSubsystem(),
-		// container.getIntakeSubsystem(), container.getLEDSubsystem(),
-		// StartingPosition.CENTER,
-		// container.getControls(), container, ScoringType.CUBE, Setpoints.HIGH));
-		// autoSelector.addOption("ScoringAutoMidCubes",
-		// new ScoringAuto(container.getDrivetrain(), container.getWristSubsystem(),
-		// container.getArmSubsystem(),
-		// container.getIntakeSubsystem(), container.getLEDSubsystem(),
-		// StartingPosition.RIGHT,
-		// container.getControls(), container, ScoringType.CUBE, Setpoints.MID));
 		SmartDashboard.putData("autoSelector", autoSelector);
-
-		// Add Selector for Alliance color TODO: Use DriveStation.getAlliance() to
-		// set
-		// default
-		// teamSelector.setDefaultOption("Blue Alliance", DriverStation.Alliance.Blue);
-		// teamSelector.addOption("Red Alliance", DriverStation.Alliance.Red);
-		// SmartDashboard.putData("teamSelector", teamSelector);
-
-		// // Add Selector for Starting game piece
-		// preloadedSelector.addOption("Cone", Preload.CONE);
-		// preloadedSelector.addOption("Cube", Preload.CUBE);
-		// preloadedSelector.addOption("Nothing", Preload.NOTHING);
-		// SmartDashboard.putData("preloadedSelector", preloadedSelector);
 	}
 
 	public CommandBase getCommand() {

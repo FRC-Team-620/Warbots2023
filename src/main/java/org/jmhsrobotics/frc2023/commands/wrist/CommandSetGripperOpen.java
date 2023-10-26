@@ -3,6 +3,7 @@ package org.jmhsrobotics.frc2023.commands.wrist;
 import org.jmhsrobotics.frc2023.subsystems.IntakeSubsystem;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+// this command is for auto score command group
 
 public class CommandSetGripperOpen extends InstantCommand {
 	private IntakeSubsystem intake;

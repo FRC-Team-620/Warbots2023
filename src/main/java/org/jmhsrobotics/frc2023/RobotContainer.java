@@ -88,15 +88,6 @@ public class RobotContainer {
 
 		controlBoard.switchGrabber().onTrue(new PistonIntakeCommand(this.intakeSubsystem));
 
-		// spotless:off
-		// ledSubsystem.setDefaultCommand(new LEDIdleCommand(
-		// ledSubsystem,
-		// armSubsystem::isCone,
-		// armSubsystem::getTeleopWasEnded
-		// )
-		// );
-		// spotless:on
-
 	}
 
 	/**
@@ -130,7 +121,7 @@ public class RobotContainer {
 				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, .231),
 						new CommandArmPitchSimple(this.armPitchSubsystem, -80)));
 
-		// cube pickupo setpoints
+		// cube pickup setpoint
 		this.controlBoard.cubePickUp().onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, .46),
 				new CommandArmPitchSimple(this.armPitchSubsystem, 0)));
 	}

@@ -4,6 +4,7 @@ import org.jmhsrobotics.frc2023.subsystems.IntakeSubsystem;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
+// this command runs in telop period to switch gripper piston state
 public class PistonIntakeCommand extends InstantCommand {
 	private IntakeSubsystem intake;
 	private boolean state;
