@@ -43,6 +43,10 @@ public class CompControl implements ControlBoard {
 
 	@Override
 	public Trigger armPresetSlide() {
+		return operatorController.povUp();
+	}
+	@Override
+	public Trigger cubePickUp() {
 		return operatorController.povDown();
 	}
 
@@ -58,17 +62,12 @@ public class CompControl implements ControlBoard {
 
 	@Override
 	public Trigger armPresetMid() {
-		return operatorController.y();
-	}
-
-	@Override
-	public Trigger switchGrabber() {
 		return operatorController.x();
 	}
 
 	@Override
-	public Trigger cubePickUp() {
-		return operatorController.povUp();
+	public Trigger switchGrabber() {
+		return operatorController.leftBumper();
 	}
 	@Override
 	public boolean isDriveSlow() {

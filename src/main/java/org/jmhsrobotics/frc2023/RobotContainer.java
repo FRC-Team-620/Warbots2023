@@ -104,26 +104,26 @@ public class RobotContainer {
 
 		// stow position
 		this.controlBoard.armPresetStowed()
-				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, 0.82),
-						new CommandArmPitchSimple(this.armPitchSubsystem, 0)));
+				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, NewConstants.WRIST_PRESET_STOWED),
+						new CommandArmPitchSimple(this.armPitchSubsystem, NewConstants.ARM_PRESET_STOWED)));
 		// floor pick up position
 		this.controlBoard.armPresetFloor()
-				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, .44),
-						new CommandArmPitchSimple(this.armPitchSubsystem, 0)));
+				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, NewConstants.WRIST_RESET_FLOOR),
+						new CommandArmPitchSimple(this.armPitchSubsystem, NewConstants.ARM_PRESET_FLOOR)));
 		// mid position
 		this.controlBoard.armPresetMid()
-				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, 0.365),
+				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, NewConstants.WRIST_PRESET_MID),
 
-						new CommandArmPitchSimple(this.armPitchSubsystem, -73)));
+						new CommandArmPitchSimple(this.armPitchSubsystem, NewConstants.ARM_PRESET_MID)));
 
 		// station pickup setpoint
 		this.controlBoard.armPresetSlide()
-				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, .231),
-						new CommandArmPitchSimple(this.armPitchSubsystem, -80)));
+				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, NewConstants.WRIST_PRESET_STATION),
+						new CommandArmPitchSimple(this.armPitchSubsystem, NewConstants.ARM_PRESET_STATION)));
 
 		// cube pickup setpoint
-		this.controlBoard.cubePickUp().onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, .46),
-				new CommandArmPitchSimple(this.armPitchSubsystem, 0)));
+		this.controlBoard.cubePickUp().onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, NewConstants.WRIST_PRESET_FLOOR_CUBE),
+				new CommandArmPitchSimple(this.armPitchSubsystem, NewConstants.ARM_PRESET_FLOOR)));
 	}
 
 	public Drivetrain getDrivetrain() {
