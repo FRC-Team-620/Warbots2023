@@ -2,6 +2,7 @@ package org.jmhsrobotics.frc2023.subsystems;
 
 import org.jmhsrobotics.frc2023.Constants;
 import org.jmhsrobotics.frc2023.Constants.Direction;
+import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -10,6 +11,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -18,6 +20,7 @@ public class IntakeSubsystem extends SubsystemBase {
 	private CANSparkMax intakeMotor = new CANSparkMax(Constants.driveports.getIntakeCANId(), MotorType.kBrushed);
 	private Solenoid intakePiston = new Solenoid(42, PneumaticsModuleType.REVPH, 0); // Constants.driveports.getIntakeSolenoidId()
 	private boolean pistonOpen = true;
+	private LEDSubsystem led = new LEDSubsystem();
 	public IntakeSubsystem() {
 
 		this.intakeMotor.setSmartCurrentLimit(20);
@@ -38,9 +41,11 @@ public class IntakeSubsystem extends SubsystemBase {
 		if (speed > -.1 && speed <= .1) {
 			// if no triggers are pressed, spein the intake motor at 10% its full speed
 			speed = -.1;
+			this.led.getDriverBuffer().setSolidColor(Color.kAliceBlue);
 		} else if (pistonOpen) {
 			// triggers are pressed and piston is open, run intake wheels in 30% of its full speed
 			speed *= 0.3;
+			this.led.getDriverBuffer().setSolidColor(Color.kRed);
 		}
 		this.intakeMotor.set(speed);
 	}
