@@ -104,8 +104,7 @@ public class DriveCommand extends CommandBase {
 		// setCurvatureDrive
 		// This will allow for Drivetrain's DifferentalDrive to assign the motors to the
 		// correct values to make that movement
-		drivetrain.setCurvatureDrive(0.6 * Math.pow(speed, 2) * Math.signum(speed),
-				0.5 * Math.pow(rotationInput, 2) * Math.signum(rotationInput), quickTurn);
+		drivetrain.setCurvatureDrive(0.4 * speed, 0.3 * rotationInput, quickTurn);
 		SmartDashboard.putNumber("right motor encoder", drivetrain.getRightEncoderCount());
 		SmartDashboard.putNumber("left motor encoder", drivetrain.getLeftEncoderCount());
 	}

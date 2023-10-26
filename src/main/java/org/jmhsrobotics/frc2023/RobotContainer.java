@@ -28,7 +28,6 @@ import org.jmhsrobotics.frc2023.subsystems.IntakeSubsystem;
 // import org.jmhsrobotics.frc2023.subsystems.GrabberSolenoidSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.TelemetrySubsystem;
 import org.jmhsrobotics.frc2023.subsystems.WristSubsystem;
-import org.jmhsrobotics.frc2023.util.LEDs.LEDSubsystem;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -54,7 +53,7 @@ public class RobotContainer {
 	private final CommandXboxController operator = new CommandXboxController(OperatorConstants.operatorControllerPort);
 
 	private final Drivetrain drivetrain = new Drivetrain();
-	private final LEDSubsystem ledSubsystem = new LEDSubsystem();
+	// private final LEDSubsystem ledSubsystem = new LEDSubsystem();
 	private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 	private final WristSubsystem wristSubsystem = new WristSubsystem();
 	private final ArmExtensionSubsystem armExtensionSubsystem = new ArmExtensionSubsystem();
@@ -83,10 +82,7 @@ public class RobotContainer {
 
 		// spotless:off
 		this.intakeSubsystem.setDefaultCommand(
-				new TeleopIntakeOpenLoop(
-						intakeSubsystem,
-						controlBoard::intakeWheels,
-						this.controlBoard));
+				new TeleopIntakeOpenLoop(intakeSubsystem, controlBoard::intakeWheels, this.controlBoard));
 
 		controlBoard.switchGrabber().onTrue(new PistonIntakeCommand(this.intakeSubsystem));
 
@@ -106,35 +102,41 @@ public class RobotContainer {
 
 		// stow position
 		this.controlBoard.armPresetStowed()
-				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, NewConstants.WRIST_PRESET_STOWED),
+				.onTrue(new ParallelCommandGroup(
+						new CommandWristSimple(this.wristSubsystem, NewConstants.WRIST_PRESET_STOWED),
 						new CommandArmPitchSimple(this.armPitchSubsystem, NewConstants.ARM_PRESET_STOWED)));
 		// floor pick up position
 		this.controlBoard.armPresetFloor()
-				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, NewConstants.WRIST_RESET_FLOOR),
+				.onTrue(new ParallelCommandGroup(
+						new CommandWristSimple(this.wristSubsystem, NewConstants.WRIST_RESET_FLOOR),
 						new CommandArmPitchSimple(this.armPitchSubsystem, NewConstants.ARM_PRESET_FLOOR)));
 		// mid position
 		this.controlBoard.armPresetMid()
-				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, NewConstants.WRIST_PRESET_MID),
+				.onTrue(new ParallelCommandGroup(
+						new CommandWristSimple(this.wristSubsystem, NewConstants.WRIST_PRESET_MID),
 
 						new CommandArmPitchSimple(this.armPitchSubsystem, NewConstants.ARM_PRESET_MID)));
 
 		// station pickup setpoint
 		this.controlBoard.armPresetSlide()
-				.onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, NewConstants.WRIST_PRESET_STATION),
+				.onTrue(new ParallelCommandGroup(
+						new CommandWristSimple(this.wristSubsystem, NewConstants.WRIST_PRESET_STATION),
 						new CommandArmPitchSimple(this.armPitchSubsystem, NewConstants.ARM_PRESET_STATION)));
 
 		// cube pickup setpoint
-		this.controlBoard.cubePickUp().onTrue(new ParallelCommandGroup(new CommandWristSimple(this.wristSubsystem, NewConstants.WRIST_PRESET_FLOOR_CUBE),
-				new CommandArmPitchSimple(this.armPitchSubsystem, NewConstants.ARM_PRESET_FLOOR)));
+		this.controlBoard.cubePickUp()
+				.onTrue(new ParallelCommandGroup(
+						new CommandWristSimple(this.wristSubsystem, NewConstants.WRIST_PRESET_FLOOR_CUBE),
+						new CommandArmPitchSimple(this.armPitchSubsystem, NewConstants.ARM_PRESET_FLOOR)));
 	}
 
 	public Drivetrain getDrivetrain() {
 		return this.drivetrain;
 	}
 
-	public LEDSubsystem getLEDSubsystem() {
-		return this.ledSubsystem;
-	}
+	// public LEDSubsystem getLEDSubsystem() {
+	// return this.ledSubsystem;
+	// }
 
 	public ControlBoard getControls() {
 		return this.controlBoard;

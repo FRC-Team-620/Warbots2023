@@ -225,12 +225,15 @@ public class Drivetrain extends SubsystemBase {
 
 		// If the robot should be locking its heading, and is not turning,
 		// calculate the pid output and set it as the rotationInput
-		if (this.shouldHeadingLock && !this.isTurning) {
-			// NOTE: It does not matter if this goes beyond [-1, 1], as the curvatureDrive
-			// method already clamps the values (i.e. values above 1 with be considered as
-			// 1, and values below -1 will be considered as -1) inside the method.
-			rotationInput = this.headingPID.calculate(imuState.yaw);
-		}
+		// if (this.shouldHeadingLock && !this.isTurning) {
+		// // NOTE: It does not matter if this goes beyond [-1, 1], as the
+		// curvatureDrive
+		// // method already clamps the values (i.e. values above 1 with be considered
+		// as
+		// // 1, and values below -1 will be considered as -1) inside the method.
+		// System.out.println("=======================TEST================");
+		// rotationInput = this.headingPID.calculate(imuState.yaw);
+		// }
 
 		// Set the differentialDrive outputs
 		differentialDrive.curvatureDrive(this.commandedSpeed, rotationInput, this.commandedAllowTurnInPlace);

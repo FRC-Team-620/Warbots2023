@@ -5,7 +5,7 @@ import org.jmhsrobotics.frc2023.RobotMath;
 import org.jmhsrobotics.frc2023.RobotMath.DiminishingAverageHandler;
 import org.jmhsrobotics.frc2023.util.IIMUWrapper;
 
-import edu.wpi.first.cameraserver.CameraServer;
+// import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -57,7 +57,7 @@ public class TelemetrySubsystem extends SubsystemBase {
 	public TelemetrySubsystem() {
 
 		// Camera Server
-		CameraServer.startAutomaticCapture();
+		// CameraServer.startAutomaticCapture();
 
 		// Compressor
 		// this.compressor = new Compressor(42, PneumaticsModuleType.REVPH);
