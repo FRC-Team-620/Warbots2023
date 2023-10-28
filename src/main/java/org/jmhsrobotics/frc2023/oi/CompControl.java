@@ -30,6 +30,11 @@ public class CompControl implements ControlBoard {
 	}
 
 	@Override
+	public boolean turbo() {
+		return this.driverController.a().getAsBoolean();
+	}
+
+	@Override
 	public double driveTurn() {
 		return MathUtil.applyDeadband(driverController.getLeftX(), deadband);
 	}

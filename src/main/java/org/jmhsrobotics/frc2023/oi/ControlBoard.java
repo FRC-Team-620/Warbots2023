@@ -16,6 +16,7 @@ public interface ControlBoard {
 	public double armExtend();
 	public double intakeWheels();
 	public Trigger changeScoringType();
+	public boolean turbo();
 	public Trigger cubePickUp();
 	public Trigger armPresetSlide();
 	public Trigger armPresetStowed();

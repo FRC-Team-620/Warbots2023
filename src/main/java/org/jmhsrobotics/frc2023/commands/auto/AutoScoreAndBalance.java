@@ -4,6 +4,7 @@ import org.jmhsrobotics.frc2023.NewConstants;
 import org.jmhsrobotics.frc2023.commands.arm.CommandArmPitchSimple;
 import org.jmhsrobotics.frc2023.commands.wrist.CommandSetGripperOpen;
 import org.jmhsrobotics.frc2023.commands.wrist.CommandWristSimple;
+import org.jmhsrobotics.frc2023.commands.wrist.CommandWristSimpleDefualt;
 import org.jmhsrobotics.frc2023.subsystems.ArmPitchSubsystem;
 import org.jmhsrobotics.frc2023.subsystems.Drivetrain;
 import org.jmhsrobotics.frc2023.subsystems.IntakeSubsystem;
@@ -39,6 +40,6 @@ public class AutoScoreAndBalance extends SequentialCommandGroup {
 	private SequentialCommandGroup setArmWristStowedPosition() {
 		return new SequentialCommandGroup(new CommandWristSimple(this.wrist, NewConstants.WRIST_PRESET_STOWED),
 				new CommandArmPitchSimple(this.armPitch, NewConstants.ARM_PRESET_STOWED),
-				new CommandSetGripperOpen(this.intake, false));
+				new CommandSetGripperOpen(this.intake, false), new CommandWristSimpleDefualt(this.wrist));
 	}
 }

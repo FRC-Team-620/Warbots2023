@@ -28,7 +28,7 @@ public class AutoScoreAndDrive extends SequentialCommandGroup {
 		// addCommands(new CenterChargeStationAuto(this.drivetrain));
 		// TODO: test auto drive
 		addCommands(setArmWristScoringPosition(), setArmWristStowedPosition(),
-				new AutoDriveDistance(this.drivetrain, 0));
+				new AutoDriveDistance(this.drivetrain, -3.5));
 
 	}
 

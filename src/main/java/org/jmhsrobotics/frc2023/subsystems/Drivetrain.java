@@ -404,8 +404,9 @@ public class Drivetrain extends SubsystemBase {
 	// Sets the differential drive using the method curvatureDrive
 	public void setCurvatureDrive(double speed, double rotationInput, boolean quickTurn) {
 		// System.out.println("" + speed+' '+ rotationInput+' '+ quickTurn);
+		// System.out.println("TEST");
 		SmartDashboard.putNumber("Drivetrain/speed", speed); // TODO: Remove update values in periodic
-		SmartDashboard.putNumber("Drivetrain/rotationInput", rotationInput); // TODO: Remove update values in periodic
+		SmartDashboard.putNumber("Drivetrai$n/rotationInput", rotationInput); // TODO: Remove update values in periodic
 		this.commandedSpeed = speed;
 		this.commandedCurvature = rotationInput;
 		this.commandedAllowTurnInPlace = quickTurn;

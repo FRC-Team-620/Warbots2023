@@ -37,7 +37,7 @@ public class IntakeSubsystem extends SubsystemBase {
 		// dumb way to check if any of the triggers are pressed
 		if (speed > -.1 && speed <= .1) {
 			// if no triggers are pressed, spein the intake motor at 10% its full speed
-			// speed = -.1;
+			speed = -.1;
 			// this.led.getDriverBuffer().setSolidColor(Color.kAliceBlue);
 		} else if (pistonOpen) {
 			// triggers are pressed and piston is open, run intake wheels in 30% of its full

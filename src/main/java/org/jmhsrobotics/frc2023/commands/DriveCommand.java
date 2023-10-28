@@ -78,6 +78,9 @@ public class DriveCommand extends CommandBase {
 		// the same time but the one pressed down more
 		// controls the bot
 		speed = control.driveForward();
+		if (control.turbo()) {
+			speed *= 2;
+		}
 
 		// speed *= 0.5;
 		// rotationInput *= 0.5;
@@ -104,7 +107,8 @@ public class DriveCommand extends CommandBase {
 		// setCurvatureDrive
 		// This will allow for Drivetrain's DifferentalDrive to assign the motors to the
 		// correct values to make that movement
-		drivetrain.setCurvatureDrive(0.4 * speed, 0.3 * rotationInput, quickTurn);
+		drivetrain.setCurvatureDrive(0.3 * Math.pow(speed, 2) * Math.signum(speed),
+				0.45 * Math.pow(rotationInput, 2) * Math.signum(rotationInput), quickTurn);
 		SmartDashboard.putNumber("right motor encoder", drivetrain.getRightEncoderCount());
 		SmartDashboard.putNumber("left motor encoder", drivetrain.getLeftEncoderCount());
 	}

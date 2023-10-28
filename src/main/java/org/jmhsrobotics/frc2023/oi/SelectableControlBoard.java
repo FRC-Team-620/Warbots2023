@@ -167,4 +167,10 @@ public class SelectableControlBoard implements ControlBoard {
 		return null;
 	}
 
+	@Override
+	public boolean turbo() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

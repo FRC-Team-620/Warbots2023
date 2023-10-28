@@ -28,6 +28,8 @@ public class AutoSelector {
 		// scoring + auto balance auto
 		autoSelector.addOption("score+balance", new AutoScoreAndBalance(container.getDrivetrain(),
 				container.getWristSubsystem(), container.getIntakeSubsystem(), container.getArmPitchSubysystem()));
+		autoSelector.addOption("score+drive", new AutoScoreAndDrive(container.getDrivetrain(),
+				container.getWristSubsystem(), container.getIntakeSubsystem(), container.getArmPitchSubysystem()));
 		SmartDashboard.putData("autoSelector", autoSelector);
 	}
 

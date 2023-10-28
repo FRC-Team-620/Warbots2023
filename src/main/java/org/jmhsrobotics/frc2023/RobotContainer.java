@@ -5,13 +5,12 @@
 package org.jmhsrobotics.frc2023;
 
 import org.jmhsrobotics.frc2023.Constants.OperatorConstants;
-import org.jmhsrobotics.frc2023.commands.AutoDriveDistance;
-// import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.DriveCommand;
+// import org.jmhsrobotics.frc2023.commands.ArmCommand;
 import org.jmhsrobotics.frc2023.commands.arm.CommandArmPitchSimple;
 import org.jmhsrobotics.frc2023.commands.auto.AutoScoreAndBalance;
+import org.jmhsrobotics.frc2023.commands.auto.CenterChargeStationAuto;
 import org.jmhsrobotics.frc2023.commands.gripper.TeleopIntakeOpenLoop;
-import org.jmhsrobotics.frc2023.commands.wrist.CommandSetGripperOpen;
 import org.jmhsrobotics.frc2023.commands.wrist.CommandWristSimple;
 import org.jmhsrobotics.frc2023.commands.wrist.PistonIntakeCommand;
 import org.jmhsrobotics.frc2023.oi.CompControl;
@@ -69,15 +68,22 @@ public class RobotContainer {
 		// Setting up default command which is a command that runs every time no other
 		// command that uses that subsystem is running
 		drivetrain.setDefaultCommand(new DriveCommand(drivetrain, controlBoard));
-		// SmartDashboard.putData("MoveArm", new
-		// CommandArmPitchSimple(this.armPitchSubsystem, -50));
-		SmartDashboard.putData("MoveWrist", new CommandWristSimple(this.wristSubsystem, 0.3));
-		// SmartDashboard.putData("AutoBalance", new AutoBalance(this.drivetrain,
-		// false));
-		SmartDashboard.putData("scoreing auto", new AutoScoreAndBalance(this.drivetrain, this.wristSubsystem,
-				this.intakeSubsystem, this.armPitchSubsystem));
-		SmartDashboard.putData("openIntakePiston", new CommandSetGripperOpen(this.intakeSubsystem, true));
-		SmartDashboard.putData("auto drive", new AutoDriveDistance(this.drivetrain, 30));
+		// // SmartDashboard.putData("MoveArm", new
+		// // CommandArmPitchSimple(this.armPitchSubsystem, -50));
+		// SmartDashboard.putData("MoveWrist", new
+		// CommandWristSimple(this.wristSubsystem, 0.3));
+		// // SmartDashboard.putData("AutoBalance", new AutoBalance(this.drivetrain,
+		// // false));
+		// SmartDashboard.putData("scoreing auto", new
+		// AutoScoreAndBalance(this.drivetrain, this.wristSubsystem,
+		// this.intakeSubsystem, this.armPitchSubsystem));
+		// SmartDashboard.putData("openIntakePiston", new
+		// CommandSetGripperOpen(this.intakeSubsystem, true));
+		// SmartDashboard.putData("auto drive", new AutoDriveDistance(this.drivetrain,
+		// 30));
+		SmartDashboard.putData("auto balance", new CenterChargeStationAuto(this.drivetrain));
+		SmartDashboard.putData("Score+balance",
+				new AutoScoreAndBalance(this.drivetrain, wristSubsystem, intakeSubsystem, armPitchSubsystem));
 		// TODO: make this not hellish (plz)
 
 		// spotless:off
