@@ -119,7 +119,7 @@ public class AutoBalance extends CommandBase {
 
 		// IF THE ROBOT HAS NOT BEEN ON THE CHARGE STATION YET
 		if (!this.hasBeenOnChargeStation) {
-
+			System.out.println("TEST1");
 			// this.ledSubsystem.getDriverBuffer().setSolidColor(Color.kWhite);
 
 			// spotless:off

@@ -16,7 +16,7 @@ public class CenterChargeStationAuto extends SequentialCommandGroup {
 	// Constructor
 	public CenterChargeStationAuto(Drivetrain drivetrain) {
 		this.drivetrain = drivetrain;
-
+		System.out.println("TEST");
 		addCommands(new InstantCommand(() -> { // Set starting location of the robot
 			drivetrain.resetOdometry(
 					new Pose2d(Units.inchesToMeters(54.42), Units.inchesToMeters(42.079), Rotation2d.fromDegrees(180)));
