@@ -89,6 +89,7 @@ public class AutoBalance extends CommandBase {
 
 	@Override
 	public void execute() {
+		System.out.println("Executing===================");
 		// Command flow:
 		// Command started with the back of the robot facing the charge station
 		// (for possible future localization using apriltags)
@@ -136,7 +137,7 @@ public class AutoBalance extends CommandBase {
 			// IF THE ROBOT IS AT AN ANGLE OF > 3.0 OR < 3.0 DEGREES
 			// i.e. if the robot is angling up or down
 			// REGISTER THE ROBOT AS HAVING BEEN ON THE CHARGING STATION
-			this.hasBeenOnChargeStation = !RobotMath.approxZero(pitch, 3.0);
+			this.hasBeenOnChargeStation = !RobotMath.approxZero(pitch, 3);
 		} else {
 
 			// IF THE ROBOT IS FALLING FORWARD OR BACKWARD (The loading station is tipping

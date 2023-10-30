@@ -67,6 +67,11 @@ public class CommandArmPitchSimple extends CommandBase {
 		return this.pitchPID.atGoal();
 	}
 
+	@Override
+	public void end(boolean interrupted) {
+		this.pitchSubsystem.setSpeed(0);
+	}
+
 	// TODO: We should add an end method that sets the motor output to 0 when the
 	// command ends;
 

@@ -63,6 +63,7 @@ public class IntakeSubsystem extends SubsystemBase {
 	// ****** INTAKE PISTON ******
 
 	public void switchIntakePistonState() {
+		System.out.println("=============PTEST===========");
 		this.pistonOpen = !pistonOpen;
 		this.intakePiston.set(this.pistonOpen);
 	}

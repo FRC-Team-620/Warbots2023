@@ -18,7 +18,7 @@ public class ArmPitchSubsystem extends SubsystemBase {
 		this.pitchEncoder.setPosition(0);
 		// Testing
 		this.pitchMotor.setSmartCurrentLimit(40);
-		this.pitchMotor.setIdleMode(IdleMode.kCoast);
+		this.pitchMotor.setIdleMode(IdleMode.kBrake);
 	}
 
 	public void setSpeed(double speed) {
