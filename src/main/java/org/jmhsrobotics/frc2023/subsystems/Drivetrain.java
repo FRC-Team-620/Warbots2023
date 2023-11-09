@@ -1,7 +1,7 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
+//
 package org.jmhsrobotics.frc2023.subsystems;
 
 import com.ctre.phoenix.platform.DeviceType;
@@ -63,19 +63,8 @@ public class Drivetrain extends SubsystemBase {
 	private PIDController headingPID;
 	private DifferentialDriveOdometry odometry;
 
-	// private double commandedXSpeed = 0.0;
-	// private double commandedZRotation = 0.0;
-	// private boolean commandedAllowTurnInPlace = false;
-
-	// private double yawAngularVelocity = 0.0;
-	// private double pitchAngularVelocity = 0.0;
-	// private double angularVelocity = 0.0;
-
-	// private boolean headingLock = false;
-
 	private boolean isTurning = false;
-	// private int tickAccumulation = 0;
-	// private double previousAngle;
+
 
 	private double commandedSpeed = 0.0;
 	private double commandedCurvature = 0.0;
@@ -155,13 +144,6 @@ public class Drivetrain extends SubsystemBase {
 		leftRearEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
 		rightRearEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
 
-		// leftFrontEncoder = leftFrontMotor.getEncoder();
-		// rightFrontEncoder = rightFrontMotor.getEncoder();
-
-		// leftFrontEncoder.setPositionConversionFactor(DriveConstants.metersPerEncoderTick);
-		// rightFrontEncoder.setPositionConversionFactor(DriveConstants.metersPerEncoderTick);
-
-		// spotless:off
 		odometry = new DifferentialDriveOdometry(
 			RobotContainer.getTelemetry().getRotation2d(), 
 			leftFrontEncoder.getPosition(),
@@ -309,21 +291,6 @@ public class Drivetrain extends SubsystemBase {
 		// spotless:on
 	}
 
-	// public void resetAngularVelocity() { // TODO: Remove
-	// this.angularVelocityHandler.reset();
-	// }
-
-	// public double getYaw() { // TODO: Remove Use Odometry instead
-	// return this.imu.getYaw();
-	// }
-
-	// public double getRoll() {
-	// return imu.getRoll();
-	// }
-
-	// public double getPitch() {
-	// return imu.getPitch();
-	// }
 
 	public boolean getIsTurning() {
 		return this.isTurning;
@@ -347,32 +314,11 @@ public class Drivetrain extends SubsystemBase {
 		this.headingPID.setSetpoint(RobotMath.constrain180(angle));
 	}
 
-	// public void turnRelativeAngle(double deltaAngle) { // TODO: Remove Use
-	// command Framework
-	// this.setAngleSetpoint(RobotMath.shiftAngle(this.headingPID.getSetpoint(),
-	// RobotMath.constrain180(deltaAngle)));
-	// System.out.println(RobotMath.constrain180(deltaAngle));
-	// }
-
-	// public boolean atAngleSetpoint() { // TODO: Remove
-	// return this.headingPID.atSetpoint();
-	// }
 
 	public void resetHeadingLockPID() {
 		this.headingPID.reset();
 	}
 
-	// public void setSpeed(double speed) { // TODO: Remove
-	// this.xspeed = speed;
-	// }
-
-	// public void setCurvature(double curvature) {
-	// this.zrotation = curvature;
-	// }
-
-	// public void setQuickturn(boolean quickturn) {
-	// this.allowTurnInPlace = quickturn;
-	// }
 
 	// TODO: Remove create reset odometry class This will cause bugs with the
 	// odometry
@@ -403,8 +349,6 @@ public class Drivetrain extends SubsystemBase {
 
 	// Sets the differential drive using the method curvatureDrive
 	public void setCurvatureDrive(double speed, double rotationInput, boolean quickTurn) {
-		// System.out.println("" + speed+' '+ rotationInput+' '+ quickTurn);
-		// System.out.println("TEST");
 		SmartDashboard.putNumber("Drivetrain/speed", speed); // TODO: Remove update values in periodic
 		SmartDashboard.putNumber("Drivetrai$n/rotationInput", rotationInput); // TODO: Remove update values in periodic
 		this.commandedSpeed = speed;
