@@ -65,7 +65,6 @@ public class Drivetrain extends SubsystemBase {
 
 	private boolean isTurning = false;
 
-
 	private double commandedSpeed = 0.0;
 	private double commandedCurvature = 0.0;
 	private boolean commandedAllowTurnInPlace = false;
@@ -144,11 +143,8 @@ public class Drivetrain extends SubsystemBase {
 		leftRearEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
 		rightRearEncoder.setPositionConversionFactor(WheelConstants.conversionFactor);
 
-		odometry = new DifferentialDriveOdometry(
-			RobotContainer.getTelemetry().getRotation2d(), 
-			leftFrontEncoder.getPosition(),
-			rightFrontEncoder.getPosition()
-		);
+		odometry = new DifferentialDriveOdometry(RobotContainer.getTelemetry().getRotation2d(),
+				leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition());
 		// spotless:on
 	}
 
@@ -291,7 +287,6 @@ public class Drivetrain extends SubsystemBase {
 		// spotless:on
 	}
 
-
 	public boolean getIsTurning() {
 		return this.isTurning;
 	}
@@ -314,11 +309,9 @@ public class Drivetrain extends SubsystemBase {
 		this.headingPID.setSetpoint(RobotMath.constrain180(angle));
 	}
 
-
 	public void resetHeadingLockPID() {
 		this.headingPID.reset();
 	}
-
 
 	// TODO: Remove create reset odometry class This will cause bugs with the
 	// odometry
